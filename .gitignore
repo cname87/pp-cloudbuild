@@ -3,9 +3,6 @@ certs/gcpStorage/gcpStorageKey.json
 # Ignore yaml secrets files
 **/*secret.yaml
 
-# Ignore the project-perform-k8es.cd repo
-project-perform-k8es-cd
-
 # If files are not being ignored then they may have been previously added
 # try git rm --cached <filename>, or git rm -r --cached <dirname> to get git
 # to forget the file or directory.  (Don't forget the --cached, otherwise git
