@@ -8,7 +8,7 @@
 /* Define a set of load jobs */
 
 const envBackend = {
-  filesToLoad: ['.envDevelopment', '.envStaging. .envProduction'],
+  filesToLoad: ['.envDevelopment', '.envStaging', '.envProduction'],
   /* Path relative to directory containing package.json */
   deltaPath: '',
 };
