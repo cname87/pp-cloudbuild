@@ -19,7 +19,7 @@ The nvm package allows you load various node versions.
 
 Once you've cloned the repo you need to download the secrets files that are not stored on Github.
 
-First you need to manually download the GCP Storage key, from './certs/gcpStorage/'Copy of gcpStorageKey.json' on GCP Storage to ./certs/gcpStorage/gcpStoragekey.json' in the local project.  This is needed for the application to access the Cloud Storage account.
+First you need to manually download the GCP Storage key, from './certs/gcpStorage/'Copy of gcpStorageKey.json' on GCP Storage to ./certs/gcpStorage/gcpStoragekey.json' in the local project.  This is needed for the application to access the Cloud Storage account:
 
 - Access GCP Cloud Storage from the browser and manually download 'Copy of gcpStorageKey.json' from the certs/gcpStorage directory on GCP Storage to the local 'certs/gcpStorage' directory.
 
@@ -27,11 +27,11 @@ Second, download the secrets files from GCP Cloud Storage:
 
 - Run the loadSecretsFiles scripts from both the frontend and backend package.json files - type 'npm run loadSecretsFiles' in /frontend and /backend.
 
-Note: The backend utility downloads the secrets in the project root and these are stored in the backend directory on GCP Storage in '../'.  It appears you can't download these manually but must use gsutil. The gcpStorageKey.json file is also stored in ./certs/gcpStorage/'Copy of gcpStorageKey.json'. If you ever change the service account access key then you just store the new key in this location as well as in the project ./certs/gcpStorage directory.
+Note: The backend utility downloads the secrets in the project root and these are stored in the backend directory on GCP Storage in '../'.  The gcpStorageKey.json file is also stored in ./certs/gcpStorage/'Copy of gcpStorageKey.json'. If you ever change the service account access key then you just store the new key in this location as well as in the project ./certs/gcpStorage directory.
 
 Note: A dummy file '.gitkeep' is placed in all directories that contain only secrets as they would not be created in the GitHub repo otherwise.
 
-NOTE: The loadSecretFiles syncs between the secrets files on the local repo and the secrets files stored on the GCP Storage on the GCP project with ID project-perform. The GCP project must have billing enabled for this to run.
+NOTE: The loadSecretFiles actually uploads secrets if they are in the local repo and only downloads any that are missing from GCP Storage on the GCP project with ID project-perform. The GCP project must have billing enabled for this to run.
 
 ### Install dependencies if necessary
 
@@ -286,3 +286,8 @@ Note: To update your local repo 'candidate' and 'production' branches to match t
 Note: To push to the remote Git repo you need to set up a secret key on GCP secrets and load the same as a deploy key on the Git repo - see [here.](https://cloud.google.com/cloud-build/docs/access-private-github-repos)
 
 Note: Update a log Git tag 'v1x.y.z' and push to the remote after a successful Cloud Build production build (via Git).
+
+### Storing production files
+
+- The production images are stored in gcr.io/project-perform/pp-backend/production as per the cloudbuild production settings.
+- Manually copy the secrets from the Cloud Storage buckets to another storage bucket named 'project-perform-release-COMMIT-SHA' where COMMIT-SHA is taken from the git commit.
