@@ -27,7 +27,9 @@ switch (process.env.NODE_ENV) {
     break;
   }
   case 'production': {
-    /* environment set by Kubernetes configuration */
+    const envPath = findup.sync('.envProduction', { cwd: __dirname })!;
+    /* Load .env file */
+    dotenv.config({ path: envPath });
     break;
   }
   /* If not set it defaults to the development configuration */

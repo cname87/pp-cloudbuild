@@ -44,7 +44,7 @@
       "name": "Serve frontend with backend",
       "type": "chrome",
       "preLaunchTask": "Serve Frontend with Backend",
-      "postDebugTask": "Taskkill node.exe",
+      // "postDebugTask": "Taskkill node.exe",
       "request": "launch",
       "cwd": "${workspaceFolder}/frontend",
       "url": "http://localhost:4200/", // proxy to 8080 for api calls
@@ -171,8 +171,11 @@
       "program": "${workspaceFolder}/backend/src/app.ts",
       "cwd": "${workspaceFolder}/backend",
       "env": {
+        /* If debug needed in production mode */
+        "DEBUG": "PP*",
         "NODE_ENV": "development",
-        // "NODE_ENV": "staging"
+        // "NODE_ENV": "staging",
+        // "NODE_ENV": "production" // Caution!
       },
       "outputCapture": "std",
       "console": "integratedTerminal",
