@@ -18,19 +18,26 @@ export const auth0Config = {
   cacheLocation: 'localstorage',
 };
 
-/* application routing elements */
-const dashboard = {
-  path: 'dashboard',
-  displayName: 'MEMBERS DASHBOARD',
-};
+/* nav bar elements */
 const membersList = {
   path: 'memberslist',
-  displayName: 'MEMBERS LIST',
+  displayName: 'MEMBERS',
 };
 const detail = {
   path: 'detail',
   displayName: 'MEMBER DETAIL',
 };
+const session = {
+  path1: 'member',
+  path2: 'session',
+  displayName: 'SESSION ENTRY',
+};
+const sessions = {
+  path: 'sessions',
+  displayName: 'SESSIONS',
+};
+
+/* other routing elements */
 const profile = {
   path: 'profile',
 };
@@ -41,15 +48,16 @@ const errorPage = {
   path: '/information/error',
 };
 const loginTarget = {
-  path: '/dashboard',
+  path: '/memberslist',
 };
 const callback = {
   path: '/callback',
 };
 export const routes = {
-  dashboard,
   membersList,
   detail,
+  session,
+  sessions,
   profile,
   loginPage,
   errorPage,
@@ -80,7 +88,7 @@ export const enum errorTypes {
 
 /* test urls for E2eTestInterceptor */
 export const errorTestUrls = {
-  /* first test get members that match a term on the dashboard page */
+  /* first test get members that match a search term */
   getAll: 'GET:api-v1/members?name=error',
   /* then go to members list page */
   /* try delete member 10 */

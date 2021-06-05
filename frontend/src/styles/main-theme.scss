@@ -33,10 +33,10 @@ $config: mat-typography-config(
 /* create variables for use throughout the app */
 $default-gap: 1rem;
 $element-width: 30rem;
-$button-height: 2rem;
 $button-width: 4rem;
 $inner-spacing: 0.5rem;
-$memberlist-height: 2rem;
+$memberslist-height: 2rem;
+$default-font-size: calc(14rem/16);
 
 /* narrow width for small screen */
 $element-width-sm: 22rem;

@@ -107,12 +107,8 @@ describe('E2eTestInterceptor', () => {
     });
 
     it('returns if E2E_TESTING is false', async () => {
-      const {
-        e2eTestInterceptor,
-        traceLoggerSpy,
-        nextSpy,
-        nextHandleSpy,
-      } = await setup(false);
+      const { e2eTestInterceptor, traceLoggerSpy, nextSpy, nextHandleSpy } =
+        await setup(false);
       const req: any = {
         dummy: 'dummy',
       };
@@ -128,12 +124,8 @@ describe('E2eTestInterceptor', () => {
     });
 
     it('returns if E2E_TESTING is true and post or put but errorMember.name does not match', async () => {
-      const {
-        e2eTestInterceptor,
-        traceLoggerSpy,
-        nextSpy,
-        nextHandleSpy,
-      } = await setup(true);
+      const { e2eTestInterceptor, traceLoggerSpy, nextSpy, nextHandleSpy } =
+        await setup(true);
       const req: any = {
         method: 'POST',
         urlWithParams: errorTestUrls.post.slice('POST:'.length),
@@ -221,12 +213,8 @@ describe('E2eTestInterceptor', () => {
     });
 
     it('returns an error if E2E_TESTING is true and getAll', async () => {
-      const {
-        e2eTestInterceptor,
-        traceLoggerSpy,
-        nextSpy,
-        nextHandleSpy,
-      } = await setup(true);
+      const { e2eTestInterceptor, traceLoggerSpy, nextSpy, nextHandleSpy } =
+        await setup(true);
       const req: any = {
         method: 'DELETE',
         urlWithParams: errorTestUrls.delete.slice('DELETE:'.length),

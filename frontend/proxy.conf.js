@@ -1,5 +1,6 @@
-/* When running ng e2e this file sets a proxy target dependent on whether the desired target is the production, staging (build) or local development server */
+/* Redirects calls to the backend server when running the server on an Angular built development server */
 
+/* When ng e2e this file sets a proxy target dependent on whether the desired target is the production, staging (build) or local development server */
 let target;
 switch (process.env.E2E) {
   case 'production': {

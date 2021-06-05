@@ -6,7 +6,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { LoginComponent } from './login.component';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import { AuthGuard } from '../../router/guards/auth.guard';
 import {
   findCssOrNot,

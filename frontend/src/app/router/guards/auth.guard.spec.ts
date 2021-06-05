@@ -12,7 +12,7 @@ import { from } from 'rxjs';
 import { AppModule } from '../../app.module';
 import { AuthGuard } from './auth.guard';
 import { MockAuthService } from '../../shared/mocks/mock-auth.service';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import { routes } from '../../config';
 
 describe('AuthGuard', () => {

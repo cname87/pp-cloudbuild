@@ -2,14 +2,22 @@ import { Component, OnInit, ErrorHandler } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRoute, Data } from '@angular/router';
-import { catchError, publishReplay, refCount } from 'rxjs/operators';
+import {
+  catchError,
+  map,
+  publishReplay,
+  refCount,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
 import {
   IMember,
   IMemberWithoutId,
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../shared/members-service/members.service';
+import { SessionsService } from '../../shared/sessions-service/sessions.service';
 
 /**
  * This component displays a list of members.
@@ -31,6 +39,7 @@ export class MembersListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private membersService: MembersService,
+    private sessionsService: SessionsService,
     private logger: NGXLogger,
     private errorHandler: ErrorHandler,
     private isLoadingService: IsLoadingService,
@@ -97,14 +106,38 @@ export class MembersListComponent implements OnInit {
   delete(member: IMember): void {
     this.logger.trace(`${MembersListComponent.name}: Calling deleteMember`);
 
-    /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.membersService.deleteMember(member.id).subscribe((_count) => {
-        this.members$ = this.getMembers();
-        /* allow errors go to errorHandler */
-        /* httpclient observable => unsubscribe not necessary */
-      }),
+    const message = confirm(
+      // eslint-disable-next-line max-len
+      '\nCAUTION: Confirm you wish to delete this member\n\nNOTE: You must first delete all sessions associated with the member',
     );
+
+    const stopSignal$ = new Subject();
+
+    if (message) {
+      /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
+      this.isLoadingService.add(
+        this.sessionsService
+          .getSessions(member.id)
+          .pipe(
+            map((sessions) => {
+              if (sessions.length > 0) {
+                stopSignal$.next();
+                confirm(
+                  '\nYou must first delete all sessions associated with the member first\n\nMember not deleted',
+                );
+              }
+              return of({});
+            }),
+            takeUntil(stopSignal$),
+            switchMap(() => this.membersService.deleteMember(member.id)),
+          )
+          .subscribe((_count) => {
+            this.members$ = this.getMembers();
+            /* allow errors go to errorHandler */
+            /* httpclient observable => unsubscribe not necessary */
+          }),
+      );
+    }
   }
 
   trackByFn(_index: number, member: IMember): number | null {

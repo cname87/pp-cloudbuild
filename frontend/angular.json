@@ -11,7 +11,7 @@
       "prefix": "pp",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       },
       "architect": {
@@ -36,7 +36,16 @@
             /* Avoids a compiler error */
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error"
-           ]
+           ],
+           "buildOptimizer": false,
+           "commonChunk": true,
+           "extractLicenses": false,
+           "namedChunks": true,
+           "optimization": false,
+           "outputHashing": "none",
+           "sourceMap": true,
+           "vendorChunk": true,
+           "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {
@@ -46,14 +55,15 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "aot": true,
+              "buildOptimizer": true,
+              "commonChunk": true,
+              "extractLicenses": true,
+              "namedChunks": false,
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",

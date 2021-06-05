@@ -1,22 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Data } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
-import { of, Observable } from 'rxjs';
+import { of, Observable, Subject, throwError } from 'rxjs';
 import { IsLoadingService } from '@service-work/is-loading';
 
 import { MembersService } from '../../shared/members-service/members.service';
 import { IMember } from '../../data-providers/members.data-provider';
+import { catchError, map, takeUntil } from 'rxjs/operators';
+import { RouteStateService } from '../../shared/route-state-service/router-state-service';
+import { IErrReport } from '../../config';
+import { ToastrService } from 'ngx-toastr';
 
 /**
- * This member shows detail on a member whose id is passed in via the url id parameter.
+ * @title This member shows detail on a member whose id is passed in via the url id parameter.
  */
 @Component({
   selector: 'app-member-detail',
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.scss'],
 })
-export class MemberDetailComponent implements OnInit {
+export class MemberDetailComponent implements OnInit, OnDestroy {
+  //
+  private destroy = new Subject<void>();
+  private toastrMessage = 'A member access error has occurred';
+
   /* member to display */
   member$!: Observable<IMember>;
 
@@ -29,6 +37,8 @@ export class MemberDetailComponent implements OnInit {
     private location: Location,
     private logger: NGXLogger,
     private isLoadingService: IsLoadingService,
+    private routeStateService: RouteStateService,
+    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberDetailComponent.name}: Starting MemberDetailComponent`,
@@ -40,8 +50,35 @@ export class MemberDetailComponent implements OnInit {
     this.route.data.subscribe((data: Data) => {
       this.member$ = of(data.member);
     });
+    this.route.paramMap
+      .pipe(
+        map((paramMap: ParamMap) => {
+          const id = paramMap.get('id');
+          if (!id) {
+            throw new Error('id path parameter was null');
+          }
+          return id;
+        }),
+        takeUntil(this.destroy),
+        catchError((err: IErrReport) => {
+          this.logger.trace(`${MemberDetailComponent.name}: catchError called`);
+
+          /* inform user and mark as handled */
+          this.toastr.error('ERROR!', this.toastrMessage);
+          err.isHandled = true;
+
+          this.logger.trace(`${MembersService.name}: Throwing the error on`);
+          return throwError(err);
+        }),
+      )
+      .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+    this.routeStateService.updateIdState('');
+  }
   goBack(): void {
     this.location.back();
   }
@@ -59,6 +96,7 @@ export class MemberDetailComponent implements OnInit {
     if (!name) {
       return;
     }
+
     /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
       this.membersService.updateMember({ id: +id, name }).subscribe(() => {

@@ -1,23 +1,33 @@
 /* angular */
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import {
+  MatFormFieldDefaultOptions,
+  MAT_FORM_FIELD_DEFAULT_OPTIONS,
+} from '@angular/material/form-field';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 /* 3rd party */
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoggerModule } from 'ngx-logger';
 import { ToastrModule } from 'ngx-toastr';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyMaterialModule } from '@ngx-formly/material';
+import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
+import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
 
 /* local */
 import { environment } from '../environments/environment';
 import { AppComponent } from './components/app/app.component';
-import { AppRoutingModule } from './router/app.routing.module';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MembersListComponent } from './components/members-list/members-list.component';
 import { MemberSearchComponent } from './components/member-search/member-search.component';
 import { MemberDetailComponent } from './components/member-detail/member-detail.component';
+import { MemberSessionComponent } from './components/member-session/member-session.component';
+import { MemberSessionsComponent } from './components/member-sessions/member-sessions.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { MemberCardComponent } from './components/member-card/member-card.component';
 import { MaterialModule } from './modules/material/material.module';
@@ -28,21 +38,27 @@ import {
   RollbarService,
   rollbarFactory,
 } from './shared/error-handler-service/error-handler.service';
-import { RequestCacheService } from './shared/caching.service/request-cache.service';
+import { RequestCacheService } from './shared/caching-service/request-cache.service';
 import { httpInterceptorProviders } from './shared/http-interceptors';
 import { E2E_TESTING } from './config';
 import { CallbackComponent } from './components/callback/callback.component';
 import { ProfileComponent } from './components/user-profile/user-profile.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/nav/nav.component';
-import { AuthService } from './shared/auth.service/auth.service';
+import { AuthService } from './shared/auth-service/auth.service';
 import { AppLoadService } from './shared/app-load.service/app-load.service';
 import { MemberDetailResolverService } from './shared/resolvers/member-detail-resolver.service';
 import { MembersListResolverService } from './shared/resolvers/members-list-resolver.service';
+import { AppRoutingModule } from './router/app.routing.module';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
 }
+
+const appearance: MatFormFieldDefaultOptions = {
+  appearance: 'outline',
+};
+
 @NgModule({
   imports: [
     /* angular modules */
@@ -63,13 +79,25 @@ export function initApp(appLoadService: AppLoadService) {
     }),
     /* local modules */
     MaterialModule,
+    ReactiveFormsModule,
+    FormlyModule.forRoot({
+      extras: { lazyRender: true },
+      validationMessages: [
+        { name: 'required', message: 'This field is required' },
+      ],
+    }),
+    FormlyMaterialModule,
+    FormlyMatDatepickerModule,
+    FormlyMatToggleModule,
+    MatMomentDateModule,
   ],
   declarations: [
     AppComponent,
-    DashboardComponent,
     MembersListComponent,
     MemberSearchComponent,
     MemberDetailComponent,
+    MemberSessionComponent,
+    MemberSessionsComponent,
     MessagesComponent,
     MemberCardComponent,
     MemberInputComponent,
@@ -98,6 +126,11 @@ export function initApp(appLoadService: AppLoadService) {
     },
     MemberDetailResolverService,
     MembersListResolverService,
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: appearance,
+    },
   ],
 })
 export class AppModule {}

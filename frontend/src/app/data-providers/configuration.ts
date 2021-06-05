@@ -1,52 +1,38 @@
 import { HttpHeaders } from '@angular/common/http';
 
 /**
- * Configuration object for membersService.
+ * Configuration object for membersService and sessionsService.
  */
 
 interface IConfigurationParameters {
   basePath: string;
-  servicePath: string;
+  membersPath: string;
+  sessionsPath: string;
   defaultHeaders: HttpHeaders;
-  apiKeys?: { [key: string]: string };
-  username?: string;
-  password?: string;
-  accessToken?: string | (() => string);
   withCredentials?: boolean;
 }
 class Configuration {
-  /* note that the same server is assumed e.g. a basePath of /api is added to localhost:8080 or whatever the host domain that is running */
+  /* note that the same server is assumed e.g. the basePath is added to localhost:8080 or whatever the host domain that is running */
   basePath: string;
-
-  servicePath: string;
-
+  membersPath: string;
+  sessionsPath: string;
   defaultHeaders: HttpHeaders;
-
-  apiKeys?: { [key: string]: string };
-
-  username?: string;
-
-  password?: string;
-
-  accessToken?: string | (() => string);
-
-  /* indicates whether or not cross-site Access-Control requests should be made using credentials -defaults to false */
+  /* indicates whether or not cross-site Access-Control requests should be made using credentials - defaults to false */
   withCredentials?: boolean;
 
   constructor(configurationParameters: IConfigurationParameters) {
     this.basePath = configurationParameters.basePath;
-    this.servicePath = configurationParameters.servicePath;
+    this.membersPath = configurationParameters.membersPath;
+    this.sessionsPath = configurationParameters.sessionsPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
-    this.apiKeys = configurationParameters.apiKeys;
-    this.username = configurationParameters.username;
-    this.password = configurationParameters.password;
-    this.accessToken = configurationParameters.accessToken;
     this.withCredentials = configurationParameters.withCredentials;
   }
 }
 
-export const membersConfiguration = new Configuration({
+export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
-  servicePath: 'members',
+  membersPath: 'members',
+  sessionsPath: 'sessions',
   defaultHeaders: new HttpHeaders(),
+  withCredentials: false,
 });

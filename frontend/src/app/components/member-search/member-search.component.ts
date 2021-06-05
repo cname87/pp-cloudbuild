@@ -62,7 +62,7 @@ export class MemberSearchComponent implements OnInit {
     let errorHandlerCalled = false;
 
     /**
-     * Creates an observable of the members returned by the search term, subscribes and stores the found members.
+     * Creates an observerable in the searchTerms$ subject, which is subscribed to when members$ is subscribed to) which emits whenever searchTerms$.next is called. The observable returns the members delivered by the search term.
      */
     this.members$ = this.searchTerms$.pipe(
       /* wait a set interval after each keystroke before considering the term */
@@ -72,17 +72,16 @@ export class MemberSearchComponent implements OnInit {
       distinctUntilChanged(),
 
       /* get the memberService observable each time the term changes */
-      switchMap(
-        (term: string): Observable<IMember[]> => {
-          const getMembers$ = this.membersService.getMembers(term);
-          this.isLoadingService.add();
-          return getMembers$;
-        },
-      ),
+      switchMap((term: string): Observable<IMember[]> => {
+        const getMembers$ = this.membersService.getMembers(term);
+        this.isLoadingService.add();
+        return getMembers$;
+      }),
       tap(() => {
         this.isLoadingService.remove();
       }),
       publishReplay(1),
+      /* automatically start executing when the first subscriber arrives, and stop executing when the last subscriber leaves */
       refCount(),
       catchError((error: any) => {
         this.isLoadingService.remove();

@@ -151,7 +151,7 @@ function throwError(
   debug(`${modulename}: throwError called`);
 
   /* throw an exception */
-  if (res.statusCode === 500 || res.statusCode === 503) {
+  if (res.statusCode >= 500 && res.statusCode < 600) {
     debug(`${modulename}: throwing an exception to shut server`);
     /* reset the server after a delay to allow error data be sent */
     setTimeout(() => {
@@ -165,7 +165,9 @@ function throwError(
       }
     }, 1000);
   } else {
-    debug(`${modulename}: not 500 or 503 (or testing) - not throwing an error`);
+    debug(
+      `${modulename}: not a 500 error, or is in test mode - not throwing an error`,
+    );
   }
 
   next();

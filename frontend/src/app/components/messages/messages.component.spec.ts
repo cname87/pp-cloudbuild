@@ -83,9 +83,10 @@ describe('messagesComponent', () => {
     const fixture = TestBed.createComponent(MessagesComponent);
 
     /* get the injected instances */
-    const messageServiceInjected = fixture.debugElement.injector.get<IMessageServiceStub>(
-      MessageService as any,
-    );
+    const messageServiceInjected =
+      fixture.debugElement.injector.get<IMessageServiceStub>(
+        MessageService as any,
+      );
 
     /* create the component instance */
     const component = fixture.componentInstance;
@@ -147,12 +148,8 @@ describe('messagesComponent', () => {
     });
 
     it('should show the added messages', async () => {
-      const {
-        fixture,
-        component,
-        page,
-        messageServiceInjected,
-      } = await setup();
+      const { fixture, component, page, messageServiceInjected } =
+        await setup();
       /* add messages to the displayed messages array */
       component.messageService.add('testMessage1');
       component.messageService.add('testMessage2');
@@ -173,12 +170,8 @@ describe('messagesComponent', () => {
     });
 
     it('should click the clear button', async () => {
-      const {
-        fixture,
-        component,
-        page,
-        messageServiceInjected,
-      } = await setup();
+      const { fixture, component, page, messageServiceInjected } =
+        await setup();
       /* add messages to the displayed messages array */
       component.messageService.add('testMessage1');
       component.messageService.add('testMessage2');

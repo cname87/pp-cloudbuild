@@ -1,6 +1,6 @@
 /**
- * This module handles requests for .../api-v1.
- * It is to serve all api requests.
+ * This controller handles requests for .../api-v1.
+ * It is called by runServer and serves all api requests.
  */
 
 import { Router, Request, NextFunction, Response } from 'express';
@@ -13,7 +13,7 @@ const { modulename, debug } = setupDebug(__filename);
 
 const router = Router();
 
-/* Initialize openapi-backend middleware */
+/* Initialize the openapi-backend middleware */
 /* This takes a long time to run => run once only for performance - called during first-time server startup => a warm-up request is a good idea. */
 let api: OpenAPIBackend;
 export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
@@ -97,18 +97,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
-      deleteMembers: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.membersApi.deleteMembers(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
       updateMember: (
         context,
         request: Request,
@@ -116,6 +104,78 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         nextFunction: NextFunction,
       ) =>
         appLocals.handlers.membersApi.updateMember(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getAllSessions: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.getAllSessions(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getSessions: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.getSessions(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getSession: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.getSession(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      updateSession: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.updateSession(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      addSession: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.addSession(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      deleteSession: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessionsApi.deleteSession(
           context,
           request,
           response,
@@ -174,7 +234,38 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
 /* middleware functions below */
 
 /**
- * This tests if the connection to the user members database collection has been created and, if not, creates it.  This results in a members Mongoose model being created for the requesting user and stored in appLocals.models. Once the model exists it does not have to be recreated if that user makes another request.
+ * Gets and stores the user (or throws an error).
+ */
+const findUser = (req: Request, res: Response, next: NextFunction) => {
+  debug(`${modulename}: running findUser`);
+
+  let user: Perform.User | undefined;
+
+  if (req.auth) {
+    user = req.app.appLocals.getUser(req.auth.sub);
+  } else {
+    const error = new Error();
+    error.name = 'NoAuthentication';
+    error.message = 'Unknown authentication error - no req.auth created';
+    res.statusCode = 401;
+    next(error);
+  }
+
+  if (user) {
+    req.user = user;
+  } else {
+    const error = new Error();
+    error.name = 'NoUser';
+    error.message = 'No user matching authentication token was found';
+    res.statusCode = 401;
+    next(error);
+  }
+
+  next();
+};
+
+/**
+ * This tests if the connection to the user members and sessions database collections have been created and, if not, creates them.  This results in members and sessions Mongoose models being created for the requesting user and stored in appLocals.models. Once the models exist they do not have to be recreated if that user makes another request.
  * @params req - the incoming API request.
  * @params next - next function.
  */
@@ -202,9 +293,10 @@ const createDbCollectionConnection = (
     next(errDb);
   }
 
-  /* connect to database collection only if the stored model does not already match the user */
+  /* connect to user collections, but only if not already done */
   const { appLocals } = req.app;
   if (
+    /* initial call will not have modelName */
     !(
       appLocals.models.members &&
       appLocals.models.members.modelName &&
@@ -214,44 +306,18 @@ const createDbCollectionConnection = (
       ) === `${req.user!.dbCollection}`
     )
   ) {
-    debug(`${modulename}: creating connection to user database collection`);
+    debug(`${modulename}: creating connection to the user collections`);
     appLocals.models.members = appLocals.createModelMembers(
       appLocals.database,
       `${req.user!.dbCollection}_Member`,
       `${req.user!.dbCollection}_members`,
     );
+    appLocals.models.sessions = appLocals.createModelSessions(
+      appLocals.database,
+      `${req.user!.dbCollection}_Session`,
+      `${req.user!.dbCollection}_sessions`,
+    );
   }
-  next();
-};
-
-/**
- * Gets the user (or throws an error) and, if not already created, creates the connection to the user collection on the database.
- */
-const findUser = (req: Request, res: Response, next: NextFunction) => {
-  debug(`${modulename}: running findUser`);
-
-  let user: Perform.User | undefined;
-
-  if (req.auth) {
-    user = req.app.appLocals.getUser(req.auth.sub);
-  } else {
-    const error = new Error();
-    error.name = 'NoAuthentication';
-    error.message = 'Unknown authentication error - no req.auth created';
-    res.statusCode = 401;
-    next(error);
-  }
-
-  if (user) {
-    req.user = user;
-  } else {
-    const error = new Error();
-    error.name = 'NoUser';
-    error.message = 'No user matching authentication token was found';
-    res.statusCode = 401;
-    next(error);
-  }
-
   next();
 };
 

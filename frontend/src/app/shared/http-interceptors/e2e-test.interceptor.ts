@@ -29,7 +29,7 @@ export class E2eTestInterceptor implements HttpInterceptor {
     this.logger.trace(`${E2eTestInterceptor.name}: intercept called`);
 
     this.logger.trace(
-      `${E2eTestInterceptor.name} + : isTesting is ${this.isTesting}`,
+      `${E2eTestInterceptor.name}: isTesting is ${this.isTesting}`,
     );
     /* pass through if not in e2e test mode */
     if (!this.isTesting) {
@@ -37,7 +37,7 @@ export class E2eTestInterceptor implements HttpInterceptor {
     }
 
     this.logger.trace(
-      `${E2eTestInterceptor.name} + : isTesting is ${this.isTesting}` +
+      `${E2eTestInterceptor.name}: isTesting is ${this.isTesting}` +
         '\nEntering error test - you should be in e2e test mode ONLY',
     );
 

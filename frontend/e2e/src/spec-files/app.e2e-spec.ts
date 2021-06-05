@@ -91,7 +91,8 @@ describe('Project Perform', () => {
       await memberDetailPage.memberDetailElements.tag.isPresent(),
     ).toBeTruthy('shows member detail');
     /* get the member name displayed */
-    const originalMember = await memberDetailPage.memberDetailElements.getMember();
+    const originalMember =
+      await memberDetailPage.memberDetailElements.getMember();
     /* add a suffix to the name in the input field */
     await memberDetailPage.memberInputElements.inputBox.sendKeys(suffix);
 
@@ -467,12 +468,10 @@ describe('Project Perform', () => {
         'number of members',
       );
       /* confirm member id and member new name displayed */
-      const {
-        memberId,
-        memberName,
-      } = membersPage.memberListElements.selectMemberById(
-        expected.selectedMember.id,
-      );
+      const { memberId, memberName } =
+        membersPage.memberListElements.selectMemberById(
+          expected.selectedMember.id,
+        );
       expect(+(await memberId.getText())).toBe(expected.selectedMember.id);
       expect(await memberName.getText()).toEqual(expected.newName);
     });
@@ -484,12 +483,12 @@ describe('Project Perform', () => {
       const membersListPage = getMembersListPage();
 
       /* get the list of members */
-      const membersBefore = await membersListPage.memberListElements.getMembersArray();
-      const {
-        deleteButton,
-      } = membersListPage.memberListElements.selectMemberById(
-        expected.selectedMember.id,
-      );
+      const membersBefore =
+        await membersListPage.memberListElements.getMembersArray();
+      const { deleteButton } =
+        membersListPage.memberListElements.selectMemberById(
+          expected.selectedMember.id,
+        );
 
       /* click 'delete' which deletes the member & stays on the members view */
       await deleteButton.click();
@@ -509,7 +508,8 @@ describe('Project Perform', () => {
       );
 
       /* get the updated list of members */
-      const membersAfter = await membersListPage.memberListElements.getMembersArray();
+      const membersAfter =
+        await membersListPage.memberListElements.getMembersArray();
       /* filter deleted member for the members before array and compare */
       const expectedMembers = membersBefore.filter(
         (h) => h.name !== expected.newName,
@@ -549,7 +549,8 @@ describe('Project Perform', () => {
       const membersListPage = getMembersListPage();
 
       /* get the list of members */
-      const membersBefore = await membersListPage.memberListElements.getMembersArray();
+      const membersBefore =
+        await membersListPage.memberListElements.getMembersArray();
       const numMembers = membersBefore.length;
       /* enter new name in input box */
       await membersListPage.memberInputElements.inputBox.sendKeys(
@@ -562,13 +563,15 @@ describe('Project Perform', () => {
       /* confirm added member is displayed */
       await browser.wait(
         async () =>
-          (await membersListPage.memberListElements.getMembersArray())
-            .length ===
+          (
+            await membersListPage.memberListElements.getMembersArray()
+          ).length ===
           numMembers + 1,
       );
 
       /* slice last member of the new list and confirm previous list still there */
-      const membersAfter = await membersListPage.memberListElements.getMembersArray();
+      const membersAfter =
+        await membersListPage.memberListElements.getMembersArray();
       expect(membersAfter.slice(0, numMembers)).toEqual(
         membersBefore,
         'old members are still there',
@@ -670,9 +673,8 @@ describe('Project Perform', () => {
       const dashboardPage = getDashboardPage();
 
       /* get the sole found member */
-      const foundMember = dashboardPage.memberSearchElement.searchResults.get(
-        0,
-      );
+      const foundMember =
+        dashboardPage.memberSearchElement.searchResults.get(0);
       expect(await foundMember.getText()).toEqual(expected.foundMember.name);
 
       /* click on the found member */

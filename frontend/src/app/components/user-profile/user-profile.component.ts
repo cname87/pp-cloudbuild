@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 
 /**
  * This module gets the user profile from the authentication server.

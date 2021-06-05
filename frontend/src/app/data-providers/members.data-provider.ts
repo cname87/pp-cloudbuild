@@ -15,7 +15,7 @@ import { NGXLogger } from 'ngx-logger';
 
 /* internal dependencies */
 import { catchError, tap } from 'rxjs/operators';
-import { membersConfiguration } from './configuration';
+import { apiConfiguration } from './configuration';
 import { CustomHttpUrlEncodingCodec } from './encoder';
 import { ICount, IMember, IMemberWithoutId } from './models/models';
 
@@ -29,13 +29,13 @@ export { ICount, IMember, IMemberWithoutId };
 })
 export class MembersDataProvider {
   /* local variables */
-  private basePath = membersConfiguration.basePath;
+  private basePath = apiConfiguration.basePath;
 
-  private membersPath = membersConfiguration.servicePath;
+  private membersPath = apiConfiguration.membersPath;
 
-  private defaultHeaders = membersConfiguration.defaultHeaders;
+  private defaultHeaders = apiConfiguration.defaultHeaders;
 
-  private withCredentials = membersConfiguration.withCredentials;
+  private withCredentials = apiConfiguration.withCredentials;
 
   constructor(private httpClient: HttpClient, private logger: NGXLogger) {
     this.logger.trace(

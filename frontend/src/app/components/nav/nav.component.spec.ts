@@ -6,7 +6,7 @@ import { NGXLogger } from 'ngx-logger';
 import { By } from '@angular/platform-browser';
 import { AppModule } from '../../app.module';
 import { NavComponent } from './nav.component';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import {
   click,
   findRouterLinks,

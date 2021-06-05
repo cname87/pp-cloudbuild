@@ -10,7 +10,7 @@ import {
   IMember,
 } from './members.data-provider';
 import { asyncData, asyncError } from '../shared/test-helpers';
-import { membersConfiguration } from './configuration';
+import { apiConfiguration } from './configuration';
 import { ICount } from './models/count';
 import { AppModule } from '../app.module';
 
@@ -28,16 +28,25 @@ describe('MembersDataProvider', () => {
     /* create stub instances with spies for injection */
     const mockMemberWithoutId = { name: 'testName' };
     const httpClientStub: IHttpClientStub = {
-      post: jasmine.createSpy('post').and.callFake(
-        (url: string, m: IMemberWithoutId, _opt: any): Observable<IMember> => {
-          if (url.startsWith('error')) {
-            return asyncError(new Error('Test Error'));
-          }
-          return asyncData({ id: 21, name: m.name });
-        },
-      ),
-      get: jasmine.createSpy('get').and.callFake(
-        (url: string, opts: any): Observable<IMember | IMember[]> => {
+      post: jasmine
+        .createSpy('post')
+        .and.callFake(
+          (
+            url: string,
+            m: IMemberWithoutId,
+            _opt: any,
+          ): Observable<IMember> => {
+            if (url.startsWith('error')) {
+              return asyncError(new Error('Test Error'));
+            }
+            return asyncData({ id: 21, name: m.name });
+          },
+        ),
+      get: jasmine
+        .createSpy('get')
+        .and.callFake((url: string, opts: any): Observable<
+          IMember | IMember[]
+        > => {
           if (url.startsWith('error')) {
             return asyncError(new Error('Test Error'));
           }
@@ -48,24 +57,25 @@ describe('MembersDataProvider', () => {
             ]);
           }
           return asyncData({ id: 21, name: 'test21' });
-        },
-      ),
-      put: jasmine.createSpy('put').and.callFake(
-        (url: string, m: IMember, _opt: any): Observable<IMember> => {
-          if (url.startsWith('error')) {
-            return asyncError(new Error('Test Error'));
-          }
-          return asyncData({ id: 21, name: m.name });
-        },
-      ),
-      delete: jasmine.createSpy('delete').and.callFake(
-        (url: string, _opts: any): Observable<ICount> => {
+        }),
+      put: jasmine
+        .createSpy('put')
+        .and.callFake(
+          (url: string, m: IMember, _opt: any): Observable<IMember> => {
+            if (url.startsWith('error')) {
+              return asyncError(new Error('Test Error'));
+            }
+            return asyncData({ id: 21, name: m.name });
+          },
+        ),
+      delete: jasmine
+        .createSpy('delete')
+        .and.callFake((url: string, _opts: any): Observable<ICount> => {
           if (url.startsWith('error')) {
             return asyncError(new Error('Test Error'));
           }
           return asyncData({ count: 3 });
-        },
-      ),
+        }),
     };
 
     await TestBed.configureTestingModule({
@@ -107,12 +117,12 @@ describe('MembersDataProvider', () => {
     /* first argument is the url */
     const idUrl = isIdInUrl ? '/9' : '';
     expect(argsArray[0]).toEqual(
-      `${membersConfiguration.basePath}/${membersConfiguration.servicePath}${idUrl}`,
+      `${apiConfiguration.basePath}/${apiConfiguration.membersPath}${idUrl}`,
       'Http method called with configured url',
     );
 
     /* create expected headers to test against */
-    let headers = membersConfiguration.defaultHeaders;
+    let headers = apiConfiguration.defaultHeaders;
     headers = headers.set('Accept', 'application/json');
     /* only methods 'post' and 'put' set Content-Type */
     let contentType = null;
@@ -167,11 +177,8 @@ describe('MembersDataProvider', () => {
   function testAddMember() {
     return () => {
       it('should have addMember(memberWithoutId) return a member', async () => {
-        const {
-          mockMemberWithoutId,
-          membersDataProvider,
-          httpClient,
-        } = await setup();
+        const { mockMemberWithoutId, membersDataProvider, httpClient } =
+          await setup();
 
         /* call MembersDataProvider function */
         const result = await membersDataProvider

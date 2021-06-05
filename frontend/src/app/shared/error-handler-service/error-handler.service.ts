@@ -11,7 +11,7 @@ import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
 import { MessageService } from '../message-service/message.service';
-import { AuthService } from '../auth.service/auth.service';
+import { AuthService } from '../auth-service/auth.service';
 import { errorTypes, routes } from '../../config';
 import { environment } from '../../../environments/environment';
 

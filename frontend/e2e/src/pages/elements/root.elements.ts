@@ -7,12 +7,8 @@ import { getToastrElements } from './toastr.elements';
 export function getRootElements() {
   const { progressBar } = getProgressBarElements();
   const { bannerHeader, loginBtn, logoutBtn, profileBtn } = getLoginElements();
-  const {
-    navElements,
-    dashboardLink,
-    membersLink,
-    detailLink,
-  } = getNavElements();
+  const { navElements, dashboardLink, membersLink, detailLink } =
+    getNavElements();
   const { messagesHeader, messagesClearBtn, messages } = getMessagesElements();
 
   const { toastr, toastrTitle, toastrMessage } = getToastrElements();

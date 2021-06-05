@@ -26,15 +26,13 @@ sudo du -h /var/lib/snapd/snaps
 set -eu
 sudo snap list --all | awk '/disabled/{print $1, $3}' |
     while read snapname revision; do
-        snap remove "$snapname" --revision="$revision"
+        sudo snap remove "$snapname" --revision="$revision"
     done
 
 # Deletes home .cache directory
-rm -rf ~/.cache/*
-
-# NB: Empty the trash folder
+rm -rf ~/.cache/*npm install
 cd ~/.local/share/Trash/
-rm -rf
+sudo rm -rf
 
 cd /var/lib/snapd/cache
 sudo rm -rf

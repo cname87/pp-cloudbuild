@@ -9,7 +9,7 @@ import { Observable, throwError } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../auth.service/auth.service';
+import { AuthService } from '../auth-service/auth.service';
 import { IErrReport } from '../../config';
 
 /**

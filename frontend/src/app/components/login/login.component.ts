@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 
 /**
  * This module provides log in and out functionality.
@@ -14,7 +14,7 @@ import { AuthService } from '../../shared/auth.service/auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  header = 'Team Members';
+  header = 'Performance Manager';
 
   constructor(private logger: NGXLogger, private auth: AuthService) {
     this.logger.trace(

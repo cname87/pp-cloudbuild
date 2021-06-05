@@ -7,10 +7,9 @@ import {
 } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
-// import { tap } from 'rxjs/operators';
 
 import { tap } from 'rxjs/operators';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import { routes } from '../../config';
 
 /**

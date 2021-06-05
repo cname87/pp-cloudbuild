@@ -17,9 +17,10 @@ import { MembersListComponent } from '../components/members-list/members-list.co
 import { MembersService } from '../shared/members-service/members.service';
 import { IMember } from '../data-providers/models/models';
 import { MemberDetailComponent } from '../components/member-detail/member-detail.component';
+import { MemberSessionComponent } from '../components/member-session/member-session.component';
 import { routes } from '../config';
 import { InformationComponent } from '../components/information/information.component';
-import { AuthService } from '../shared/auth.service/auth.service';
+import { AuthService } from '../shared/auth-service/auth.service';
 import { LoginComponent } from '../components/login/login.component';
 
 interface IMembersServiceStub {
@@ -100,7 +101,7 @@ describe('RoutingModule', () => {
     /* stub localAuthSetup in AuthService spy */
     const localAuthSetupSpy = authServiceSpy.localAuthSetup.and.stub();
     /* mock isAuthenticated$ property to simulate an observable */
-    authServiceSpy.isAuthenticated$ = (of(authenticated) as any) as jasmine.Spy;
+    authServiceSpy.isAuthenticated$ = of(authenticated) as any as jasmine.Spy;
     return {
       localAuthSetupSpy,
     };

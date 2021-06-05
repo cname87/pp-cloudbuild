@@ -10,7 +10,7 @@ SCRIPT_DIR="${0%/*}"
 source "${SCRIPT_DIR}"/utils-build/set-variables.sh
 
 
-# The defulat context is the test cluster
+# The default context is the test cluster
 CONTEXT="${TEST_CONTEXT}"
 
 # The default cluster is the test cluster

@@ -1,0 +1,165 @@
+
+<mat-toolbar
+  class="banner"
+  fxLayout="row"
+  fxLayoutAlign="space-evenly center"
+>
+  <button
+    mat-button
+    class="back-button"
+    fxFlex="0 0 15%"
+    (click)="goBack()"
+  >
+    <mat-icon class="icon">arrow_back</mat-icon>
+    BACK
+  </button>
+  <span
+    fxFlex="1 1 18%"
+  ></span>
+  <span
+    class="name"
+    fxFlex="0 0 34%"
+  >
+    {{ (member$ | async)?.name?.toUpperCase() }}
+  </span>
+  <span
+    fxFlex="1 1 33%"
+  ></span>
+</mat-toolbar>
+
+
+<mat-form-field class="filter" appearance="fill">
+  <mat-label>Filter by session type</mat-label>
+  <mat-select (selectionChange)="applyFilter($event.value)" #input>
+    <mat-option>None</mat-option>
+      <mat-option
+        *ngFor="let type of types"
+        [value]="type"
+        >
+          {{ type }}
+        </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class="table-container mat-elevation-z8">
+  <mat-table
+    [dataSource]="dataSource"
+    matSort
+    matSortActive="date"
+    matSortDirection="desc"
+    matSortDisableClear
+    recycleRows
+  >
+
+    <ng-container [matColumnDef]="displayedColumns[0]">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> DATE </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.date | date : 'd-MMM-yy' }} </mat-cell>
+      <mat-footer-cell *matFooterCellDef> AVERAGE </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[1]">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> TYPE </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[2]">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> SCORE </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.score}} </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+          {{ getAverage(displayedColumns[2]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[3]">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> DURATION </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+          {{ getAverage(displayedColumns[3]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[4]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        METRIC
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.metric}} </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+          {{ getAverage(displayedColumns[4]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[5]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+        fxFlex="1 1 30%"
+      >
+        COMMENT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row" fxFlex="1 1 30%"> {{row.comment}} </mat-cell>
+      <mat-footer-cell *matFooterCellDef fxFlex="1 1 30%"></mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[6]">
+      <mat-header-cell
+        *matHeaderCellDef
+        fxFlex="1 1 10%"
+      >
+        EDIT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row" fxFlex="1 1 10%">
+        <button
+          mat-raised-button
+          class="edit-button"
+          (click)="getSession(row.memberId, row.id)"
+          >
+          <mat-icon class="edit">edit</mat-icon>
+        </button>
+      </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+        fxFlex="1 1 10%"
+      >
+        </mat-footer-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
+    <mat-row
+      *matRowDef="let row;
+      columns: displayedColumns;"
+      (click)="getSession(row.memberId, row.id)"
+    >
+    </mat-row>
+    <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td
+        class="mat-cell"
+        colspan="4"
+      >
+          No data matching the filter "{{input.value}}"
+      </td>
+    </tr>
+  </mat-table>
+
+  <mat-paginator
+    class="mat-paginator-sticky"
+    [length]="100"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    [showFirstLastButtons]
+  >
+  </mat-paginator>
+
+</div>

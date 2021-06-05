@@ -5,10 +5,9 @@
 @mixin styling(
   $default-gap: $default-gap,
   $element-width: $element-width,
-  $button-height: $button-height,
   $button-width: $button-width,
   $inner-spacing: $inner-spacing,
-  $memberlist-height: $memberlist-height,
+  $memberslist-height: $memberslist-height,
 ) {
 
   .member-card {

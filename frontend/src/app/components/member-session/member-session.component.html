@@ -1,0 +1,80 @@
+
+<div>
+
+  <mat-toolbar
+    class="banner"
+    fxLayout="row"
+    fxLayoutAlign="space-evenly center"
+  >
+    <button
+      mat-button
+      class="back-button"
+      fxFlex="0 0 25%"
+      (click)="goBack()"
+    >
+      <mat-icon class="icon">arrow_back</mat-icon>
+      BACK
+    </button>
+    <span
+      fxFlex="1 1 8%"
+    ></span>
+    <span
+      class="name"
+      fxFlex="0 0 34%"
+    >
+      {{ (change.member$ | async)?.name?.toUpperCase() }}
+    </span>
+    <span
+      fxFlex="1 1 33%"
+    ></span>
+  </mat-toolbar>
+
+  <mat-divider></mat-divider>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <formly-form
+      [form]="form"
+      [fields]="fields"
+      [model]="model"
+      [options]="options"
+    >
+    </formly-form>
+
+    <mat-divider></mat-divider>
+
+
+  </form>
+
+  <div
+    class="buttons"
+    fxLayout="row"
+    fxLayoutAlign="space-between"
+  >
+    <button
+      mat-raised-button
+      class="add-button"
+      fxFlex="0 0 40%"
+      (click)="onSubmit()"
+      [disabled]="!form.valid"
+    >
+
+    <mat-icon class="icon">update</mat-icon>
+      {{ buttonLabel }}
+    </button>
+    <button
+      mat-raised-button
+      class="delete-button"
+      fxFlex="0 0 40%"
+      (click)="delete()"
+      *ngIf="buttonLabel===updateLabel"
+      >
+      <mat-icon class="icon">delete</mat-icon>
+        DELETE SESSION
+    </button>
+  </div>
+
+</div>

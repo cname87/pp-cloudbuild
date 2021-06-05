@@ -15,7 +15,7 @@
  * - This file creates a user class with each application users' properties including unique ids and database collection name.
  * - MongoDB collections are created on the database server for each user named <'user_Db'>_members allowing each user have their own members database.
  * Note: If you change the name of a database collection associated with a user then a new empty collection is created for that user - the old collection is not deleted.but is not accessible to the client.
- * NOTE: Each user has permission to access the 'test' or 'production' database - this is maintained on the Auth0 server.  A error is thrown if a user logs in and the system is using a database to which the user does not permission.  For example, if you;re set uo to use the test database and you log in a user with access to only the production database.
+ * NOTE: Each user has permission to access the 'test' or 'production' database - this is maintained on the Auth0 server.  A error is thrown if a user logs in and the system is using a database to which the user does not permission.  For example, if you;re set up to use the test database and you log in a user with access to only the production database.
  */
 
 import { setupDebug } from '../utils/src/debugOutput';

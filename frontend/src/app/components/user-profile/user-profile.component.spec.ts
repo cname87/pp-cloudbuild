@@ -7,7 +7,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { ProfileComponent } from './user-profile.component';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import { MockAuthService } from '../../shared/mocks/mock-auth.service';
 
 import {
@@ -103,9 +103,10 @@ describe('ProfileComponent', () => {
     const locationSpy = fixture.debugElement.injector.get<ILocationSpy>(
       Location as any,
     );
-    const activatedRouteStub = fixture.debugElement.injector.get<ActivatedRouteStub>(
-      ActivatedRoute as any,
-    );
+    const activatedRouteStub =
+      fixture.debugElement.injector.get<ActivatedRouteStub>(
+        ActivatedRoute as any,
+      );
 
     const authService = fixture.debugElement.injector.get<AuthService>(
       AuthService as any,

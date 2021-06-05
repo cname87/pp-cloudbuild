@@ -11,7 +11,7 @@ import {
   NavigationError,
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 import { environment } from '../../../environments/environment';
 
 /**

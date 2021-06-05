@@ -226,11 +226,8 @@ describe('ErrorHandlerService', () => {
     });
 
     it('should have a log function', async () => {
-      const {
-        errorHandlerService,
-        traceLoggerSpy,
-        addMessageSpy,
-      } = await setup();
+      const { errorHandlerService, traceLoggerSpy, addMessageSpy } =
+        await setup();
       errorHandlerService.log('test string');
       expect(traceLoggerSpy).toHaveBeenCalledWith(
         'ErrorHandlerService: Reporting: test string',
@@ -255,11 +252,8 @@ describe('ErrorHandlerService', () => {
     }
 
     it('traces that it has been called', async () => {
-      const {
-        errorHandlerService,
-        traceLoggerSpy,
-        testHttpServerError,
-      } = await setup();
+      const { errorHandlerService, traceLoggerSpy, testHttpServerError } =
+        await setup();
       errorHandlerService.handleError(testHttpServerError);
       expect(traceLoggerSpy).toHaveBeenCalledWith(
         'ErrorHandlerService: handleError called',

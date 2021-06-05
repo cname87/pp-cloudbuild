@@ -11,7 +11,7 @@ import { catchError, retryWhen, delay, concatMap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
 import { errorTypes, IErrReport } from '../../config';
-import { RequestCacheService } from '../caching.service/request-cache.service';
+import { RequestCacheService } from '../caching-service/request-cache.service';
 
 /**
  * See error-handler.ts for the error handling strategy:

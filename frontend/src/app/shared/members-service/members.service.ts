@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
-import { NOT_FOUND } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 import { ToastrService } from 'ngx-toastr';
 
 import { MembersDataProvider } from '../../data-providers/members.data-provider';
@@ -26,7 +26,7 @@ export class MembersService {
     private logger: NGXLogger,
     private toastr: ToastrService,
   ) {
-    this.logger.trace(`${MembersService.name}: starting members.service`);
+    this.logger.trace(`${MembersService.name}: starting MembersService`);
   }
 
   /* common toastr message */
@@ -109,7 +109,10 @@ export class MembersService {
         this.logger.trace(`${MembersService.name}: catchError called`);
 
         /* inform user */
-        if (errReport.error && errReport.error.status === NOT_FOUND) {
+        if (
+          errReport.error &&
+          errReport.error.status === StatusCodes.NOT_FOUND
+        ) {
           /* 404: member did not exist */
           this.log(`ERROR: Did not find member with id = ${id}`);
         } else {
@@ -180,7 +183,10 @@ export class MembersService {
         this.logger.trace(`${MembersService.name}: catchError called`);
 
         /* inform user */
-        if (errReport.error && errReport.error.status === NOT_FOUND) {
+        if (
+          errReport.error &&
+          errReport.error.status === StatusCodes.NOT_FOUND
+        ) {
           /* 404: member did not exist */
           this.log(`ERROR: Did not find member with id = ${id}`);
         } else {
@@ -218,7 +224,10 @@ export class MembersService {
         this.logger.trace(`${MembersService.name}: catchError called`);
 
         /* inform user */
-        if (errReport.error && errReport.error.status === NOT_FOUND) {
+        if (
+          errReport.error &&
+          errReport.error.status === StatusCodes.NOT_FOUND
+        ) {
           /* 404: member did not exist */
           this.log(`ERROR: Did not find member with id = ${member.id}`);
         } else {

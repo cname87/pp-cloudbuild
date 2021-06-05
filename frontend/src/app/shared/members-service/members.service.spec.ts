@@ -43,8 +43,9 @@ describe('MembersService', () => {
     const loggerSpy = jasmine.createSpyObj('NGXLogger', ['trace', 'error']);
     /* create stub instances with spies for injection */
     const membersApiStub: IMembersApiStub = {
-      getMembers: jasmine.createSpy('getMembers').and.callFake(
-        (str: string): Observable<IMember[]> => {
+      getMembers: jasmine
+        .createSpy('getMembers')
+        .and.callFake((str: string): Observable<IMember[]> => {
           if (str === 'returnNone') {
             return asyncData([]);
           }
@@ -52,10 +53,10 @@ describe('MembersService', () => {
             return asyncError(new HttpErrorResponse({ status: 500 }));
           }
           return asyncData(mockMembers);
-        },
-      ),
-      getMember: jasmine.createSpy('getMember').and.callFake(
-        (id: number): Observable<any> => {
+        }),
+      getMember: jasmine
+        .createSpy('getMember')
+        .and.callFake((id: number): Observable<any> => {
           if (id === 0) {
             const errReport: IErrReport = {
               allocatedType: errorTypes.httpServerSide,
@@ -75,8 +76,7 @@ describe('MembersService', () => {
             );
           }
           return asyncData(mockMembers[0]);
-        },
-      ),
+        }),
       addMember: jasmine
         .createSpy('addMember')
         .and.callFake((member: IMemberWithoutId) => {
@@ -85,8 +85,9 @@ describe('MembersService', () => {
           }
           return asyncData({ id: 21, name: member.name });
         }),
-      deleteMember: jasmine.createSpy('deleteMember').and.callFake(
-        (member: IMember | number): Observable<ICount> => {
+      deleteMember: jasmine
+        .createSpy('deleteMember')
+        .and.callFake((member: IMember | number): Observable<ICount> => {
           if (member === 0) {
             const errReport: IErrReport = {
               allocatedType: errorTypes.httpServerSide,
@@ -101,10 +102,10 @@ describe('MembersService', () => {
             return asyncError(new HttpErrorResponse({ status: 500 }));
           }
           return asyncData({ count: 1 });
-        },
-      ),
-      updateMember: jasmine.createSpy('updateMember').and.callFake(
-        (member: IMember): Observable<IMember> => {
+        }),
+      updateMember: jasmine
+        .createSpy('updateMember')
+        .and.callFake((member: IMember): Observable<IMember> => {
           if (member.id === 0) {
             const errReport: IErrReport = {
               allocatedType: errorTypes.httpServerSide,
@@ -119,8 +120,7 @@ describe('MembersService', () => {
             return asyncError(new HttpErrorResponse({ status: 500 }));
           }
           return asyncData(mockMembers[0]);
-        },
-      ),
+        }),
     };
     const messageServiceStub: IMessageServiceStub = {
       messages: [],

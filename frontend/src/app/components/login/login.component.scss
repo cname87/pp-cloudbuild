@@ -1,5 +1,11 @@
 @import 'src/styles/main-theme.scss';
 
 .button {
+  background-color: mat-color($primary);
+  margin-left: $default-gap;
+}
+
+.button:hover {
+  background-color: mat-color($primary, "darker");
   margin-left: $default-gap;
 }

@@ -60,20 +60,16 @@ export const configDatabase = {
         ? (DB_DATABASE as string)
         : (DB_DATABASE_TEST as string);
     debug(`${modulename} : database \'${db}\' in use`);
-    const ssl = 'true';
-    const authSource = 'admin';
-    const authMechanism = 'DEFAULT';
+    const extra = 'retryWrites=true&w=majority';
 
     return format(
-      '%s://%s:%s@%s/%s?ssl=%s&authSource=%s&authMechanism=%s',
+      '%s://%s:%s@%s/%s?%s',
       scheme,
       user,
       password,
       host,
       db,
-      ssl,
-      authSource,
-      authMechanism,
+      extra,
     );
   },
 

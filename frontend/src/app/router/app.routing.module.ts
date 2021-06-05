@@ -3,34 +3,28 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 
 import { MemberDetailComponent } from '../components/member-detail/member-detail.component';
+import { MemberSessionComponent } from '../components/member-session/member-session.component';
+import { MemberSessionsComponent } from '../components/member-sessions/member-sessions.component';
 import { InformationComponent } from '../components/information/information.component';
-import { DashboardComponent } from '../components/dashboard/dashboard.component';
 import { MembersListComponent } from '../components/members-list/members-list.component';
 import { CallbackComponent } from '../components/callback/callback.component';
 import { ProfileComponent } from '../components/user-profile/user-profile.component';
 import { MemberDetailResolverService } from '../shared/resolvers/member-detail-resolver.service';
+import { MemberSessionsResolverService } from '../shared/resolvers/member-sessions-resolver.service';
 import { MembersListResolverService } from '../shared/resolvers/members-list-resolver.service';
+import { MemberSessionResolverService } from '../shared/resolvers/member-session-resolver.service';
 
 const appRoutes: Routes = [
   {
     /* default path if no route supplied */
     path: '',
-    redirectTo: '/dashboard',
+    redirectTo: '/memberslist',
     pathMatch: 'full',
   },
   {
     /* callback from auth0 authentication - it redirects */
     path: 'callback',
     component: CallbackComponent,
-  },
-  {
-    /* shows the dashboard */
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AuthGuard],
-    resolve: {
-      members: MembersListResolverService,
-    },
   },
   {
     /* shows the list of members */
@@ -48,6 +42,33 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       member: MemberDetailResolverService,
+    },
+  },
+  {
+    /* session entry for a member */
+    path: 'member/:id/session',
+    component: MemberSessionComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndSession: MemberSessionResolverService,
+    },
+  },
+  {
+    /* session edit for a member */
+    path: 'member/:id/session/:sid',
+    component: MemberSessionComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndSession: MemberSessionResolverService,
+    },
+  },
+  {
+    /* shows a member's sessions */
+    path: 'sessions/:id',
+    component: MemberSessionsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndSessions: MemberSessionsResolverService,
     },
   },
   {

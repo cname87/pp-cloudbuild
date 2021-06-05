@@ -165,9 +165,10 @@ describe('MembersListComponent', () => {
     const errorHandlerSpy = fixture.debugElement.injector.get<IErrorHandlerSpy>(
       ErrorHandler as any,
     );
-    const activatedRouteStub = fixture.debugElement.injector.get<ActivatedRouteStub>(
-      ActivatedRoute as any,
-    );
+    const activatedRouteStub =
+      fixture.debugElement.injector.get<ActivatedRouteStub>(
+        ActivatedRoute as any,
+      );
 
     const expected = createExpected();
 
@@ -175,17 +176,13 @@ describe('MembersListComponent', () => {
     const component = fixture.componentInstance;
 
     /* get the spies */
-    const {
-      getMembersSpy,
-      addMemberSpy,
-      deleteMemberSpy,
-      handleErrorSpy,
-    } = createSpies(
-      membersServiceSpy,
-      expected.membersArray,
-      errorHandlerSpy,
-      isError,
-    );
+    const { getMembersSpy, addMemberSpy, deleteMemberSpy, handleErrorSpy } =
+      createSpies(
+        membersServiceSpy,
+        expected.membersArray,
+        errorHandlerSpy,
+        isError,
+      );
 
     /* create a page to access the DOM elements */
     const page = new Page(fixture);
@@ -320,7 +317,7 @@ describe('MembersListComponent', () => {
 
     it('should test trackBy function returns null', async () => {
       const { component } = await setup();
-      const result = component.trackByFn(0, (null as unknown) as IMember);
+      const result = component.trackByFn(0, null as unknown as IMember);
       expect(result).toEqual(null);
     });
   });

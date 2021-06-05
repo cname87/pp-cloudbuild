@@ -12,7 +12,7 @@ import {
   ActivatedRouteStub,
   click,
 } from '../../shared/test-helpers';
-import { AuthService } from '../../shared/auth.service/auth.service';
+import { AuthService } from '../../shared/auth-service/auth.service';
 
 interface ILocationSpy {
   back: jasmine.Spy;
@@ -119,9 +119,10 @@ describe('InformationComponent', () => {
     const locationSpy = fixture.debugElement.injector.get<ILocationSpy>(
       Location as any,
     );
-    const activatedRouteStub = fixture.debugElement.injector.get<ActivatedRouteStub>(
-      ActivatedRoute as any,
-    );
+    const activatedRouteStub =
+      fixture.debugElement.injector.get<ActivatedRouteStub>(
+        ActivatedRoute as any,
+      );
     const authServiceSpy = fixture.debugElement.injector.get<IAuthServiceSpy>(
       AuthService as any,
     );
@@ -310,12 +311,8 @@ describe('InformationComponent', () => {
     });
 
     it('should click logout', async () => {
-      const {
-        fixture,
-        page,
-        authServiceSpy,
-        activatedRouteStub,
-      } = await setup();
+      const { fixture, page, authServiceSpy, activatedRouteStub } =
+        await setup();
       /* set up route that the component will get */
       const routeMode = 'login';
       activatedRouteStub.setParameter(routeMode);
@@ -339,12 +336,8 @@ describe('InformationComponent', () => {
     });
 
     it('should not click login or logout', async () => {
-      const {
-        fixture,
-        page,
-        authServiceSpy,
-        activatedRouteStub,
-      } = await setup();
+      const { fixture, page, authServiceSpy, activatedRouteStub } =
+        await setup();
       /* set up route that the component will get */
       const routeMode = 'edit';
       activatedRouteStub.setParameter(routeMode);

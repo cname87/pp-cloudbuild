@@ -68,7 +68,7 @@ export function findAllCssOrNot<T>(
 ): T[] | null {
   const elements = fixture.debugElement.queryAll(By.css(css));
   if (elements.length === 0) {
-    return (null as unknown) as T[];
+    return null as unknown as T[];
   }
   const htmlElements: T[] = [];
   for (const element of elements) {

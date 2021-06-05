@@ -8,7 +8,7 @@ import { of, throwError } from 'rxjs';
 import { AppModule } from '../../app.module';
 import { AuthInterceptor } from './auth.interceptor';
 import { MockAuthService } from '../mocks/mock-auth.service';
-import { AuthService } from '../auth.service/auth.service';
+import { AuthService } from '../auth-service/auth.service';
 import { IErrReport, errorTypes } from '../../config';
 
 describe('AuthInterceptor', () => {
@@ -97,7 +97,7 @@ describe('AuthInterceptor', () => {
       const { authService, authInterceptor, nextSpy } = await setup();
       authService.getTokenSilently$ = () => {
         const testErr: IErrReport = {
-          error: ({} as any) as HttpErrorResponse,
+          error: {} as any as HttpErrorResponse,
           allocatedType: errorTypes.notAssigned,
           isHandled: true,
         };

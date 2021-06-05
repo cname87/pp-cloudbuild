@@ -4,14 +4,12 @@ import { NGXLogger } from 'ngx-logger';
 import { IMember } from '../../data-providers/models/models';
 
 /**
- * This provides a cache holding the response to a get (all) /members request that matches the content of the server.  The stored response is updated as responses to any requests that change is state are received.  The cache is be used by a cache service so get all members requests are always served out of cache rather than incurring a server request.
+ * This service provides a cache holding the response to a get all members request that matches the content of the server.  The stored response is updated as responses to any requests that change it's state are received.  This cache is triggered by a http interceptor so get all members requests are always served out of cache rather than incurring a server request.
  */
 
 @Injectable({ providedIn: 'root' })
 export class GetMembersCache {
-  /**
-   * Holds the cached response.
-   */
+  /* holds the cached response */
   private _response: HttpResponse<IMember[]> | undefined = undefined;
 
   constructor(private logger: NGXLogger) {
@@ -29,13 +27,13 @@ export class GetMembersCache {
    * Clears the cache by setting the cached response to undefined.
    */
   clearCache(): void {
-    this.logger.trace(`${GetMembersCache.name}: clearing cache`);
+    this.logger.trace(`${GetMembersCache.name}: running clearCache`);
     this._response = undefined;
   }
 
   /**
    * Sets the cached response from a get /members response.
-   * It just copies the response to the cache.
+   * It copies the response to the cache.
    * @param getAllResponse
    * - The uncached response from an earlier get /members request.
    */
@@ -50,15 +48,10 @@ export class GetMembersCache {
    * - The uncached response from an earlier post /members request.
    */
   setPostOne(postOneResponse: HttpResponse<IMember>) {
-    if (
-      this._response &&
-      this._response.body &&
-      postOneResponse &&
-      postOneResponse.body
-    ) {
+    if (this._response?.body && postOneResponse?.body) {
       /* get the member to add from the request body */
       const addedMember: IMember = postOneResponse.body;
-      /* get the current members array from the cached get /members response */
+      /* get the current members array from the cached get /members response body */
       const cachedBody: IMember[] = this._response.body;
       /* create the new cached body by adding the member */
       cachedBody.push(addedMember);
@@ -81,15 +74,10 @@ export class GetMembersCache {
    * - The uncached response from an earlier put /members request.
    */
   setPutOne(putOneResponse: HttpResponse<IMember>) {
-    if (
-      this._response &&
-      this._response.body &&
-      putOneResponse &&
-      putOneResponse.body
-    ) {
+    if (this._response?.body && putOneResponse?.body) {
       /* get the member to update from the request body */
       const updatedMember: IMember = putOneResponse.body;
-      /* get the current members array from the cached getMembers response */
+      /* get the current members array from the cached getMembers response body */
       const cachedBody: IMember[] = this._response.body;
       /* get the index of the member to update */
       const index = cachedBody.findIndex((m) => m.id === updatedMember.id);
@@ -144,30 +132,6 @@ export class GetMembersCache {
       }
       /* create the new cached body by deleting the member */
       cachedBody = cachedBody.filter((m) => m.id !== deletedMemberId);
-      /* clone the cached response replacing the body */
-      const newCachedResponse = this._response.clone({
-        body: cachedBody,
-      });
-      /* set the cached response */
-      this._response = newCachedResponse;
-    } else {
-      /* set to undefined if cached response or body not present */
-      this.clearCache();
-    }
-  }
-
-  /**
-   * Sets the cached response from a delete (all) /members response.
-   * It deletes the cache body.
-   * @param deleteAllResponse
-   * - The uncached response from an earlier delete /members request.
-   */
-  setDeleteAll() {
-    if (this._response && this._response.body) {
-      /* get the current members array from the cached getMembers response */
-      let cachedBody: IMember[] = this._response.body;
-      /* delete the member list */
-      cachedBody = [];
       /* clone the cached response replacing the body */
       const newCachedResponse = this._response.clone({
         body: cachedBody,

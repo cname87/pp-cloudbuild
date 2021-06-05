@@ -101,7 +101,12 @@ const writeJson = (
   res: Response,
   next: NextFunction,
   code: number,
-  payload?: Perform.IMember | Perform.IMember[] | Record<string, unknown>,
+  payload?:
+    | Perform.IMember
+    | Perform.IMember[]
+    | Perform.ISession
+    | Perform.ISession[]
+    | Record<string, unknown>,
 ): void => {
   debug(`${modulename}: running writeJson`);
 

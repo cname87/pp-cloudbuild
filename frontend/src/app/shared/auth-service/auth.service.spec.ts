@@ -91,7 +91,7 @@ describe('AuthService', () => {
 
     /* CREATE_AUTH0_CLIENT is a function called upon service creation (which is created once the testbed is created => must declare here */
     const testErr: IErrReport = {
-      error: ({} as any) as HttpErrorResponse,
+      error: {} as any as HttpErrorResponse,
       allocatedType: errorTypes.notAssigned,
       isHandled: true,
     };
@@ -194,36 +194,24 @@ describe('AuthService', () => {
   });
 
   it('login should call loginWithRedirect with the default path', async () => {
-    const {
-      authService,
-      loginWithRedirectSpy,
-      loginRedirectDefault,
-      sleep,
-    } = await setup();
+    const { authService, loginWithRedirectSpy, loginRedirectDefault, sleep } =
+      await setup();
     authService.login();
     await sleep(0);
     expect(loginWithRedirectSpy).toHaveBeenCalledWith(loginRedirectDefault);
   });
 
   it('login should call loginWithRedirect with a path parameter', async () => {
-    const {
-      authService,
-      loginWithRedirectSpy,
-      loginRedirectPath,
-      sleep,
-    } = await setup();
+    const { authService, loginWithRedirectSpy, loginRedirectPath, sleep } =
+      await setup();
     authService.login(loginRedirectPath.appState.target);
     await sleep(0);
     expect(loginWithRedirectSpy).toHaveBeenCalledWith(loginRedirectPath);
   });
 
   it('handleRedirectCallback should route to a returned path and set isLoggedIn to true and userProfile$ to the user profile', async () => {
-    const {
-      authService,
-      handleRedirectCallbackSpy,
-      routerNavigateSpy,
-      sleep,
-    } = await setup(true, '/testPath'); // pass path to be retuned
+    const { authService, handleRedirectCallbackSpy, routerNavigateSpy, sleep } =
+      await setup(true, '/testPath'); // pass path to be retuned
     authService.handleAuthCallback();
     await sleep(0);
     expect(handleRedirectCallbackSpy).toHaveBeenCalledWith();
@@ -236,12 +224,8 @@ describe('AuthService', () => {
   });
 
   it('handleRedirectCallback should route to the default path and set isLoggedIn to true and userProfile$ to the user profile', async () => {
-    const {
-      authService,
-      handleRedirectCallbackSpy,
-      routerNavigateSpy,
-      sleep,
-    } = await setup();
+    const { authService, handleRedirectCallbackSpy, routerNavigateSpy, sleep } =
+      await setup();
     authService.handleAuthCallback();
     await sleep(0);
     expect(handleRedirectCallbackSpy).toHaveBeenCalledWith();

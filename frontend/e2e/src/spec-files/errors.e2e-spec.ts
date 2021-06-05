@@ -116,9 +116,8 @@ describe('Error Handling', () => {
       await clearMessages();
 
       /* click DELETE members/10 => error */
-      const {
-        deleteButton,
-      } = membersListPage.memberListElements.selectMemberById(errorMember.id);
+      const { deleteButton } =
+        membersListPage.memberListElements.selectMemberById(errorMember.id);
       await deleteButton.click();
 
       /* wait until new message appears */
@@ -210,9 +209,8 @@ describe('Error Handling', () => {
       await clearMessages();
 
       /* get the link of the member */
-      const {
-        memberName,
-      } = membersListPage.memberListElements.selectMemberById(errorMember.id);
+      const { memberName } =
+        membersListPage.memberListElements.selectMemberById(errorMember.id);
 
       /* click on the member which will trigger an error */
       await memberName.click();

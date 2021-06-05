@@ -19,8 +19,8 @@
       "isServerUp": "Pings the server.",
       "checkServer": "Checks if the local server is up & starts it if necessary.  This either finds the server started and exits with code 0 or starts a server in an external terminal and exits with code 0.  Use the Taskkill node.exe' task to kill the server if required.",
       "delDist": "Used before compilation to delete the compiled dist file.",
-      "tscBackend": "Compiles backend.",
-      "tscBackendWatch": "Compiles backend and recompiles on file change - used during development.",
+      "tsc": "Compiles backend.",
+      "tscWatch": "Compiles backend and recompiles on file change - used during development.",
       "loadSecretsFiles": "When a build is executed from GCP via a github trigger the secret files, and any empty directories, are not there => they are downloaded from GCP Storage.  This script uploads the files and downloads any missing files.",
       "gitPush": "Uploads secrets to GCP Storage and does a git push to the remote origin - add the branch to be pushed to as a parameter, i.e.'npm run gitPush -- master'. (-u => add tracking reference, -v => verbose)."
     }
@@ -30,9 +30,9 @@
     "isServerUp": "ts-node --project ./tsconfig.json ./utils-build/isServerUp.ts",
     "checkServer": "ts-node --project ./tsconfig.json ./utils-build/checkServer.ts",
     "delDist": "ts-node ./utils-build/delDistDir.ts",
-    "tscBackend": "tsc --project ./tsconfig.json",
-    "tscBackendWatch": "tsc --watch --project ./tsconfig.json",
-    "compile": "npm-run-all delDist tscBackend",
+    "tsc": "tsc --project ./tsconfig.json",
+    "tscWatch": "tsc --watch --project ./tsconfig.json",
+    "compile": "npm-run-all delDist tsc",
     "prettierWrite": "prettier --write \"./**/*.ts\" \"./**/*.js\"",
     "eslint:utils": "eslint --ext .js,.ts ./utils-build",
     "eslint:src": "eslint --ext .js,.ts ./src",

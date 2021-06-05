@@ -1,517 +1,1014 @@
 {
-  "openapi" : "3.0.1",
-  "info" : {
-    "title" : "Project Perform API V1",
-    "description" : "V1.x.x cover the API for one team of members.",
-    "contact" : {
-      "name" : "Sean Young",
-      "email" : "cname@yahoo.com"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Project Perform API V2",
+    "description": "V2.x.x cover the API for a team with sports session reporting.",
+    "contact": {
+      "name": "Sean Young",
+      "email": "cname@yahoo.com"
     },
-    "license" : {
-      "name" : "Apache 2.0",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version" : "1.0.1"
+    "version": "2.0.0"
   },
-  "servers" : [ {
-    "url" : "https://localhost:8080/api-v1",
-    "description" : "Development server"
-  } ],
-  "paths" : {
-    "/isTestDatabase" : {
-      "get" : {
-        "summary" : "Returns whether the test database is in use.",
-        "description" : "Returns whether the test database is in use.\nIf the test database is in use then it is safe to run the api tests.\n",
-        "operationId" : "getIsTestDatabase",
-        "responses" : {
-          "200" : {
-            "description" : "Test mode returned.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/IsTestDatabase"
+  "servers": [
+    {
+      "url": "http://localhost:8080.com/api-v2",
+      "description": "Development server"
+    },
+    {
+      "url": "https://project-perform.com/api-v2",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/isTestDatabase": {
+      "get": {
+        "summary": "Returns whether the test database is in use.",
+        "description": "Returns true if the test database is in use. If the test database is in use then it is safe to run the api tests.\n",
+        "operationId": "getIsTestDatabase",
+        "responses": {
+          "200": {
+            "description": "Test mode returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IsTestDatabase"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Unexpected error.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
-        },
-        "x-swagger-router-controller" : "members"
+        }
       }
     },
-    "/members" : {
-      "get" : {
-        "summary" : "Returns all the members, or as determined by a query string.",
-        "description" : "Returns all the members, or as determined by a search string.\n",
-        "operationId" : "getMembers",
-        "parameters" : [ {
-          "name" : "name",
-          "in" : "query",
-          "description" : "An optional name search string to limit the returned list.\nAll members with the name property starting with 'name' will be returned. \n",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "maxLength" : 35,
-            "type" : "string"
+    "/members": {
+      "get": {
+        "summary": "Returns all the members, or as determined by a query string.",
+        "description": "Returns all the members, or returns those whose name property starts with the query string.\n",
+        "operationId": "getMembers",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "An optional search string to limit the returned list.\nAll members with the name property starting with 'name' will be returned. \n",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Members returned.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Member"
+        ],
+        "responses": {
+          "200": {
+            "description": "Members returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
                   }
                 }
               }
             }
           },
-          "400" : {
-            "description" : "The request is not valid.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "503" : {
-            "description" : "The database service is not available now.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Unexpected error.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
-        },
-        "x-swagger-router-controller" : "members"
+        }
       },
-      "put" : {
-        "summary" : "Updates a member (based on the id property of the member).",
-        "description" : "Updates the data on a member.\n",
-        "operationId" : "updateMember",
-        "requestBody" : {
-          "description" : "Updates a member.\nA member object is supplied which must have an id property.\nThe member with that id is updated.\n",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/Member"
+      "put": {
+        "summary": "Updates a member.",
+        "description": "Updates a member. A member object is supplied which must have an id property.\nThe member with that id is updated.\n",
+        "operationId": "updateMember",
+        "requestBody": {
+          "description": "Member object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Member"
               }
             }
           },
-          "required" : true,
-          "x-name" : "member"
+          "required": true
         },
-        "responses" : {
-          "200" : {
-            "description" : "Member updated.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Member"
+        "responses": {
+          "200": {
+            "description": "Member updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
                 }
               }
             }
           },
-          "400" : {
-            "description" : "The request is not a valid request.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "404" : {
-            "description" : "A member with the supplied member ID was not found.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "404": {
+            "description": "A member with the supplied member ID was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "503" : {
-            "description" : "The database service is not available now.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
-        },
-        "x-swagger-router-controller" : "members"
+        }
       },
-      "post" : {
-        "summary" : "Adds a member.",
-        "description" : "Adds a supplied member.\nA member object must be supplied in the body.\nAn error (409) will be returned if a member with the same id as the id in the supplied member object already exists. \n",
-        "operationId" : "addMember",
-        "requestBody" : {
-          "description" : "Mmber detail (without id field).",
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/MemberWithoutId"
+      "post": {
+        "summary": "Adds a member.",
+        "description": "Adds a supplied member.\nA member object without an id property must be supplied in the body.\n",
+        "operationId": "addMember",
+        "requestBody": {
+          "description": "Member detail (without id field).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberWithoutId"
               }
             }
           },
-          "required" : true,
-          "x-name" : "member"
+          "required": true
         },
-        "responses" : {
-          "201" : {
-            "description" : "Member created",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Member"
+        "responses": {
+          "201": {
+            "description": "Member created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
                 }
               }
             }
           },
-          "400" : {
-            "description" : "The request is not a valid request.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "503" : {
-            "description" : "The database service is not available now.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           },
-          "default" : {
-            "description" : "Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
-        },
-        "x-swagger-router-controller" : "members"
-      },
-      "delete" : {
-        "summary" : "Deletes all members.",
-        "description" : "Deletes all members.\n",
-        "operationId" : "deleteMembers",
-        "responses" : {
-          "200" : {
-            "description" : "Members deleted",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Count"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "The request is not a valid request.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503" : {
-            "description" : "The database service is not available now.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "x-swagger-router-controller" : "members"
+        }
       }
     },
-    "/members/{id}" : {
-      "get" : {
-        "summary" : "Returns a specific member.",
-        "description" : "Get a specific member.\n",
-        "operationId" : "getMember",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "The value of the id property of the member.",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "maximum" : 999,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Member information returned.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Member"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "The request is not a valid request.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "A member with the supplied member ID was not found.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503" : {
-            "description" : "The database service is not available now",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
+    "/members/{id}": {
+      "get": {
+        "summary": "Returns a specific member.",
+        "description": "Get the member defined by the supplied id.\n",
+        "operationId": "getMember",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
             }
           }
-        },
-        "x-swagger-router-controller" : "members"
+        ],
+        "responses": {
+          "200": {
+            "description": "Member information returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A member with the supplied member ID was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       },
-      "delete" : {
-        "summary" : "Deletes a member.",
-        "description" : "Deletes a member.\n",
-        "operationId" : "deleteMember",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "The value of the id property of the member.",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "maximum" : 999,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Member deleted",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Count"
-                }
-              }
-            }
-          },
-          "400" : {
-            "description" : "The request is not a valid",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "A member with the supplied member ID was not found.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503" : {
-            "description" : "The database service is not available now",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "default" : {
-            "description" : "Unexpected error",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Error"
-                }
-              }
+      "delete": {
+        "summary": "Deletes a member.",
+        "description": "Deletes a member defined by the supplied id.\n",
+        "operationId": "deleteMember",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Count"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A member with the supplied member ID was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "get": {
+        "summary": "Returns all sessions.",
+        "description": "Returns all sessions for all members.\n",
+        "operationId": "getAllSessions",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "An optional search string to filter the returned list.\nAll sessions with the type property starting with the value of 'type' will be returned. \n",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Session"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a specific session.",
+        "description": "Updates a session.\nA session object is supplied which must have a id corresponding to an existing session.\nThe session with that id is updated with the supplied session.\n",
+        "operationId": "updateSession",
+        "requestBody": {
+          "description": "Session object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Session"
+              }
+            }
+          },
+          "required": true
         },
-        "x-swagger-router-controller" : "members"
+        "responses": {
+          "200": {
+            "description": "Session updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The session to update was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Adds a session.",
+        "description": "Adds a session.\nA session object without an id property must be supplied in the body.\nThat session is added with a autoincremented id.\n",
+        "operationId": "addSession",
+        "requestBody": {
+          "description": "Session object (without the id field).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/{sid}": {
+      "get": {
+        "summary": "Returns a specific session.",
+        "description": "Get a specific session for a specific member.\n",
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "description": "The value of the id property of the session.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session information returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested session was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a specific session.",
+        "description": "Deletes a specific session for a specific member.\n",
+        "operationId": "deleteSession",
+        "parameters": [
+          {
+            "name": "sid",
+            "in": "path",
+            "description": "The value of the id property of the session.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Count"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The session to delete was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{id}/sessions": {
+      "get": {
+        "summary": "Returns all the sessions for a member.",
+        "description": "Returns all the sessions for a particular member.\n",
+        "operationId": "getSessions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "An optional search string to filter the returned list.\nAll sessions with the type property starting with value of 'type' will be returned. \n",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Session"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "Member" : {
-        "required" : [ "id", "name" ],
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "maximum" : 999,
-            "minimum" : 1,
-            "type" : "integer",
-            "format" : "int32",
-            "example" : 5
+  "components": {
+    "schemas": {
+      "Member": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
           },
-          "name" : {
-            "maxLength" : 35,
-            "type" : "string",
-            "format" : "string",
-            "example" : "John Athlete"
+          "name": {
+            "maxLength": 35,
+            "type": "string",
+            "format": "string",
+            "example": "John Athlete"
           }
         },
-        "description" : "Member information"
+        "description": "Member information"
       },
-      "MemberWithoutId" : {
-        "required" : [ "name" ],
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "maxLength" : 35,
-            "type" : "string",
-            "format" : "string",
-            "example" : "John Athlete"
+      "MemberWithoutId": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 35,
+            "type": "string",
+            "format": "string",
+            "example": "John Athlete"
           }
         },
-        "description" : "Member information without the id field"
+        "description": "Member information without the id field"
       },
-      "Error" : {
-        "required" : [ "code", "message" ],
-        "type" : "object",
-        "properties" : {
-          "code" : {
-            "type" : "integer",
-            "format" : "int32",
-            "example" : 5
+      "Session": {
+        "required": [
+          "date",
+          "duration",
+          "id",
+          "memberId",
+          "metric",
+          "score"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
           },
-          "message" : {
-            "type" : "string",
-            "format" : "string",
-            "example" : "Not found"
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-03-20T09:12:28Z"
+          },
+          "score": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "duration": {
+            "maximum": 120,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 30
+          },
+          "metric": {
+            "maximum": 1200,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 100
+          },
+          "memberId": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
           }
         },
-        "description" : "Error report"
+        "description": "Session information"
       },
-      "Count" : {
-        "required" : [ "count" ],
-        "type" : "object",
-        "properties" : {
-          "count" : {
-            "type" : "integer",
-            "format" : "int32",
-            "example" : 5
+      "SessionWithoutId": {
+        "required": [
+          "date",
+          "duration",
+          "memberId",
+          "metric",
+          "score",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-03-20T09:12:28Z"
+          },
+          "score": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "duration": {
+            "maximum": 120,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 30
+          },
+          "metric": {
+            "maximum": 1200,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 100
+          },
+          "memberId": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
           }
         },
-        "description" : "Count of documents."
+        "description": "Session information without the id field"
       },
-      "IsTestDatabase" : {
-        "required" : [ "isTestDatabase" ],
-        "type" : "object",
-        "properties" : {
-          "isTestDatabase" : {
-            "type" : "boolean",
-            "example" : false
+      "Error": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "message": {
+            "type": "string",
+            "format": "string",
+            "example": "Not found"
           }
         },
-        "description" : "boolean 'true' => test database is in use."
+        "description": "Error report"
+      },
+      "Count": {
+        "required": [
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          }
+        },
+        "description": "Count of documents."
+      },
+      "IsTestDatabase": {
+        "required": [
+          "isTestDatabase"
+        ],
+        "type": "object",
+        "properties": {
+          "isTestDatabase": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "description": "The value true informs that the test database is in use."
       }
     }
   }

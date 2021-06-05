@@ -2,7 +2,6 @@
 
   <mat-card-header>
     <mat-card-title>{{ (member$ | async)?.name | uppercase }}</mat-card-title>
-    <mat-card-subtitle>Details</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
@@ -33,12 +32,17 @@
 
   </mat-card-content>
 
-  <mat-card-actions>
+  <mat-card-actions
+    fxLayout="row"
+    fxLayoutAlign="start"
+  >
     <button
       mat-button
-      id="goBackBtn"
+      fxFlex="0 0 auto"
+      class="action-button"
       (click)="goBack()"
     >
+      <mat-icon class="icon">arrow_back</mat-icon>
       BACK
     </button>
   </mat-card-actions>

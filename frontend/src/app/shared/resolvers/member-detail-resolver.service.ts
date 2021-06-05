@@ -29,7 +29,9 @@ export class MemberDetailResolverService implements Resolve<IMember> {
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
   ): Observable<IMember> {
-    this.logger.trace(`${MemberDetailResolverService.name}: Calling getMember`);
+    this.logger.trace(
+      `${MemberDetailResolverService.name}: Calling MemberDetailResolver`,
+    );
 
     /* get id of member to be displayed from the route */
     const id = +(route.paramMap.get('id') || '0');
@@ -40,7 +42,6 @@ export class MemberDetailResolverService implements Resolve<IMember> {
       name: '',
     };
 
-    /* create a subject to multicast to elements on html page */
     return this.membersService.getMember(id).pipe(
       publishReplay(1),
       refCount(),

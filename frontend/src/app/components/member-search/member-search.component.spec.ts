@@ -122,9 +122,7 @@ describe('memberSearchComponent', () => {
       debounceDelay: 300,
     };
   }
-  function createComponent(
-    isError = false,
-  ): {
+  function createComponent(isError = false): {
     debounceDelay: number;
     fixture: ComponentFixture<MemberSearchComponent>;
     component: MemberSearchComponent;
@@ -137,9 +135,10 @@ describe('memberSearchComponent', () => {
 
     /* get the injected instances */
     /* angular.io guide suggests you need to get these from injector.get.  It seemed to work when I just used the 'useValues' in configureTestingModule but now implementing as per guide */
-    const membersServiceSpy = fixture.debugElement.injector.get<IMembersServiceSpy>(
-      MembersService as any,
-    );
+    const membersServiceSpy =
+      fixture.debugElement.injector.get<IMembersServiceSpy>(
+        MembersService as any,
+      );
     const errorHandlerSpy = fixture.debugElement.injector.get<IErrorHandlerSpy>(
       ErrorHandler as any,
     );
@@ -173,9 +172,7 @@ describe('memberSearchComponent', () => {
   }
 
   /* setup function run by each sub test function */
-  async function setup(
-    isError = false,
-  ): Promise<{
+  async function setup(isError = false): Promise<{
     debounceDelay: number;
     fixture: ComponentFixture<MemberSearchComponent>;
     component: MemberSearchComponent;
@@ -214,13 +211,8 @@ describe('memberSearchComponent', () => {
   }));
 
   it('should not search when no delay', fakeAsync(async () => {
-    const {
-      component,
-      fixture,
-      page,
-      getMembersSpy,
-      debounceDelay,
-    } = await setup();
+    const { component, fixture, page, getMembersSpy, debounceDelay } =
+      await setup();
     component.search('x');
     fixture.detectChanges();
     tick(0);
@@ -237,13 +229,8 @@ describe('memberSearchComponent', () => {
   }));
 
   it('should show not search with no change', fakeAsync(async () => {
-    const {
-      component,
-      fixture,
-      page,
-      getMembersSpy,
-      debounceDelay,
-    } = await setup();
+    const { component, fixture, page, getMembersSpy, debounceDelay } =
+      await setup();
     component.search('x');
     fixture.detectChanges();
     tick(debounceDelay);
@@ -333,7 +320,7 @@ describe('memberSearchComponent', () => {
 
   it('should test trackBy function returns null', async () => {
     const { component } = await setup();
-    const result = component.trackByFn(0, (null as unknown) as IMember);
+    const result = component.trackByFn(0, null as unknown as IMember);
     expect(result).toEqual(null);
   });
 });

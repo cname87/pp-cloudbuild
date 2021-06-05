@@ -14,7 +14,6 @@
 import compression from 'compression';
 import express, { Application } from 'express';
 import favicon from 'serve-favicon';
-import urlParser from 'url';
 import util from 'util';
 import path from 'path';
 
@@ -77,17 +76,15 @@ async function runServer(app: Application): Promise<void> {
       debug(`${modulename}: *** Request received ***`);
       debug(`${modulename}: req.url: ${req.url}`);
       debug(`${modulename}: req.baseUrl: ${req.baseUrl}`);
+      debug(`${modulename}: req.path: ${req.path}`);
       debug(`${modulename}: req.originalUrl: ${req.originalUrl}`);
       debug(`${modulename}: req.method: ${req.method}`);
+      debug(`${modulename}: req.query: ${util.inspect(req.query)}`);
+      debug(`${modulename}: req.params: ${util.inspect(req.params)}`);
+      debug(`${modulename}: req.headers: ${util.inspect(req.headers)}`);
+      debug(`${modulename}: req.body: ${util.inspect(req.body)}`);
       debug(
-        `${modulename}: url query string: ${
-          urlParser.parse(req.originalUrl).search
-        }`,
-      );
-      debug(`${modulename}: body query string: ${util.inspect(req.query)}`);
-      debug(`${modulename}: body: ${util.inspect(req.body)}`);
-      debug(
-        `${modulename}: signed cookies: ${util.inspect(req.signedCookies)}`,
+        `${modulename}: req.signedCookies: ${util.inspect(req.signedCookies)}`,
       );
       next();
     });

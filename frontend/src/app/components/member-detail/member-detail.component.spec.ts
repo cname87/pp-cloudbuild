@@ -121,15 +121,17 @@ describe('MemberDetailComponent', () => {
 
     /* get the injected instances */
     /* angular.io guide suggests you need to get these from injector.get.  It seemed to work when I just used the 'useValues' in configureTestingModule but now implementing as per guide */
-    const membersServiceSpy = fixture.debugElement.injector.get<IMembersServiceSpy>(
-      MembersService as any,
-    );
+    const membersServiceSpy =
+      fixture.debugElement.injector.get<IMembersServiceSpy>(
+        MembersService as any,
+      );
     const locationSpy = fixture.debugElement.injector.get<ILocationSpy>(
       Location as any,
     );
-    const activatedRouteStub = fixture.debugElement.injector.get<ActivatedRouteStub>(
-      ActivatedRoute as any,
-    );
+    const activatedRouteStub =
+      fixture.debugElement.injector.get<ActivatedRouteStub>(
+        ActivatedRoute as any,
+      );
     const errorHandlerSpy = fixture.debugElement.injector.get<IErrorHandlerSpy>(
       ErrorHandler as any,
     );
@@ -290,13 +292,8 @@ describe('MemberDetailComponent', () => {
     it('should call save with the right parameters on input event', async () => {
       /* set up route that the component will get */
       const routeId = 3;
-      const {
-        component,
-        fixture,
-        page,
-        updateMemberSpy,
-        backSpy,
-      } = await setup(routeId);
+      const { component, fixture, page, updateMemberSpy, backSpy } =
+        await setup(routeId);
       /* page fields will be null before ngOnInit */
       /* await component ngOnInit and data binding */
       fixture.detectChanges();

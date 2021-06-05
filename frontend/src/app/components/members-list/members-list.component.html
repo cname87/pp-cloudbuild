@@ -1,42 +1,56 @@
 <mat-nav-list>
-    <mat-list-item
-      *ngFor="let member of (members$ | async); trackBy: trackByFn"
-      fxLayout="row"
-      fxLayoutAlign="start"
-      class="mat-list-item"
-    >
+
+  <div
+    class="list"
+    *ngFor="let member of (members$ | async); trackBy: trackByFn"
+    fxLayout="row"
+    fxLayoutAlign="space-around"
+  >
 
     <a
       mat-raised-button
-      color="primary"
-      fxFlex="0 0 auto"
-      routerLink="/detail/{{member.id}}"
-      id="memberId"
-      class="memberData"
+      class="id"
+      fxFlex="1 1 5%"
     >
-        {{member.id}}
+      {{member.id}}
     </a>
 
     <a
       mat-raised-button
-      color="primary"
-      fxFlex="0 0 auto"
+      class="detail"
+      fxFlex="1 1 30%"
       routerLink="/detail/{{member.id}}"
-      id="memberName"
-      class="memberData"
     >
-        {{member.name}}
+      {{member.name}}
+    </a>
+
+    <a
+      mat-raised-button
+      class="link"
+      fxFlex="1 1 30%"
+      routerLink="/member/{{member.id}}/session"
+    >
+      Enter a Session
+    </a>
+
+    <a
+      mat-raised-button
+      class="link"
+      fxFlex="1 1 30%"
+      routerLink="/sessions/{{member.id}}"
+    >
+      Review Sessions
     </a>
 
     <button
       mat-raised-button
-      fxFlex="0 0 auto"
-      color="accent"
-      id="deleteBtn"
-      (click)="delete(member)">
-        <mat-icon>delete</mat-icon>
+      class="delete"
+      fxFlex="1 1 5%"
+      (click)="delete(member)"
+    >
+      <mat-icon>delete</mat-icon>
     </button>
-  </mat-list-item>
+  </div>
 </mat-nav-list>
 
 <mat-divider></mat-divider>
