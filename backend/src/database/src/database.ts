@@ -176,7 +176,7 @@ class Database {
     dbCollectionName: string,
   ) => Model<Document, Record<string, unknown>>;
 
-  #dbConnection: Connection = ({} as unknown) as Connection;
+  #dbConnection: Connection = {} as unknown as Connection;
 
   /**
    * @param

@@ -59,14 +59,14 @@ const isResponseValid = (
 ): ValidationResult => {
   debug(`${modulename}: running postResponseHandler`);
 
-  if (!(context && context.operation && context.operation.responses)) {
+  if (!context?.operation?.responses) {
     /* return invalid */
     return {
       valid: false,
       errors: [
         {
           keyword: 'unexpected',
-          dataPath: '',
+          instancePath: '',
           schemaPath: '',
           params: [],
           message: 'context or operation missing in response validation call',

@@ -139,10 +139,10 @@ export class MemberSessionComponent {
             const number = isNaN(Number(field.formControl?.value))
               ? 0
               : Number(field.formControl?.value);
-            return number > 0 && number <= 120;
+            return number > 0 && number <= 180;
           },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must enter a duration from 1 to 120 minutes`;
+            return `You must enter a duration from 1 to 180 minutes`;
           },
         },
       },

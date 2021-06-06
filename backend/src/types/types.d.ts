@@ -27,7 +27,8 @@ declare namespace Perform {
   /* the Database class is the type for instances of the Database class */
   export type Database = import('../database/src/database').Database;
   /* passed into startDatabase */
-  export type DatabaseConstructor = typeof import('../database/src/database').Database;
+  export type DatabaseConstructor =
+    typeof import('../database/src/database').Database;
   /* type for database.readystate property */
   export const enum DbReadyState {
     Disconnected = 0,

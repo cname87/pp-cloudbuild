@@ -885,14 +885,14 @@
             "example": 3
           },
           "duration": {
-            "maximum": 120,
+            "maximum": 180,
             "minimum": 1,
             "type": "integer",
             "format": "int32",
             "example": 30
           },
           "metric": {
-            "maximum": 1200,
+            "maximum": 1800,
             "minimum": 1,
             "type": "integer",
             "format": "int32",
@@ -936,14 +936,14 @@
             "example": 3
           },
           "duration": {
-            "maximum": 120,
+            "maximum": 180,
             "minimum": 1,
             "type": "integer",
             "format": "int32",
             "example": 30
           },
           "metric": {
-            "maximum": 1200,
+            "maximum": 1800,
             "minimum": 1,
             "type": "integer",
             "format": "int32",

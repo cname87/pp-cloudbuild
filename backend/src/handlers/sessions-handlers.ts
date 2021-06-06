@@ -152,7 +152,7 @@ const getSessions = (
       .exec()
       .then((docs) => {
         /* return session objects array */
-        return resolve((docs as unknown) as [Perform.ISession]);
+        return resolve(docs as unknown as [Perform.ISession]);
       })
       .catch((err) => {
         /* report a general database unavailable error */

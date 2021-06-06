@@ -25,7 +25,7 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
     strict: true,
     validate: true,
     ajvOpts: {
-      unknownFormats: ['int32', 'string'],
+      validateFormats: false,
       verbose: true,
     },
     handlers: {

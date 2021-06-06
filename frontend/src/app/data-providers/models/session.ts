@@ -6,10 +6,7 @@ import { Observable } from 'rxjs';
 import { IMember } from './member';
 
 export enum SessionType {
-  Bags = 'BAGS',
-  Box = 'BOX',
-  Cardio = 'CARDIO',
-  Spar = 'SPAR',
+  Conditioning = 'CONDITIONING',
   Strength = 'STRENGTH',
 }
 

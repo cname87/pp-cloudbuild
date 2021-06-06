@@ -244,7 +244,7 @@ export class Server {
     /* a count of the number server listen errors allowed */
     this.listenErrors = 3;
     /* the server object returned by express createServer */
-    this.expressServer = ({} as any) as http.Server;
+    this.expressServer = {} as any as http.Server;
 
     /* operations methods */
     this.setupServer = setupServer;

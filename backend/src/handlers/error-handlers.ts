@@ -9,7 +9,7 @@
  */
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import urlParser from 'url';
+import { URL } from 'url';
 import util from 'util';
 import { setupDebug } from '../utils/src/debugOutput';
 
@@ -87,7 +87,7 @@ function logError(
       `\nreq.url: ${req.url}\nreq.ip: ${req.ip}\nreq.method: ${
         req.method
       }\nurl query string: ${
-        urlParser.parse(req.originalUrl).search
+        new URL(req.originalUrl).search
       }\nbody query string: ${util.inspect(
         req.query,
       )}\nsigned cookies: ${util.inspect(

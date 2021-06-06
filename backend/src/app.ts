@@ -104,13 +104,13 @@ const createStore: () => Perform.IAppLocals = (): Perform.IAppLocals => {
     /* models. */
     models: {
       /* filled during an api call */
-      members: ({} as any) as Perform.IModelExtended,
-      sessions: ({} as any) as Perform.IModelExtended,
+      members: {} as any as Perform.IModelExtended,
+      sessions: {} as any as Perform.IModelExtended,
     },
     /* database - filled during database startup */
-    database: ({} as any) as Perform.Database,
+    database: {} as any as Perform.Database,
     /* dbConnection is filled during database startup */
-    dbConnection: ({} as any) as Connection,
+    dbConnection: {} as any as Connection,
   };
 };
 const appLocals = createStore();
@@ -197,18 +197,18 @@ const storeDatabase = async (store: {
           `${modulename}: database.closeConnection error - ignoring and continuing`,
         );
       }
-      store.database = ({} as any) as Perform.Database;
-      store.dbConnection = ({} as any) as Connection;
+      store.database = {} as any as Perform.Database;
+      store.dbConnection = {} as any as Connection;
     }
 
     /* Clear the members model in case this is a reconnect, so that a fresh members model is created based on the new connection */
     if (store.models && store.models.members) {
-      store.models.members = ({} as any) as Perform.IModelExtended;
+      store.models.members = {} as any as Perform.IModelExtended;
     }
 
     /* Clear the sessions model in case this is a reconnect, so that a fresh sessions model is created based on the new connection */
     if (store.models && store.models.sessions) {
-      store.models.sessions = ({} as any) as Perform.IModelExtended;
+      store.models.sessions = {} as any as Perform.IModelExtended;
     }
 
     /* Create and store a database object */

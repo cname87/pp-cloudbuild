@@ -2,7 +2,7 @@
 
 # Use a base node image from Docker hub
 # The node version should match that used in VSCode development & test and should be the LTS version
-FROM node:14.16.1
+FROM node:16.3
 
 # Set the image working directory
 WORKDIR /backend

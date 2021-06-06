@@ -50,7 +50,7 @@ export class MemberSessionsResolverService implements Resolve<any> {
       id: memberId,
       memberId: 0,
       date: '',
-      type: SessionType.Bags,
+      type: SessionType.Conditioning,
       score: 0,
       duration: 0,
       metric: 0,

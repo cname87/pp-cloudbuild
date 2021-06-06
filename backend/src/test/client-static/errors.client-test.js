@@ -382,8 +382,8 @@ describe('unhandled promise rejection', () => {
   });
 
   it('should have body message', () => {
-    const readBody = testWindow.document.getElementsByTagName('body')[0]
-      .innerHTML;
+    const readBody =
+      testWindow.document.getElementsByTagName('body')[0].innerHTML;
     console.log('Page body: ', readBody);
     chai
       .expect(readBody, 'Page body')
@@ -443,8 +443,8 @@ describe('server crash', () => {
   });
 
   it('should have body message', () => {
-    const readBody = testWindow.document.getElementsByTagName('body')[0]
-      .innerHTML;
+    const readBody =
+      testWindow.document.getElementsByTagName('body')[0].innerHTML;
     console.log('Page body: ', readBody);
     chai
       .expect(readBody, 'Page body')

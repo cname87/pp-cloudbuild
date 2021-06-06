@@ -141,7 +141,7 @@ const getMembers = (
       .exec()
       .then((docs) => {
         /* return member objects array */
-        return resolve((docs as unknown) as [Perform.IMember]);
+        return resolve(docs as unknown as [Perform.IMember]);
       })
       .catch((err) => {
         /* report a general database unavailable error */
