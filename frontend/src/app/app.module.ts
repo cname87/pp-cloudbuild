@@ -19,6 +19,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 /* local */
 import { environment } from '../environments/environment';
@@ -50,6 +51,7 @@ import { AppLoadService } from './shared/app-load.service/app-load.service';
 import { MemberDetailResolverService } from './shared/resolvers/member-detail-resolver.service';
 import { MembersListResolverService } from './shared/resolvers/members-list-resolver.service';
 import { AppRoutingModule } from './router/app.routing.module';
+import { SessionsChartComponent } from './components/sessions-chart/sessions-chart.component';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
@@ -90,6 +92,7 @@ const appearance: MatFormFieldDefaultOptions = {
     FormlyMatDatepickerModule,
     FormlyMatToggleModule,
     MatMomentDateModule,
+    NgxChartsModule,
   ],
   declarations: [
     AppComponent,
@@ -106,6 +109,7 @@ const appearance: MatFormFieldDefaultOptions = {
     ProfileComponent,
     LoginComponent,
     NavComponent,
+    SessionsChartComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

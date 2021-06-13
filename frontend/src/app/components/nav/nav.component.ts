@@ -26,6 +26,7 @@ export class NavComponent {
   private detail = routes.detail;
   private session = routes.session;
   private sessions = routes.sessions;
+  private charts = routes.charts;
   private id$: Observable<string>;
   links!: ILink[];
 
@@ -60,6 +61,11 @@ export class NavComponent {
         {
           path: `/${this.sessions.path}/${id}`,
           display: this.sessions.displayName,
+          disabled: disabled,
+        },
+        {
+          path: `/${this.charts.path}/${id}`,
+          display: this.charts.displayName,
           disabled: disabled,
         },
       ];

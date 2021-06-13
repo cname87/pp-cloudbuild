@@ -44,20 +44,20 @@ describe('MembersDataProvider', () => {
         ),
       get: jasmine
         .createSpy('get')
-        .and.callFake((url: string, opts: any): Observable<
-          IMember | IMember[]
-        > => {
-          if (url.startsWith('error')) {
-            return asyncError(new Error('Test Error'));
-          }
-          if (opts.params) {
-            return asyncData([
-              { id: 21, name: 'test21' },
-              { id: 22, name: 'test22' },
-            ]);
-          }
-          return asyncData({ id: 21, name: 'test21' });
-        }),
+        .and.callFake(
+          (url: string, opts: any): Observable<IMember | IMember[]> => {
+            if (url.startsWith('error')) {
+              return asyncError(new Error('Test Error'));
+            }
+            if (opts.params) {
+              return asyncData([
+                { id: 21, name: 'test21' },
+                { id: 22, name: 'test22' },
+              ]);
+            }
+            return asyncData({ id: 21, name: 'test21' });
+          },
+        ),
       put: jasmine
         .createSpy('put')
         .and.callFake(

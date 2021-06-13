@@ -17,8 +17,6 @@ import {
 } from '../../data-providers/models/models';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { IErrReport } from '../../config';
-import { MembersService } from '../../shared/members-service/members.service';
-import { MemberDetailComponent } from '../member-detail/member-detail.component';
 import { ToastrService } from 'ngx-toastr';
 import { RouteStateService } from '../../shared/route-state-service/router-state-service';
 
@@ -67,7 +65,10 @@ export class MemberSessionComponent {
           expression: (
             _control: AbstractControl,
             field: FormlyFieldConfig,
-          ): boolean => !!field.formControl?.value,
+          ): boolean => {
+            console.log(field.formControl?.value);
+            return !!field.formControl?.value;
+          },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
             return `You must select a date`;
           },
@@ -220,13 +221,17 @@ export class MemberSessionComponent {
         }),
         takeUntil(this.destroy),
         catchError((err: IErrReport) => {
-          this.logger.trace(`${MemberDetailComponent.name}: catchError called`);
+          this.logger.trace(
+            `${MemberSessionComponent.name}: catchError called`,
+          );
 
           /* inform user and mark as handled */
           this.toastr.error('ERROR!', this.toastrMessage);
           err.isHandled = true;
 
-          this.logger.trace(`${MembersService.name}: Throwing the error on`);
+          this.logger.trace(
+            `${MemberSessionComponent.name}: Throwing the error on`,
+          );
           return throwError(err);
         }),
       )

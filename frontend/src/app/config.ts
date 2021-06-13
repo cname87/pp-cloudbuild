@@ -36,6 +36,10 @@ const sessions = {
   path: 'sessions',
   displayName: 'SESSIONS',
 };
+const charts = {
+  path: 'charts',
+  displayName: 'CHARTS',
+};
 
 /* other routing elements */
 const profile = {
@@ -58,6 +62,7 @@ export const routes = {
   detail,
   session,
   sessions,
+  charts,
   profile,
   loginPage,
   errorPage,

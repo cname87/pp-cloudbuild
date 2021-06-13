@@ -13,6 +13,7 @@ import { MemberDetailResolverService } from '../shared/resolvers/member-detail-r
 import { MemberSessionsResolverService } from '../shared/resolvers/member-sessions-resolver.service';
 import { MembersListResolverService } from '../shared/resolvers/members-list-resolver.service';
 import { MemberSessionResolverService } from '../shared/resolvers/member-session-resolver.service';
+import { SessionsChartComponent } from '../components/sessions-chart/sessions-chart.component';
 
 const appRoutes: Routes = [
   {
@@ -66,6 +67,15 @@ const appRoutes: Routes = [
     /* shows a member's sessions */
     path: 'sessions/:id',
     component: MemberSessionsComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndSessions: MemberSessionsResolverService,
+    },
+  },
+  {
+    /* charts a member's sessions */
+    path: 'charts/:id',
+    component: SessionsChartComponent,
     canActivate: [AuthGuard],
     resolve: {
       memberAndSessions: MemberSessionsResolverService,

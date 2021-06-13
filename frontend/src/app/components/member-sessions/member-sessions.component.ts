@@ -2,24 +2,23 @@ import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { ParamMap, Router } from '@angular/router';
 import { ActivatedRoute, Data } from '@angular/router';
 import { Location } from '@angular/common';
-import { NGXLogger } from 'ngx-logger';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { IsLoadingService } from '@service-work/is-loading';
+import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+
 import {
   IMember,
   ISession,
   SessionTypeNames,
 } from '../../data-providers/models/models';
-import { Observable, Subject, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { RouteStateService } from '../../shared/route-state-service/router-state-service';
 import { IErrReport } from '../../config';
-import { MembersService } from '../../shared/members-service/members.service';
-import { MemberDetailComponent } from '../member-detail/member-detail.component';
 
 /**
  * @title This component shows a table detailing all the sessions linked to a member.
@@ -56,9 +55,9 @@ export class MemberSessionsComponent implements AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
+    private routeStateService: RouteStateService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
-    private routeStateService: RouteStateService,
     private toastr: ToastrService,
   ) {
     this.logger.trace(
@@ -69,6 +68,7 @@ export class MemberSessionsComponent implements AfterViewInit {
       this.member$ = data.memberAndSessions.member;
       this.sessions$ = data.memberAndSessions.sessions;
     });
+    /* loads sessions and fill table */
     this.isLoadingService.add(
       this.sessions$
         .pipe(
@@ -94,6 +94,7 @@ export class MemberSessionsComponent implements AfterViewInit {
     );
   }
   ngOnInit() {
+    /* update service with routed member id */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -105,13 +106,17 @@ export class MemberSessionsComponent implements AfterViewInit {
         }),
         takeUntil(this.destroy),
         catchError((err: IErrReport) => {
-          this.logger.trace(`${MemberDetailComponent.name}: catchError called`);
+          this.logger.trace(
+            `${MemberSessionsComponent.name}: catchError called`,
+          );
 
           /* inform user and mark as handled */
           this.toastr.error('ERROR!', this.toastrMessage);
           err.isHandled = true;
 
-          this.logger.trace(`${MembersService.name}: Throwing the error on`);
+          this.logger.trace(
+            `${MemberSessionsComponent.name}: Throwing the error on`,
+          );
           return throwError(err);
         }),
       )

@@ -1,0 +1,49 @@
+/* import theme with styling variables */
+@import 'src/styles/main-theme.scss';
+
+@mixin styling(
+  $default-gap: $default-gap,
+  $element-width: $element-width,
+  $button-width: $button-width,
+  $inner-spacing: $inner-spacing,
+  $memberslist-height: $memberslist-height,
+  $default-font-size: $default-font-size,
+) {
+
+  mat-toolbar.banner {
+    background-color: mat-color($accent, "lighter");
+    width: ($element-width) * 2;
+    font-size: calc($default-font-size * 1.5);
+    margin-bottom: $default-gap;
+  }
+  .back-button {
+    background-color: mat-color($primary, "lighter");
+    width: calc($button-width * 2.5);
+    padding-left: $default-gap / 2;
+  }
+  .back-button:hover {
+    background-color: mat-color($primary, "darker");
+  }
+  mat-icon.icon {
+    float:left;
+    line-height: calc(36rem/16);
+  }
+  span.name {
+    text-align: center;
+    line-height: calc(36rem/16);
+  }
+
+}
+
+/* narrow element width for small screen */
+@media screen and (max-width: 520px) {
+  @include styling(
+    $element-width: $element-width-sm,
+  )
+
+}
+
+/* global defaults */
+@media screen and (min-width: 520px) {
+  @include styling();
+}

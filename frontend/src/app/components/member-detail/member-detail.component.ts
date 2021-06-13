@@ -67,7 +67,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
           this.toastr.error('ERROR!', this.toastrMessage);
           err.isHandled = true;
 
-          this.logger.trace(`${MembersService.name}: Throwing the error on`);
+          this.logger.trace(
+            `${MemberDetailComponent.name}: Throwing the error on`,
+          );
           return throwError(err);
         }),
       )

@@ -1,0 +1,51 @@
+<mat-toolbar
+  class="banner"
+  fxLayout="row"
+  fxLayoutAlign="space-evenly center"
+>
+  <button
+    mat-button
+    class="back-button"
+    fxFlex="0 0 15%"
+    (click)="goBack()"
+  >
+    <mat-icon class="icon">arrow_back</mat-icon>
+    BACK
+  </button>
+  <span
+    fxFlex="1 1 18%"
+  ></span>
+  <span
+    class="name"
+    fxFlex="0 0 34%"
+  >
+    {{ member?.name?.toUpperCase() }}
+  </span>
+  <span
+    fxFlex="1 1 33%"
+  ></span>
+</mat-toolbar>
+
+<ngx-charts-line-chart
+  [results]="data"
+  [view]="view"
+  [scheme]="colorScheme"
+  [gradient]="gradient"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="showLegend"
+  [legendTitle]="legendTitle"
+  [legendPosition]="legendPosition"
+  [roundDomains]="roundDomains"
+  [showGridLines]="showGridLines"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]="showYAxisLabel"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  [xAxisTicks]="xAxisTicks"
+  [xAxisTickFormatting]="xAxisTickFormatting"
+  [rotateXAxisTicks]="rotateXAxisTicks"
+  [autoScale]="autoScale"
+  [timeline]="timeline"
+>
+</ngx-charts-line-chart>
