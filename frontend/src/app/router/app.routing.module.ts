@@ -4,6 +4,7 @@ import { AuthGuard } from './guards/auth.guard';
 
 import { MemberDetailComponent } from '../components/member-detail/member-detail.component';
 import { MemberSessionComponent } from '../components/member-session/member-session.component';
+import { MemberQuestionaireComponent } from '../components/member-questionaire/member-questionaire.component';
 import { MemberSessionsComponent } from '../components/member-sessions/member-sessions.component';
 import { InformationComponent } from '../components/information/information.component';
 import { MembersListComponent } from '../components/members-list/members-list.component';
@@ -14,12 +15,16 @@ import { MemberSessionsResolverService } from '../shared/resolvers/member-sessio
 import { MembersListResolverService } from '../shared/resolvers/members-list-resolver.service';
 import { MemberSessionResolverService } from '../shared/resolvers/member-session-resolver.service';
 import { SessionsChartComponent } from '../components/sessions-chart/sessions-chart.component';
+import { routes } from '../config';
+import { MemberQuestionaireResolverService } from '../shared/resolvers/member-questionaire-resolver.service';
+import { MemberQuestionairesResolverService } from '../shared/resolvers/member-questionaires-resolver.service';
+import { MemberQuestionairesComponent } from '../components/member-questionaires/member-questionaires.component';
 
 const appRoutes: Routes = [
   {
     /* default path if no route supplied */
     path: '',
-    redirectTo: '/memberslist',
+    redirectTo: routes.loginTarget.path,
     pathMatch: 'full',
   },
   {
@@ -29,7 +34,7 @@ const appRoutes: Routes = [
   },
   {
     /* shows the list of members */
-    path: 'memberslist',
+    path: routes.membersList.path,
     component: MembersListComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -38,7 +43,7 @@ const appRoutes: Routes = [
   },
   {
     /* shows a member's detail */
-    path: 'detail/:id',
+    path: `${routes.member.path}/:id`,
     component: MemberDetailComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -47,7 +52,7 @@ const appRoutes: Routes = [
   },
   {
     /* session entry for a member */
-    path: 'member/:id/session',
+    path: `${routes.session.path1}/:id/${routes.session.path2}`,
     component: MemberSessionComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -56,7 +61,7 @@ const appRoutes: Routes = [
   },
   {
     /* session edit for a member */
-    path: 'member/:id/session/:sid',
+    path: `${routes.session.path1}/:id/${routes.session.path2}/:sid`,
     component: MemberSessionComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -65,7 +70,7 @@ const appRoutes: Routes = [
   },
   {
     /* shows a member's sessions */
-    path: 'sessions/:id',
+    path: `${routes.sessions.path}/:id`,
     component: MemberSessionsComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -74,7 +79,7 @@ const appRoutes: Routes = [
   },
   {
     /* charts a member's sessions */
-    path: 'charts/:id',
+    path: `${routes.charts.path}/:id`,
     component: SessionsChartComponent,
     canActivate: [AuthGuard],
     resolve: {
@@ -82,8 +87,35 @@ const appRoutes: Routes = [
     },
   },
   {
+    /* health questionaire edit for a member */
+    path: `${routes.questionaire.path1}/:id/${routes.questionaire.path2}`,
+    component: MemberQuestionaireComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndQuestionaire: MemberQuestionaireResolverService,
+    },
+  },
+  {
+    /* questionaire edit for a member */
+    path: `${routes.questionaire.path1}/:id/${routes.questionaire.path2}/:qid`,
+    component: MemberQuestionaireComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndQuestionaire: MemberQuestionaireResolverService,
+    },
+  },
+  {
+    /* shows a member's questionaires */
+    path: `${routes.questionaires.path}/:id`,
+    component: MemberQuestionairesComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndQuestionaires: MemberQuestionairesResolverService,
+    },
+  },
+  {
     /* shows the authenticated user profile */
-    path: 'profile',
+    path: routes.profile.path,
     component: ProfileComponent,
     canActivate: [AuthGuard],
   },

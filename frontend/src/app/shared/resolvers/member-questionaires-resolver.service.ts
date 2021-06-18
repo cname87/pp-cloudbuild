@@ -9,34 +9,35 @@ import { Observable, of } from 'rxjs';
 import { publishReplay, refCount, catchError, switchMap } from 'rxjs/operators';
 
 import { MembersService } from '../members-service/members.service';
-import { SessionsService } from '../sessions-service/sessions.service';
+import { QuestionairesService } from '../questionaires-service/questionares.service';
 import {
   IMember,
-  ISession,
-  ISessionsTable,
-  SessionType,
+  IQuestionaire,
+  IQuestionairesTable,
 } from '../../data-providers/models/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MemberSessionsResolverService implements Resolve<any> {
+export class MemberQuestionairesResolverService implements Resolve<any> {
   constructor(
     private membersService: MembersService,
-    private sessionsService: SessionsService,
+    private questionairesService: QuestionairesService,
     private logger: NGXLogger,
     private errorHandler: ErrorHandler,
   ) {
     this.logger.trace(
-      `${MemberSessionsResolverService.name}: Starting MemberSessionsResolverService`,
+      `${MemberQuestionairesResolverService.name}: Starting MemberQuestionairesResolverService`,
     );
   }
 
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<ISessionsTable> {
-    this.logger.trace(`${MemberSessionsResolverService.name}: Calling resolve`);
+  ): Observable<IQuestionairesTable> {
+    this.logger.trace(
+      `${MemberQuestionairesResolverService.name}: Calling resolve`,
+    );
 
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
@@ -46,24 +47,27 @@ export class MemberSessionsResolverService implements Resolve<any> {
       id: memberId,
       name: 'ERROR',
     };
-    const dummySession: ISession = {
+    const dummyQuestionaire: IQuestionaire = {
       id: 0,
       memberId: memberId,
-      date: '',
-      type: SessionType.Conditioning,
-      score: 0,
-      duration: 0,
-      metric: 0,
-      comment: 'ERROR',
+      date: new Date().toISOString(),
+      sleep: 0,
+      fatigue: 0,
+      muscle: 0,
+      stress: 0,
+      motivation: 0,
+      health: 0,
+      mood: 0,
+      comment: '',
     };
 
     return of(memberId).pipe(
       switchMap((id: number) => {
         const member$ = this.membersService.getMember(id);
-        const sessions$ = this.sessionsService.getSessions(id);
-        const output: Observable<ISessionsTable> = of({
+        const questionaires$ = this.questionairesService.getQuestionaires(id);
+        const output: Observable<IQuestionairesTable> = of({
           member: member$,
-          sessions: sessions$,
+          questionaires: questionaires$,
         });
         return output;
       }),
@@ -73,14 +77,14 @@ export class MemberSessionsResolverService implements Resolve<any> {
       catchError((error: any) => {
         if (!errorHandlerCalled) {
           this.logger.trace(
-            `${MemberSessionsResolverService.name}: catchError called`,
+            `${MemberQuestionairesResolverService.name}: catchError called`,
           );
           errorHandlerCalled = true;
           this.errorHandler.handleError(error);
         }
-        const dummyOutput: Observable<ISessionsTable> = of({
+        const dummyOutput: Observable<IQuestionairesTable> = of({
           member: of(dummyMember),
-          sessions: of([dummySession]),
+          questionaires: of([dummyQuestionaire]),
         });
         return dummyOutput;
       }),

@@ -18,6 +18,7 @@ import {
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../shared/members-service/members.service';
 import { SessionsService } from '../../shared/sessions-service/sessions.service';
+import { routes } from '../../config';
 
 /**
  * This component displays a list of members.
@@ -35,6 +36,9 @@ export class MembersListComponent implements OnInit {
 
   /* mode for input box */
   inputMode = 'add';
+
+  /* route paths */
+  routes = routes;
 
   constructor(
     private route: ActivatedRoute,

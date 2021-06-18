@@ -23,8 +23,8 @@ const membersList = {
   path: 'memberslist',
   displayName: 'MEMBERS',
 };
-const detail = {
-  path: 'detail',
+const member = {
+  path: 'member',
   displayName: 'MEMBER DETAIL',
 };
 const session = {
@@ -39,6 +39,15 @@ const sessions = {
 const charts = {
   path: 'charts',
   displayName: 'CHARTS',
+};
+const questionaire = {
+  path1: 'member',
+  path2: 'questionaire',
+  displayName: 'QUESTIONAIRE ENTRY',
+};
+const questionaires = {
+  path: 'questionaires',
+  displayName: 'QUESTIONAIRES',
 };
 
 /* other routing elements */
@@ -59,10 +68,12 @@ const callback = {
 };
 export const routes = {
   membersList,
-  detail,
+  member,
   session,
   sessions,
   charts,
+  questionaire,
+  questionaires,
   profile,
   loginPage,
   errorPage,

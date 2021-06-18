@@ -61,6 +61,7 @@ declare namespace Perform {
   interface IModels {
     members: IModelExtended;
     sessions: IModelExtended;
+    questionaires: IModelExtended;
   }
   /* defines a team member */
   export interface IMember {
@@ -73,21 +74,32 @@ declare namespace Perform {
   }
 
   /* defines a sports session for a team member */
-  export interface ISession {
-    id: number;
-    date: string;
-    score: number;
-    duration: number;
-    metric: number;
-    memberId: number;
-  }
-
   export interface ISessionNoId {
     date: string;
     score: number;
     duration: number;
     metric: number;
     memberId: number;
+  }
+  export interface ISession extends ISessionNoId {
+    id: number;
+  }
+
+  /* defines a health questionaire for a team member */
+  export interface IQuestionaireNoId {
+    date: string;
+    sleep: number;
+    fatigue: number;
+    muscle: number;
+    stress: number;
+    motivation: number;
+    health: number;
+    mood: number;
+    memberId: number;
+    comment: string;
+  }
+  export interface IQuestionaire extends IQuestionaireNoId {
+    id: number;
   }
 
   /* extra fields for created errors */
@@ -115,12 +127,14 @@ declare namespace Perform {
   export interface IHandlers {
     membersHandlers: typeof import('../handlers/members-handlers').membersHandlers;
     sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
+    questionairesHandlers: typeof import('../handlers/questionaires-handlers').questionairesHandlers;
     miscHandlers: typeof import('../handlers/misc-handlers').miscHandlers;
     errorHandlers: typeof import('../handlers/error-handlers').errorHandlers;
     authenticateHandler: typeof import('../handlers/authenticate-handlers').authenticateHandler;
     authorizeHandler: typeof import('../handlers/authorize-handlers').authorizeHandler;
     membersApi: typeof import('../api/members-api').membersApi;
     sessionsApi: typeof import('../api/sessions-api').sessionsApi;
+    questionairesApi: typeof import('../api/questionaires-api').questionairesApi;
   }
 
   export interface IAppLocals {
@@ -131,7 +145,8 @@ declare namespace Perform {
     handlers: IHandlers;
     models: IModels;
     createModelMembers: typeof import('../models/src/members-model').createModelMembers;
-    createModelSessions: typeof import('../models/src/sessions-model').createModelSessions;
+    createModelSessions: typeof import('../models/src/sessions-model').createModelsSessions;
+    createModelQuestionaires: typeof import('../models/src/questionaires-model').createModelQuestionaires;
     /* database instance */
     database: Perform.Database;
     /* database connection */

@@ -14,7 +14,7 @@ import {
   IMember,
   ISessionChange,
   ISessionWithoutId,
-  MODE,
+  SESSION_MODE,
 } from '../../data-providers/models/models';
 
 @Injectable({
@@ -59,7 +59,7 @@ export class MemberSessionResolverService implements Resolve<ISessionChange> {
 
     return of({}).pipe(
       switchMap(() => {
-        const mode = sessionId ? MODE.EDIT : MODE.ADD;
+        const mode = sessionId ? SESSION_MODE.EDIT : SESSION_MODE.ADD;
         const member$ = this.membersService.getMember(memberId);
         const session$ = sessionId
           ? this.sessionsService.getSession(sessionId)
@@ -85,7 +85,7 @@ export class MemberSessionResolverService implements Resolve<ISessionChange> {
         }
         blankSessionWoId.comment = 'ERROR';
         const dummyOutput: Observable<ISessionChange> = of({
-          mode: MODE.ADD,
+          mode: SESSION_MODE.ADD,
           member$: of(dummyMember),
           session$: of(blankSessionWoId) as Observable<ISessionWithoutId>,
         });

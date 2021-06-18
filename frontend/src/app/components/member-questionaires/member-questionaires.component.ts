@@ -14,39 +14,42 @@ import { ToastrService } from 'ngx-toastr';
 
 import {
   IMember,
-  ISession,
-  SessionTypeNames,
+  IQuestionaire,
+  QuestionaireTypeNames,
 } from '../../data-providers/models/models';
 import { RouteStateService } from '../../shared/route-state-service/router-state-service';
 import { IErrReport, routes } from '../../config';
 
 /**
- * @title This component shows a table detailing all the sessions linked to a member.
+ * @title This component shows a table detailing all the questionaires linked to a member.
  */
 @Component({
-  selector: 'app-sessions',
-  templateUrl: './member-sessions.component.html',
-  styleUrls: ['./member-sessions.component.scss'],
+  selector: 'app-questionaires',
+  templateUrl: './member-questionaires.component.html',
+  styleUrls: ['./member-questionaires.component.scss'],
   providers: [],
 })
-export class MemberSessionsComponent implements AfterViewInit {
+export class MemberQuestionairesComponent implements AfterViewInit {
   //
   private destroy = new Subject<void>();
   private toastrMessage = 'A member access error has occurred';
-  types = SessionTypeNames;
+  types = QuestionaireTypeNames;
 
   member$!: Observable<IMember>;
-  sessions$!: Observable<ISession[]>;
+  questionaires$!: Observable<IQuestionaire[]>;
   displayedColumns: string[] = [
     'date',
-    'type',
-    'score',
-    'duration',
-    'metric',
+    'sleep',
+    'fatigue',
+    'muscle',
+    'stress',
+    'motivation',
+    'health',
+    'mood',
+    'memberId',
     'comment',
-    'edit',
   ];
-  dataSource: MatTableDataSource<ISession> = new MatTableDataSource();
+  dataSource: MatTableDataSource<IQuestionaire> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -61,23 +64,23 @@ export class MemberSessionsComponent implements AfterViewInit {
     private toastr: ToastrService,
   ) {
     this.logger.trace(
-      `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
+      `${MemberQuestionairesComponent.name}: Starting MemberQuestionairesComponent`,
     );
     /* get the data as supplied from the route resolver */
     this.route.data.subscribe((data: Data) => {
-      this.member$ = data.memberAndSessions.member;
-      this.sessions$ = data.memberAndSessions.sessions;
+      this.member$ = data.memberAndQuestionaires.member;
+      this.questionaires$ = data.memberAndQuestionaires.questionaires;
     });
-    /* loads sessions and fill table */
+    /* loads questionaires and fill table */
     this.isLoadingService.add(
-      this.sessions$
+      this.questionaires$
         .pipe(
           takeUntil(this.destroy),
-          map((sessions) => {
+          map((questionaires) => {
             this.logger.trace(
-              `${MemberSessionsComponent.name}: Sessions retrieved`,
+              `${MemberQuestionairesComponent.name}: Questionaires retrieved`,
             );
-            return new MatTableDataSource(sessions);
+            return new MatTableDataSource(questionaires);
           }),
         )
         .subscribe((dataSource) => {
@@ -85,10 +88,10 @@ export class MemberSessionsComponent implements AfterViewInit {
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
           this.dataSource.filterPredicate = (
-            session: ISession,
+            questionaire: IQuestionaire,
             filter: string,
           ) => {
-            return !filter || session.type === filter;
+            return !filter || questionaire.comment === filter;
           };
         }),
     );
@@ -107,7 +110,7 @@ export class MemberSessionsComponent implements AfterViewInit {
         takeUntil(this.destroy),
         catchError((err: IErrReport) => {
           this.logger.trace(
-            `${MemberSessionsComponent.name}: catchError called`,
+            `${MemberQuestionairesComponent.name}: catchError called`,
           );
 
           /* inform user and mark as handled */
@@ -115,7 +118,7 @@ export class MemberSessionsComponent implements AfterViewInit {
           err.isHandled = true;
 
           this.logger.trace(
-            `${MemberSessionsComponent.name}: Throwing the error on`,
+            `${MemberQuestionairesComponent.name}: Throwing the error on`,
           );
           return throwError(err);
         }),
@@ -128,12 +131,13 @@ export class MemberSessionsComponent implements AfterViewInit {
     this.destroy.complete();
   }
 
-  getSession(mid: string, sid: string): void {
+  getQuestionaire(mid: string, qid: string): void {
+    console.log('qid: ' + qid);
     this.router.navigate([
-      routes.session.path1,
+      routes.questionaire.path1,
       mid,
-      routes.session.path2,
-      sid,
+      routes.questionaire.path2,
+      qid,
     ]);
   }
 
@@ -144,8 +148,11 @@ export class MemberSessionsComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.dataSource.filterPredicate = (session: ISession, filter: string) => {
-      const type = session.type.toLowerCase();
+    this.dataSource.filterPredicate = (
+      questionaire: IQuestionaire,
+      filter: string,
+    ) => {
+      const type = questionaire.comment.toLowerCase();
       return !filter || type.startsWith(filter);
     };
   }

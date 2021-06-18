@@ -19,7 +19,7 @@
       mat-raised-button
       class="detail"
       fxFlex="1 1 30%"
-      routerLink="/detail/{{member.id}}"
+      routerLink="/{{routes.member.path}}/{{member.id}}"
     >
       {{member.name}}
     </a>
@@ -28,7 +28,7 @@
       mat-raised-button
       class="link"
       fxFlex="1 1 30%"
-      routerLink="/member/{{member.id}}/session"
+      routerLink="/{{routes.session.path1}}/{{member.id}}/{{routes.session.path2}}"
     >
       Enter a Session
     </a>
@@ -37,7 +37,7 @@
       mat-raised-button
       class="link"
       fxFlex="1 1 30%"
-      routerLink="/sessions/{{member.id}}"
+      routerLink="/{{routes.sessions.path}}/{{member.id}}"
     >
       Review Sessions
     </a>

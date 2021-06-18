@@ -812,6 +812,426 @@
           }
         }
       }
+    },
+    "/questionaires": {
+      "get": {
+        "summary": "Returns all questionaires.",
+        "description": "Returns all questionaires for all members.\n",
+        "operationId": "getAllQuestionaires",
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "description": "An optional string to filter the returned list.\nAll questionnaires with the comment property starting with the value of 'text' will be returned. \n",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questionaires returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Questionaire"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a specific questionaire.",
+        "description": "Updates a questionaire.\nA questionaire object is supplied which must have a id corresponding to an existing questionaire.\nThe questionaire with that id is updated with the supplied questionaire.\n",
+        "operationId": "updateQuestionaire",
+        "requestBody": {
+          "description": "Questionaire object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Questionaire"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Questionaire updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Questionaire"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The questionaire to update was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Adds a questionaire.",
+        "description": "Adds a questionaire.\nA questionaire object without an id property must be supplied in the body.\nThat questionaire is added with a autoincremented id.\n",
+        "operationId": "addQuestionaire",
+        "requestBody": {
+          "description": "Questionaire object without the id field.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionaireWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Questionaire created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Questionaire"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/questionaires/{qid}": {
+      "get": {
+        "summary": "Returns a specific questionaire.",
+        "description": "Get a specific questionaire for a specific member.\n",
+        "operationId": "getQuestionaire",
+        "parameters": [
+          {
+            "name": "qid",
+            "in": "path",
+            "description": "The value of the id property of the questionaire.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questionaire information returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Questionaire"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested questionaire was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a specific questionaire.",
+        "description": "Deletes a specific questionaire for a specific member.\n",
+        "operationId": "deleteQuestionaire",
+        "parameters": [
+          {
+            "name": "qid",
+            "in": "path",
+            "description": "The value of the id property of the questionaire.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questionaire deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Count"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The questionaire to delete was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{id}/questionaires": {
+      "get": {
+        "summary": "Returns all the questionares for a member.",
+        "description": "Returns all the questionaires for a particular member.\n",
+        "operationId": "getQuestionaires",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "An optional string to filter the returned list.\nAll questionaires with the comment property starting with value of 'text' will be returned. \n",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Questionaires returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Questionaire"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -962,6 +1382,166 @@
           }
         },
         "description": "Session information without the id field"
+      },
+      "Questionaire": {
+        "required": [
+          "comment",
+          "date",
+          "fatigue",
+          "health",
+          "id",
+          "memberId",
+          "mood",
+          "motivation",
+          "muscle",
+          "sleep",
+          "stress"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-03-20T09:12:28Z"
+          },
+          "sleep": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "fatigue": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "muscle": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "stress": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "health": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "mood": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "memberId": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "description": "Questionaire information"
+      },
+      "QuestionaireWithoutId": {
+        "required": [
+          "comment",
+          "date",
+          "fatigue",
+          "health",
+          "memberId",
+          "mood",
+          "motivation",
+          "muscle",
+          "sleep",
+          "stress"
+        ],
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2018-03-20T09:12:28Z"
+          },
+          "sleep": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "fatigue": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "muscle": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "stress": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "health": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "mood": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 3
+          },
+          "memberId": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "description": "Questionaire information"
       },
       "Error": {
         "required": [

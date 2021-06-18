@@ -23,10 +23,12 @@ interface ILink {
 })
 export class NavComponent {
   private membersList = routes.membersList;
-  private detail = routes.detail;
+  private detail = routes.member;
   private session = routes.session;
   private sessions = routes.sessions;
   private charts = routes.charts;
+  private questionaire = routes.questionaire;
+  private questionaires = routes.questionaires;
   private id$: Observable<string>;
   links!: ILink[];
 
@@ -66,6 +68,16 @@ export class NavComponent {
         {
           path: `/${this.charts.path}/${id}`,
           display: this.charts.displayName,
+          disabled: disabled,
+        },
+        {
+          path: `/${this.questionaire.path1}/${id}/${this.questionaire.path2}`,
+          display: this.questionaire.displayName,
+          disabled: disabled,
+        },
+        {
+          path: `/${this.questionaires.path}/${id}`,
+          display: this.questionaires.displayName,
           disabled: disabled,
         },
       ];

@@ -106,6 +106,8 @@ const writeJson = (
     | Perform.IMember[]
     | Perform.ISession
     | Perform.ISession[]
+    | Perform.IQuestionaire
+    | Perform.IQuestionaire[]
     | Record<string, unknown>,
 ): void => {
   debug(`${modulename}: running writeJson`);

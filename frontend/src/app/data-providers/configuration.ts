@@ -1,13 +1,14 @@
 import { HttpHeaders } from '@angular/common/http';
 
 /**
- * Configuration object for membersService and sessionsService.
+ * Configuration object for members, sessions and questionaires service.
  */
 
 interface IConfigurationParameters {
   basePath: string;
   membersPath: string;
   sessionsPath: string;
+  questionairesPath: string;
   defaultHeaders: HttpHeaders;
   withCredentials?: boolean;
 }
@@ -16,6 +17,7 @@ class Configuration {
   basePath: string;
   membersPath: string;
   sessionsPath: string;
+  questionairesPath: string;
   defaultHeaders: HttpHeaders;
   /* indicates whether or not cross-site Access-Control requests should be made using credentials - defaults to false */
   withCredentials?: boolean;
@@ -24,6 +26,7 @@ class Configuration {
     this.basePath = configurationParameters.basePath;
     this.membersPath = configurationParameters.membersPath;
     this.sessionsPath = configurationParameters.sessionsPath;
+    this.questionairesPath = configurationParameters.questionairesPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
     this.withCredentials = configurationParameters.withCredentials;
   }
@@ -33,6 +36,7 @@ export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
   sessionsPath: 'sessions',
+  questionairesPath: 'questionaires',
   defaultHeaders: new HttpHeaders(),
   withCredentials: false,
 });

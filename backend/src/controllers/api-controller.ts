@@ -181,6 +181,78 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getAllQuestionaires: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.getAllQuestionaires(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getQuestionaires: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.getQuestionaires(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getQuestionaire: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.getQuestionaire(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      updateQuestionaire: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.updateQuestionaire(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      addQuestionaire: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.addQuestionaire(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      deleteQuestionaire: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.questionairesApi.deleteQuestionaire(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       validationFail: (
         context,
         _request: Request,
@@ -316,6 +388,11 @@ const createDbCollectionConnection = (
       appLocals.database,
       `${req.user!.dbCollection}_Session`,
       `${req.user!.dbCollection}_sessions`,
+    );
+    appLocals.models.questionaires = appLocals.createModelQuestionaires(
+      appLocals.database,
+      `${req.user!.dbCollection}_Questionaire`,
+      `${req.user!.dbCollection}_questionaires`,
     );
   }
   next();

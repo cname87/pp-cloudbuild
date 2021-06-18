@@ -41,7 +41,7 @@ export class MemberSearchComponent implements OnInit {
   private debounce = 300;
 
   /* base route to get member detail */
-  detail = routes.detail;
+  memberPath = routes.member.path;
 
   /* member property to display in the list of found members */
   propertyToDisplay = 'name';

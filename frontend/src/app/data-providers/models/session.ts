@@ -32,7 +32,7 @@ export const SessionTypeNames: SessionType[] = Object.keys(SessionType)
   })
   .filter((key) => key !== undefined);
 
-export const enum MODE {
+export const enum SESSION_MODE {
   'ADD',
   'EDIT',
 }
@@ -43,7 +43,7 @@ export interface ISessionsTable {
 }
 
 export interface ISessionChange {
-  mode: MODE;
+  mode: SESSION_MODE;
   member$: Observable<IMember>;
   session$: Observable<ISession> | Observable<ISessionWithoutId>;
 }

@@ -60,7 +60,7 @@
   <a
     *ngFor="let member of (members$ | async); trackBy: trackByFn"
     mat-list-item
-    routerLink="/{{detail.path}}/{{member.id}}"
+    routerLink="/{{memberPath}}/{{member.id}}"
   >
     {{ showProperty(member) }}
   </a>

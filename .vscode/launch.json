@@ -166,7 +166,7 @@
     {
       "name": "Run backend app.ts",
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "program": "${workspaceFolder}/backend/src/app.ts",
       "cwd": "${workspaceFolder}/backend",
@@ -198,7 +198,7 @@
       /* Starts Chrome and connects to localhost:4200.
       The backend server is started, and the frontend is served on localhost:4200, in a prelaunch task. */
       "name": "Open http://localhost:4200/",
-      "type": "chrome",
+      "type": "pwa-msedge",
       "preLaunchTask": "Serve Frontend with Backend",
       "postDebugTask": "Taskkill node.exe",
       "request": "launch",

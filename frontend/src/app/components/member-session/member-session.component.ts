@@ -13,7 +13,7 @@ import {
   ISession,
   SessionTypeNames,
   ISessionChange,
-  MODE,
+  SESSION_MODE,
 } from '../../data-providers/models/models';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { IErrReport } from '../../config';
@@ -35,7 +35,7 @@ interface routeData extends Data {
 })
 export class MemberSessionComponent {
   change: ISessionChange = {
-    mode: MODE.ADD,
+    mode: SESSION_MODE.ADD,
     member$: of({}) as any,
     session$: of({}) as any,
   };
@@ -66,7 +66,6 @@ export class MemberSessionComponent {
             _control: AbstractControl,
             field: FormlyFieldConfig,
           ): boolean => {
-            console.log(field.formControl?.value);
             return !!field.formControl?.value;
           },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
@@ -202,7 +201,9 @@ export class MemberSessionComponent {
             session$: routeData.memberAndSession.session$,
           };
           this.buttonLabel =
-            this.change.mode === MODE.ADD ? this.addLabel : this.updateLabel;
+            this.change.mode === SESSION_MODE.ADD
+              ? this.addLabel
+              : this.updateLabel;
           return this.change.session$;
         }),
         takeUntil(this.destroy),
@@ -247,14 +248,15 @@ export class MemberSessionComponent {
       of(this.change.mode)
         .pipe(
           switchMap((mode) => {
-            return mode === MODE.ADD
+            return mode === SESSION_MODE.ADD
               ? this.sessionsService.addSession(this.model)
               : this.sessionsService.updateSession(this.model as ISession);
           }),
           takeUntil(this.destroy),
         )
         .subscribe((session) => {
-          const verb = this.change.mode === MODE.ADD ? 'added' : 'updated';
+          const verb =
+            this.change.mode === SESSION_MODE.ADD ? 'added' : 'updated';
           this.logger.trace(
             `${MemberSessionComponent.name}: Session ${verb}: ${JSON.stringify(
               session,
@@ -268,7 +270,7 @@ export class MemberSessionComponent {
           this.form.enable();
           /* allow errors go to errorHandler */
 
-          if (this.change.mode === MODE.EDIT) {
+          if (this.change.mode === SESSION_MODE.EDIT) {
             this.goBack();
           }
         }),

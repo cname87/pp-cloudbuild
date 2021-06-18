@@ -85,7 +85,7 @@ export class SessionsDataProvider {
   /**
    * Gets all the sessions for all members, filtered by a query string.
    * @param matchString: An optional search string to limit the returned list.
-   * All sessions with the name property starting with 'name' will be returned.
+   * All sessions with the 'type' property starting with 'name' will be returned.
    * @returns An observable returning an array of the sessions retrieved.
    */
   public getAllSessions(matchString?: string): Observable<ISession[]> {

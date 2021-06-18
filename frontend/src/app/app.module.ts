@@ -28,7 +28,9 @@ import { MembersListComponent } from './components/members-list/members-list.com
 import { MemberSearchComponent } from './components/member-search/member-search.component';
 import { MemberDetailComponent } from './components/member-detail/member-detail.component';
 import { MemberSessionComponent } from './components/member-session/member-session.component';
+import { MemberQuestionaireComponent } from './components/member-questionaire/member-questionaire.component';
 import { MemberSessionsComponent } from './components/member-sessions/member-sessions.component';
+import { MemberQuestionairesComponent } from './components/member-questionaires/member-questionaires.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { MemberCardComponent } from './components/member-card/member-card.component';
 import { MaterialModule } from './modules/material/material.module';
@@ -100,7 +102,9 @@ const appearance: MatFormFieldDefaultOptions = {
     MemberSearchComponent,
     MemberDetailComponent,
     MemberSessionComponent,
+    MemberQuestionaireComponent,
     MemberSessionsComponent,
+    MemberQuestionairesComponent,
     MessagesComponent,
     MemberCardComponent,
     MemberInputComponent,

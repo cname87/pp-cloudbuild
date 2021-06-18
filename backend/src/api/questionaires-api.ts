@@ -1,6 +1,6 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file.
- * Handles calls to <api-prefix>/members/{id}/sessions
+ * Handles calls to <api-prefix>/members/{id}/questionaires
  */
 
 /* import external dependencies */
@@ -23,75 +23,75 @@ const contextError = (
   return next(err);
 }
 
-export const addSession = (
+export const addQuestionaire = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running addSession`);
+  debug(`${modulename}: running addQuestionaire`);
 
   if (!(context?.request?.body)) {
     return contextError(req, next);
   }
 
-  /* the body contains a session to be added */
-  const sessionNoId = context.request.body as Perform.ISessionNoId;
+  /* the body contains a questionaire to be added */
+  const questionaireNoId = context.request.body as Perform.IQuestionaireNoId;
 
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  sessionsHandlers
-    .addSession(req, sessionNoId)
+  questionairesHandlers
+    .addQuestionaire(req, questionaireNoId)
     .then((payload) => {
       handles.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler addSession returned error`);
+     console.error(`${modulename}: handler addQuestionaire returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const getSession = (
+export const getQuestionaire = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running getSession`);
+  debug(`${modulename}: running getQuestionaire`);
 
   if (!(context?.request?.body)) {
     return contextError(req, next);
   }
 
-  /* the uri contains the session id */
-  const sid = Number.parseInt(context.request.params.sid as string, 10);
+  /* the uri contains the questionaire id */
+  const qid = Number.parseInt(context.request.params.qid as string, 10);
 
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  sessionsHandlers
-    .getSession(req, sid)
+  questionairesHandlers
+    .getQuestionaire(req, qid)
     .then((payload) => {
       handles.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler getSession returned error`);
+     console.error(`${modulename}: handler getQuestionaire returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const getAllSessions = (
+export const getAllQuestionaires = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running getAllSessions`);
+  debug(`${modulename}: running getAllQuestionaires`);
 
   if (!(context?.request?.body)) {
     return contextError(req, next);
@@ -99,30 +99,30 @@ export const getAllSessions = (
 
   const matchString = context.request.query.type as string;
 
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  /* call getSessions with 0 as the id params which will return all sessions from all members */
-  sessionsHandlers
-    .getSessions(req, 0, matchString)
+  /* call getQuestionaires with 0 as the id params which will return all questionaires from all members */
+  questionairesHandlers
+    .getQuestionaires(req, 0, matchString)
     .then((payload) => {
       handles.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler getAllSessions returned error`);
+     console.error(`${modulename}: handler getAllQuestionaires returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const getSessions = (
+export const getQuestionaires = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running getSessions`);
+  debug(`${modulename}: running getQuestionaires`);
 
   if (!(context?.request?.body)) {
     contextError(req, next);
@@ -131,90 +131,90 @@ export const getSessions = (
   const matchString = context?.request.query.type as string;
   const memberId = Number.parseInt(context?.request.params.id as string, 10);
 
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  /* getting all sessions for a specific member */
-  sessionsHandlers
-    .getSessions(req, memberId, matchString)
+  /* getting all questionaires for a specific member */
+  questionairesHandlers
+    .getQuestionaires(req, memberId, matchString)
     .then((payload) => {
       handles.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler getSessions returned error`);
+     console.error(`${modulename}: handler getQuestionaires returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const updateSession = (
+export const updateQuestionaire = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running updateSession`);
+  debug(`${modulename}: running updateQuestionaire`);
 
   if (!(context?.request?.body)) {
     return contextError(req, next);
   }
 
-  /* the body contains a session to be updated */
-  const session = context.request.body as Perform.ISession;
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  /* the body contains a questionaire to be updated */
+  const questionaire = context.request.body as Perform.IQuestionaire;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  sessionsHandlers
-    .updateSession(req, session)
+  questionairesHandlers
+    .updateQuestionaire(req, questionaire)
     .then((payload) => {
       handles.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler updateSession returned error`);
+     console.error(`${modulename}: handler updateQuestionaire returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const deleteSession = (
+export const deleteQuestionaire = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running deleteSession`);
+  debug(`${modulename}: running deleteQuestionaire`);
 
   if (!(context?.request?.body)) {
     return contextError(req, next);
   }
 
-  /* the uri contains the session id */
-  const id = Number.parseInt(context.request.params.sid as string, 10);
+  /* the uri contains the questionaire id */
+  const qid = Number.parseInt(context.request.params.qid as string, 10);
 
-  const { sessionsHandlers } = req.app.appLocals.handlers;
+  const { questionairesHandlers } = req.app.appLocals.handlers;
   const handles = req.app.appLocals.handlers.miscHandlers;
   const { dumpError } = req.app.appLocals;
 
-  sessionsHandlers
-    .deleteSession(req, id)
+  questionairesHandlers
+    .deleteQuestionaire(req, qid)
     .then((number) => {
       const payload = { count: number };
       handles.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
-     console.error(`${modulename}: handler deleteSession returned error`);
+     console.error(`${modulename}: handler deleteQuestionaire returned error`);
       dumpError(err);
       next(err);
     });
 };
 
-export const sessionsApi = {
-  getSession,
-  getAllSessions,
-  getSessions,
-  addSession,
-  deleteSession,
-  updateSession,
+export const questionairesApi = {
+  getQuestionaire,
+  getAllQuestionaires,
+  getQuestionaires,
+  addQuestionaire,
+  deleteQuestionaire,
+  updateQuestionaire,
 };

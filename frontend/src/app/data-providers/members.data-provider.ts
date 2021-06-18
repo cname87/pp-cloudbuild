@@ -1,19 +1,13 @@
 /**
- * Project Perform API V1
- * V1.x.x covers the API for one team
- *
- *
- * OpenAPI spec version: 1.0.0
- * Contact: cname@yahoo.com
+ * Project Perform API V2.0.0
+ * See https://app.swaggerhub.com/apis/cname87/Project-Perform/2.0.0
  */
 
-/* external dependencies */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 
-/* internal dependencies */
 import { catchError, tap } from 'rxjs/operators';
 import { apiConfiguration } from './configuration';
 import { CustomHttpUrlEncodingCodec } from './encoder';
