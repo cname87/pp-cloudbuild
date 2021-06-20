@@ -1,27 +1,20 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file.
- * Handles calls to <api-prefix>/members/{id}/questionaires
+ * Handles calls to <api-prefix>/members/{mid}/questionaires
  */
 
-/* import external dependencies */
 import { Request, Response, NextFunction } from 'express';
 import { Context } from 'openapi-backend';
 import { setupDebug } from '../utils/src/debugOutput';
+import { setup } from './shared'
 
 const { modulename, debug } = setupDebug(__filename);
 
-const contextError = (
-  req: Request,
-  next: NextFunction) => {
-  const err: Perform.IErr = {
-    name: 'UNEXPECTED_FAIL',
-    message: 'context not supplied',
-    statusCode: 500,
-    dumped: false,
-  };
-  req.app.appLocals.dumpError(err);
-  return next(err);
-}
+/* types of body in request */
+type bodyNoId = Perform.IQuestionaireNoId;
+type bodyWithId = Perform.IQuestionaire;
+/* selects questionaires with text starting with the query 'text' parameter */
+const filter = 'text';
 
 export const addQuestionaire = (
   context: Context | undefined,
@@ -31,21 +24,17 @@ export const addQuestionaire = (
 ) => {
   debug(`${modulename}: running addQuestionaire`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the body contains a questionaire to be added */
-  const questionaireNoId = context.request.body as Perform.IQuestionaireNoId;
-
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   questionairesHandlers
-    .addQuestionaire(req, questionaireNoId)
+    .addQuestionaire(req, body as bodyNoId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 201, payload);
+      miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler addQuestionaire returned error`);
@@ -62,21 +51,17 @@ export const getQuestionaire = (
 ) => {
   debug(`${modulename}: running getQuestionaire`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the uri contains the questionaire id */
-  const qid = Number.parseInt(context.request.params.qid as string, 10);
-
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    qid,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   questionairesHandlers
     .getQuestionaire(req, qid)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getQuestionaire returned error`);
@@ -93,21 +78,18 @@ export const getAllQuestionaires = (
 ) => {
   debug(`${modulename}: running getAllQuestionaires`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
+  const {
+    filterString,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
-  const matchString = context.request.query.type as string;
-
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
-
-  /* call getQuestionaires with 0 as the id params which will return all questionaires from all members */
+  /* call getQuestionaires with 0 as the id parameter will return all questionaires from all members */
   questionairesHandlers
-    .getQuestionaires(req, 0, matchString)
+    .getQuestionaires(req, 0, filterString)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getAllQuestionaires returned error`);
@@ -116,6 +98,15 @@ export const getAllQuestionaires = (
     });
 };
 
+/**
+ * Gets all questionaires for a specific member.
+ * The questionaires are filtered by the request query 'text' parameter so only questionaires with comments starting with 'text' are returned.
+ *
+ * @param context Context suppied by Openapi controller.
+ * @param req The Request being handled.
+ * @param res The response to be sent.
+ * @param next The Express next function.
+ */
 export const getQuestionaires = (
   context: Context | undefined,
   req: Request,
@@ -124,22 +115,18 @@ export const getQuestionaires = (
 ) => {
   debug(`${modulename}: running getQuestionaires`);
 
-  if (!(context?.request?.body)) {
-    contextError(req, next);
-  }
+  const {
+    mid,
+    filterString,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
-  const matchString = context?.request.query.type as string;
-  const memberId = Number.parseInt(context?.request.params.id as string, 10);
-
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
-
-  /* getting all questionaires for a specific member */
   questionairesHandlers
-    .getQuestionaires(req, memberId, matchString)
+    .getQuestionaires(req, mid, filterString)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getQuestionaires returned error`);
@@ -156,20 +143,17 @@ export const updateQuestionaire = (
 ) => {
   debug(`${modulename}: running updateQuestionaire`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the body contains a questionaire to be updated */
-  const questionaire = context.request.body as Perform.IQuestionaire;
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   questionairesHandlers
-    .updateQuestionaire(req, questionaire)
+    .updateQuestionaire(req, body as bodyWithId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler updateQuestionaire returned error`);
@@ -186,22 +170,18 @@ export const deleteQuestionaire = (
 ) => {
   debug(`${modulename}: running deleteQuestionaire`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the uri contains the questionaire id */
-  const qid = Number.parseInt(context.request.params.qid as string, 10);
-
-  const { questionairesHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    qid,
+    questionairesHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   questionairesHandlers
     .deleteQuestionaire(req, qid)
     .then((number) => {
       const payload = { count: number };
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler deleteQuestionaire returned error`);

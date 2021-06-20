@@ -1,10 +1,11 @@
 /**
- * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages member sport session details.  It defines the model schema for the member sessions and then returns a pre-existing model, or creates a new model, based on supplied parameters.
+ * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages session details.  It defines the model schema for the sessions and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
 import { Document, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
+import { sessionModel } from './models/models';
 
 /* Output a header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
@@ -25,17 +26,8 @@ function createModelSessions(
 ): Perform.IModelExtended {
   debug(`${modulename}: running createModelSessions`);
 
-  /* Set up the schema for the team members */
-  const sessionSchema = new Schema({
-    id: { type: Number, unique: true },
-    date: String,
-    type: String,
-    score: Number,
-    duration: Number,
-    metric: Number,
-    memberId: Number,
-    comment: String,
-  });
+  /* Set up a session schema */
+  const sessionSchema = new Schema(sessionModel);
 
   /* Auto-increment the id field on document creation */
   /* Note: resetCount() is called when delete all members is called */

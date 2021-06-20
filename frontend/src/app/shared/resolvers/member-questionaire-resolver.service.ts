@@ -51,8 +51,7 @@ export class MemberQuestionaireResolverService
       id: memberId,
       name: 'ERROR',
     };
-    const blankQuestionaireWoId: any = {
-      memberId: memberId,
+    const blankQuestionaireWoId: IQuestionaireWithoutId = {
       date: new Date().toISOString(),
       sleep: '',
       fatigue: '',
@@ -60,13 +59,14 @@ export class MemberQuestionaireResolverService
       stress: '',
       motivation: '',
       health: '',
+      diet: '',
       mood: '',
       comment: '',
+      memberId: memberId,
     };
 
     return of({}).pipe(
       switchMap(() => {
-        console.log('questionireId: ' + questionaireId);
         const mode = questionaireId
           ? QUESTIONAIRE_MODE.EDIT
           : QUESTIONAIRE_MODE.ADD;

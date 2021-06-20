@@ -1,5 +1,6 @@
 /**
  * Holds all members handlers e.g. getMember.
+ * Called by functions in sessions-api.ts.
  */
 
 import { Document } from 'mongoose';
@@ -30,7 +31,7 @@ const databaseUnavailable = (
  * Adds a supplied member object to the database.
  *
  * @param req The http request being actioned (used to retrieve the data model).
- * @param memberNoId Member to add. Must not nave an id property.
+ * @param memberNoId Member to add. Must not have an id property.
  * @rejects Resolves to a reported error.
  * @returns Promise that resolves to the member object added.
  */
@@ -70,20 +71,22 @@ const addMember = (
 
 /**
  * Returns a specific team member given by the id parameter passed in.
- * Note: The member data model has the id key set to unique so no more than 1 member can be returned.
  * @param req The http request being actioned (used to retrieve the data model).
- * @param idParam The id of the member to return.
+ * @param memberId The id of the member to return.
  * @rejects Resolves to a reported error.
  * @returns Promise that resolves to a member object.
  */
-const getMember = (req: Request, idParam: number): Promise<Perform.IMember> => {
+const getMember = (
+  req: Request,
+  memberId: number,
+): Promise<Perform.IMember> => {
   debug(`${modulename}: running getMember`);
 
   const modelMembers = req.app.appLocals.models.members;
 
   return new Promise((resolve, reject) => {
     modelMembers
-      .findOne({ id: idParam })
+      .findOne({ id: memberId })
       .exec()
       .then((doc) => {
         /* return error if no member found */
@@ -203,18 +206,18 @@ const updateMember = (
  * Deletes a specific team member given by the id parameter passed in.
  *
  * @param req The http request being actioned (used to retrieve the data model).
- * @param id The id of the member to delete.
+ * @param memberId The id of the member to delete.
  * @rejects Resolves to a reported error.
  * @returns Promise that resolves to the deleted member object.
  */
-const deleteMember = (req: Request, id: number): Promise<number> => {
+const deleteMember = (req: Request, memberId: number): Promise<number> => {
   debug(`${modulename}: running deleteMember`);
 
   const modelMembers = req.app.appLocals.models.members;
 
   return new Promise((resolve, reject) => {
     modelMembers
-      .deleteOne({ id: id })
+      .deleteOne({ id: memberId })
       .exec()
       .then((doc) => {
         /* return error if no member deleted */

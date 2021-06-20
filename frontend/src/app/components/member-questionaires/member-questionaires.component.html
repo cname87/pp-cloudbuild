@@ -28,8 +28,17 @@
 </mat-toolbar>
 
 <mat-form-field class="filter" appearance="fill">
-  <mat-label>Filter by questionaire date</mat-label>
+  <mat-label>Filter questionaires to those with at least one item with the given rating</mat-label>
   <mat-select (selectionChange)="applyFilter($event.value)" #input>
+    <mat-option>
+      ALL
+    </mat-option>
+    <mat-option
+    *ngFor="let rating of ['1', '2', '3', '4', '5']"
+    [value]="rating"
+    >
+      {{ rating }}
+    </mat-option>
   </mat-select>
 </mat-form-field>
 
@@ -43,128 +52,52 @@
     recycleRows
   >
 
-    <ng-container [matColumnDef]="displayedColumns[0]">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> DATE </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.date | date : 'd-MMM-yy' }} </mat-cell>
-      <mat-footer-cell *matFooterCellDef> AVERAGE </mat-footer-cell>
+    <ng-container [matColumnDef]="allFields.date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ allFields.date }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{row[allFields.date] | date : 'd-MMM-yy' }} </mat-cell>
+      <mat-footer-cell *matFooterCellDef>
+        AVERAGE
+      </mat-footer-cell>
     </ng-container>
 
-    <ng-container [matColumnDef]="displayedColumns[1]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        SLEEP
+    <div *ngFor="let item of questionaireTable">
+    <ng-container [matColumnDef]="item['1']">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ item['1'] | uppercase }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.sleep}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[1]) | number: "1.2-2" }}
+      <mat-cell *matCellDef="let row">
+        {{ row[item['1']] }}
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef >
+          {{ getAverage(item['1']) | number: "1.2-2" }}
         </mat-footer-cell>
     </ng-container>
+    </div>
 
-    <ng-container [matColumnDef]="displayedColumns[2]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        FATIGUE
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.fatigue}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[2]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[3]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        MUSCLE
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.muscle}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[3]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[4]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        STRESS
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.stress}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[4]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[5]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        MOTIVATION
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.motivation}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[5]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[6]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        HEALTH
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.health}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[6]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[7]">
-      <mat-header-cell
-        *matHeaderCellDef mat-sort-header
-      >
-        MOOD
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.mood}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[7]) | number: "1.2-2" }}
-        </mat-footer-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[8]">
+    <ng-container [matColumnDef]="allFields.comment">
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-        fxFlex="1 1 30%"
+        fxFlex="1 1 20%"
       >
-        COMMENT
+        {{ allFields.comment }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let row" fxFlex="1 1 30%"> {{row.comment}} </mat-cell>
-      <mat-footer-cell *matFooterCellDef fxFlex="1 1 30%"></mat-footer-cell>
+      <mat-cell *matCellDef="let row" fxFlex="1 1 20%">
+        {{row[allFields.comment]}}
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef fxFlex="1 1 20%">
+      </mat-footer-cell>
     </ng-container>
 
-    <ng-container [matColumnDef]="displayedColumns[9]">
+    <ng-container [matColumnDef]="allFields.edit">
       <mat-header-cell
         *matHeaderCellDef
         fxFlex="1 1 10%"
       >
-        EDIT
+        {{ allFields.edit }}
       </mat-header-cell>
       <mat-cell *matCellDef="let row" fxFlex="1 1 10%">
         <button
@@ -182,22 +115,22 @@
         </mat-footer-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
+    </mat-header-row>
+
     <mat-row
       *matRowDef="let row;
       columns: displayedColumns;"
       (click)="getQuestionaire(row.memberId, row.id)"
     >
     </mat-row>
+
     <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row>
 
     <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>
-      <td
-        class="mat-cell"
-        colspan="4"
-      >
-          No data matching the filter "{{input.value}}"
+      <td class="mat-cell" colspan="4">
+          No questionaires to display
       </td>
     </tr>
   </mat-table>

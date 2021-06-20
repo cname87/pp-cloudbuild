@@ -171,14 +171,20 @@ export class SessionsChartComponent {
 
   /**
    * Returns the minimum and maximum dates from a Sessions array.
-   * @param sessions The sessions array.  Each session element has a property 'date' containing a date in string format.
+   * @param sessions The sessions array. The sessions array may be empty. Each element has a property 'date' containing a date in string format.
    * @returns An array containing the unmodified minimum and maximum dates.
+   * If an empty sessions array is passed in then a minimum date of 30 days ago and a maximum date of today is returned.
    */
   getMinMaxDate = (sessions: ISessionWithoutId[]): [min: Date, max: Date] => {
+    //
+    if (!sessions[0]) {
+      return [new Date(this.addDaysToDate(new Date(), -30)), new Date()];
+    }
+
     let min = sessions[0].date;
     let max = sessions[0].date;
 
-    for (let i = 1; i < sessions.length; i++) {
+    for (let i = 0; i < sessions.length; i++) {
       const date = sessions[i].date;
       min = date < min ? date : min;
       max = date > max ? date : max;

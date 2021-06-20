@@ -30,13 +30,15 @@
 <mat-form-field class="filter" appearance="fill">
   <mat-label>Filter by session type</mat-label>
   <mat-select (selectionChange)="applyFilter($event.value)" #input>
-    <mat-option>None</mat-option>
-      <mat-option
-        *ngFor="let type of types"
-        [value]="type"
-        >
-          {{ type }}
-        </mat-option>
+    <mat-option>
+      ALL
+    </mat-option>
+    <mat-option
+      *ngFor="let type of types"
+      [value]="type"
+    >
+      {{ type }}
+    </mat-option>
   </mat-select>
 </mat-form-field>
 
@@ -147,7 +149,7 @@
         class="mat-cell"
         colspan="4"
       >
-          No data matching the filter "{{input.value}}"
+          No sessions to display"
       </td>
     </tr>
   </mat-table>

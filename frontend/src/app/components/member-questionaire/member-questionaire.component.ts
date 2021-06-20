@@ -15,6 +15,7 @@ import {
   IQuestionaire,
   IQuestionaireChange,
   QUESTIONAIRE_MODE,
+  questionareTable,
 } from '../../data-providers/models/models';
 import { IErrReport } from '../../config';
 import { RouteStateService } from '../../shared/route-state-service/router-state-service';
@@ -74,13 +75,46 @@ export class MemberQuestionaireComponent {
         },
       },
     },
-    new Score('QUALITY OF SLEEP', 'sleep', 5).field,
-    new Score('FATIGUE', 'fatigue', 5).field,
-    new Score('MUSCLE SORENESS', 'muscle', 5).field,
-    new Score('STRESS', 'stress', 5).field,
-    new Score('MOTIVATION', 'motivation', 5).field,
-    new Score('HEALTH', 'health', 5).field,
-    new Score('MOOD', 'mood', 5).field,
+    new Score(
+      questionareTable[0][0],
+      questionareTable[0][1],
+      questionareTable[0][2],
+    ).field,
+    new Score(
+      questionareTable[1][0],
+      questionareTable[1][1],
+      questionareTable[1][2],
+    ).field,
+    new Score(
+      questionareTable[2][0],
+      questionareTable[2][1],
+      questionareTable[2][2],
+    ).field,
+    new Score(
+      questionareTable[3][0],
+      questionareTable[3][1],
+      questionareTable[3][2],
+    ).field,
+    new Score(
+      questionareTable[4][0],
+      questionareTable[4][1],
+      questionareTable[4][2],
+    ).field,
+    new Score(
+      questionareTable[5][0],
+      questionareTable[5][1],
+      questionareTable[5][2],
+    ).field,
+    new Score(
+      questionareTable[6][0],
+      questionareTable[6][1],
+      questionareTable[6][2],
+    ).field,
+    new Score(
+      questionareTable[7][0],
+      questionareTable[7][1],
+      questionareTable[7][2],
+    ).field,
     {
       key: 'comment',
       type: 'textarea',
@@ -165,6 +199,7 @@ export class MemberQuestionaireComponent {
       of(this.change.mode)
         .pipe(
           switchMap((mode) => {
+            console.log('model: ' + this.model);
             return mode === QUESTIONAIRE_MODE.ADD
               ? this.questionairesService.addQuestionaire(this.model)
               : this.questionairesService.updateQuestionaire(

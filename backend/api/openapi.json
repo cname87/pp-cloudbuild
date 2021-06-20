@@ -245,14 +245,14 @@
         }
       }
     },
-    "/members/{id}": {
+    "/members/{mid}": {
       "get": {
         "summary": "Returns a specific member.",
         "description": "Get the member defined by the supplied id.\n",
         "operationId": "getMember",
         "parameters": [
           {
-            "name": "id",
+            "name": "mid",
             "in": "path",
             "description": "The value of the id property of the member.",
             "required": true,
@@ -325,7 +325,7 @@
         "operationId": "deleteMember",
         "parameters": [
           {
-            "name": "id",
+            "name": "mid",
             "in": "path",
             "description": "The value of the id property of the member.",
             "required": true,
@@ -733,14 +733,14 @@
         }
       }
     },
-    "/members/{id}/sessions": {
+    "/members/{mid}/sessions": {
       "get": {
         "summary": "Returns all the sessions for a member.",
         "description": "Returns all the sessions for a particular member.\n",
         "operationId": "getSessions",
         "parameters": [
           {
-            "name": "id",
+            "name": "mid",
             "in": "path",
             "description": "The value of the id property of a member.",
             "required": true,
@@ -1153,14 +1153,14 @@
         }
       }
     },
-    "/members/{id}/questionaires": {
+    "/members/{mid}/questionaires": {
       "get": {
         "summary": "Returns all the questionares for a member.",
         "description": "Returns all the questionaires for a particular member.\n",
         "operationId": "getQuestionaires",
         "parameters": [
           {
-            "name": "id",
+            "name": "mid",
             "in": "path",
             "description": "The value of the id property of a member.",
             "required": true,

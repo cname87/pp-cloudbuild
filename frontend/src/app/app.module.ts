@@ -54,6 +54,7 @@ import { MemberDetailResolverService } from './shared/resolvers/member-detail-re
 import { MembersListResolverService } from './shared/resolvers/members-list-resolver.service';
 import { AppRoutingModule } from './router/app.routing.module';
 import { SessionsChartComponent } from './components/sessions-chart/sessions-chart.component';
+import { MemberBannerComponent } from './components/member-banner/member-banner.component';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
@@ -114,6 +115,7 @@ const appearance: MatFormFieldDefaultOptions = {
     LoginComponent,
     NavComponent,
     SessionsChartComponent,
+    MemberBannerComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

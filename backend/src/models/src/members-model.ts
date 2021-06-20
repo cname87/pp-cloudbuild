@@ -1,10 +1,11 @@
 /**
- * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages team members details.  It defines the model schema for the team members and then returns a pre-existing model, or creates a new model, based on supplied parameters.
+ * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages member details.  It defines the model schema for the members and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
 import { Document, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
+import { memberModel } from './models/models';
 
 /* Output a header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
@@ -25,11 +26,8 @@ function createModelMembers(
 ): Perform.IModelExtended {
   debug(`${modulename}: running createModelMembers`);
 
-  /* Set up the schema for the team members */
-  const memberSchema = new Schema({
-    id: { type: Number, unique: true },
-    name: String,
-  });
+  /* Set up a member schema */
+  const memberSchema = new Schema(memberModel);
 
   /* Auto-increment the id field on document creation */
   /* Note: resetCount() is called when delete all members is called */

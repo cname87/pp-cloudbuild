@@ -13,9 +13,11 @@ import { Observable, Subject, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
 import {
+  allFields,
   IMember,
   IQuestionaire,
-  QuestionaireTypeNames,
+  displayColumns,
+  questionareTable,
 } from '../../data-providers/models/models';
 import { RouteStateService } from '../../shared/route-state-service/router-state-service';
 import { IErrReport, routes } from '../../config';
@@ -33,22 +35,12 @@ export class MemberQuestionairesComponent implements AfterViewInit {
   //
   private destroy = new Subject<void>();
   private toastrMessage = 'A member access error has occurred';
-  types = QuestionaireTypeNames;
 
   member$!: Observable<IMember>;
   questionaires$!: Observable<IQuestionaire[]>;
-  displayedColumns: string[] = [
-    'date',
-    'sleep',
-    'fatigue',
-    'muscle',
-    'stress',
-    'motivation',
-    'health',
-    'mood',
-    'memberId',
-    'comment',
-  ];
+  allFields = allFields;
+  displayedColumns: string[] = displayColumns;
+  questionaireTable = questionareTable;
   dataSource: MatTableDataSource<IQuestionaire> = new MatTableDataSource();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -132,7 +124,6 @@ export class MemberQuestionairesComponent implements AfterViewInit {
   }
 
   getQuestionaire(mid: string, qid: string): void {
-    console.log('qid: ' + qid);
     this.router.navigate([
       routes.questionaire.path1,
       mid,
@@ -152,12 +143,18 @@ export class MemberQuestionairesComponent implements AfterViewInit {
       questionaire: IQuestionaire,
       filter: string,
     ) => {
-      const type = questionaire.comment.toLowerCase();
-      return !filter || type.startsWith(filter);
+      console.log('filter: ' + filter);
+      for (const key in questionaire) {
+        if (Object.prototype.hasOwnProperty.call(questionaire, key)) {
+          return filter === questionaire[key];
+        }
+      }
+      return false;
     };
   }
 
   applyFilter(value: string) {
+    console.log('value: ' + value);
     this.dataSource.filter = value;
 
     if (this.dataSource.paginator) {

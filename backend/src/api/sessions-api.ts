@@ -1,27 +1,21 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file.
- * Handles calls to <api-prefix>/members/{id}/sessions
+ * Handles calls to <api-prefix>/members/{mid}/sessions
  */
 
-/* import external dependencies */
 import { Request, Response, NextFunction } from 'express';
 import { Context } from 'openapi-backend';
 import { setupDebug } from '../utils/src/debugOutput';
+import { setup } from './shared'
 
 const { modulename, debug } = setupDebug(__filename);
 
-const contextError = (
-  req: Request,
-  next: NextFunction) => {
-  const err: Perform.IErr = {
-    name: 'UNEXPECTED_FAIL',
-    message: 'context not supplied',
-    statusCode: 500,
-    dumped: false,
-  };
-  req.app.appLocals.dumpError(err);
-  return next(err);
-}
+/* types of body in request */
+type bodyNoId = Perform.ISessionNoId;
+type bodyWithId = Perform.ISession;
+/* selects questionaires with text starting with the query 'text' parameter */
+const filter = 'type';
+
 
 export const addSession = (
   context: Context | undefined,
@@ -31,21 +25,17 @@ export const addSession = (
 ) => {
   debug(`${modulename}: running addSession`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the body contains a session to be added */
-  const sessionNoId = context.request.body as Perform.ISessionNoId;
-
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   sessionsHandlers
-    .addSession(req, sessionNoId)
+    .addSession(req, body as bodyNoId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 201, payload);
+      miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler addSession returned error`);
@@ -62,21 +52,17 @@ export const getSession = (
 ) => {
   debug(`${modulename}: running getSession`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the uri contains the session id */
-  const sid = Number.parseInt(context.request.params.sid as string, 10);
-
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    sid,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   sessionsHandlers
     .getSession(req, sid)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getSession returned error`);
@@ -93,21 +79,18 @@ export const getAllSessions = (
 ) => {
   debug(`${modulename}: running getAllSessions`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  const matchString = context.request.query.type as string;
-
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    filterString,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   /* call getSessions with 0 as the id params which will return all sessions from all members */
   sessionsHandlers
-    .getSessions(req, 0, matchString)
+    .getSessions(req, 0, filterString)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getAllSessions returned error`);
@@ -124,22 +107,19 @@ export const getSessions = (
 ) => {
   debug(`${modulename}: running getSessions`);
 
-  if (!(context?.request?.body)) {
-    contextError(req, next);
-  }
-
-  const matchString = context?.request.query.type as string;
-  const memberId = Number.parseInt(context?.request.params.id as string, 10);
-
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    mid,
+    filterString,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   /* getting all sessions for a specific member */
   sessionsHandlers
-    .getSessions(req, memberId, matchString)
+    .getSessions(req, mid, filterString)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getSessions returned error`);
@@ -156,20 +136,17 @@ export const updateSession = (
 ) => {
   debug(`${modulename}: running updateSession`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the body contains a session to be updated */
-  const session = context.request.body as Perform.ISession;
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   sessionsHandlers
-    .updateSession(req, session)
+    .updateSession(req, body as bodyWithId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler updateSession returned error`);
@@ -186,22 +163,18 @@ export const deleteSession = (
 ) => {
   debug(`${modulename}: running deleteSession`);
 
-  if (!(context?.request?.body)) {
-    return contextError(req, next);
-  }
-
-  /* the uri contains the session id */
-  const id = Number.parseInt(context.request.params.sid as string, 10);
-
-  const { sessionsHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    sid,
+    sessionsHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;;
 
   sessionsHandlers
-    .deleteSession(req, id)
+    .deleteSession(req, sid)
     .then((number) => {
       const payload = { count: number };
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler deleteSession returned error`);

@@ -2,7 +2,7 @@ import { Component, OnInit, ErrorHandler } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, zip } from 'rxjs';
 import { ActivatedRoute, Data } from '@angular/router';
 import {
   catchError,
@@ -18,7 +18,10 @@ import {
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../shared/members-service/members.service';
 import { SessionsService } from '../../shared/sessions-service/sessions.service';
+import { QuestionairesService } from '../../shared/questionaires-service/questionares.service';
 import { routes } from '../../config';
+import { ISession } from '../../data-providers/sessions.data-provider';
+import { IQuestionaire } from '../../data-providers/models/questionaire';
 
 /**
  * This component displays a list of members.
@@ -44,6 +47,7 @@ export class MembersListComponent implements OnInit {
     private route: ActivatedRoute,
     private membersService: MembersService,
     private sessionsService: SessionsService,
+    private questionairesService: QuestionairesService,
     private logger: NGXLogger,
     private errorHandler: ErrorHandler,
     private isLoadingService: IsLoadingService,
@@ -112,22 +116,27 @@ export class MembersListComponent implements OnInit {
 
     const message = confirm(
       // eslint-disable-next-line max-len
-      '\nCAUTION: Confirm you wish to delete this member\n\nNOTE: You must first delete all sessions associated with the member',
+      '\nCAUTION: Confirm you wish to delete this member\n\nNOTE: You must first delete all sessions and questionaires associated with the member',
     );
 
     const stopSignal$ = new Subject();
 
     if (message) {
       /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
+      const sessions$: Observable<ISession[]> =
+        this.sessionsService.getSessions(member.id);
+      const questionaires$: Observable<IQuestionaire[]> =
+        this.questionairesService.getQuestionaires(member.id);
       this.isLoadingService.add(
-        this.sessionsService
-          .getSessions(member.id)
+        zip(sessions$, questionaires$)
           .pipe(
-            map((sessions) => {
-              if (sessions.length > 0) {
+            map(([sessions, questionaires]) => {
+              console.log('sessions: ' + sessions);
+              console.log('questionaires: ' + questionaires);
+              if (sessions.length > 0 || questionaires.length > 0) {
                 stopSignal$.next();
                 confirm(
-                  '\nYou must first delete all sessions associated with the member first\n\nMember not deleted',
+                  '\nYou must first delete all sessions and questionaires associated with the member first\n\nMember not deleted',
                 );
               }
               return of({});

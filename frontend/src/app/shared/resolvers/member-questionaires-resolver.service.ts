@@ -49,7 +49,6 @@ export class MemberQuestionairesResolverService implements Resolve<any> {
     };
     const dummyQuestionaire: IQuestionaire = {
       id: 0,
-      memberId: memberId,
       date: new Date().toISOString(),
       sleep: 0,
       fatigue: 0,
@@ -57,8 +56,10 @@ export class MemberQuestionairesResolverService implements Resolve<any> {
       stress: 0,
       motivation: 0,
       health: 0,
+      diet: 0,
       mood: 0,
       comment: '',
+      memberId: memberId,
     };
 
     return of(memberId).pipe(

@@ -3,12 +3,18 @@
  * Handles calls to <api-prefix>/members
  */
 
-/* import external dependencies */
 import { Request, Response, NextFunction } from 'express';
 import { Context } from 'openapi-backend';
 import { setupDebug } from '../utils/src/debugOutput';
+import { setup } from './shared'
 
 const { modulename, debug } = setupDebug(__filename);
+
+/* types of body in request */
+type bodyNoId = Perform.IMemberNoId;
+type bodyWithId = Perform.IMember;
+/* name of query filter parameter */
+const filter = 'name';
 
 export const addMember = (
   context: Context | undefined,
@@ -18,25 +24,17 @@ export const addMember = (
 ) => {
   debug(`${modulename}: running addMember`);
 
-  if (!(context && context.request && context.request.body)) {
-    const err: Perform.IErr = {
-      name: 'UNEXPECTED_FAIL',
-      message: 'context not supplied',
-      statusCode: 500,
-      dumped: false,
-    };
-    req.app.appLocals.dumpError(err);
-    return next(err);
-  }
-  const memberNoId = context.request.body as Perform.IMemberNoId;
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    membersHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   membersHandlers
-    .addMember(req, memberNoId)
+    .addMember(req, body as bodyNoId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 201, payload);
+      miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler addMember returned error`);
@@ -53,28 +51,17 @@ export const getMember = (
 ) => {
   debug(`${modulename}: running getMember`);
 
-  if (!(context && context.request && context.request.params)) {
-    const err: Perform.IErr = {
-      name: 'UNEXPECTED_FAIL',
-      message: 'context not supplied',
-      statusCode: 500,
-      dumped: false,
-    };
-    req.app.appLocals.dumpError(err);
-    return next(err);
-  }
-
-  const idString = context.request.params.id as string;
-  const id = Number.parseInt(idString, 10);
-
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    mid,
+    membersHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   membersHandlers
-    .getMember(req, id)
+    .getMember(req, mid)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getMember returned error`);
@@ -91,18 +78,17 @@ export const getMembers = (
 ) => {
   debug(`${modulename}: running getMembers`);
 
-  let name = '';
-  if (context && context.request && context.request.query) {
-    name = context.request.query.name as string;
-  }
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    filterString,
+    membersHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   membersHandlers
-    .getMembers(req, name)
+    .getMembers(req, filterString)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler getMembers returned error`);
@@ -119,25 +105,17 @@ export const updateMember = (
 ) => {
   debug(`${modulename}: running updateMember`);
 
-  if (!(context && context.request && context.request.body)) {
-    const err: Perform.IErr = {
-      name: 'UNEXPECTED_FAIL',
-      message: 'context not supplied',
-      statusCode: 500,
-      dumped: false,
-    };
-    req.app.appLocals.dumpError(err);
-    return next(err);
-  }
-  const member = context.request.body as Perform.IMember;
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    body,
+    membersHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   membersHandlers
-    .updateMember(req, member)
+    .updateMember(req, body as bodyWithId)
     .then((payload) => {
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler updateMember returned error`);
@@ -154,58 +132,22 @@ export const deleteMember = (
 ) => {
   debug(`${modulename}: running deleteMember`);
 
-  if (!(context && context.request && context.request.params)) {
-    const err: Perform.IErr = {
-      name: 'UNEXPECTED_FAIL',
-      message: 'context not supplied',
-      statusCode: 500,
-      dumped: false,
-    };
-    req.app.appLocals.dumpError(err);
-    return next(err);
-  }
-
-  const idString = context.request.params.id as string;
-  const id = Number.parseInt(idString, 10);
-
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
+  const {
+    mid,
+    membersHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
 
   membersHandlers
 
-    .deleteMember(req, id)
+    .deleteMember(req, mid)
     .then((number) => {
       const payload = { count: number };
-      handles.writeJson(context, req, res, next, 200, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
      console.error(`${modulename}: handler deleteMember returned error`);
-      dumpError(err);
-      next(err);
-    });
-};
-
-export const deleteMembers = (
-  context: Context | undefined,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  debug(`${modulename}: running deleteMembers`);
-
-  const { membersHandlers } = req.app.appLocals.handlers;
-  const handles = req.app.appLocals.handlers.miscHandlers;
-  const { dumpError } = req.app.appLocals;
-
-  membersHandlers
-    .deleteMembers(req)
-    .then((number) => {
-      const payload = { count: number };
-      handles.writeJson(context, req, res, next, 200, payload);
-    })
-    .catch((err) => {
-     console.error(`${modulename}: handler deleteMembers returned error`);
       dumpError(err);
       next(err);
     });
@@ -216,6 +158,5 @@ export const membersApi = {
   getMembers,
   addMember,
   deleteMember,
-  deleteMembers,
   updateMember,
 };
