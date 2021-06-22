@@ -32,7 +32,6 @@ import { MemberQuestionaireComponent } from './components/member-questionaire/me
 import { MemberSessionsComponent } from './components/member-sessions/member-sessions.component';
 import { MemberQuestionairesComponent } from './components/member-questionaires/member-questionaires.component';
 import { MessagesComponent } from './components/messages/messages.component';
-import { MemberCardComponent } from './components/member-card/member-card.component';
 import { MaterialModule } from './modules/material/material.module';
 import { MemberInputComponent } from './components/member-input/member-input.component';
 import { InformationComponent } from './components/information/information.component';
@@ -107,7 +106,6 @@ const appearance: MatFormFieldDefaultOptions = {
     MemberSessionsComponent,
     MemberQuestionairesComponent,
     MessagesComponent,
-    MemberCardComponent,
     MemberInputComponent,
     InformationComponent,
     CallbackComponent,

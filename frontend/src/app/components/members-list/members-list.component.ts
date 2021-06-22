@@ -136,6 +136,7 @@ export class MembersListComponent implements OnInit {
               if (sessions.length > 0 || questionaires.length > 0) {
                 stopSignal$.next();
                 confirm(
+                  // eslint-disable-next-line max-len
                   '\nYou must first delete all sessions and questionaires associated with the member first\n\nMember not deleted',
                 );
               }

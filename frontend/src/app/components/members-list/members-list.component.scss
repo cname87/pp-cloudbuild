@@ -1,12 +1,20 @@
-/* import theme with styling variables */
-@import 'src/styles/main-theme.scss';
+@use '../../../styles/main-theme.scss' as main;
 
 @mixin styling(
-  $default-gap: $default-gap,
-  $element-width: $element-width,
-  $button-width: $button-width,
-  $inner-spacing: $inner-spacing,
-  $memberslist-height: $memberslist-height,
+  $default-gap: main.$default-gap,
+  $element-width: main.$element-width,
+  $button-width: main.$button-width,
+  $inner-spacing: main.$inner-spacing,
+  $memberslist-height: main.$memberslist-height,
+  $primary-darker: main.$primary-darker,
+  $primary-normal: main.$primary-normal,
+  $primary-lighter: main.$primary-lighter,
+  $accent-darker: main.$accent-darker,
+  $accent-normal: main.$accent-normal,
+  $accent-lighter: main.$accent-lighter,
+  $warn-darker: main.$warn-darker,
+  $warn-normal: main.$warn-normal,
+  $warn-lighter: main.$warn-lighter,
 ) {
 
   mat-nav-list {
@@ -15,33 +23,33 @@
   }
 
   a {
-    background-color: mat-color($primary, "lighter");
     height: $memberslist-height;
     margin-right: $inner-spacing;
     margin-bottom: $default-gap;
+    background-color: $primary-lighter;
   }
 
   a.id {
     cursor: default;
+    background-color: $primary-darker;
   }
 
-  a.detail {
-    background-color: mat-color($primary);
+  a.detail, a.link {
+    background-color: $primary-lighter;
   }
 
-  a.link:hover {
-    background-color: mat-color($primary, "darker");
+  a.detail:hover, a.link:hover {
+    background-color: $primary-normal;
   }
 
   button.delete {
-    background-color: mat-color($warn);
     height: $memberslist-height;
+    background-color: $warn-normal;
   }
 
   button.delete:hover {
-    background-color: mat-color($warn, "darker");
+    background-color: $warn-darker;
   }
-
 
   /* provide a margin around the divider */
   mat-divider.mat-divider {
@@ -52,7 +60,7 @@
 /* narrow element width for small screen */
 @media screen and (max-width: 520px) {
   @include styling(
-    $element-width: $element-width-sm,
+    $element-width: main.$element-width-sm,
   )
 
 }

@@ -1,1 +1,28 @@
-<p>member-banner works!</p>
+<mat-toolbar
+class="banner"
+fxLayout="row"
+fxLayoutAlign="space-evenly center"
+>
+<button
+  mat-button
+  class="back-button"
+  fxFlex="0 0 25%"
+  (click)="goBack()"
+>
+  <mat-icon class="icon">arrow_back</mat-icon>
+  BACK
+</button>
+<span
+  fxFlex="1 1 8%"
+></span>
+<span
+  class="name"
+  fxFlex="0 0 34%"
+>
+  {{ (member$ | async)?.name?.toUpperCase() }}
+</span>
+<span
+  fxFlex="1 1 33%"
+></span>
+</mat-toolbar>
+

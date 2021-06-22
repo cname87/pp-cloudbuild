@@ -1,37 +1,22 @@
-/* import theme with styling variables */
-@import 'src/styles/main-theme.scss';
+@use '../../../styles/main-theme.scss' as main;
 
 @mixin styling(
-  $default-gap: $default-gap,
-  $element-width: $element-width,
-  $button-width: $button-width,
-  $inner-spacing: $inner-spacing,
-  $memberslist-height: $memberslist-height,
-  $default-font-size: $default-font-size,
+  $default-gap: main.$default-gap,
+  $element-width: main.$element-width,
+  $button-width: main.$button-width,
+  $inner-spacing: main.$inner-spacing,
+  $memberslist-height: main.$memberslist-height,
+  $default-font-size: main.$default-font-size,
+  $primary-darker: main.$primary-darker,
+  $primary-normal: main.$primary-normal,
+  $primary-lighter: main.$primary-lighter,
+  $accent-darker: main.$accent-darker,
+  $accent-normal: main.$accent-normal,
+  $accent-lighter: main.$accent-lighter,
+  $warn-darker: main.$warn-darker,
+  $warn-normal: main.$warn-normal,
+  $warn-lighter: main.$warn-lighter,
 ) {
-
-  mat-toolbar.banner {
-    background-color: mat-color($accent, "lighter");
-    width: ($element-width) * 2;
-    font-size: calc($default-font-size * 1.5);
-    margin-bottom: $default-gap;
-  }
-  .back-button {
-    background-color: mat-color($primary, "lighter");
-    width: calc($button-width * 2.5);
-    padding-left: $default-gap / 2;
-  }
-  .back-button:hover {
-    background-color: mat-color($primary, "darker");
-  }
-  mat-icon.icon {
-    float:left;
-    line-height: calc(36rem/16);
-  }
-  span.name {
-    text-align: center;
-    line-height: calc(36rem/16);
-  }
 
   mat-form-field.filter {
     width: ($element-width) * 2;
@@ -65,13 +50,13 @@
   }
 
   .edit-button {
-    background-color: mat-color($primary,"lighter");
     float: center;
     margin-left: 0px;
     margin-right: 0px;
+    background-color: $primary-lighter;
   }
   .edit-button:hover {
-    background-color: mat-color($primary, "darker");
+    background-color: $primary-darker;
   }
 
   .mat-paginator-sticky {
@@ -85,7 +70,7 @@
 /* narrow element width for small screen */
 @media screen and (max-width: 520px) {
   @include styling(
-    $element-width: $element-width-sm,
+    $element-width: main.$element-width-sm,
   )
 
 }

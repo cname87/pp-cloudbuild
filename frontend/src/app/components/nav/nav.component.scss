@@ -1,15 +1,47 @@
-@import 'src/styles/main-theme.scss';
+@use '../../../styles/main-theme.scss' as main;
 
-/* keep a margin between nav bar and the routed components */
-nav {
-  margin-bottom: $default-gap;
+@mixin styling(
+  $default-gap: main.$default-gap,
+  $element-width: main.$element-width,
+  $button-width: main.$button-width,
+  $inner-spacing: main.$inner-spacing,
+  $memberslist-height: main.$memberslist-height,
+  $default-font-size: main.$default-font-size,
+  $primary-darker: main.$primary-darker,
+  $primary-normal: main.$primary-normal,
+  $primary-lighter: main.$primary-lighter,
+  $accent-darker: main.$accent-darker,
+  $accent-normal: main.$accent-normal,
+  $accent-lighter: main.$accent-lighter,
+  $warn-darker: main.$warn-darker,
+  $warn-normal: main.$warn-normal,
+  $warn-lighter: main.$warn-lighter,
+) {
+
+  /* keep a margin between nav bar and the routed components */
+  nav {
+    margin-bottom: $default-gap;
+  }
+
+  /* style a tab that is active via (and not via a click) */
+  a.item-active {
+    /* tab text stays solid black even when you click on the browser link */
+    opacity: 1.0;
+    /* override the disabled color so disabled tabs can appear as selected (when they are selected via route) */
+    color: rgba(0, 0, 0, 1.00);
+  }
+
 }
 
-/* style a tab that is active via (and not via a click) */
-a.item-active {
-  /* tab text stays solid black even when you click on the browser link */
-  opacity: 1.0;
-  /* override the disabled color so disabled tabs can appear as selected (when they are selected via route) */
-  color: rgba(0, 0, 0, 1.00);
+/* narrow element width for small screen */
+@media screen and (max-width: 520px) {
+  @include styling(
+    $element-width: main.$element-width-sm,
+  )
+
 }
 
+/* global defaults */
+@media screen and (min-width: 520px) {
+  @include styling();
+}

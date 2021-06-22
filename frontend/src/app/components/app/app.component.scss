@@ -1,13 +1,43 @@
-/* import theme with styling variables */
-@import 'src/styles/main-theme.scss';
+@use '../../../styles/main-theme.scss' as main;
 
-/* provide a margin above the divider */
-mat-divider.mat-divider {
-  margin-top: $default-gap;
+@mixin styling(
+  $default-gap: main.$default-gap,
+  $element-width: main.$element-width,
+  $button-width: main.$button-width,
+  $inner-spacing: main.$inner-spacing,
+  $memberslist-height: main.$memberslist-height,
+  $primary-darker: main.$primary-darker,
+  $primary-normal: main.$primary-normal,
+  $primary-lighter: main.$primary-lighter,
+  $accent-darker: main.$accent-darker,
+  $accent-normal: main.$accent-normal,
+  $accent-lighter: main.$accent-lighter,
+  $warn-darker: main.$warn-darker,
+  $warn-normal: main.$warn-normal,
+  $warn-lighter: main.$warn-lighter,
+) {
+
+  mat-divider.mat-divider {
+    margin-top: $default-gap;
+  }
+
+  mat-progress-bar.progress-bar {
+    position: absolute;
+    top: 0.5rem;
+    z-index: 5000;
+  }
+
 }
 
-.progress-bar {
-  position: absolute;
-  top: 0.5rem;
-  z-index: 5000;
+/* narrow element width for small screen */
+@media screen and (max-width: 520px) {
+  @include styling(
+    $element-width: main.$element-width-sm,
+  )
+
+}
+
+/* global defaults */
+@media screen and (min-width: 520px) {
+  @include styling();
 }

@@ -94,10 +94,11 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^12.0.3",
     "@angular-devkit/core": "^12.0.3",
-    "@angular/cli": "^12.0.3",
+    "@angular/cli": "^12.0.5",
     "@angular/compiler-cli": "^12.0.3",
     "@angular/platform-server": "^12.0.3",
     "@google-cloud/storage": "^5.8.5",
+    "@ngx-builders/analyze": "^2.3.0",
     "@ngx-formly/schematics": "^5.10.21",
     "@types/node": "^15.12.1",
     "@types/protractor-browser-logs": "^1.0.10",

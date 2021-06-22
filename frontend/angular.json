@@ -33,19 +33,18 @@
               "src/styles/themes.scss"
             ],
             "scripts": [],
-            /* Avoids a compiler error */
             "allowedCommonJsDependencies": [
               "zone.js/dist/zone-error"
-           ],
-           "buildOptimizer": false,
-           "commonChunk": true,
-           "extractLicenses": false,
-           "namedChunks": true,
-           "optimization": false,
-           "outputHashing": "none",
-           "sourceMap": true,
-           "vendorChunk": true,
-           "inlineStyleLanguage": "scss"
+            ],
+            "buildOptimizer": false,
+            "commonChunk": true,
+            "extractLicenses": false,
+            "namedChunks": true,
+            "optimization": false,
+            "outputHashing": "none",
+            "sourceMap": true,
+            "vendorChunk": true,
+            "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {
@@ -69,6 +68,11 @@
                   "type": "initial",
                   "maximumWarning": "3mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "80kb",
+                  "maximumError": "100kb"
                 }
               ]
             },
@@ -165,6 +169,12 @@
             "exclude": [
               "**/node_modules/**"
             ]
+          }
+        },
+        "analyze": {
+          "builder": "@ngx-builders/analyze:analyze",
+          "options": {
+            "outputPath": "dist"
           }
         }
       }

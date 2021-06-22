@@ -1,2 +1,51 @@
 /* styles for ngx-toastr module */
 @import '~ngx-toastr/toastr';
+
+/* You can add global styles to this file, and also import other style files */
+
+html {
+  font-size: calc(16px); // default same as standard user agent: 16px
+}
+
+/* /* default material-icons with the default level (24px) but referenced to rem with the ratio 16px = 1rem */
+.material-icons { font-size: calc(24rem/16); }
+
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Workaround for https://github.com/angular/material2/issues/4580.
+Note: Global style, as material elements, e.g. mat-form-field, are part of Angular Material and has its own encapsulation which component styles can't override */
+
+/* Customize mat-form-field */
+mat-form-field {
+
+  .mat-form-field {
+    &-underline {
+      position: static;
+    }
+
+    &-wrapper {
+      padding-bottom: 0;
+    }
+
+    &-subscript-wrapper {
+      position: static;
+      min-height: 1.25em;
+    }
+  }
+}
+
+/* The Snackbar call passes in 'snackBar' as a custom class */
+.mat-snack-bar-container.snackBar{
+  max-width: 100%;
+  button {
+    color:#ba68c8;
+  }
+}
+
+/* Variable font used throughout */
+$fontDefault: clamp(0.5rem, 2.5vw, 1rem);

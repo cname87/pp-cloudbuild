@@ -1,15 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { NGXLogger } from 'ngx-logger';
+import { Input } from '@angular/core';
+import { Observable } from 'rxjs';
+import { IMember } from '../../data-providers/models/models';
 
 @Component({
-  selector: 'pp-member-banner',
+  selector: 'app-member-banner',
   templateUrl: './member-banner.component.html',
-  styleUrls: ['./member-banner.component.scss']
+  styleUrls: ['./member-banner.component.scss'],
 })
-export class MemberBannerComponent implements OnInit {
+export class MemberBannerComponent {
+  //
+  @Input() member$!: Observable<IMember>;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private location: Location, private logger: NGXLogger) {
+    this.logger.trace(
+      `${MemberBannerComponent.name}: Starting MemberBannerComponent`,
+    );
   }
 
+  goBack(): void {
+    this.location.back();
+  }
 }
