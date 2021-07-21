@@ -34,3 +34,21 @@ export const sessionModel = {
   comment: String,
   memberId: Number,
 };
+
+export const scoresModel = {
+  id: { type: Number, unique: true },
+  memberId: Number,
+  date: String,
+  scores: [
+    {
+      item: String,
+      monday: Number,
+      tuesday: Number,
+      wednesday: Number,
+      thursday: Number,
+      friday: Number,
+      saturday: Number,
+      sunday: Number,
+    },
+  ],
+};

@@ -1,8 +1,0 @@
-{{- $domain := .Values.ssl.domain -}}
-apiVersion: networking.gke.io/v1beta2
-kind: ManagedCertificate
-metadata:
-  name: {{ .Values.ssl.name }}
-spec:
-  domains:
-    - {{ $domain }}

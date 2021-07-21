@@ -1,4 +1,4 @@
-<mat-card class="member-card">
+<mat-card class="fill-width">
 
   <mat-card-header>
     <mat-card-title>{{ (member$ | async)?.name | uppercase }}</mat-card-title>
@@ -26,22 +26,17 @@
           NAME: {{ (member$ | async)?.name }}
         </span>
       </mat-list-item>
-
     </mat-list>
 
   </mat-card-content>
 
-  <mat-card-actions
-    fxLayout="row"
-    fxLayoutAlign="start"
-  >
+  <mat-card-actions>
     <button
       mat-button
-      fxFlex="0 0 auto"
-      class="action-button"
+      class="button"
       (click)="goBack()"
     >
-      <mat-icon class="icon">arrow_back</mat-icon>
+      <mat-icon>arrow_back</mat-icon>
       BACK
     </button>
   </mat-card-actions>

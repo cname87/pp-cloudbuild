@@ -1,11 +1,11 @@
 /* angular */
 import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import {
   MatFormFieldDefaultOptions,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
@@ -20,6 +20,7 @@ import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 /* local */
 import { environment } from '../environments/environment';
@@ -31,6 +32,7 @@ import { MemberSessionComponent } from './components/member-session/member-sessi
 import { MemberQuestionaireComponent } from './components/member-questionaire/member-questionaire.component';
 import { MemberSessionsComponent } from './components/member-sessions/member-sessions.component';
 import { MemberQuestionairesComponent } from './components/member-questionaires/member-questionaires.component';
+import { MemberScoresComponent } from './components/member-scores/member-scores.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { MaterialModule } from './modules/material/material.module';
 import { MemberInputComponent } from './components/member-input/member-input.component';
@@ -54,6 +56,7 @@ import { MembersListResolverService } from './shared/resolvers/members-list-reso
 import { AppRoutingModule } from './router/app.routing.module';
 import { SessionsChartComponent } from './components/sessions-chart/sessions-chart.component';
 import { MemberBannerComponent } from './components/member-banner/member-banner.component';
+import { DatatableTypeComponent } from './components/member-scores/datatable.type';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
@@ -66,6 +69,7 @@ const appearance: MatFormFieldDefaultOptions = {
 @NgModule({
   imports: [
     /* angular modules */
+    CommonModule,
     BrowserModule,
     FormsModule,
     AppRoutingModule,
@@ -81,20 +85,28 @@ const appearance: MatFormFieldDefaultOptions = {
       timeOut: 5000,
       preventDuplicates: true,
     }),
-    /* local modules */
     MaterialModule,
     ReactiveFormsModule,
+    FormlyMaterialModule,
+    FormlyMatDatepickerModule,
+    FormlyMatToggleModule,
+    NgxChartsModule,
+    NgxDatatableModule,
     FormlyModule.forRoot({
       extras: { lazyRender: true },
       validationMessages: [
         { name: 'required', message: 'This field is required' },
       ],
+      types: [
+        {
+          name: 'datatable',
+          component: DatatableTypeComponent,
+          defaultOptions: {
+            templateOptions: {},
+          },
+        },
+      ],
     }),
-    FormlyMaterialModule,
-    FormlyMatDatepickerModule,
-    FormlyMatToggleModule,
-    MatMomentDateModule,
-    NgxChartsModule,
   ],
   declarations: [
     AppComponent,
@@ -105,6 +117,7 @@ const appearance: MatFormFieldDefaultOptions = {
     MemberQuestionaireComponent,
     MemberSessionsComponent,
     MemberQuestionairesComponent,
+    MemberScoresComponent,
     MessagesComponent,
     MemberInputComponent,
     InformationComponent,
@@ -114,6 +127,7 @@ const appearance: MatFormFieldDefaultOptions = {
     NavComponent,
     SessionsChartComponent,
     MemberBannerComponent,
+    DatatableTypeComponent,
   ],
   bootstrap: [AppComponent],
   providers: [

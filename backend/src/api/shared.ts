@@ -16,9 +16,13 @@ const contextError = (
   return next(err);
 }
 
+
+const decodeQueryParam = (p: string): string => {
+  return decodeURIComponent(p.replace(/\+/g, ' '));
+}
 export const setup = (
   context: Context | undefined,
-  filter: string,
+  queryParameter: string,
   req: Request,
   next: NextFunction
 ) => {
@@ -29,23 +33,26 @@ export const setup = (
   const mid = Number.parseInt(context.request.params.mid as string, 10);
   /* the uri may contain the questionaire id */
   const qid = Number.parseInt(context.request.params.qid as string, 10);
-    /* the uri may contain the session id */
-    const sid = Number.parseInt(context.request.params.sid as string, 10);
-  /* the query parameter is used to filter returned members - selects sessions with property type equal to the query 'type' parameter */
-  const filterString = context?.request.query[filter] as string;
+  /* the uri may contain the session id */
+  const sid = Number.parseInt(context.request.params.sid as string, 10);
+  /* gets the named query parameter  */
+  let queryString = context?.request.query[queryParameter] ? context?.request.query[queryParameter] as string : '';
+  queryString = decodeQueryParam(queryString);
   /* the body may contain an element to be added or updated */
   const body = context.request.body;
-  const { membersHandlers, sessionsHandlers, questionairesHandlers, miscHandlers } = req.app.appLocals.handlers;
+  console.log(`body1: ${JSON.stringify(body)}`);
+  const { membersHandlers, sessionsHandlers, questionairesHandlers, scoresHandlers, miscHandlers } = req.app.appLocals.handlers;
   const { dumpError } = req.app.appLocals;
   return {
     mid,
     qid,
     sid,
-    filterString,
+    queryString,
     body,
     membersHandlers,
     sessionsHandlers,
     questionairesHandlers,
+    scoresHandlers,
     miscHandlers,
     dumpError,
   }

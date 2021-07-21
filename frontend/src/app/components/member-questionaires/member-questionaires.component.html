@@ -1,7 +1,7 @@
 
 <app-member-banner [member$]="member$"></app-member-banner>
 
-<mat-form-field class="filter" appearance="fill">
+<mat-form-field class="fill-width" appearance="fill">
   <mat-label>Filter questionaires to those with at least one item with the given rating</mat-label>
   <mat-select (selectionChange)="applyFilter($event.value)" #input>
     <mat-option>
@@ -16,7 +16,7 @@
   </mat-select>
 </mat-form-field>
 
-<div class="table-container mat-elevation-z8">
+<div class="fill-width container mat-elevation-z8">
   <mat-table
     [dataSource]="dataSource"
     matSort
@@ -28,7 +28,7 @@
 
     <ng-container [matColumnDef]="allFields.date">
       <mat-header-cell *matHeaderCellDef mat-sort-header>
-        {{ allFields.date }}
+        {{ allFields.date | uppercase }}
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
         {{row[allFields.date] | date : 'd-MMM-yy' }} </mat-cell>
@@ -39,7 +39,7 @@
 
     <div *ngFor="let item of questionaireTable">
     <ng-container [matColumnDef]="item['1']">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>
+      <mat-header-cell *matHeaderCellDef>
         {{ item['1'] | uppercase }}
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
@@ -54,29 +54,26 @@
     <ng-container [matColumnDef]="allFields.comment">
       <mat-header-cell
         *matHeaderCellDef
-        mat-sort-header
-        fxFlex="1 1 20%"
       >
-        {{ allFields.comment }}
+        {{ allFields.comment | uppercase }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let row" fxFlex="1 1 20%">
+      <mat-cell *matCellDef="let row">
         {{row[allFields.comment]}}
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef fxFlex="1 1 20%">
+      <mat-footer-cell *matFooterCellDef>
       </mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="allFields.edit">
       <mat-header-cell
         *matHeaderCellDef
-        fxFlex="1 1 10%"
       >
-        {{ allFields.edit }}
+        {{ allFields.edit | uppercase }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let row" fxFlex="1 1 10%">
+      <mat-cell *matCellDef="let row">
         <button
           mat-raised-button
-          class="edit-button"
+          class="button"
           (click)="getQuestionaire(row.memberId, row.id)"
           >
           <mat-icon class="edit">edit</mat-icon>
@@ -84,7 +81,6 @@
       </mat-cell>
       <mat-footer-cell
         *matFooterCellDef
-        fxFlex="1 1 10%"
       >
         </mat-footer-cell>
     </ng-container>

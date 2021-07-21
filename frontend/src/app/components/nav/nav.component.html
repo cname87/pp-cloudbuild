@@ -1,7 +1,8 @@
 <nav
   mat-tab-nav-bar
-  color="primary"
+  class="fill-width"
   dynamicHeight="true"
+  color="primary"
 >
   <a
     mat-tab-link
@@ -9,6 +10,7 @@
     *ngFor="let link of links trackBy: trackByFn"
     [routerLink]="link.path"
     routerLinkActive #rla="routerLinkActive"
+    [routerLinkActiveOptions]="{exact: true}"
     [active]="isLoggedIn && rla.isActive"
     [disabled]="!isLoggedIn || link.disabled"
   >

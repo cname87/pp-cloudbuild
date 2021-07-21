@@ -79,7 +79,7 @@ export const getAllQuestionaires = (
   debug(`${modulename}: running getAllQuestionaires`);
 
   const {
-    filterString,
+    queryString,
     questionairesHandlers,
     miscHandlers,
     dumpError,
@@ -87,7 +87,7 @@ export const getAllQuestionaires = (
 
   /* call getQuestionaires with 0 as the id parameter will return all questionaires from all members */
   questionairesHandlers
-    .getQuestionaires(req, 0, filterString)
+    .getQuestionaires(req, 0, queryString)
     .then((payload) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
@@ -117,14 +117,14 @@ export const getQuestionaires = (
 
   const {
     mid,
-    filterString,
+    queryString,
     questionairesHandlers,
     miscHandlers,
     dumpError,
   } = setup(context, filter, req, next)!;
 
   questionairesHandlers
-    .getQuestionaires(req, mid, filterString)
+    .getQuestionaires(req, mid, queryString)
     .then((payload) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })

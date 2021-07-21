@@ -1,4 +1,4 @@
-<mat-nav-list>
+<mat-nav-list class="fill-width">
 
   <div
     class="list"
@@ -10,7 +10,8 @@
     <a
       mat-raised-button
       class="id"
-      fxFlex="1 1 5%"
+      fxFlex="1 1 10%"
+      routerLink="/{{routes.member.path}}/{{member.id}}"
     >
       {{member.id}}
     </a>
@@ -18,37 +19,19 @@
     <a
       mat-raised-button
       class="detail"
-      fxFlex="1 1 30%"
+      fxFlex="1 1 80%"
       routerLink="/{{routes.member.path}}/{{member.id}}"
     >
       {{member.name}}
     </a>
 
-    <a
-      mat-raised-button
-      class="link"
-      fxFlex="1 1 30%"
-      routerLink="/{{routes.session.path1}}/{{member.id}}/{{routes.session.path2}}"
-    >
-      Enter a Session
-    </a>
-
-    <a
-      mat-raised-button
-      class="link"
-      fxFlex="1 1 30%"
-      routerLink="/{{routes.sessions.path}}/{{member.id}}"
-    >
-      Review Sessions
-    </a>
-
     <button
       mat-raised-button
       class="delete"
-      fxFlex="1 1 5%"
+      fxFlex="1 1 10%"
       (click)="delete(member)"
     >
-      <mat-icon>delete</mat-icon>
+      <mat-icon> delete</mat-icon>
     </button>
   </div>
 </mat-nav-list>
@@ -61,3 +44,5 @@ inputText=""
 (inputEnter)='add($event)'
 >
 </app-member-input>
+
+<app-member-search></app-member-search>

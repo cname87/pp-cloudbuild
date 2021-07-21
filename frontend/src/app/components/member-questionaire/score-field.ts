@@ -5,13 +5,13 @@ export class Score {
   //
   field: FormlyFieldConfig;
 
-  constructor(metric: string, key: string, max: number) {
+  constructor(metric: string, key: string, excellent: string, max: number) {
     this.field = {
       key: key,
       type: 'input',
       templateOptions: {
         type: 'number',
-        label: `Rate your ${metric} from 1 (awful) to ${max} (excellent)`,
+        label: `Rate your ${metric} from 1 (awful) to ${max} (${excellent})`,
       },
       validators: {
         score: {

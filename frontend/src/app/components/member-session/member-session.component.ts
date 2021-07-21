@@ -34,14 +34,14 @@ interface routeData extends Data {
   providers: [],
 })
 export class MemberSessionComponent {
+  //
+  private destroy = new Subject<void>();
+  private toastrMessage = 'A member access error has occurred';
   change: ISessionChange = {
     mode: SESSION_MODE.ADD,
     member$: of({}) as any,
     session$: of({}) as any,
   };
-  //
-  private destroy = new Subject<void>();
-  private toastrMessage = 'A member access error has occurred';
   addLabel = 'ADD SESSION';
   updateLabel = 'UPDATE SESSION';
   /* default button label */
@@ -128,10 +128,10 @@ export class MemberSessionComponent {
       type: 'input',
       templateOptions: {
         type: 'number',
-        label: 'Enter the session duration in minutes',
+        label: 'Enter the session time in minutes',
       },
       validators: {
-        duration: {
+        time: {
           expression: (
             _control: AbstractControl,
             field: FormlyFieldConfig,
@@ -142,7 +142,7 @@ export class MemberSessionComponent {
             return number > 0 && number <= 180;
           },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must enter a duration from 1 to 180 minutes`;
+            return `You must enter a time from 1 to 180 minutes`;
           },
         },
       },
@@ -152,7 +152,7 @@ export class MemberSessionComponent {
       type: 'input',
       templateOptions: {
         type: 'number',
-        label: 'This is the calculated score x duration',
+        label: 'This is the calculated score x time',
         readonly: true,
         disabled: true,
       },
@@ -211,6 +211,7 @@ export class MemberSessionComponent {
       .subscribe((session) => {
         this.model = session;
       });
+    /* update service with routed member id */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {

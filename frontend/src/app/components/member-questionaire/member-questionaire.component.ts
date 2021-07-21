@@ -79,41 +79,49 @@ export class MemberQuestionaireComponent {
       questionareTable[0][0],
       questionareTable[0][1],
       questionareTable[0][2],
+      questionareTable[0][3],
     ).field,
     new Score(
       questionareTable[1][0],
       questionareTable[1][1],
       questionareTable[1][2],
+      questionareTable[1][3],
     ).field,
     new Score(
       questionareTable[2][0],
       questionareTable[2][1],
       questionareTable[2][2],
+      questionareTable[2][3],
     ).field,
     new Score(
       questionareTable[3][0],
       questionareTable[3][1],
       questionareTable[3][2],
+      questionareTable[3][3],
     ).field,
     new Score(
       questionareTable[4][0],
       questionareTable[4][1],
       questionareTable[4][2],
+      questionareTable[4][3],
     ).field,
     new Score(
       questionareTable[5][0],
       questionareTable[5][1],
       questionareTable[5][2],
+      questionareTable[5][3],
     ).field,
     new Score(
       questionareTable[6][0],
       questionareTable[6][1],
       questionareTable[6][2],
+      questionareTable[6][3],
     ).field,
     new Score(
       questionareTable[7][0],
       questionareTable[7][1],
       questionareTable[7][2],
+      questionareTable[7][3],
     ).field,
     {
       key: 'comment',
@@ -199,7 +207,6 @@ export class MemberQuestionaireComponent {
       of(this.change.mode)
         .pipe(
           switchMap((mode) => {
-            console.log('model: ' + this.model);
             return mode === QUESTIONAIRE_MODE.ADD
               ? this.questionairesService.addQuestionaire(this.model)
               : this.questionairesService.updateQuestionaire(

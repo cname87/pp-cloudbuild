@@ -19,6 +19,8 @@ import { routes } from '../config';
 import { MemberQuestionaireResolverService } from '../shared/resolvers/member-questionaire-resolver.service';
 import { MemberQuestionairesResolverService } from '../shared/resolvers/member-questionaires-resolver.service';
 import { MemberQuestionairesComponent } from '../components/member-questionaires/member-questionaires.component';
+import { MemberScoresComponent } from '../components/member-scores/member-scores.component';
+import { MemberScoresResolverService } from '../shared/resolvers/member-scores-resolver.service';
 
 const appRoutes: Routes = [
   {
@@ -87,7 +89,7 @@ const appRoutes: Routes = [
     },
   },
   {
-    /* health questionaire edit for a member */
+    /* questionaire for a member */
     path: `${routes.questionaire.path1}/:id/${routes.questionaire.path2}`,
     component: MemberQuestionaireComponent,
     canActivate: [AuthGuard],
@@ -111,6 +113,15 @@ const appRoutes: Routes = [
     canActivate: [AuthGuard],
     resolve: {
       memberAndQuestionaires: MemberQuestionairesResolverService,
+    },
+  },
+  {
+    /* shows a member's weekly questionaire scores */
+    path: `${routes.scores.path}/:id`,
+    component: MemberScoresComponent,
+    canActivate: [AuthGuard],
+    resolve: {
+      memberAndScores: MemberScoresResolverService,
     },
   },
   {

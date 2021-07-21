@@ -4,9 +4,6 @@
  * through without a route being identified.
  */
 
-/**
- * Import external dependencies
- */
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 import { URL } from 'url';

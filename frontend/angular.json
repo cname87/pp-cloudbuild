@@ -30,7 +30,9 @@
             ],
             "styles": [
               "src/styles/styles.scss",
-              "src/styles/themes.scss"
+              "src/styles/themes.scss",
+              /* regular style toast */
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
@@ -58,10 +60,10 @@
               "buildOptimizer": true,
               "commonChunk": true,
               "extractLicenses": true,
-              "namedChunks": false,
+              "sourceMap": true, // this is to enable the source maps to get a better analysis - set to false if no analysis needed.
+              "namedChunks": true, // to get identify modules names and not use random numbers for lazy loading modules - set to false if no analysis needed.
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
               "vendorChunk": false,
               "budgets": [
                 {
@@ -71,7 +73,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "80kb",
+                  "maximumWarning": "10kb",
                   "maximumError": "100kb"
                 }
               ]

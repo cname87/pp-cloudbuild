@@ -39,7 +39,12 @@ export interface IQuestionaireChange {
 
 /* list all questionaire fields here and then add to other variables below */
 /* NOTE: You must ensure the backend data model matches this */
-export const allFields: any = {
+
+interface IAllFields {
+  readonly [index: string]: string;
+}
+
+export const allFields: IAllFields = {
   date: 'date',
   sleep: 'sleep',
   fatigue: 'fatigue',
@@ -63,7 +68,7 @@ export enum QuestionaireType {
   Stress = 'STRESS',
   Motivation = 'MOTIVATION',
   Health = 'HEALTH',
-  Diet = 'DIET',
+  Diet = 'NUTRITION',
   Mood = 'MOOD',
 }
 
@@ -78,15 +83,15 @@ export const QuestionaireTypeNames: QuestionaireType[] = Object.keys(
   .filter((key) => key !== undefined);
 
 /* used to display questionaire and questionaaires table queries */
-export const questionareTable: [string, string, number][] = [
-  [QuestionaireType.Sleep, allFields.sleep, 5],
-  [QuestionaireType.Fatigue, allFields.fatigue, 5],
-  [QuestionaireType.Muscle, allFields.muscle, 5],
-  [QuestionaireType.Stress, allFields.stress, 5],
-  [QuestionaireType.Motivation, allFields.motivation, 5],
-  [QuestionaireType.Health, allFields.health, 5],
-  [QuestionaireType.Diet, allFields.diet, 5],
-  [QuestionaireType.Mood, allFields.mood, 5],
+export const questionareTable: [string, string, string, number][] = [
+  [QuestionaireType.Sleep, allFields.sleep, 'excellent sleep', 5],
+  [QuestionaireType.Fatigue, allFields.fatigue, 'no fatigue', 5],
+  [QuestionaireType.Muscle, allFields.muscle, 'no soreness', 5],
+  [QuestionaireType.Stress, allFields.stress, 'no stress', 5],
+  [QuestionaireType.Motivation, allFields.motivation, 'great motivation', 5],
+  [QuestionaireType.Health, allFields.health, 'great health', 5],
+  [QuestionaireType.Diet, allFields.diet, 'great nutrition', 5],
+  [QuestionaireType.Mood, allFields.mood, 'great mood', 5],
 ];
 
 /* used by the questionaires table header and footer rows */

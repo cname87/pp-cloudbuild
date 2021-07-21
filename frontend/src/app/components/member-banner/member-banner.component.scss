@@ -1,61 +1,16 @@
-@use '../../../styles/main-theme.scss' as main;
+@use '../../../styles/components.scss' as c;
 
-@mixin styling(
-  $default-gap: main.$default-gap,
-  $element-width: main.$element-width,
-  $button-width: main.$button-width,
-  $inner-spacing: main.$inner-spacing,
-  $memberslist-height: main.$memberslist-height,
-  $primary-darker: main.$primary-darker,
-  $primary-normal: main.$primary-normal,
-  $primary-lighter: main.$primary-lighter,
-  $accent-darker: main.$accent-darker,
-  $accent-normal: main.$accent-normal,
-  $accent-lighter: main.$accent-lighter,
-  $warn-darker: main.$warn-darker,
-  $warn-normal: main.$warn-normal,
-  $warn-lighter: main.$warn-lighter,
-) {
-
-  mat-toolbar.banner {
-    width: ($element-width) * 2;
-    font-size: calc($default-font-size * 1.5);
-    margin-bottom: $default-gap;
-    background-color: $accent-lighter;
-  }
-  .back-button {
-    width: calc($button-width * 2.5);
-    padding-left: $default-gap / 2;
-    background-color: $primary-lighter;
-  }
-  .back-button:hover {
-    background-color: $primary-darker;
-  }
-  mat-icon.icon {
-    float:left;
-    line-height: calc(36rem/16);
-
-  }
-  span.name {
-    text-align: center;
-    line-height: calc(36rem/16);
-  }
-
-  .buttons {
-    margin: 0;
-  }
-
+.fill-width {
+  background-color: c.$accent-lighter;
+  height: calc(var(--default-gap-px) * 4);
+  border: 1px solid rgba(0,0,0,0.06);
 }
 
-/* narrow element width for small screen */
-@media screen and (max-width: 520px) {
-@include styling(
-  $element-width: main.$element-width-sm,
-)
-
+span.name {
+  text-align: center;
+  line-height: calc(36rem/16);
 }
 
-/* global defaults */
-@media screen and (min-width: 520px) {
-@include styling();
+button.button {
+  height: calc(var(--default-gap-px) * 3);
 }

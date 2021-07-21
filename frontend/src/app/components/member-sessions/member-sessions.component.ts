@@ -41,7 +41,7 @@ export class MemberSessionsComponent implements AfterViewInit {
     'date',
     'type',
     'score',
-    'duration',
+    'time',
     'metric',
     'comment',
     'edit',
@@ -64,7 +64,7 @@ export class MemberSessionsComponent implements AfterViewInit {
       `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
     );
     /* get the data as supplied from the route resolver */
-    this.route.data.subscribe((data: Data) => {
+    this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
       this.member$ = data.memberAndSessions.member;
       this.sessions$ = data.memberAndSessions.sessions;
     });
@@ -93,6 +93,7 @@ export class MemberSessionsComponent implements AfterViewInit {
         }),
     );
   }
+
   ngOnInit() {
     /* update service with routed member id */
     this.route.paramMap

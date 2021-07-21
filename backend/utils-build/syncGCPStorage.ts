@@ -27,14 +27,7 @@ const gcpStorageKey = {
   deltaPath: gcpKeyPath,
 };
 
-const secretsPath = '../pp-chart/templates/';
-const secrets = {
-  filesToLoad: ['backend-secret.yaml'],
-  /* Path relative to directory containing package.json */
-  deltaPath: secretsPath,
-};
-
-export const loadJobs = [envBackend, dbCerts, gcpStorageKey, secrets];
+export const loadJobs = [envBackend, dbCerts, gcpStorageKey];
 
 /* The root directory to store the files on the gsutil bucket */
 export const rootDir = 'backend/';

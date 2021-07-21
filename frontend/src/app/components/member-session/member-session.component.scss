@@ -1,68 +1,13 @@
-@use '../../../styles/main-theme.scss' as main;
-@mixin styling(
-  $default-gap: main.$default-gap,
-  $element-width: main.$element-width,
-  $button-width: main.$button-width,
-  $inner-spacing: main.$inner-spacing,
-  $memberslist-height: main.$memberslist-height,
-  $default-font-size: main.$default-font-size,
-  $primary-darker: main.$primary-darker,
-  $primary-normal: main.$primary-normal,
-  $primary-lighter: main.$primary-lighter,
-  $accent-darker: main.$accent-darker,
-  $accent-normal: main.$accent-normal,
-  $accent-lighter: main.$accent-lighter,
-  $warn-darker: main.$warn-darker,
-  $warn-normal: main.$warn-normal,
-  $warn-lighter: main.$warn-lighter,
-) {
+@use '../../../styles/components.scss' as c;
 
-  div {
-    margin-left: $default-gap;
-    margin-right: $default-gap;
-    width: ($element-width - (2 * $default-gap));
-  }
-
-  .add-button {
-    width: calc($button-width * 2.5);
-    padding-left: $default-gap / 2;
-    background-color: $primary-lighter;
-  }
-
-  .add-button:hover:enabled {
-    background-color: $primary-darker;
-  }
-
-  .delete-button {
-    width: calc($button-width * 2.5);
-    padding-left: $default-gap / 2;
-    background-color: $warn-lighter;
-  }
-
-  .delete-button:hover:enabled {
-    background-color: $primary-darker;  }
-
-  .buttons {
-    margin: 0;
-  }
-
-  /* provide a margin around the divider */
-  mat-divider.mat-divider {
-    margin-top: $default-gap;
-    margin-bottom: $default-gap;
-  }
-
+.buttons {
+  margin-top: var(--default-gap-px);
 }
 
-/* narrow element width for small screen */
-@media screen and (max-width: 520px) {
-  @include styling(
-    $element-width: main.$element-width-sm,
-  )
-
+.button {
+  margin-left: 0px;
 }
 
-/* global defaults */
-@media screen and (min-width: 520px) {
-  @include styling();
+.warn-button {
+  margin-left: var(--default-gap-px);
 }

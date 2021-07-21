@@ -19,7 +19,9 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class MemberQuestionairesResolverService implements Resolve<any> {
+export class MemberQuestionairesResolverService
+  implements Resolve<IQuestionairesTable>
+{
   constructor(
     private membersService: MembersService,
     private questionairesService: QuestionairesService,

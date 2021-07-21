@@ -1,7 +1,6 @@
+<app-member-banner [member$]="change.member$"></app-member-banner>
 
-<div>
-
-  <app-member-banner [member$]="change.member$"></app-member-banner>
+<div class="fill-width">
 
   <mat-divider></mat-divider>
 
@@ -18,35 +17,29 @@
     >
     </formly-form>
 
-    <mat-divider></mat-divider>
-
-
   </form>
+
+  <mat-divider></mat-divider>
 
   <div
     class="buttons"
-    fxLayout="row"
-    fxLayoutAlign="space-between"
   >
     <button
       mat-raised-button
-      class="add-button"
-      fxFlex="0 0 40%"
+      class="button"
       (click)="onSubmit()"
       [disabled]="!form.valid"
     >
-
-    <mat-icon class="icon">update</mat-icon>
+      <mat-icon>update</mat-icon>
       {{ buttonLabel }}
     </button>
     <button
       mat-raised-button
-      class="delete-button"
-      fxFlex="0 0 40%"
+      class="button warn-button"
       (click)="delete()"
       *ngIf="buttonLabel===updateLabel"
       >
-      <mat-icon class="icon">delete</mat-icon>
+      <mat-icon>delete</mat-icon>
         DELETE SESSION
     </button>
   </div>

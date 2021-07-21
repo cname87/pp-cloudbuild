@@ -60,8 +60,7 @@ export const configDatabase = {
         ? (DB_DATABASE as string)
         : (DB_DATABASE_TEST as string);
     debug(`${modulename} : database \'${db}\' in use`);
-    const extra = 'retryWrites=true&w=majority';
-
+    const extra = 'authSource=admin&retryWrites=true&w=majority';
     return format(
       '%s://%s:%s@%s/%s?%s',
       scheme,

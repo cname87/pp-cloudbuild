@@ -79,14 +79,14 @@ export const getMembers = (
   debug(`${modulename}: running getMembers`);
 
   const {
-    filterString,
+    queryString,
     membersHandlers,
     miscHandlers,
     dumpError,
   } = setup(context, filter, req, next)!;
 
   membersHandlers
-    .getMembers(req, filterString)
+    .getMembers(req, queryString)
     .then((payload) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })

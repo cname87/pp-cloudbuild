@@ -59,7 +59,7 @@ export class MemberQuestionairesComponent implements AfterViewInit {
       `${MemberQuestionairesComponent.name}: Starting MemberQuestionairesComponent`,
     );
     /* get the data as supplied from the route resolver */
-    this.route.data.subscribe((data: Data) => {
+    this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
       this.member$ = data.memberAndQuestionaires.member;
       this.questionaires$ = data.memberAndQuestionaires.questionaires;
     });
@@ -143,7 +143,6 @@ export class MemberQuestionairesComponent implements AfterViewInit {
       questionaire: IQuestionaire,
       filter: string,
     ) => {
-      console.log('filter: ' + filter);
       for (const key in questionaire) {
         if (Object.prototype.hasOwnProperty.call(questionaire, key)) {
           return filter === questionaire[key];
@@ -154,7 +153,6 @@ export class MemberQuestionairesComponent implements AfterViewInit {
   }
 
   applyFilter(value: string) {
-    console.log('value: ' + value);
     this.dataSource.filter = value;
 
     if (this.dataSource.paginator) {

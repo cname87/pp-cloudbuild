@@ -1,5 +1,6 @@
 <form>
   <mat-form-field
+    class="fill-width"
     appearance="outline"
   >
 
@@ -30,13 +31,11 @@
       <mat-icon>close</mat-icon>
     </button>
 
-    <!-- ensure no overlap between the mat-hint conditionals -->
-
     <!-- show if no search yet or new search -->
     <mat-hint
       *ngIf="!searchBox.value"
     >
-      Enter a member name search term
+      Start typing a member name
     </mat-hint>
 
     <!-- show if no members found -->

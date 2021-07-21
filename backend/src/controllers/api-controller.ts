@@ -253,6 +253,32 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getOrCreateScores: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) => {
+        console.log(`body0: ${JSON.stringify(context.request.body)}`);
+        return appLocals.handlers.scoresApi.getOrCreateScores(
+          context,
+          request,
+          response,
+          nextFunction,
+        );
+      },
+      updateScores: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.scoresApi.updateScores(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       validationFail: (
         context,
         _request: Request,
@@ -393,6 +419,11 @@ const createDbCollectionConnection = (
       appLocals.database,
       `${req.user!.dbCollection}_Questionaire`,
       `${req.user!.dbCollection}_questionaires`,
+    );
+    appLocals.models.scores = appLocals.createModelScores(
+      appLocals.database,
+      `${req.user!.dbCollection}_Score`,
+      `${req.user!.dbCollection}_scores`,
     );
   }
   next();

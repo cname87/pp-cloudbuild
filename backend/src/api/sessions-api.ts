@@ -80,7 +80,7 @@ export const getAllSessions = (
   debug(`${modulename}: running getAllSessions`);
 
   const {
-    filterString,
+    queryString,
     sessionsHandlers,
     miscHandlers,
     dumpError,
@@ -88,7 +88,7 @@ export const getAllSessions = (
 
   /* call getSessions with 0 as the id params which will return all sessions from all members */
   sessionsHandlers
-    .getSessions(req, 0, filterString)
+    .getSessions(req, 0, queryString)
     .then((payload) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
@@ -109,7 +109,7 @@ export const getSessions = (
 
   const {
     mid,
-    filterString,
+    queryString,
     sessionsHandlers,
     miscHandlers,
     dumpError,
@@ -117,7 +117,7 @@ export const getSessions = (
 
   /* getting all sessions for a specific member */
   sessionsHandlers
-    .getSessions(req, mid, filterString)
+    .getSessions(req, mid, queryString)
     .then((payload) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })

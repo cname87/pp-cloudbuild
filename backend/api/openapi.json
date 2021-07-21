@@ -1232,6 +1232,162 @@
           }
         }
       }
+    },
+    "/members/{mid}/scores": {
+      "post": {
+        "summary": "Gets, or creates, a scores table object.",
+        "description": "Gets, or creates, a scores table object, as determined by the member id and the date in the query string.\n",
+        "operationId": "getOrCreateScores",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "A Javascipt Date object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Date"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Scores table found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scores"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Scores table created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scores"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scores": {
+      "put": {
+        "summary": "Updates a specific scores table.",
+        "description": "A scores object is supplied which must have a id corresponding to an existing scores object.\nThe scores table with that id is updated with the supplied scores table.\n",
+        "operationId": "updateScores",
+        "requestBody": {
+          "description": "Scores object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Scores"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Scores table updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scores"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The scores table to update was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1542,6 +1698,98 @@
           }
         },
         "description": "Questionaire information"
+      },
+      "Scores": {
+        "required": [
+          "date",
+          "id",
+          "memberId",
+          "scores"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "memberId": {
+            "maximum": 999,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "example": 5
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "scores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Table-column"
+            }
+          }
+        }
+      },
+      "Table-column": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "format": "binary"
+          },
+          "monday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "tuesday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "wednesday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "thursday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "friday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "saturday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          },
+          "sunday": {
+            "type": "number",
+            "format": "int32",
+            "example": 5
+          }
+        }
+      },
+      "Date": {
+        "required": [
+          "date"
+        ],
+        "type": "object",
+        "properties": {
+          "date": {
+            "maxLength": 24,
+            "type": "string",
+            "format": "date-string",
+            "example": "2021-07-18T00:00:00.000Z"
+          }
+        },
+        "description": "ISO Date string"
       },
       "Error": {
         "required": [

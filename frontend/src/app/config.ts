@@ -25,12 +25,12 @@ const membersList = {
 };
 const member = {
   path: 'member',
-  displayName: 'MEMBER DETAIL',
+  displayName: 'MEMBER',
 };
 const session = {
   path1: 'member',
   path2: 'session',
-  displayName: 'SESSION ENTRY',
+  displayName: 'SESSION',
 };
 const sessions = {
   path: 'sessions',
@@ -43,11 +43,15 @@ const charts = {
 const questionaire = {
   path1: 'member',
   path2: 'questionaire',
-  displayName: 'QUESTIONAIRE ENTRY',
+  displayName: 'QUESTIONAIRE',
 };
 const questionaires = {
   path: 'questionaires',
   displayName: 'QUESTIONAIRES',
+};
+const scores = {
+  path: 'scores',
+  displayName: 'SCORES',
 };
 
 /* other routing elements */
@@ -74,6 +78,7 @@ export const routes = {
   charts,
   questionaire,
   questionaires,
+  scores,
   profile,
   loginPage,
   errorPage,

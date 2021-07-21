@@ -7,7 +7,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
-
 import { catchError, tap } from 'rxjs/operators';
 import { apiConfiguration } from './configuration';
 import { CustomHttpUrlEncodingCodec } from './encoder';
@@ -22,13 +21,10 @@ export { ICount, IMember, IMemberWithoutId };
   providedIn: 'root',
 })
 export class MembersDataProvider {
-  /* local variables */
+  //
   private basePath = apiConfiguration.basePath;
-
   private membersPath = apiConfiguration.membersPath;
-
   private defaultHeaders = apiConfiguration.defaultHeaders;
-
   private withCredentials = apiConfiguration.withCredentials;
 
   constructor(private httpClient: HttpClient, private logger: NGXLogger) {
@@ -65,8 +61,10 @@ export class MembersDataProvider {
 
     return this.httpClient
       .post<IMember>(`${this.basePath}/${this.membersPath}`, memberWithoutId, {
-        withCredentials: this.withCredentials,
         headers,
+        observe: 'body',
+        responseType: 'json',
+        withCredentials: this.withCredentials,
       })
       .pipe(
         tap((_) => {
@@ -102,7 +100,6 @@ export class MembersDataProvider {
     }
 
     let headers = this.defaultHeaders;
-
     /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 

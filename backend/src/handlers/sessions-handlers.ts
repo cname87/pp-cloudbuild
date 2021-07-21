@@ -5,27 +5,10 @@
 
 import { Document } from 'mongoose';
 import { Request } from 'express';
+import { databaseUnavailable } from './utilities';
 import { setupDebug } from '../utils/src/debugOutput';
 
 const { modulename, debug } = setupDebug(__filename);
-
-/* shared function to report unknown database error */
-const databaseUnavailable = (
-  err: any,
-  caller: string,
-  locals: Perform.IAppLocals,
-  reject: (reason: any) => void,
-) => {
-  console.error(`${modulename}: ${caller} database error reported`);
-  locals.dumpError(err);
-  const errDb: Perform.IErr = {
-    name: 'DATABASE_ACCESS',
-    message: 'The database service is unavailable',
-    statusCode: 503,
-    dumped: true,
-  };
-  return reject(errDb);
-};
 
 /**
  * Adds a supplied session object to the database.

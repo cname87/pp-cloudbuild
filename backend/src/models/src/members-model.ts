@@ -42,7 +42,7 @@ function createModelMembers(
     ModelName,
     memberSchema,
     collection,
-  ) as any as Perform.IModelExtended;
+  ) as Perform.IModelExtended;
 
   /* Set toObject option so _id, and __v deleted */
   ModelMembers.schema.set('toObject', {

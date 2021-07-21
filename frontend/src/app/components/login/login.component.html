@@ -1,7 +1,6 @@
 <mat-toolbar
   fxLayout="row"
   fxLayoutAlign="start"
-  color="accent"
 >
 
   <span
@@ -19,37 +18,37 @@
 
   <button
     mat-raised-button
+    class="button"
     fxFlex="0 0 auto"
     fxFlexAlign="center"
     id="loginBtn"
     *ngIf="!isLoggedIn"
     (click)="login()"
-    class="button"
   >
     Log In
   </button>
 
   <button
     mat-raised-button
+    class="button"
     fxFlex="0 0 auto"
     fxFlexAlign="center"
     id="logoutBtn"
     *ngIf="isLoggedIn"
     (click)="logout()"
-    class="button"
   >
     Log Out
   </button>
 
   <a
     mat-raised-button
+    class="button"
     fxFlex="0 0 auto"
     fxFlexAlign="center"
     id="profileBtn"
     *ngIf="isLoggedIn"
     [routerLink]="['profile']"
     color="primary"
-    class="button"
   >
     My Account
   </a>

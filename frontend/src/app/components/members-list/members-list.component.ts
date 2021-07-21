@@ -131,8 +131,6 @@ export class MembersListComponent implements OnInit {
         zip(sessions$, questionaires$)
           .pipe(
             map(([sessions, questionaires]) => {
-              console.log('sessions: ' + sessions);
-              console.log('questionaires: ' + questionaires);
               if (sessions.length > 0 || questionaires.length > 0) {
                 stopSignal$.next();
                 confirm(
@@ -148,7 +146,6 @@ export class MembersListComponent implements OnInit {
           .subscribe((_count) => {
             this.members$ = this.getMembers();
             /* allow errors go to errorHandler */
-            /* httpclient observable => unsubscribe not necessary */
           }),
       );
     }

@@ -51,8 +51,13 @@ async function connectToDb(
 
     const dbConnection = await mongoose.createConnection(uri, options);
 
-    /* Disable buffering commands fro all models so an error is thrown immediately when a connection goes down */
+    /* Disable buffering commands for all models so an error is thrown immediately when a connection goes down */
     mongoose.set('bufferCommands', false);
+
+    /* Enable logging of all Mongoose database calls */
+    if (process.env.DB_LOGS === 'log') {
+      mongoose.set('debug', true);
+    }
 
     debug(
       `${modulename} : database \'${dbConnection.db.databaseName}\' connected`,

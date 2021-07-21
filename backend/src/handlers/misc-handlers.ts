@@ -3,9 +3,6 @@
  * controllers.
  */
 
-/**
- * Import external dependencies.
- */
 import { Request, Response, NextFunction } from 'express';
 import util from 'util';
 import { Context, ValidationResult } from 'openapi-backend';
@@ -50,7 +47,7 @@ function raiseEvent(req: Request, res: Response, _next: NextFunction): void {
 }
 
 /**
- * This examines a supplied payload and result code against a supplied openapi-backend context object and returns an openapi-backend ValidationResult.
+ * This function examines a supplied payload and result code against a supplied openapi-backend context object and returns an openapi-backend ValidationResult.
  */
 const isResponseValid = (
   context: Context | undefined,
@@ -108,6 +105,7 @@ const writeJson = (
     | Perform.ISession[]
     | Perform.IQuestionaire
     | Perform.IQuestionaire[]
+    | Perform.IScores
     | Record<string, unknown>,
 ): void => {
   debug(`${modulename}: running writeJson`);

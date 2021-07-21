@@ -9,6 +9,7 @@ interface IConfigurationParameters {
   membersPath: string;
   sessionsPath: string;
   questionairesPath: string;
+  scoresPath: string;
   defaultHeaders: HttpHeaders;
   withCredentials?: boolean;
 }
@@ -18,6 +19,7 @@ class Configuration {
   membersPath: string;
   sessionsPath: string;
   questionairesPath: string;
+  scoresPath: string;
   defaultHeaders: HttpHeaders;
   /* indicates whether or not cross-site Access-Control requests should be made using credentials - defaults to false */
   withCredentials?: boolean;
@@ -27,6 +29,7 @@ class Configuration {
     this.membersPath = configurationParameters.membersPath;
     this.sessionsPath = configurationParameters.sessionsPath;
     this.questionairesPath = configurationParameters.questionairesPath;
+    this.scoresPath = configurationParameters.scoresPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
     this.withCredentials = configurationParameters.withCredentials;
   }
@@ -37,6 +40,7 @@ export const apiConfiguration = new Configuration({
   membersPath: 'members',
   sessionsPath: 'sessions',
   questionairesPath: 'questionaires',
+  scoresPath: 'scores',
   defaultHeaders: new HttpHeaders(),
   withCredentials: false,
 });

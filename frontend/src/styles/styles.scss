@@ -1,28 +1,71 @@
-/* styles for ngx-toastr module */
-@import '~ngx-toastr/toastr';
+@use '../styles/components.scss' as c;
+/* Note: You can pass in colors using with() to replace default values */
+@use '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
 
-/* You can add global styles to this file, and also import other style files */
+:root {
+  /* fundamental constants */
+  --base: 16;
+  --sm-screen: 360;
+  --big-screen: 720;
 
-html {
-  font-size: calc(16px); // default same as standard user agent: 16px
+  /* growth ratio calculation */
+  --default-gap-min: calc(var(--base) * 0.5);
+  --default-gap-min-px: calc(var(--default-gap-min) * 1px);
+  --default-gap-max: var(--base);
+  --default-gap-diff: calc(var(--default-gap-max) - var(--default-gap-min));
+  --sm-screen-px: calc(var(--sm-screen) * 1px);
+  --big-screen-px: calc(var(--big-screen) * 1px);
+  --a: calc(min(var(--big-screen-px), 100vw));
+  --b: calc(max(var(--sm-screen-px), var(--a)));
+  --c: calc(var(--b) - var(--sm-screen-px));
+  /* (actual-screen - sm-screen) / sm-screen */
+  --ratio-px: calc(var(--c) / var(--sm-screen));
+
+  /* calculate default-gap-px */
+  --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
+  --default-gap-px: calc(var(--default-gap-min-px) + var(--default-gap-diff-px));
+
+  /* base-font variable size = 1rem */
+  --base-font: calc(12px + var(--ratio-px) * 6);
+
+  /* spacing for lists etc */
+  --list-spacing: calc(var(--default-gap-px) / 2);
+  --list-height: calc(var(--default-gap-px) * 2);;
+
+  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * 360));
+  --button-width: 4rem;
 }
 
-/* /* default material-icons with the default level (24px) but referenced to rem with the ratio 16px = 1rem */
-.material-icons { font-size: calc(24rem/16); }
+html {
+  height: 100%;
+  /* set 1rem size - standard is 16px */
+  font-size: calc(var(--base-font));
+}
 
 body {
   height: 100%;
-  width: 100%;
-  margin: 0px;
+  margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* default material-icons with the default level (24px) but referenced to rem with the ratio 16px = 1rem */
+.material-icons { font-size: calc(24rem/16); }
 
 /* Workaround for https://github.com/angular/material2/issues/4580.
 Note: Global style, as material elements, e.g. mat-form-field, are part of Angular Material and has its own encapsulation which component styles can't override */
 
-/* Customize mat-form-field */
-mat-form-field {
+/* The Snackbar call passes in 'snackBar' as a custom class */
+.mat-snack-bar-container.snackBar{
+  max-width: 100%;
+  button {
+    color:#ba68c8;
+  }
+}
 
+/* mat-form-field penetrating styling */
+mat-form-field {
   .mat-form-field {
     &-underline {
       position: static;
@@ -34,18 +77,90 @@ mat-form-field {
 
     &-subscript-wrapper {
       position: static;
-      min-height: 1.25em;
     }
   }
 }
 
-/* The Snackbar call passes in 'snackBar' as a custom class */
-.mat-snack-bar-container.snackBar{
-  max-width: 100%;
-  button {
-    color:#ba68c8;
-  }
+/*
+datatable in weekly questionaire table styles */
+
+/* table size */
+// ngx-datatable {
+  // width: 1000px !important;
+  // overflow-x: auto !important;
+  // overflow-y: auto !important;
+  // height: calc(var(--default-gap-px) * 40 ) !important;
+// }
+/* format header on the weekly questionaire table */
+div.table-header {
+  text-align: center;
+  background-color: c.$accent-lighter;
+  font-size: var(--base-font);
+  border: 1px solid rgba(0,0,0, 0.06);
+  padding: 2px;
+}
+// /* configure overall body rows */
+// datatable-body-row.datatable-body-row {
+//   height: calc(var(--default-gap-px) * 4 ) !important;
+// }
+// /* configure individual body cells */
+datatable-body-row.datatable-body-row datatable-body-cell.datatable-body-cell {
+  padding: 2px !important;
+  // font-size: var(--base-font) !important;
+  // border-top-color: red !important;
+  // border-top-style: solid !important;
+  // border-top-width: 1px !important;
+  // height: calc(var(--default-gap-px) * 4 ) !important;
+  // border-bottom-color: rgba(0, 0, 0, 0.87) !important;
+  // border-bottom-style: solid !important;
+  // border-bottom-width: 1px !important;
+}
+// datatable-body-row.datatable-body-row datatable-body-cell.datatable-body-cell mat-form-field div {
+//   height: calc(var(--default-gap-px) * 4 ) !important;
+  // line-height: calc(var(--default-gap-px) * 2 ) !important;
+  // align-items: center !important;
+  // justify-content: center !important;
+// }
+// /* allow rows only go to configured width */
+// div.datatable-row-center {
+//   width: var(--element-width);
+// }
+// /* scale drop-down arrows with screen size */
+// .mat-select-arrow {
+//   border-left: calc(var(--default-gap-px) * 0.25 ) solid transparent !important;
+//   border-right: calc(var(--default-gap-px) * 0.25 ) solid transparent !important;
+//   border-top: calc(var(--default-gap-px) * 0.25 ) solid !important;
+//   margin: 0 calc(var(--default-gap-px) * 0.25 ) !important;
+// }
+/* configure overall summary row */
+// datatable-summary-row.datatable-summary-row {
+//   height: calc(var(--default-gap-px) * 4 ) !important;
+//   border-top-color: rgba(0, 0, 0, 0.87) !important;
+//   border-top-style: none !important;
+//   border-top-width: 0px !important;
+//   box-sizing: border-box !important;
+//   color: rgba(0, 0, 0, 0.87) !important;
+// }
+// /* configure summary rows cells */
+datatable-summary-row.datatable-summary-row datatable-body-cell.datatable-body-cell {
+  padding-left: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  // justify-content: center !important;
+  // background-color: white !important;
+  // height: calc(var(--default-gap-px) * 4 ) !important;
+  // border-top-color: rgba(0, 0, 0, 0.87) !important;
+  // border-top-style: solid !important;
+  // border-top-width: 1px !important;
+  // box-sizing: border-box !important;
+  // color: rgba(0, 0, 0, 0.87) !important;
 }
 
-/* Variable font used throughout */
-$fontDefault: clamp(0.5rem, 2.5vw, 1rem);
+/* rightmost table column */
+// .scoresColumnRight {
+//   margin-right: 1px !important;
+// }
+/* leftmost table column */
+// .scoresColumnLeft div {
+//   margin-left: 1px !important;
+// }

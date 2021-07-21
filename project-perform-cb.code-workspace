@@ -380,7 +380,7 @@
     "workbench.settings.openDefaultSettings": true,
     "workbench.sideBar.location": "right",
 
-    "window.zoomLevel": -1,
+    "window.zoomLevel": 0,
 
 	}
 }

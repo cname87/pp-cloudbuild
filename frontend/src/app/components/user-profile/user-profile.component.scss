@@ -1,52 +1,13 @@
-@use '../../../styles/main-theme.scss' as main;
-@use '../../../styles/themes.scss';
+@use '../../../styles/components.scss' as c;
 
-@mixin styling(
-  $default-gap: main.$default-gap,
-  $element-width: main.$element-width,
-  $button-width: main.$button-width,
-  $inner-spacing: main.$inner-spacing,
-  $memberslist-height: main.$memberslist-height,
-  $default-font-size: main.$default-font-size,
-  $primary-darker: main.$primary-darker,
-  $primary-normal: main.$primary-normal,
-  $primary-lighter: main.$primary-lighter,
-  $accent-darker: main.$accent-darker,
-  $accent-normal: main.$accent-normal,
-  $accent-lighter: main.$accent-lighter,
-  $warn-darker: main.$warn-darker,
-  $warn-normal: main.$warn-normal,
-  $warn-lighter: main.$warn-lighter,
-) {
-
-  .profile-card {
-    margin-left: $default-gap;
-    margin-right: $default-gap;
-    width: ($element-width - (2 * $default-gap));
-    background-color: $primary-lighter;
-
-    #goBackBtn {
-      background-color: $accent-lighter;
-    }
-    #goBackBtn:hover {
-      background-color: $accent-normal;
-    }
-  }
-  mat-list-item.mat-list-item {
-    height: 2rem;
-  }
-
+.fill-width {
+  background-color: c.$accent-lighter;
 }
 
-/* narrow element width for small screen */
-@media screen and (max-width: 520px) {
-  @include styling(
-    $element-width: main.$element-width-sm,
-  )
-
+mat-list-item.mat-list-item {
+  height: 2rem;
 }
 
-/* global defaults */
-@media screen and (min-width: 520px) {
-  @include styling();
+mat-card-actions {
+  margin-left: var(--default-gap-px);
 }

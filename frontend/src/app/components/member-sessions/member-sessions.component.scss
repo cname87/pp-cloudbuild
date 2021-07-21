@@ -1,81 +1,53 @@
-@use '../../../styles/main-theme.scss' as main;
+@use '../../../styles/components.scss' as c;
 
-@mixin styling(
-  $default-gap: main.$default-gap,
-  $element-width: main.$element-width,
-  $button-width: main.$button-width,
-  $inner-spacing: main.$inner-spacing,
-  $memberslist-height: main.$memberslist-height,
-  $default-font-size: main.$default-font-size,
-  $primary-darker: main.$primary-darker,
-  $primary-normal: main.$primary-normal,
-  $primary-lighter: main.$primary-lighter,
-  $accent-darker: main.$accent-darker,
-  $accent-normal: main.$accent-normal,
-  $accent-lighter: main.$accent-lighter,
-  $warn-darker: main.$warn-darker,
-  $warn-normal: main.$warn-normal,
-  $warn-lighter: main.$warn-lighter,
-) {
-
-  mat-form-field.filter {
-    width: ($element-width) * 2;
-  }
-  mat-select.mat-select {
-    line-height: $default-font-size;
-    font-size: $default-font-size;
-  }
-
-  div.table-container {
-    margin: 0;
-    height: calc(70vh);
-    width: ($element-width) * 2;
-    overflow: auto;
-  }
-
-  mat-header-cell.mat-header-cell {
-    font-weight: bold;
-    font-size: $default-font-size;
-  }
-
-  mat-footer-row.mat-footer-row {
-    font-weight: bold;
-    font-size: $default-font-size;
-  }
-
-  mat-icon.edit {
-    float: right;
-    height: $memberslist-height;
-    line-height: calc(36rem/16);
-  }
-
-  .edit-button {
-    float: center;
-    margin-left: 0px;
-    margin-right: 0px;
-    background-color: $primary-lighter;
-  }
-  .edit-button:hover {
-    background-color: $primary-darker;
-  }
-
-  .mat-paginator-sticky {
-    bottom: 0px;
-    position: sticky;
-    z-index: 10;
-  }
-
+div.container {
+  margin-left: var(--default-gap-px);
+  height: calc(65vh);
+  overflow: auto;
+}
+button.button {
+  margin: 0px;
+  padding-left: var(--default-gap-px);
+  padding-right: var(--default-gap-px);
+  padding-top: var(--list-spacing);
+  padding-bottom: var(--list-spacing);
 }
 
-/* narrow element width for small screen */
-@media screen and (max-width: 520px) {
-  @include styling(
-    $element-width: main.$element-width-sm,
-  )
-
+mat-icon.edit {
+  padding: 0px;
+  float: center;
 }
 
-/* global defaults */
-@media screen and (min-width: 520px) {
-  @include styling();
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
 }
+
+@mixin mat-table-columns($columns) {
+  .mat-column- {
+    @each $colName, $props in $columns {
+      $pc-flex: map-get($props, 'pc-flex');
+      &#{$colName} {
+        word-break: break-all;
+        justify-content: center;
+        text-align: center;
+        padding: 0px;
+        flex: 0 1 $pc-flex;
+        @if map-has-key($props, 'color') {
+          color: map-get($props, 'color');
+        }
+      }
+    }
+  }
+}
+
+@include mat-table-columns((
+    date: (pc-flex: 15%),
+    type: (pc-flex: 25%),
+    score: (pc-flex: 10%),
+    time: (pc-flex: 10%),
+    metric: (pc-flex: 10%),
+    comment: (pc-flex: 20%),
+    edit: (pc-flex: 10%),
+));
