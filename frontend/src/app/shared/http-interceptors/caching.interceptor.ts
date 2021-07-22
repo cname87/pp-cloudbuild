@@ -14,7 +14,8 @@ import { RequestCacheService } from '../caching-service/request-cache.service';
 import { environment } from '../../../environments/environment';
 
 /**
- * This service sends the request to the cache service and returns the cache response if one is provided.  If the cache does not return a response it passes on the request and the then sends the request and response to the cache service for its use.
+ * @summary
+ * This interceptor sends the request to the cache service and returns the cache response if one is provided.  If the cache does not return a response it passes on the request and the then sends the request and response to the cache service for its use.
  */
 
 @Injectable({ providedIn: 'root' })

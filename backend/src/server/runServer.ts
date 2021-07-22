@@ -16,6 +16,7 @@ import express, { Application } from 'express';
 import favicon from 'serve-favicon';
 import util from 'util';
 import path from 'path';
+import nocache from 'nocache';
 
 import { setupDebug } from '../utils/src/debugOutput';
 const { modulename, debug } = setupDebug(__filename);
@@ -58,8 +59,8 @@ async function runServer(app: Application): Promise<void> {
       });
   });
 
-  /* use strong etag validation */
-  app.set('etag', 'strong');
+  /* disable etag validation as costly and do not want to cache */
+  app.set('etag', false);
   /* /Foo different to /foo */
   app.set('case sensitive routing', true);
   /* /admin the same as /admin/ */
@@ -69,6 +70,9 @@ async function runServer(app: Application): Promise<void> {
 
   /* parse incoming request body object as a JSON object */
   app.use(express.json());
+
+  /* disable all caching */
+  app.use(nocache());
 
   /* log basic information from the request */
   if (debug.enabled) {
