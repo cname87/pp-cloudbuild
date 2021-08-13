@@ -12,9 +12,9 @@ import {
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { MembersService } from '../../shared/members-service/members.service';
+import { MembersService } from '../../common/members-service/members.service';
 import { IMember } from '../../data-providers/members.data-provider';
-import { routes } from '../../config';
+import { routes } from '../../common/config';
 
 /**
  * This component supplies an input box that is used to find members on the server.  As the user enters text in the input box the component lists the members whose name starts with the entered text.  An interval is awaited after each keystroke before it requests a search from the server.

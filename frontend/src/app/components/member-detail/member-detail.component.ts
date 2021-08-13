@@ -5,11 +5,11 @@ import { NGXLogger } from 'ngx-logger';
 import { of, Observable, Subject, throwError } from 'rxjs';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { MembersService } from '../../shared/members-service/members.service';
+import { MembersService } from '../../common/members-service/members.service';
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { RouteStateService } from '../../shared/route-state-service/router-state-service';
-import { IErrReport } from '../../config';
+import { RouteStateService } from '../../common/route-state-service/router-state-service';
+import { IErrReport } from '../../common/config';
 import { ToastrService } from 'ngx-toastr';
 
 /**

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../shared/auth-service/auth.service';
+import { AuthService } from '../../common/auth-service/auth.service';
 
-import { routes } from '../../config';
+import { routes } from '../../common/config';
 import { Observable } from 'rxjs';
-import { RouteStateService } from '../../shared/route-state-service/router-state-service';
+import { RouteStateService } from '../../common/route-state-service/router-state-service';
 
 interface ILink {
   path: string;

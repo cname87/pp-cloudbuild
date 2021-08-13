@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 /**
- * Utility to delete a dist directory
+ * Utility to delete, and then recreate, a dist directory
  *
  * Usage:
  *
  * Used in package.com.
  *
- * The dist directory to be deleted is passed in as a parameter.
+ * The dist directory to be deleted and recreated is passed in as a parameter.
  * package.com script: "npm run delDistDir.ts <pathToDistDir>".
  *
  * <pathToDistDir> is relative to the application base directory.
@@ -18,6 +18,7 @@
 import fs from 'fs';
 import rimraf from 'rimraf';
 import { resolve } from 'path';
+import { mkdirSync } from 'fs';
 
 /* confirm that the passed in path ends in /dist/ */
 if (!process.argv[2].endsWith('/dist/')) {
@@ -35,9 +36,6 @@ if (!fs.existsSync(distPath)) {
 
 rimraf.sync(distPath, { maxBusyTries: 100 });
 
-if (fs.existsSync(distPath)) {
-  console.error('ERROR: dist directory not deleted');
-  process.exit(1);
-} else {
-  console.log(`The directory ${distPath} is deleted or was not found`);
-}
+mkdirSync(distPath);
+
+console.log(`The directory ${distPath} is deleted or was not found`);

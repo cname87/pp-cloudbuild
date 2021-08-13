@@ -25,7 +25,7 @@ sudo journalctl --vacuum-time=3d
 sudo du -h /var/lib/snapd/snaps
 set -eu
 sudo snap list --all | awk '/disabled/{print $1, $3}' |
-    while read snapname revision; do
+    while read -r snapname revision; do
         sudo snap remove "$snapname" --revision="$revision"
     done
 

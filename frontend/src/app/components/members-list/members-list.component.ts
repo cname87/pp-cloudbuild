@@ -16,10 +16,10 @@ import {
   IMember,
   IMemberWithoutId,
 } from '../../data-providers/members.data-provider';
-import { MembersService } from '../../shared/members-service/members.service';
-import { SessionsService } from '../../shared/sessions-service/sessions.service';
-import { QuestionairesService } from '../../shared/questionaires-service/questionares.service';
-import { routes } from '../../config';
+import { MembersService } from '../../common/members-service/members.service';
+import { SessionsService } from '../../common/sessions-service/sessions.service';
+import { QuestionairesService } from '../../common/questionaires-service/questionares.service';
+import { routes } from '../../common/config';
 import { ISession } from '../../data-providers/sessions.data-provider';
 import { IQuestionaire } from '../../data-providers/models/questionaire';
 

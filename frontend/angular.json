@@ -39,7 +39,7 @@
               "zone.js/dist/zone-error"
             ],
             "buildOptimizer": false,
-            "commonChunk": true,
+            "commonChunk": false, // NOTE: common chunk not created to prevent a common chunk being loaded initially (but results in some code duplication)
             "extractLicenses": false,
             "namedChunks": true,
             "optimization": false,
@@ -58,7 +58,7 @@
               ],
               "aot": true,
               "buildOptimizer": true,
-              "commonChunk": true,
+              "commonChunk": false, // NOTE: common chunk not created to prevent a common chunk being loaded initially (but results in some code duplication)
               "extractLicenses": true,
               "sourceMap": true, // this is to enable the source maps to get a better analysis - set to false if no analysis needed.
               "namedChunks": true, // to get identify modules names and not use random numbers for lazy loading modules - set to false if no analysis needed.

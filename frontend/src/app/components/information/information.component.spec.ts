@@ -11,8 +11,8 @@ import {
   ActivatedRoute,
   ActivatedRouteStub,
   click,
-} from '../../shared/test-helpers';
-import { AuthService } from '../../shared/auth-service/auth.service';
+} from '../../common/test-helpers';
+import { AuthService } from '../../common/auth-service/auth.service';
 
 interface ILocationSpy {
   back: jasmine.Spy;

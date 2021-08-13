@@ -91,6 +91,8 @@ export const configDatabase = {
       sslCert: cert,
       sslKey: key,
       sslValidate,
+      /* set false if you have a large database and are changing indexes as could result in a slow start up - not a problem for a small database and impact is on only on startup*/
+      autoIndex: true,
       /* Don't buffer commands if not connected, i.e. return error immediately */
       bufferMaxEntries: 0,
       /* Next 4 prevent mongoose deprecation warnings */

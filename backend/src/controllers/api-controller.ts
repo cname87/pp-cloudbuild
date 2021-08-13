@@ -259,7 +259,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         response: Response,
         nextFunction: NextFunction,
       ) => {
-        console.log(`body0: ${JSON.stringify(context.request.body)}`);
         return appLocals.handlers.scoresApi.getOrCreateScores(
           context,
           request,

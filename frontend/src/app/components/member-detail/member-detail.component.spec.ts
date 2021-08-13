@@ -7,7 +7,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { MemberDetailComponent } from './member-detail.component';
-import { MembersService } from '../../shared/members-service/members.service';
+import { MembersService } from '../../common/members-service/members.service';
 import {
   findId,
   findTag,
@@ -15,9 +15,9 @@ import {
   ActivatedRoute,
   ActivatedRouteStub,
   click,
-} from '../../shared/test-helpers';
+} from '../../common/test-helpers';
 import { IMember } from '../../data-providers/members.data-provider';
-import { members } from '../../shared/mocks/mock-members';
+import { members } from '../../common/mocks/mock-members';
 
 interface IMembersServiceSpy {
   updateMember: jasmine.Spy;

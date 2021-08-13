@@ -4,16 +4,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  // HttpParams,
-} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError } from 'rxjs/operators';
 import { apiConfiguration } from './configuration';
 import { IScores } from './models/models';
-// import { CustomHttpUrlEncodingCodec } from './encoder';
 
 /**
  * This service handles all communication with the server. It implements all the function to create/get or update a weekly scores table on the server.

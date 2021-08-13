@@ -138,7 +138,7 @@ const getOrCreateScores = async (
       });
   });
 
-  /* if a document is returned the return it */
+  /* if a document is returned then return it */
   if (foundDoc) {
     return foundDoc;
   }

@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AppModule } from '../../app.module';
 import { MembersListComponent } from './members-list.component';
-import { MembersService } from '../../shared/members-service/members.service';
+import { MembersService } from '../../common/members-service/members.service';
 import {
   findAllCssOrNot,
   findCssOrNot,
@@ -17,13 +17,13 @@ import {
   click,
   asyncError,
   ActivatedRouteStub,
-} from '../../shared/test-helpers';
+} from '../../common/test-helpers';
 import {
   IMember,
   IMemberWithoutId,
 } from '../../data-providers/members.data-provider';
-import { members } from '../../shared/mocks/mock-members';
-import { AppRoutingModule } from '../../router/app.routing.module';
+import { members } from '../../common/mocks/mock-members';
+import { AppRoutingModule } from '../../router-module/app.routing.module';
 
 /* spy interfaces */
 interface IMembersServiceSpy {

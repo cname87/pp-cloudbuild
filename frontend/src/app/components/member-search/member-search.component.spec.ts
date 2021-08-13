@@ -14,15 +14,15 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { MemberSearchComponent } from './member-search.component';
-import { MembersService } from '../../shared/members-service/members.service';
-import { members } from '../../shared/mocks/mock-members';
+import { MembersService } from '../../common/members-service/members.service';
+import { members } from '../../common/mocks/mock-members';
 import { IMember } from '../../data-providers/models/models';
 import {
   sendInput,
   asyncError,
   findAllCssOrNot,
   // asyncData,
-} from '../../shared/test-helpers/index';
+} from '../../common/test-helpers/index';
 
 /* spy interfaces */
 interface IMembersServiceSpy {

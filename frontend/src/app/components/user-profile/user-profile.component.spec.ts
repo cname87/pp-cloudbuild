@@ -7,15 +7,15 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { ProfileComponent } from './user-profile.component';
-import { AuthService } from '../../shared/auth-service/auth.service';
-import { MockAuthService } from '../../shared/mocks/mock-auth.service';
+import { AuthService } from '../../common/auth-service/auth.service';
+import { MockAuthService } from '../../common/mocks/mock-auth.service';
 
 import {
   findCssOrNot,
   ActivatedRoute,
   ActivatedRouteStub,
   click,
-} from '../../shared/test-helpers';
+} from '../../common/test-helpers';
 
 interface ILocationSpy {
   back: jasmine.Spy;

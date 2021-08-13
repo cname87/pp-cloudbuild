@@ -35,12 +35,18 @@ class Configuration {
   }
 }
 
+let defaultHeaders = new HttpHeaders();
+/* set what content we will accept back */
+defaultHeaders = defaultHeaders.set('Accept', 'application/json');
+/* set what content is being sent */
+defaultHeaders = defaultHeaders.set('Content-Type', 'application/json');
+
 export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
   sessionsPath: 'sessions',
   questionairesPath: 'questionaires',
   scoresPath: 'scores',
-  defaultHeaders: new HttpHeaders(),
+  defaultHeaders,
   withCredentials: false,
 });

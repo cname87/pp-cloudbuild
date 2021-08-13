@@ -9,7 +9,7 @@ import {
   IMemberWithoutId,
   IMember,
 } from './members.data-provider';
-import { asyncData, asyncError } from '../shared/test-helpers';
+import { asyncData, asyncError } from '../common/test-helpers';
 import { apiConfiguration } from './configuration';
 import { ICount } from './models/count';
 import { AppModule } from '../app.module';

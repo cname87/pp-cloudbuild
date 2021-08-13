@@ -136,7 +136,7 @@
       */
       "name": "E2e frontend with backend",
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       /* CARE: Will shutdown backend and frontend servers */
       // "postDebugTask": "Taskkill node.exe",
@@ -234,7 +234,7 @@
     {
       "name": "Run Mocha backend tests",
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/mocha/bin/_mocha",
       "args": [
@@ -273,7 +273,7 @@
     {
       "name": "Run Mocha backend tests with Istanbul",
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/nyc/bin/nyc",
       "args": [
@@ -319,7 +319,7 @@
       Otherwise (to allow using VSCODE for client-side debug) you can load the testServer/xxx-loadMocha.html file manually after running this on one file only, or, if you would like VSCode debug of the browser-side, then use a Chrome launch configuration to load the matching xxx-loadMocha.html - there are two xxx-loadMocha.html files - make sure you use the one that matches the server-side test file. */
       "name": "Run Mocha client-fired server tests",
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/mocha/bin/_mocha",
       "args": [
@@ -383,7 +383,7 @@
     // Run current .js file
     {
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "name": "Run the currently opened .js file",
       "program": "${file}",
@@ -399,7 +399,7 @@
     // Run current .ts file
     {
       "type": "node",
-      "runtimeVersion": "14.16.1",
+      "runtimeVersion": "16.3.0",
       "request": "launch",
       "name": "Run the currently opened .ts file",
       "cwd": "${workspaceFolder}/backend",

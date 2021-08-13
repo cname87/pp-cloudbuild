@@ -49,11 +49,7 @@ export class MembersDataProvider {
       );
     }
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
-    headers = headers.set('Content-Type', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}`,
@@ -99,9 +95,7 @@ export class MembersDataProvider {
       queryParameters = queryParameters.set('name', name);
     }
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}`,
@@ -142,9 +136,7 @@ export class MembersDataProvider {
       );
     }
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}/${id}`,
@@ -191,11 +183,7 @@ export class MembersDataProvider {
       );
     }
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
-    headers = headers.set('Content-Type', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}`,
@@ -235,9 +223,7 @@ export class MembersDataProvider {
       );
     }
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}/${id}`,
@@ -275,9 +261,7 @@ export class MembersDataProvider {
   public deleteMembers(): Observable<ICount> {
     this.logger.trace(`${MembersDataProvider.name}: deleteMembers called`);
 
-    let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
+    const headers = this.defaultHeaders;
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}`,

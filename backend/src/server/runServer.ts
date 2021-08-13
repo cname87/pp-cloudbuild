@@ -65,8 +65,8 @@ async function runServer(app: Application): Promise<void> {
   app.set('case sensitive routing', true);
   /* /admin the same as /admin/ */
   app.set('strict routing', false);
-  /* compress files before sending */
-  app.use(compression());
+  /* compress payloads above 1k before sending */
+  app.use(compression({ threshold: 1000 }));
 
   /* parse incoming request body object as a JSON object */
   app.use(express.json());

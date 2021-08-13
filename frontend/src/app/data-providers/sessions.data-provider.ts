@@ -175,7 +175,7 @@ export class SessionsDataProvider {
         headers,
       })
       .pipe(
-        tap((_) => {
+        tap(() => {
           this.logger.trace(`${SessionsDataProvider.name}: Received response`);
         }),
         catchError((errReport) => {
