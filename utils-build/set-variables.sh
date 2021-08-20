@@ -9,7 +9,10 @@ export ZONE
 REGION=$(gcloud config get-value compute/region)
 export REGION
 
-export BACKEND_DIRECTORY=pp-backend-cb
-export FRONTEND_DIRECTORY=pp-frontend-cb
-export DEVELOPMENT=development
-export PRODUCTION=production
+export BACKEND_DIRECTORY="pp-backend-cb"
+export FRONTEND_DIRECTORY="pp-frontend-cb"
+export DEVELOPMENT="development"
+export PRODUCTION="production"
+
+export BACKEND_IMAGE="gcr.io/${PROJECT}/${BACKEND_DIRECTORY}/${DEVELOPMENT}"
+export FRONTEND_IMAGE="gcr.io/${PROJECT}/${FRONTEND_DIRECTORY}/${DEVELOPMENT}"
