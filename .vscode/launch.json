@@ -165,9 +165,11 @@
     // Run the backend server (app.ts) on localhost:8080.
     {
       "name": "Run backend app.ts",
-      "type": "node",
-      "runtimeVersion": "16.3.0",
+      "type": "pwa-node",
       "request": "launch",
+      "linux": {
+        "runtimeExecutable": "/home/cname87/.nvm/versions/node/v16.8.0/bin/node",
+      },
       "program": "${workspaceFolder}/backend/src/app.ts",
       "cwd": "${workspaceFolder}/backend",
       "env": {
@@ -234,7 +236,7 @@
     {
       "name": "Run Mocha backend tests",
       "type": "node",
-      "runtimeVersion": "16.3.0",
+      "runtimeVersion": "16.8.0",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/mocha/bin/_mocha",
       "args": [
@@ -383,7 +385,7 @@
     // Run current .js file
     {
       "type": "node",
-      "runtimeVersion": "16.3.0",
+      // "runtimeVersion": "16.3.0",
       "request": "launch",
       "name": "Run the currently opened .js file",
       "program": "${file}",
@@ -399,7 +401,7 @@
     // Run current .ts file
     {
       "type": "node",
-      "runtimeVersion": "16.3.0",
+      // "runtimeVersion": "16.3.0",
       "request": "launch",
       "name": "Run the currently opened .ts file",
       "cwd": "${workspaceFolder}/backend",

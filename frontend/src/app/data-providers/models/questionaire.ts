@@ -1,5 +1,5 @@
 /**
- * Health questionaire information.
+ * Wellness questionaire information.
  */
 
 import { Observable } from 'rxjs';
@@ -82,7 +82,7 @@ export const QuestionaireTypeNames: QuestionaireType[] = Object.keys(
   })
   .filter((key) => key !== undefined);
 
-/* used to display questionaire and questionaaires table queries */
+/* used to display questionaire and questionaires table queries */
 export const questionareTable: [string, string, string, number][] = [
   [QuestionaireType.Sleep, allFields.sleep, 'excellent sleep', 5],
   [QuestionaireType.Fatigue, allFields.fatigue, 'no fatigue', 5],

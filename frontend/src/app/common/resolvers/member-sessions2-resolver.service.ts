@@ -9,25 +9,25 @@ import { Observable, of } from 'rxjs';
 import { publishReplay, refCount, catchError, switchMap } from 'rxjs/operators';
 
 import { MembersService } from '../members-service/members.service';
-import { ScoresService } from '../scores-service/scores.service';
+import { Sessions2Service } from '../sessions2-service/sessions2.service';
 import {
-  dummyScores,
+  dummySessions2,
   IMember,
-  IScoresAndMember,
+  ISessions2AndMember,
 } from '../../data-providers/models/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MemberScoresResolverService implements Resolve<any> {
+export class MemberSessions2ResolverService implements Resolve<any> {
   constructor(
     private membersService: MembersService,
-    private scoresService: ScoresService,
+    private sessions2Service: Sessions2Service,
     private logger: NGXLogger,
     private errorHandler: ErrorHandler,
   ) {
     this.logger.trace(
-      `${MemberScoresResolverService.name}: Starting MemberScoresResolverService`,
+      `${MemberSessions2ResolverService.name}: Starting MemberSessions2ResolverService`,
     );
   }
 
@@ -50,8 +50,10 @@ export class MemberScoresResolverService implements Resolve<any> {
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<IScoresAndMember> {
-    this.logger.trace(`${MemberScoresResolverService.name}: Calling resolve`);
+  ): Observable<ISessions2AndMember> {
+    this.logger.trace(
+      `${MemberSessions2ResolverService.name}: Calling resolve`,
+    );
 
     /* get id of member from the route */
     const memberIdString = route.paramMap.get('id');
@@ -66,13 +68,13 @@ export class MemberScoresResolverService implements Resolve<any> {
     return of(memberId).pipe(
       switchMap((id: number) => {
         const member$ = this.membersService.getMember(id);
-        const scores$ = this.scoresService.getOrCreateScores(
+        const sessions2$ = this.sessions2Service.getOrCreateSessions(
           memberId,
           this.#getLastSunday(),
         );
-        const output: Observable<IScoresAndMember> = of({
+        const output: Observable<ISessions2AndMember> = of({
           member$: member$,
-          scores$: scores$,
+          sessions2$: sessions2$,
         });
         return output;
       }),
@@ -82,14 +84,14 @@ export class MemberScoresResolverService implements Resolve<any> {
       catchError((error: any) => {
         if (!errorHandlerCalled) {
           this.logger.trace(
-            `${MemberScoresResolverService.name}: catchError called`,
+            `${MemberSessions2ResolverService.name}: catchError called`,
           );
           errorHandlerCalled = true;
           this.errorHandler.handleError(error);
         }
-        const dummyOutput: Observable<IScoresAndMember> = of({
+        const dummyOutput: Observable<ISessions2AndMember> = of({
           member$: of(dummyMember),
-          scores$: of(dummyScores),
+          sessions2$: of(dummySessions2),
         });
         return dummyOutput;
       }),

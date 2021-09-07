@@ -1,0 +1,21 @@
+<app-member-banner [member$]="member$"></app-member-banner>
+
+<mat-divider></mat-divider>
+
+<div class="fill-width">
+
+  <form
+    [formGroup]="form"
+  >
+
+    <formly-form
+      [form]="form"
+      [fields]="fields"
+      [model]="model"
+      [options]="options"
+    >
+    </formly-form>
+
+  </form>
+
+</div>

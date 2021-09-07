@@ -97,6 +97,20 @@ const appRoutes: Routes = [
       import('../scores-module/scores.module').then((m) => m.ScoresModule),
   },
   {
+    /* shows a member's weekly session data */
+    path: `${routes.sessions2.path}/:id`,
+    loadChildren: () =>
+      import('../sessions2-module/sessions2.module').then(
+        (m) => m.Sessions2Module,
+      ),
+  },
+  {
+    /* shows a member's summary data */
+    path: `${routes.summary.path}/:id`,
+    loadChildren: () =>
+      import('../forms-modules/summary.module').then((m) => m.SummaryModule),
+  },
+  {
     /* shows the authenticated user profile */
     path: routes.profile.path,
     component: ProfileComponent,

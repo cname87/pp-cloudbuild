@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
-import { NGXLogger } from 'ngx-logger';
-import { of, Subject, throwError } from 'rxjs';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { IsLoadingService } from '@service-work/is-loading';
+import { NGXLogger } from 'ngx-logger';
+import { of, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 

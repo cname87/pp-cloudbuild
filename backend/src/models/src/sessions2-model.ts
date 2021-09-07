@@ -1,51 +1,51 @@
 /**
- * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages scores details.  It defines the model schema for a scores table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
+ * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages sessions details.  It defines the model schema for a sessions table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
 import { Document, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
-import { scoresModel } from './models/models';
+import { sessions2Model } from './models/models';
 
 /* Output a header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
 
 /**
  * @summary
- * Creates a Scores schema and returns a Mongoose model.
+ * Creates a Sessions schema and returns a Mongoose model.
  * @params
  * - database - a connection to a mongoDB database.
  * - ModelName - the name for the created model.
  * - collection - the name of the mongoDB collection.
  * @returns A Mongoose model.
  */
-function createModelScores(
+function createModelSessions2(
   database: Perform.Database,
   ModelName: string,
   collection: string,
 ): Perform.IModelExtended {
-  debug(`${modulename}: running createModelScores`);
+  debug(`${modulename}: running createModelSessions`);
 
-  /* Set up a schema for member scores */
-  const scoresSchema = new Schema(scoresModel);
+  /* Set up a schema for the sessions */
+  const sessions2Schema = new Schema(sessions2Model);
 
   /* Auto-increment the id field on document creation */
   /* Note: resetCount() is called when delete all members is called */
-  scoresSchema.plugin(autoIncrement, {
+  sessions2Schema.plugin(autoIncrement, {
     model: ModelName,
     field: 'id',
     startAt: 1,
   });
 
   /* Create the model - extended above by autoinc plugin */
-  const ModelScores = database.createModel(
+  const ModelSessions = database.createModel(
     ModelName,
-    scoresSchema,
+    sessions2Schema,
     collection,
   ) as Perform.IModelExtended;
 
   /* Set toObject option so _id, and __v deleted after query */
-  ModelScores.schema.set('toObject', {
+  ModelSessions.schema.set('toObject', {
     transform: (_doc: Document, ret: any, _options: any) => {
       delete ret._id;
       delete ret.__v;
@@ -53,7 +53,7 @@ function createModelScores(
     },
   });
 
-  return ModelScores;
+  return ModelSessions;
 }
 
-export { createModelScores };
+export { createModelSessions2 };

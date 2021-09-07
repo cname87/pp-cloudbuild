@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
-import { ParamMap, Router } from '@angular/router';
-import { ActivatedRoute, Data } from '@angular/router';
+import { ParamMap, Router, ActivatedRoute, Data } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';

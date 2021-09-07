@@ -125,10 +125,13 @@ export interface IScoresChange {
   scores$: Observable<IScores>;
 }
 
+/* Cannot enter dates early than this */
+export const earliestDate = new Date('June 27, 2021');
+
 export const dummyScores: IScores = {
   id: 0,
   memberId: 0,
-  date: new Date(),
+  date: earliestDate,
   scores: [
     {
       item: ScoreType.Sleep,

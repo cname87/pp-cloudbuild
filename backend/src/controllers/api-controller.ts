@@ -278,6 +278,31 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getOrCreateSessions: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) => {
+        return appLocals.handlers.sessions2Api.getOrCreateSessions(
+          context,
+          request,
+          response,
+          nextFunction,
+        );
+      },
+      updateSessions: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.sessions2Api.updateSessions(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       validationFail: (
         context,
         _request: Request,
@@ -423,6 +448,11 @@ const createDbCollectionConnection = (
       appLocals.database,
       `${req.user!.dbCollection}_Score`,
       `${req.user!.dbCollection}_scores`,
+    );
+    appLocals.models.sessions2 = appLocals.createModelSessions2(
+      appLocals.database,
+      `${req.user!.dbCollection}_Sessions2`,
+      `${req.user!.dbCollection}_sessions2`,
     );
   }
   next();

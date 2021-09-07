@@ -1,0 +1,36 @@
+<ngx-datatable
+  #table
+  class="material"
+  [rows]="model"
+  [columns]="to.columns"
+  [columnMode]="'flex'"
+  [rowHeight]="rowHeight"
+  [headerHeight]="rowHeight"
+  [footerHeight]="0"
+  [scrollbarH]="true"
+  [scrollbarV]="false"
+  [reorderable]="false"
+  [swapColumns]="false"
+  [externalSorting]="true"
+  [externalPaging]="false"
+  [selectionType]="selectionType"
+  [trackByProp]="'name'"
+  [virtualization]="true"
+  [summaryRow]="true"
+  summaryPosition="bottom"
+  [summaryHeight]="rowHeight"
+>
+  <ng-template
+    #defaultColumn
+    ngx-datatable-cell-template
+    let-rowIndex="rowIndex"
+    let-value="value"
+    let-row="row"
+    let-column="column"
+  >
+    <formly-field
+      [field]="getField(field, column, rowIndex)"
+    >
+    </formly-field>
+  </ng-template>
+</ngx-datatable>

@@ -63,6 +63,7 @@ declare namespace Perform {
     sessions: IModelExtended;
     questionaires: IModelExtended;
     scores: IModelExtended;
+    sessions2: IModelExtended;
   }
   /* defines a team member */
   export interface IMember {
@@ -74,7 +75,7 @@ declare namespace Perform {
     name: string;
   }
 
-  /* defines a sports session for a team member */
+  /* defines a session for a team member */
   export interface ISessionNoId {
     date: string;
     score: number;
@@ -113,9 +114,15 @@ declare namespace Perform {
     Mood = 'MOOD',
   }
 
-  type TScore = 0 | 1 | 2 | 3 | 4 | 5;
+  export enum SessionType {
+    Strength = 'Strength',
+    Conditioning = 'Conditioning',
+  }
 
-  interface IColumn {
+  type TScore = 0 | 1 | 2 | 3 | 4 | 5;
+  type TRpe = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+  interface IScoresColumn {
     item: ScoreType;
     monday: TScore;
     tuesday: TScore;
@@ -134,6 +141,22 @@ declare namespace Perform {
   }
 
   export interface IScores extends IScoresWithoutId {
+    id: number;
+  }
+  interface ISessionsColumn {
+    type: '' | SessionType;
+    rpe: TRpe;
+    duration: number;
+  }
+
+  export interface ISessionsWithoutId {
+    memberId: number;
+    /* the date is formatted as an ISO date string */
+    date: string;
+    sessions: ISessionsColumn[];
+  }
+
+  export interface ISessions extends ISessionsWithoutId {
     id: number;
   }
 
@@ -164,6 +187,7 @@ declare namespace Perform {
     sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
     questionairesHandlers: typeof import('../handlers/questionaires-handlers').questionairesHandlers;
     scoresHandlers: typeof import('../handlers/scores-handlers').scoresHandlers;
+    sessions2Handlers: typeof import('../handlers/sessions2-handlers').sessions2Handlers;
     miscHandlers: typeof import('../handlers/misc-handlers').miscHandlers;
     errorHandlers: typeof import('../handlers/error-handlers').errorHandlers;
     authenticateHandler: typeof import('../handlers/authenticate-handlers').authenticateHandler;
@@ -172,6 +196,7 @@ declare namespace Perform {
     sessionsApi: typeof import('../api/sessions-api').sessionsApi;
     questionairesApi: typeof import('../api/questionaires-api').questionairesApi;
     scoresApi: typeof import('../api/scores-api').scoresApi;
+    sessions2Api: typeof import('../api/sessions2-api').sessions2Api;
   }
 
   export interface IAppLocals {
@@ -185,6 +210,7 @@ declare namespace Perform {
     createModelSessions: typeof import('../models/src/sessions-model').createModelsSessions;
     createModelQuestionaires: typeof import('../models/src/questionaires-model').createModelQuestionaires;
     createModelScores: typeof import('../models/src/scores-model').createModelScores;
+    createModelSessions2: typeof import('../models/src/sessions2-model').createModelSessions2;
     /* database instance */
     database: Perform.Database;
     /* database connection */

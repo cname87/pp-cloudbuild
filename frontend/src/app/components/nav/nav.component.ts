@@ -30,6 +30,8 @@ export class NavComponent {
   private questionaire = routes.questionaire;
   private questionaires = routes.questionaires;
   private scores = routes.scores;
+  #sessions2 = routes.sessions2;
+  #summary = routes.summary;
   private id$: Observable<string>;
   links!: ILink[];
 
@@ -84,6 +86,16 @@ export class NavComponent {
         {
           path: `/${this.scores.path}/${id}`,
           display: this.scores.displayName,
+          disabled: disabled,
+        },
+        {
+          path: `/${this.#sessions2.path}/${id}`,
+          display: this.#sessions2.displayName,
+          disabled: disabled,
+        },
+        {
+          path: `/${this.#summary.path}/${id}`,
+          display: this.#summary.displayName,
           disabled: disabled,
         },
       ];

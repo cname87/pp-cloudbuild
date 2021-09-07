@@ -53,6 +53,14 @@ const scores = {
   path: 'scores',
   displayName: 'SCORES',
 };
+const sessions2 = {
+  path: 'sessions2',
+  displayName: 'SESSIONS2',
+};
+const summary = {
+  path: 'summary',
+  displayName: 'SUMMARY',
+};
 
 /* other routing elements */
 const profile = {
@@ -79,6 +87,8 @@ export const routes = {
   questionaire,
   questionaires,
   scores,
+  sessions2,
+  summary,
   profile,
   loginPage,
   errorPage,

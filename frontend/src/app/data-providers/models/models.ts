@@ -4,4 +4,6 @@ export * from './member';
 export * from './memberWithoutId';
 export * from './session';
 export * from './questionaire';
+export * from './sessions2';
 export * from './scores';
+export * from './summary';

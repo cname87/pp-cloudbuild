@@ -60,8 +60,8 @@
       "yaml",
       "yml"
     ],
-    "cSpell.showStatus": false,
     "cSpell.words": [
+      "ACWR",
       "ADMIN",
       "AIEJC",
       "Agxr",
@@ -256,8 +256,6 @@
     "debug.allowBreakpointsEverywhere": true,
     "debug.inlineValues": true,
     "debug.internalConsoleOptions": "neverOpen",
-    // removed to fix debug start problem
-    // "debug.javascript.usePreview": true,
     "debug.showSubSessionsInToolBar": true,
 
     "diffEditor.renderSideBySide": true,
@@ -318,7 +316,6 @@
     "shellcheck.enable": true,
     "shellcheck.enableQuickFix": true,
     "shellcheck.run": "onType",
-    "shellcheck.executablePath": "",  // Priority: user defined > bundled shellcheck binary > "shellcheck"
     "shellcheck.exclude": [],
     "shellcheck.customArgs": [],
     "shellcheck.ignorePatterns": {
@@ -335,19 +332,14 @@
         "**/zshenv": true,
         "**/*.zsh-theme": true
     },
-    "shellcheck.ignoreFileSchemes": ["git"],
 
     // tasks auto-detect off
     "typescript.tsc.autoDetect": "off",
-    "grunt.autoDetect": "off",
-    "jake.autoDetect": "off",
-    "gulp.autoDetect": "off",
     "npm.autoDetect": "off",
 
     "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.cursorBlinking": true,
     "terminal.integrated.cwd": "./", // could set to ./backend or ./frontend
-    "terminal.integrated.rendererType": "dom",
 
     "terminal.integrated.commandsToSkipShell": [
       /* all runTask key bindings skip the shell */
@@ -382,5 +374,5 @@
 
     "window.zoomLevel": 0,
 
-	}
+  },
 }
