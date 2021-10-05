@@ -63,7 +63,7 @@ declare namespace Perform {
     sessions: IModelExtended;
     questionaires: IModelExtended;
     scores: IModelExtended;
-    sessions2: IModelExtended;
+    sessions: IModelExtended;
   }
   /* defines a team member */
   export interface IMember {
@@ -184,19 +184,15 @@ declare namespace Perform {
   /* handlers object */
   export interface IHandlers {
     membersHandlers: typeof import('../handlers/members-handlers').membersHandlers;
-    sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
-    questionairesHandlers: typeof import('../handlers/questionaires-handlers').questionairesHandlers;
     scoresHandlers: typeof import('../handlers/scores-handlers').scoresHandlers;
-    sessions2Handlers: typeof import('../handlers/sessions2-handlers').sessions2Handlers;
+    sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
     miscHandlers: typeof import('../handlers/misc-handlers').miscHandlers;
     errorHandlers: typeof import('../handlers/error-handlers').errorHandlers;
     authenticateHandler: typeof import('../handlers/authenticate-handlers').authenticateHandler;
     authorizeHandler: typeof import('../handlers/authorize-handlers').authorizeHandler;
     membersApi: typeof import('../api/members-api').membersApi;
-    sessionsApi: typeof import('../api/sessions-api').sessionsApi;
-    questionairesApi: typeof import('../api/questionaires-api').questionairesApi;
     scoresApi: typeof import('../api/scores-api').scoresApi;
-    sessions2Api: typeof import('../api/sessions2-api').sessions2Api;
+    sessionsApi: typeof import('../api/sessions-api').sessionsApi;
   }
 
   export interface IAppLocals {
@@ -207,10 +203,8 @@ declare namespace Perform {
     handlers: IHandlers;
     models: IModels;
     createModelMembers: typeof import('../models/src/members-model').createModelMembers;
-    createModelSessions: typeof import('../models/src/sessions-model').createModelsSessions;
-    createModelQuestionaires: typeof import('../models/src/questionaires-model').createModelQuestionaires;
     createModelScores: typeof import('../models/src/scores-model').createModelScores;
-    createModelSessions2: typeof import('../models/src/sessions2-model').createModelSessions2;
+    createModelSessions: typeof import('../models/src/sessions-model').createModelSessions;
     /* database instance */
     database: Perform.Database;
     /* database connection */

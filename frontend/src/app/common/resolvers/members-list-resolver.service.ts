@@ -8,8 +8,8 @@ import {
 import { Observable, of } from 'rxjs';
 import { catchError, publishReplay, refCount } from 'rxjs/operators';
 
-import { MembersService } from '../members-service/members.service';
-import { IMember } from '../../data-providers/models/models';
+import { MembersService } from '../services/members-service/members.service';
+import { IMember } from '../models/models';
 
 @Injectable({
   providedIn: 'root',

@@ -9,8 +9,8 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable } from 'rxjs';
 
 import { tap } from 'rxjs/operators';
-import { AuthService } from '../../common/auth-service/auth.service';
-import { routes } from '../../common/config';
+import { AuthService } from '../../common/services/auth-service/auth.service';
+import { routes } from '../../common/configuration';
 
 /**
  * This guard prevents certain paths being routed when isAuthenticated is false.  If not allowed, the Auth0 service is called.  Once the user authenticates it routes to the requested path.

@@ -9,7 +9,11 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 
-import { errorMember, errorTestUrls, E2E_TESTING } from '../../common/config';
+import {
+  errorMember,
+  errorTestUrls,
+  E2E_TESTING,
+} from '../../common/configuration';
 
 @Injectable({ providedIn: 'root' })
 export class E2eTestInterceptor implements HttpInterceptor {

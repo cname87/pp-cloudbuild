@@ -9,11 +9,11 @@ import {
 import { NGXLogger } from 'ngx-logger';
 
 import { from } from 'rxjs';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app-module/app.module';
 import { AuthGuard } from './auth.guard';
 import { MockAuthService } from '../../common/mocks/mock-auth.service';
-import { AuthService } from '../../common/auth-service/auth.service';
-import { routes } from '../../common/config';
+import { AuthService } from '../../common/services/auth-service/auth.service';
+import { routes } from '../../common/configuration';
 
 describe('AuthGuard', () => {
   /* setup function run by each sub test suite */

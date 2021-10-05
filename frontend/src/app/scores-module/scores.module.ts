@@ -5,11 +5,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SharedModule } from '../shared-module/shared.module';
 import { AuthGuard } from '../router-module/guards/auth.guard';
-import { FormsBaseModule } from '../forms-modules/forms-base.module';
 
-import { MemberScoresResolverService } from '../common/resolvers/member-scores-resolver.service';
-import { MemberScoresComponent } from './member-scores/member-scores.component';
-import { DatatableTypeComponent } from './member-scores/datatable.type';
+import { MemberScoresResolverService } from './resolvers/member-scores-resolver.service';
+import { MemberScoresComponent } from './components/member-scores.component';
+import { DatatableTypeComponent } from './components/datatable.type';
 
 const routes: Routes = [
   {
@@ -24,11 +23,6 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [DatatableTypeComponent, MemberScoresComponent],
-  imports: [
-    SharedModule,
-    FormsBaseModule,
-    RouterModule.forChild(routes),
-    NgxDatatableModule,
-  ],
+  imports: [SharedModule, RouterModule.forChild(routes), NgxDatatableModule],
 })
 export class ScoresModule {}

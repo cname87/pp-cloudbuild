@@ -9,32 +9,6 @@ export const memberModel = {
   name: { type: String },
 };
 
-export const questionaireModel = {
-  id: { type: Number, unique: true, index: true, min: 0 },
-  memberId: { type: Number, index: true },
-  date: String,
-  sleep: Number,
-  fatigue: Number,
-  muscle: Number,
-  stress: Number,
-  motivation: Number,
-  health: Number,
-  mood: Number,
-  diet: Number,
-  comment: String,
-};
-
-export const sessionModel = {
-  id: { type: Number, unique: true, index: true },
-  memberId: { type: Number, index: true },
-  date: String,
-  type: String,
-  score: Number,
-  duration: Number,
-  metric: Number,
-  comment: String,
-};
-
 const dateIsSunday = (value: number): boolean => {
   const enum DayOfTheWeek {
     'Sunday' = 0,
@@ -77,7 +51,7 @@ export const scoresModel = {
   ],
 };
 
-export const sessions2Model = {
+export const sessionsModel = {
   id: { type: Number, unique: true, index: true, min: 0 },
   memberId: { type: Number, min: 1 },
   date: {

@@ -109,150 +109,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
-      getAllSessions: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.getAllSessions(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      getSessions: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.getSessions(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      getSession: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.getSession(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      updateSession: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.updateSession(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      addSession: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.addSession(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      deleteSession: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.sessionsApi.deleteSession(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      getAllQuestionaires: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.getAllQuestionaires(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      getQuestionaires: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.getQuestionaires(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      getQuestionaire: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.getQuestionaire(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      updateQuestionaire: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.updateQuestionaire(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      addQuestionaire: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.addQuestionaire(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
-      deleteQuestionaire: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.questionairesApi.deleteQuestionaire(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
       getOrCreateScores: (
         context,
         request: Request,
@@ -284,7 +140,7 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         response: Response,
         nextFunction: NextFunction,
       ) => {
-        return appLocals.handlers.sessions2Api.getOrCreateSessions(
+        return appLocals.handlers.sessionsApi.getOrCreateSessions(
           context,
           request,
           response,
@@ -297,7 +153,7 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         response: Response,
         nextFunction: NextFunction,
       ) =>
-        appLocals.handlers.sessions2Api.updateSessions(
+        appLocals.handlers.sessionsApi.updateSessions(
           context,
           request,
           response,
@@ -434,25 +290,15 @@ const createDbCollectionConnection = (
       `${req.user!.dbCollection}_Member`,
       `${req.user!.dbCollection}_members`,
     );
-    appLocals.models.sessions = appLocals.createModelSessions(
-      appLocals.database,
-      `${req.user!.dbCollection}_Session`,
-      `${req.user!.dbCollection}_sessions`,
-    );
-    appLocals.models.questionaires = appLocals.createModelQuestionaires(
-      appLocals.database,
-      `${req.user!.dbCollection}_Questionaire`,
-      `${req.user!.dbCollection}_questionaires`,
-    );
     appLocals.models.scores = appLocals.createModelScores(
       appLocals.database,
       `${req.user!.dbCollection}_Score`,
       `${req.user!.dbCollection}_scores`,
     );
-    appLocals.models.sessions2 = appLocals.createModelSessions2(
+    appLocals.models.sessions = appLocals.createModelSessions(
       appLocals.database,
-      `${req.user!.dbCollection}_Sessions2`,
-      `${req.user!.dbCollection}_sessions2`,
+      `${req.user!.dbCollection}_Sessions`,
+      `${req.user!.dbCollection}_sessions`,
     );
   }
   next();

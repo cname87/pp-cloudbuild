@@ -3,9 +3,13 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 
 import { Type } from '@angular/core';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app-module/app.module';
 import { E2eTestInterceptor } from './e2e-test.interceptor';
-import { errorMember, errorTestUrls, E2E_TESTING } from '../../common/config';
+import {
+  errorMember,
+  errorTestUrls,
+  E2E_TESTING,
+} from '../../common/configuration';
 
 interface INgxLoggerSpy {
   trace: jasmine.Spy;
@@ -226,7 +230,7 @@ describe('E2eTestInterceptor', () => {
       const expectedCalls = 4;
       try {
         e2eTestInterceptor.intercept(req, nextSpy);
-      } catch (error) {
+      } catch (error: any) {
         expect(error.message).toEqual('Test unexpected error');
       }
       expect(nextHandleSpy).not.toHaveBeenCalled();

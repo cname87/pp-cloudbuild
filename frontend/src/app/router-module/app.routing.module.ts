@@ -2,15 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, NoPreloading } from '@angular/router';
 
 import { AuthGuard } from './guards/auth.guard';
-
-import { MemberDetailComponent } from '../components/member-detail/member-detail.component';
-import { InformationComponent } from '../components/information/information.component';
-import { MembersListComponent } from '../components/members-list/members-list.component';
-import { CallbackComponent } from '../components/callback/callback.component';
-import { ProfileComponent } from '../components/user-profile/user-profile.component';
+import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
+import { InformationComponent } from '../app-module/components/information/information.component';
+import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
+import { CallbackComponent } from '../app-module/components/callback/callback.component';
+import { ProfileComponent } from '../app-module/components/user-profile/user-profile.component';
 import { MemberDetailResolverService } from '../common/resolvers/member-detail-resolver.service';
 import { MembersListResolverService } from '../common/resolvers/members-list-resolver.service';
-import { routes } from '../common/config';
+import { routes } from '../common/configuration';
 
 const appRoutes: Routes = [
   {
@@ -42,54 +41,12 @@ const appRoutes: Routes = [
       member: MemberDetailResolverService,
     },
   },
-  {
-    /* session entry for a member */
-    path: `${routes.session.path1}/:id/${routes.session.path2}`,
-    loadChildren: () =>
-      import('../forms-modules/session.module').then((m) => m.SessionModule),
-  },
-  {
-    /* session edit for a member */
-    path: `${routes.session.path1}/:id/${routes.session.path2}/:sid`,
-    loadChildren: () =>
-      import('../forms-modules/session.module').then((m) => m.SessionModule),
-  },
-  {
-    /* shows a member's sessions */
-    path: `${routes.sessions.path}/:id`,
-    loadChildren: () =>
-      import('../forms-modules/sessions.module').then((m) => m.SessionsModule),
-  },
-  {
-    /* charts a member's sessions */
-    path: `${routes.charts.path}/:id`,
-    loadChildren: () =>
-      import('../charts-module/charts.module').then((m) => m.ChartsModule),
-  },
-  {
-    /* questionaire for a member */
-    path: `${routes.questionaire.path1}/:id/${routes.questionaire.path2}`,
-    loadChildren: () =>
-      import('../forms-modules/questionaire.module').then(
-        (m) => m.QuestionaireModule,
-      ),
-  },
-  {
-    /* questionaire edit for a member */
-    path: `${routes.questionaire.path1}/:id/${routes.questionaire.path2}/:qid`,
-    loadChildren: () =>
-      import('../forms-modules/questionaire.module').then(
-        (m) => m.QuestionaireModule,
-      ),
-  },
-  {
-    /* shows a member's questionaires */
-    path: `${routes.questionaires.path}/:id`,
-    loadChildren: () =>
-      import('../forms-modules/questionaires.module').then(
-        (m) => m.QuestionairesModule,
-      ),
-  },
+  // {
+  //   /* charts a member's sessions */
+  //   path: `${routes.charts.path}/:id`,
+  //   loadChildren: () =>
+  //     import('../charts-module/charts.module.ts.bak').then((m) => m.ChartsModule),
+  // },
   {
     /* shows a member's weekly questionaire scores */
     path: `${routes.scores.path}/:id`,
@@ -98,17 +55,17 @@ const appRoutes: Routes = [
   },
   {
     /* shows a member's weekly session data */
-    path: `${routes.sessions2.path}/:id`,
+    path: `${routes.sessions.path}/:id`,
     loadChildren: () =>
-      import('../sessions2-module/sessions2.module').then(
-        (m) => m.Sessions2Module,
+      import('../sessions-module/sessions.module').then(
+        (m) => m.SessionsModule,
       ),
   },
   {
     /* shows a member's summary data */
     path: `${routes.summary.path}/:id`,
     loadChildren: () =>
-      import('../forms-modules/summary.module').then((m) => m.SummaryModule),
+      import('../summary-module/summary.module').then((m) => m.SummaryModule),
   },
   {
     /* shows the authenticated user profile */

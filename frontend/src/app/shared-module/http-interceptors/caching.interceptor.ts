@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 
-import { RequestCacheService } from '../../common/caching-service/request-cache.service';
+import { RequestCacheService } from '../../common/services/caching-service/request-cache.service';
 import { environment } from '../../../environments/environment';
 
 /**

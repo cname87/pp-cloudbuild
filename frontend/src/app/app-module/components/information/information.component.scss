@@ -1,0 +1,14 @@
+@use '../../../../styles/components.scss' as c;
+
+.fill-width {
+  background-color: c.$accent-lighter;
+}
+/* pointer cursor and primary color only when login page showing */
+.logPage {
+  cursor: pointer;
+  background-color: c.$primary-lighter;
+}
+
+mat-card-actions {
+  margin-left: var(--default-gap-px);
+}

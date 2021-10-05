@@ -10,8 +10,8 @@ import { Observable, throwError, iif, of } from 'rxjs';
 import { catchError, retryWhen, delay, concatMap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
-import { errorTypes, IErrReport } from '../../common/config';
-import { RequestCacheService } from '../../common/caching-service/request-cache.service';
+import { errorTypes, IErrReport } from '../../common/configuration';
+import { RequestCacheService } from '../../common/services/caching-service/request-cache.service';
 
 /**
  * See error-handler.ts for the error handling strategy:

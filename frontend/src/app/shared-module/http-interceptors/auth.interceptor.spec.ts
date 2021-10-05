@@ -5,11 +5,11 @@ import { Type } from '@angular/core';
 import { HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app-module/app.module';
 import { AuthInterceptor } from './auth.interceptor';
 import { MockAuthService } from '../../common/mocks/mock-auth.service';
-import { AuthService } from '../../common/auth-service/auth.service';
-import { IErrReport, errorTypes } from '../../common/config';
+import { AuthService } from '../../common/services/auth-service/auth.service';
+import { IErrReport, errorTypes } from '../../common/configuration';
 
 describe('AuthInterceptor', () => {
   async function mainSetup() {
@@ -106,7 +106,7 @@ describe('AuthInterceptor', () => {
       const req = new HttpRequest('GET', 'www.test.com');
       try {
         await authInterceptor.intercept(req, nextSpy).toPromise();
-      } catch (err) {
+      } catch (err: any) {
         expect(err.isHandled).toEqual(false); // initially true
       }
     });

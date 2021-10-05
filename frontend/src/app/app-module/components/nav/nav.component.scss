@@ -1,0 +1,18 @@
+@use '../../../../styles/components.scss' as c;
+
+nav.fill-width {
+  margin-bottom: var(--default-gap-px);
+}
+
+a.mat-tab-link  {
+  min-width: max-content;
+  padding: 0;
+  margin-right: var(--default-gap-px);
+}
+/* style a tab that is active via router link (i.e. not via a click) */
+a.item-active {
+  /* tab text stays solid black */
+  opacity: 1.0;
+  /* override the disabled color so disabled tabs can appear as selected (when they are selected via route) */
+  color: rgba(0, 0, 0, 1.00);
+}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { by, element, ElementFinder } from 'protractor';
 
-import { IMember } from 'src/app/data-providers/models/member';
+import { IMember } from 'src/app/common/models/member';
 
 export function getMembersListElement() {
   /* DOM elements */

@@ -12,7 +12,7 @@ import path from 'path';
 
 import { environment } from '../src/environments/environment';
 /* import the member that is configured to trigger an error */
-import { errorMember } from '../src/app/common/config';
+import { errorMember } from '../../common/configuration';
 
 /* need to set a dummy client-side window global as it is referenced in auth0 configuration in config.ts */
 (global as any).window = {

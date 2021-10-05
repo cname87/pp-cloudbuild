@@ -10,8 +10,9 @@ import {
   ErrorHandlerService,
   RollbarService,
   rollbarFactory,
-} from './error-handler-service/error-handler.service';
+} from './services/error-handler-service/error-handler.service';
 import { httpInterceptorProviders } from './http-interceptors';
+import { FormlyBaseModule } from './formly-base-module/formly-base.module';
 
 @NgModule({
   declarations: [MemberBannerComponent],
@@ -19,6 +20,7 @@ import { httpInterceptorProviders } from './http-interceptors';
   exports: [
     CommonModule,
     FlexLayoutModule,
+    FormlyBaseModule,
     MaterialModule,
     MemberBannerComponent,
   ],

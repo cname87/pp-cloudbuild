@@ -4,10 +4,10 @@ import { ErrorHandler } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
 import { MemberDetailResolverService } from './member-detail-resolver.service';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app-module/app.module';
 import { asyncError, asyncData } from '../test-helpers';
 import { members } from '../mocks/mock-members';
-import { MembersService } from '../members-service/members.service';
+import { MembersService } from '../services/members-service/members.service';
 
 interface IMembersServiceSpy {
   getMember: jasmine.Spy;

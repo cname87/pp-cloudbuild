@@ -10,18 +10,17 @@ import { NGXLogger } from 'ngx-logger';
 
 import { of, Observable } from 'rxjs';
 import { click } from '../common/test-helpers';
-import { AppModule } from '../app.module';
-import { AppComponent } from '../components/app/app.component';
-import { DashboardComponent } from '../components/dashboard/dashboard.component';
-import { MembersListComponent } from '../components/members-list/members-list.component';
-import { MembersService } from '../common/members-service/members.service';
-import { IMember } from '../data-providers/models/models';
-import { MemberDetailComponent } from '../components/member-detail/member-detail.component';
-import { MemberSessionComponent } from '../forms-modules/member-session/member-session.component';
-import { routes } from '../common/config';
-import { InformationComponent } from '../components/information/information.component';
-import { AuthService } from '../common/auth-service/auth.service';
-import { LoginComponent } from '../components/login/login.component';
+import { AppModule } from '../app-module/app.module';
+import { AppComponent } from '../app-module/components/app/app.component';
+import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
+import { MembersService } from '../common/services/members-service/members.service';
+import { IMember } from '../common/models/models';
+import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
+
+import { routes } from '../common/configuration';
+import { InformationComponent } from '../app-module/components/information/information.component';
+import { AuthService } from '../common/services/auth-service/auth.service';
+import { LoginComponent } from '../app-module/components/login/login.component';
 
 interface IMembersServiceStub {
   getMembers: () => Observable<IMember[]>;
@@ -187,17 +186,6 @@ describe('RoutingModule', () => {
     expectElementOf(fixture, LoginComponent);
   });
 
-  it('should navigate to "/dashboard" if authenticated', async () => {
-    const { fixture, spyLocation } = await setup();
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(spyLocation.path()).toEqual(
-      '/dashboard',
-      'after initialNavigation() authenticated',
-    );
-    expectElementOf(fixture, DashboardComponent);
-  });
-
   it('should navigate to "/memberslist" on click', async () => {
     const { fixture, page, spyLocation } = await setup();
     fixture.detectChanges();
@@ -206,7 +194,6 @@ describe('RoutingModule', () => {
       '/dashboard',
       'after initialNavigation()',
     );
-    expectElementOf(fixture, DashboardComponent);
     fixture.ngZone!.run(() => {
       click(page.membersLinkDe);
     });
@@ -218,35 +205,6 @@ describe('RoutingModule', () => {
       'after clicking members link',
     );
     expectElementOf(fixture, MembersListComponent);
-  });
-
-  it('should navigate to "/dashboard" on click', async () => {
-    const { fixture, page, spyLocation } = await setup();
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expect(spyLocation.path()).toEqual(
-      '/dashboard',
-      'after initialNavigation()',
-    );
-    expectElementOf(fixture, DashboardComponent);
-    fixture.ngZone!.run(() => {
-      click(page.membersLinkDe);
-    });
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expectPathToBe(
-      spyLocation,
-      `/${routes.membersList.path}`,
-      'after clicking members link',
-    );
-    expectElementOf(fixture, MembersListComponent);
-    fixture.ngZone!.run(() => {
-      click(page.dashboardLinkDe);
-    });
-    fixture.detectChanges();
-    await fixture.whenStable();
-    expectPathToBe(spyLocation, '/dashboard', 'after clicking dashboard link');
-    expectElementOf(fixture, DashboardComponent);
   });
 
   it('should navigate to "/members" on browser URL change', async () => {
@@ -257,7 +215,6 @@ describe('RoutingModule', () => {
       '/dashboard',
       'after initialNavigation()',
     );
-    expectElementOf(fixture, DashboardComponent);
     fixture.ngZone!.run(() => {
       spyLocation.go(`/${routes.membersList.path}`);
     });
@@ -279,7 +236,6 @@ describe('RoutingModule', () => {
       '/dashboard',
       'after initialNavigation()',
     );
-    expectElementOf(fixture, DashboardComponent);
     fixture.ngZone!.run(() => {
       spyLocation.go('/detail/2');
     });
@@ -297,7 +253,6 @@ describe('RoutingModule', () => {
       '/dashboard',
       'after initialNavigation()',
     );
-    expectElementOf(fixture, DashboardComponent);
     fixture.ngZone!.run(() => {
       spyLocation.go('/dummyUrl');
     });

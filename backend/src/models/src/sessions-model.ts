@@ -1,11 +1,11 @@
 /**
- * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages session details.  It defines the model schema for the sessions and then returns a pre-existing model, or creates a new model, based on supplied parameters.
+ * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages sessions details.  It defines the model schema for a sessions table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
 import { Document, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
-import { sessionModel } from './models/models';
+import { sessionsModel } from './models/models';
 
 /* Output a header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
@@ -26,12 +26,12 @@ function createModelSessions(
 ): Perform.IModelExtended {
   debug(`${modulename}: running createModelSessions`);
 
-  /* Set up a session schema */
-  const sessionSchema = new Schema(sessionModel);
+  /* Set up a schema for the sessions */
+  const sessionsSchema = new Schema(sessionsModel);
 
   /* Auto-increment the id field on document creation */
   /* Note: resetCount() is called when delete all members is called */
-  sessionSchema.plugin(autoIncrement, {
+  sessionsSchema.plugin(autoIncrement, {
     model: ModelName,
     field: 'id',
     startAt: 1,
@@ -40,11 +40,11 @@ function createModelSessions(
   /* Create the model - extended above by autoinc plugin */
   const ModelSessions = database.createModel(
     ModelName,
-    sessionSchema,
+    sessionsSchema,
     collection,
-  ) as any as Perform.IModelExtended;
+  ) as Perform.IModelExtended;
 
-  /* Set toObject option so _id, and __v deleted */
+  /* Set toObject option so _id, and __v deleted after query */
   ModelSessions.schema.set('toObject', {
     transform: (_doc: Document, ret: any, _options: any) => {
       delete ret._id;

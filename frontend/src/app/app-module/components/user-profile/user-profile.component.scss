@@ -1,0 +1,13 @@
+@use '../../../../styles/components.scss' as c;
+
+.fill-width {
+  background-color: c.$accent-lighter;
+}
+
+mat-list-item.mat-list-item {
+  height: 2rem;
+}
+
+mat-card-actions {
+  margin-left: var(--default-gap-px);
+}

@@ -3,9 +3,9 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 
 import { of, throwError, defer } from 'rxjs';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app-module/app.module';
 import { HttpErrorInterceptor } from './http-error.interceptor';
-import { errorTypes } from '../../common/config';
+import { errorTypes } from '../../common/configuration';
 
 interface INgxLoggerSpy {
   trace: jasmine.Spy;

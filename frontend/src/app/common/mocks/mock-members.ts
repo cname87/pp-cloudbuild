@@ -1,4 +1,4 @@
-import { IMember } from '../../data-providers/members.data-provider';
+import { IMember } from '../data-providers/members.data-provider';
 
 export const members: IMember[] = [
   { id: 11, name: 'test11' },

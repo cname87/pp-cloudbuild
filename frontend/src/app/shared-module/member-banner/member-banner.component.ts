@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 import { Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IMember } from '../../data-providers/models/models';
+import { IMember } from '../../common/models/models';
 
 @Component({
   selector: 'app-member-banner',
