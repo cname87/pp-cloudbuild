@@ -1,40 +1,75 @@
 
-<app-member-banner [member$]="member$"></app-member-banner>
+<app-member-banner
+  [goBackOverride]="goBackOverride"
+  [member$]="member$"
+>
+</app-member-banner>
 
-<div class="fill-width container mat-elevation-z8">
+<mat-divider></mat-divider>
+
+<div
+  class="container mat-elevation-z8"
+  *ngIf="!isChartShown"
+>
 
   <mat-table
+    id="summary-table"
     [dataSource]="dataSource"
-    recycleRows
   >
-  <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
-    <th mat-header-cell *matHeaderCellDef>
-      {{column.header}}
-    </th>
-    <td mat-cell *matCellDef="let row">
-      {{column.cell(row)}}
-    </td>
-  </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <!-- Define names column -->
+    <ng-container
+      [matColumnDef]="dataNames.columnDef"
+      sticky="true"
+      >
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        {{dataNames.header }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{dataNames.cell(row)}}
+      </mat-cell>
+    </ng-container>
 
-    <!-- <mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
+    <!-- Define the data columns -->
+    <ng-container
+      *ngFor="let column of dataColumns"
+      [matColumnDef]="column.columnDef"
+    >
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        {{column.header | date: 'dd' }}
+        <br>
+        {{column.header | date: 'MMM' }}
+        <br>
+        {{column.header | date: 'yyyy' }}
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        {{column.cell(row)}}
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row
+      *matHeaderRowDef="columnsToDisplay; sticky: true"
+    >
     </mat-header-row>
 
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-
-    <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row> -->
+    <mat-row
+      *matRowDef="let row; columns: columnsToDisplay; let even=even"
+      (click)="clickRow(row)"
+      [class.row-is-even]=even
+    >
+    </mat-row>
 
   </mat-table>
 
-  <mat-paginator
-    class="mat-paginator-sticky"
-    [length]="100"
-    [pageSize]="10"
-    [pageSizeOptions]="[5, 10, 25, 100]"
-    [showFirstLastButtons]
-  >
-  </mat-paginator>
-
 </div>
+
+<summary-chart
+  *ngIf="isChartShown"
+  [metric]="rowName"
+  [data]="rowChartData"
+>
+</summary-chart>

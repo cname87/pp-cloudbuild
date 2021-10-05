@@ -2,9 +2,10 @@
  * Summary data.
  */
 
-export interface IMeasure {
-  [index: number]: number;
-}
+const numberSummaryDataColumns = 52;
 
-/* used by the summary table header and footer rows */
-export const summaryDisplayedColumns = ['item', 'wk1', 'wk2'];
+/* used by the summary table */
+export const columnsToDisplay = ['item'];
+for (let index = 1; index <= numberSummaryDataColumns; index++) {
+  columnsToDisplay.push(`wk${index}`);
+}

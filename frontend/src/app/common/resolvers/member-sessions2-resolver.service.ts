@@ -32,7 +32,7 @@ export class MemberSessions2ResolverService implements Resolve<any> {
   }
 
   /**
-   * @returns Returns the Sunday that is equal or prior to today. The date is returned is in Date format.
+   * @returns Returns the Sunday that is equal or prior to today. The date returned is in Date format.
    */
   #getLastSunday(): Date {
     let dateTemp = new Date();

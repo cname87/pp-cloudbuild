@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Location } from '@angular/common';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
@@ -140,7 +139,7 @@ export class MemberScoresComponent implements OnDestroy {
     {
       template:
         // eslint-disable-next-line max-len
-        '<div class="table-header">Select 1 to 5, where 1 is the worst feeling, e.g. high stress, and 5 is the best feeling, e.g. low stress</div>',
+        '<div class="table-help">Select 1 to 5, where 1 is the WORST feeling and 5 is the BEST feeling<br>e.g. high stress is 1 and low stress is 5</div>',
     },
     {
       fieldGroup: [
@@ -260,7 +259,6 @@ export class MemberScoresComponent implements OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private routeStateService: RouteStateService,
     private scoresService: ScoresService,
     private isLoadingService: IsLoadingService,
@@ -401,10 +399,6 @@ export class MemberScoresComponent implements OnDestroy {
       this.#submitDate(updatedModel);
       this.#tableChange.emit('modelChange');
     }
-  }
-
-  goBack(): void {
-    this.location.back();
   }
 
   ngOnDestroy(): void {

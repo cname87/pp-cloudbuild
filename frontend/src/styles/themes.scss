@@ -11,6 +11,7 @@
 $primary: mat.define-palette(mat.$deep-purple-palette, 200, 100, 300);
 $accent: mat.define-palette(mat.$amber-palette, 200, 100, 300);
 $warn: mat.define-palette(mat.$red-palette, A200, A100, A400);
+$content: mat.define-palette(mat.$blue-grey-palette, 100, 50, 200);
 
 /* define a custom typography config with the default typography levels but referenced to rem with the ratio 16px = 1rem, i.e. if you increase 1rem from 16px default these will scale accordingly */
 /* aiming to scale for a min screen size of 360px wide */
@@ -41,6 +42,7 @@ $theme: mat.define-light-theme((
     primary: $primary,
     accent: $accent,
     warn: $warn,
+    content: $content,
   ),
   typography: $typoConfig,
 ));

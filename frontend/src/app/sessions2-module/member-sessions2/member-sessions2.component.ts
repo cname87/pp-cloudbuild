@@ -1,7 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Location } from '@angular/common';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
@@ -33,7 +32,7 @@ export class MemberSessions2Component implements OnDestroy {
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
   /* min width used in the datatable */
-  #minWidth = 54;
+  #minWidth = 42;
   /* error message displayed to the user */
   #toastrMessage = 'A data access error has occurred';
   /* ngx-datatable columns */
@@ -45,7 +44,7 @@ export class MemberSessions2Component implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 3,
     },
     {
       name: 'AM/PM',
@@ -54,54 +53,54 @@ export class MemberSessions2Component implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
     },
     {
       name: 'Type',
       prop: 'type',
-      minWidth: this.#minWidth,
+      minWidth: this.#minWidth * 3,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 4,
     },
     {
       name: 'RPE',
       prop: 'rpe',
-      minWidth: this.#minWidth,
+      minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
     },
     {
       name: 'Duration',
       prop: 'duration',
+      minWidth: this.#minWidth * 2,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      flexGrow: 2,
+    },
+    {
+      name: 'Load',
+      prop: 'load',
       minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
     },
-    // {
-    //   name: 'Load',
-    //   prop: 'load',
-    //   minWidth: this.#minWidth,
-    //   resizeable: false,
-    //   sortable: false,
-    //   draggable: false,
-    //   flexGrow: 1,
-    //   summaryFunc: (cells: number[]) => this.#sum(cells),
-    // },
   ];
   /* type select options */
   #type = [
     { value: SessionType.Strength, label: 'Strength' },
     { value: SessionType.Conditioning, label: 'Conditioning' },
+    { value: SessionType.Conditioning, label: 'Sport' },
   ];
   /* rpe select options */
   #rpe = [
-    { value: 0, label: '' },
+    { value: 0, label: '0' },
     { value: 1, label: '1' },
     { value: 2, label: '2' },
     { value: 3, label: '3' },
@@ -124,7 +123,7 @@ export class MemberSessions2Component implements OnDestroy {
     {
       template:
         // eslint-disable-next-line max-len
-        '<div class="table-header">RPE is the Rate of Perceived Exertion of the session.<br>Select from 0, for no exertion, to 10, for extreme exertion</div>',
+        '<div class="table-help">RPE is the Rate of Perceived Exertion of the session.<br>Select from 0, for no exertion, to 10, for extreme exertion</div>',
     },
     {
       fieldGroup: [
@@ -142,6 +141,7 @@ export class MemberSessions2Component implements OnDestroy {
           templateOptions: {
             required: true,
             readonly: true,
+            label: 'Week commencing Sunday...',
             datepickerOptions: {
               /* allow only a certain period of dates be shown */
               max: new Date(),
@@ -200,6 +200,7 @@ export class MemberSessions2Component implements OnDestroy {
           {
             key: 'rpe',
             type: 'select',
+            defaultValue: 0,
             templateOptions: {
               options: this.#rpe,
               change: () => this.#onTableChange(),
@@ -208,9 +209,11 @@ export class MemberSessions2Component implements OnDestroy {
           {
             key: 'duration',
             type: 'input',
+            defaultValue: 0,
             templateOptions: {
               type: 'number',
               min: 0,
+              max: 999,
               change: () => this.#onTableChange(),
             },
             validators: {
@@ -219,17 +222,28 @@ export class MemberSessions2Component implements OnDestroy {
                   _control: AbstractControl,
                   field: FormlyFieldConfig,
                 ): boolean => {
-                  const number = isNaN(Number(field.formControl?.value))
-                    ? 0
-                    : Number(field.formControl?.value);
-                  return number >= 0;
+                  const number = Number(field.formControl?.value);
+                  return number >= 0 && number <= 999;
                 },
                 message: (
                   _control: AbstractControl,
                   _field: FormlyFieldConfig,
                 ) => {
-                  return `You must rate your rpe from 1 to 10`;
+                  return `You must rate the session duration from 1 to 999 minutes`;
                 },
+              },
+            },
+          },
+          {
+            key: 'load',
+            type: 'input',
+            templateOptions: {
+              type: 'text',
+              disabled: true,
+            },
+            expressionProperties: {
+              'model.load': (model) => {
+                return (model?.rpe ?? 0) * (model?.duration ?? 0);
               },
             },
           },
@@ -240,7 +254,6 @@ export class MemberSessions2Component implements OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private routeStateService: RouteStateService,
     private sessions2Service: Sessions2Service,
     private isLoadingService: IsLoadingService,
@@ -303,7 +316,6 @@ export class MemberSessions2Component implements OnDestroy {
    */
   #submitTable(updatedModel: ISessions2): void {
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    console.log(`Updated model: ${JSON.stringify(updatedModel)}`);
     this.isLoadingService.add(
       this.sessions2Service
         .updateSessionsTable(updatedModel)
@@ -378,10 +390,6 @@ export class MemberSessions2Component implements OnDestroy {
       this.#submitDate(updatedModel);
       this.#tableChange.emit('modelChange');
     }
-  }
-
-  goBack(): void {
-    this.location.back();
   }
 
   ngOnDestroy(): void {

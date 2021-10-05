@@ -104,9 +104,9 @@ export class MembersService {
     this.logger.trace(`${MembersService.name}: getMember called`);
 
     return this.membersDataProvider.getMember(id).pipe(
-      tap((_) => {
+      tap((member) => {
         this.logger.trace(
-          `${MembersService.name}: Fetched member with id = ${id}`,
+          `${MembersService.name}: Fetched member ${JSON.stringify(member)}`,
         );
       }),
 

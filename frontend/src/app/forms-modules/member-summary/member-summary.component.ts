@@ -1,7 +1,6 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
-import { ParamMap, ActivatedRoute } from '@angular/router';
+import { Component } from '@angular/core';
 import { Location } from '@angular/common';
-import { MatPaginator } from '@angular/material/paginator';
+import { ParamMap, ActivatedRoute } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { IsLoadingService } from '@service-work/is-loading';
@@ -10,21 +9,59 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
-import {
-  IMember,
-  summaryDisplayedColumns,
-} from '../../data-providers/models/models';
+import { IMember, columnsToDisplay } from '../../data-providers/models/models';
 import { RouteStateService } from '../../common/route-state-service/router-state-service';
 import { IErrReport } from '../../common/config';
+import { SingleSeries } from '@swimlane/ngx-charts';
 
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 /* Temporary */
-const score: Array<string | number> = ['SCORE', 15, 100];
-const load: Array<string | number> = ['LOAD', 55, 140];
+type namesData = [string, string, string, string, string, string];
+type rowData = Array<string | number>;
+type rowsData = [rowData, rowData, rowData, rowData, rowData, rowData];
 
-const summaryTable: Array<string | number>[] = [score, load];
+const rowNames: namesData = [
+  'Score',
+  'Load',
+  'Delta %',
+  'Monotony',
+  'ACWR',
+  'Sessions',
+];
+
+const score = [] as unknown as rowData;
+score[0] = rowNames[0];
+const load = [] as unknown as rowData;
+load[0] = rowNames[1];
+const delta = [] as unknown as rowData;
+delta[0] = rowNames[2];
+const monotony = [] as unknown as rowData;
+monotony[0] = rowNames[3];
+const acwr = [] as unknown as rowData;
+acwr[0] = rowNames[4];
+const sessionsCount = [] as unknown as rowData;
+sessionsCount[0] = rowNames[5];
+for (let index = 1; index <= 52; index++) {
+  score[index] = Math.round(Math.random() * 100);
+  load[index] = Math.round(Math.random() * 100);
+  delta[index] = Math.round(Math.random() * 100);
+  monotony[index] = Math.round(Math.random() * 100);
+  acwr[index] = Math.round(Math.random() * 100);
+  sessionsCount[index] = Math.round(Math.random() * 100);
+}
+const summaryTable: rowsData = [
+  score,
+  load,
+  delta,
+  monotony,
+  acwr,
+  sessionsCount,
+];
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
- * @title This component shows a scrollable table detailing all summary data linked to a member.
+ * @title This component shows a scrollable table detailing all summary data by week linked to a member.
  */
 @Component({
   selector: 'app-summary',
@@ -32,93 +69,119 @@ const summaryTable: Array<string | number>[] = [score, load];
   styleUrls: ['./member-summary.component.scss'],
   providers: [],
 })
-export class MemberSummaryComponent implements AfterViewInit {
+export class MemberSummaryComponent {
   //
-  private destroy = new Subject<void>();
-  private toastrMessage = 'A member access error has occurred';
-
   member$!: Observable<IMember>;
-  summary$!: Observable<Array<string | number>[]>;
-  displayedColumns: string[] = summaryDisplayedColumns;
-  dataSource: MatTableDataSource<Array<string | number>> =
-    new MatTableDataSource();
+  /* sets which columns to display */
+  #nameColumnToDisplay: string;
+  #dataColumnsToDisplay: string[];
+  columnsToDisplay: string[];
+  /* defines the names column */
+  dataNames: {
+    columnDef: string;
+    header: string;
+    cell: (rowData: Array<string>) => string;
+  };
+  /* defines the data columns */
+  dataColumns: {
+    columnDef: string;
+    header: Date;
+    cell: (rowData: Array<number>) => number;
+  }[] = [];
+  /* data sent to the table */
+  dataSource!: MatTableDataSource<rowData>;
+  /* data sent to chart showing one table row of data */
+  rowChartData: SingleSeries = [];
+  rowName = 'Metric';
+  isChartShown = false;
+  #destroy = new Subject<void>();
+  #toastrMessage = 'A member access error has occurred';
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  /* generate chart data */
+  getChartData = (rowData: rowData) => {
+    const valueData = rowData.slice(1);
+    for (let i = 0; i < this.dataColumns.length; i++) {
+      this.rowChartData[i] = {
+        name: this.dataColumns[i].header,
+        value: valueData[i] as number,
+      };
+    }
+  };
 
-  columns = [
-    {
-      columnDef: 'item',
-      header: 'Item',
-      cell: (element: Array<string | number>) => `${element[0]}`,
-    },
-    {
-      columnDef: 'wk1',
-      header: 'Week 1',
-      cell: (element: Array<string | number>) => `${element[1]}`,
-    },
-    {
-      columnDef: 'wk2',
-      header: 'Week 2',
-      cell: (element: Array<string | number>) => `${element[2]}`,
-    },
-    // {
-    //   columnDef: 'delta',
-    //   header: 'Delta',
-    //   cell: (element: IMeasure) => `${element.delta}`,
-    // },
-    // {
-    //   columnDef: 'strain',
-    //   header: 'Strain',
-    //   cell: (element: IMeasure) => `${element.strain}`,
-    // },
-    // {
-    //   columnDef: 'monotony',
-    //   header: 'Monotony',
-    //   cell: (element: IMeasure) => `${element.strain}`,
-    // },
-    // {
-    //   columnDef: 'acwr',
-    //   header: 'ACWR',
-    //   cell: (element: IMeasure) => `${element.acwr}`,
-    // },
-  ];
+  /* call up a chart of a summary row */
+  clickRow = (rowData: rowData) => {
+    this.getChartData(rowData);
+    this.rowName = rowData[0] as string;
+    this.isChartShown = true;
+  };
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private routeStateService: RouteStateService,
     private isLoadingService: IsLoadingService,
+    private location: Location,
     private logger: NGXLogger,
     private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSummaryComponent.name}: Starting MemberSummaryComponent`,
     );
-    this.member$ = of({ id: 1, name: 'testMember' });
-    this.summary$ = of(summaryTable);
+
+    /* define the displayed columns */
+    this.#nameColumnToDisplay = columnsToDisplay[0];
+    this.#dataColumnsToDisplay = columnsToDisplay.slice(1);
+    this.columnsToDisplay = columnsToDisplay;
+
+    /* define the first column */
+    this.dataNames = {
+      columnDef: this.#nameColumnToDisplay,
+      header: '',
+      cell: (rowData) => rowData[0],
+    };
+
+    /* define the columns that contain the data */
+    const addDays = (date: Date, numDays: number) => {
+      const newDate = new Date();
+      newDate.setDate(date.getDate() + numDays);
+      return newDate;
+    };
+    for (let i = 0; i < this.#dataColumnsToDisplay.length; i++) {
+      const firstDate = new Date();
+      const date = addDays(firstDate, 7 * i);
+      this.dataColumns[i] = {
+        columnDef: this.#dataColumnsToDisplay[i],
+        header: date,
+        cell: (rowData) => {
+          const valueData = rowData.slice(1);
+          return valueData[i];
+        },
+      };
+    }
+
     /* get the data as supplied from the route resolver */
     // this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
     //   this.member$ = data.memberAndSummary.member;
-    //   this.summary$ = data.memberAndSummary.questionaires;
+    //   this.#summary$ = data.memberAndSummary.questionaires;
     // });
+    this.member$ = of({ id: 1, name: 'testMember' });
     /* loads summary and fills table */
     this.isLoadingService.add(
-      this.summary$
+      of(summaryTable)
         .pipe(
-          takeUntil(this.destroy),
+          takeUntil(this.#destroy),
           map((summary) => {
             this.logger.trace(
               `${MemberSummaryComponent.name}: Summary retrieved`,
             );
-            return new MatTableDataSource(summary);
+            return summary;
           }),
         )
-        .subscribe((dataSource) => {
-          this.dataSource = dataSource;
-          this.dataSource.paginator = this.paginator;
+        .subscribe((summaryTable: rowsData) => {
+          this.dataSource = new MatTableDataSource(summaryTable);
         }),
     );
   }
+
   ngOnInit() {
     /* update service with routed member id */
     this.route.paramMap
@@ -130,14 +193,14 @@ export class MemberSummaryComponent implements AfterViewInit {
           }
           return id;
         }),
-        takeUntil(this.destroy),
+        takeUntil(this.#destroy),
         catchError((err: IErrReport) => {
           this.logger.trace(
             `${MemberSummaryComponent.name}: catchError called`,
           );
 
           /* inform user and mark as handled */
-          this.toastr.error('ERROR!', this.toastrMessage);
+          this.toastr.error('ERROR!', this.#toastrMessage);
           err.isHandled = true;
 
           this.logger.trace(
@@ -150,15 +213,16 @@ export class MemberSummaryComponent implements AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    this.destroy.next();
-    this.destroy.complete();
+    this.#destroy.next();
+    this.#destroy.complete();
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
+  /* Overrides banner goBack function */
+  goBackOverride = () => {
+    if (this.isChartShown) {
+      this.isChartShown = false;
+    } else {
+      this.location.back();
+    }
+  };
 }

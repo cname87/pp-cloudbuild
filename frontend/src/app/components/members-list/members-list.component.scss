@@ -1,20 +1,20 @@
-@use '../../../styles/components.scss' as c;
-
 a.id, a.detail {
   margin-right: var(--list-spacing);
   margin-bottom: var(--default-gap-px);
-  background-color: c.$primary-lighter;
+  background-color: var(--primary-color-lighter);
+  height: var(--row-height);
 }
 
 a:hover {
-  background-color: c.$primary-darker;
+  background-color: var(--primary-color-darker);
 }
 
 button.delete {
   margin-bottom: var(--default-gap-px);
-  background-color: c.$warn-lighter;
+  height: var(--row-height);
+  background-color: var(--warn-color-lighter);
 }
 
 button.delete:hover {
-  background-color: c.$warn-darker;
+  background-color: var(--warn-color-darker);
 }

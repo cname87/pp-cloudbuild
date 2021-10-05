@@ -54,7 +54,11 @@ export class RequestCacheService {
     /* return cache for get one member */
     if (
       request.method === 'GET' &&
-      this._memberRegex.test(request.urlWithParams)
+      this._memberRegex.test(request.urlWithParams) &&
+      /**
+       * TODO Extend getMember cache so it stores Requests - currently it returns the same member even if you switch members on the list page
+       */
+      false
     ) {
       return this.memberCache.response;
     }

@@ -13,6 +13,7 @@ import { IMember } from '../../data-providers/models/models';
 export class MemberBannerComponent {
   //
   @Input() member$!: Observable<IMember>;
+  @Input() goBackOverride: (() => void) | undefined = undefined;
 
   constructor(private location: Location, private logger: NGXLogger) {
     this.logger.trace(
@@ -21,6 +22,10 @@ export class MemberBannerComponent {
   }
 
   goBack(): void {
-    this.location.back();
+    if (this.goBackOverride) {
+      return this.goBackOverride();
+    } else {
+      this.location.back();
+    }
   }
 }

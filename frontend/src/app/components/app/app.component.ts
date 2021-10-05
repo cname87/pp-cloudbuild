@@ -14,9 +14,6 @@ import { filter } from 'rxjs/operators';
 import { AuthService } from '../../common/auth-service/auth.service';
 import { environment } from '../../../environments/environment';
 
-/**
- * This application displays various views of the members of a team stored on a server.  It allows for member creation, reading, updating and deletion.
- */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

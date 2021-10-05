@@ -38,6 +38,11 @@ export class GetMemberCache {
    * - The response from an earlier get member request.
    */
   setGetAll(getMemberResponse: HttpResponse<IMember>) {
+    this.logger.trace(
+      `${GetMemberCache.name}: putting ${JSON.stringify(
+        getMemberResponse.body,
+      )} into the cache`,
+    );
     this._response = getMemberResponse;
   }
 }

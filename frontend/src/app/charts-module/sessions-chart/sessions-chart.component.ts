@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ParamMap } from '@angular/router';
 import { ActivatedRoute, Data } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
@@ -30,7 +29,6 @@ export class SessionsChartComponent {
   #sessions!: ISession[];
   member$!: Observable<IMember>;
   member!: IMember;
-
   /* dataset to be charted - it must be in a specific format as per the type */
   data!: MultiSeries;
   /* chart size */
@@ -62,7 +60,6 @@ export class SessionsChartComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
     private routeStateService: RouteStateService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
@@ -151,10 +148,6 @@ export class SessionsChartComponent {
   ngOnDestroy(): void {
     this.#destroy.next();
     this.#destroy.complete();
-  }
-
-  goBack(): void {
-    this.location.back();
   }
 
   /**

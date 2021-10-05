@@ -1,28 +1,35 @@
-@use '../../../styles/components.scss' as c;
-
 div.container {
   margin-left: var(--default-gap-px);
-  height: calc(65vh);
   overflow: auto;
+  width: var(--element-width);
 }
 
-button.button {
-  margin: 0px;
-  padding-left: var(--default-gap-px);
-  padding-right: var(--default-gap-px);
-  padding-top: var(--list-spacing);
-  padding-bottom: var(--list-spacing);
+.mat-table {
+  overflow-x: scroll;
 }
 
-mat-icon.edit {
+.mat-cell,
+.mat-header-cell {
+  display: table-cell;
+  padding-left: 4px;
+  padding-right: 4px
+}
+.mat-header-cell {
+  color: var(--primary-color-darker);
+}
+
+.mat-header-row {
+  border-top: 0.25px solid black;
+  border-bottom: 0.25px solid black;
+  box-sizing: border-box;
+  display: table-row;
+  min-height: 60px; // ensures first cell with no content is the same height as the others
+}
+.mat-row {
+  border-bottom: 0.25px solid black;
+  box-sizing: border-box;
+  display: table-row;
   padding: 0px;
-  float: center;
-}
-
-.mat-paginator-sticky {
-  bottom: 0px;
-  position: sticky;
-  z-index: 10;
 }
 
 @mixin mat-table-columns($columns) {
@@ -30,11 +37,17 @@ mat-icon.edit {
     @each $colName, $props in $columns {
       $pc-flex: map-get($props, 'pc-flex');
       &#{$colName} {
-        word-break: break-all;
-        justify-content: center;
-        text-align: center;
-        padding: 0px;
+        border-right: 0.25px solid black;
+        box-sizing: border-box;
         flex: 0 1 $pc-flex;
+        justify-content: center;
+        overflow-wrap: break-word;
+        text-align: center;
+        vertical-align: middle;
+        white-space: nowrap;
+        @if map-has-key($props, 'padding') {
+          padding: map-get($props, 'padding');
+        }
         @if map-has-key($props, 'color') {
           color: map-get($props, 'color');
         }
@@ -43,16 +56,17 @@ mat-icon.edit {
   }
 }
 
-@include mat-table-columns((
-  date: (pc-flex: 14%),
-  sleep: (pc-flex: 8%),
-  fatigue: (pc-flex: 8%),
-  muscle: (pc-flex: 8%),
-  stress: (pc-flex: 8%),
-  motivation: (pc-flex: 8%),
-  health: (pc-flex: 8%),
-  diet: (pc-flex: 8%),
-  mood: (pc-flex: 8%),
-  comment: (pc-flex: 14%),
-  edit: (pc-flex: 8%),
-));
+@include mat-table-columns((item: (pc-flex: 15%, padding: 5px, color: var(--primary-color-darker))));
+/* set the number of columns to a maximum possible value - it will work with smaller numbers of columns so no need to edit here if you reduce */
+$numberSummaryColumns: 100;
+@for $i from 1 through $numberSummaryColumns {
+  @include mat-table-columns((wk#{$i}: (pc-flex: 8.5%)));
+}
+
+.mat-column-item {
+  border-left: 0.25px solid black;
+}
+
+.row-is-even {
+  background: rgb(215, 215, 215);
+}

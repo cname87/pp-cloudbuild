@@ -1,7 +1,9 @@
 @use '../../../styles/components.scss' as c;
 
-.fill-width {
-  background-color: c.$accent-lighter;
+mat-card.fill-width {
+  background-color: c.$content-lighter;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 mat-list-item.mat-list-item {
@@ -10,4 +12,8 @@ mat-list-item.mat-list-item {
 
 mat-card-actions {
   margin-left: var(--default-gap-px);
+}
+
+.field-name {
+  color: c.$primary-darker;
 }

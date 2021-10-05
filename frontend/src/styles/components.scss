@@ -7,8 +7,9 @@
 
 /* Define the palettes separately from, but the same as in, themes.scss */
 $primary: mat.define-palette(mat.$deep-purple-palette, 200, 100, 300);
-$accent: mat.define-palette(mat.$amber-palette, 200, 100, 3400);
+$accent: mat.define-palette(mat.$amber-palette, 200, 100, 300);
 $warn: mat.define-palette(mat.$red-palette, A200, A100, A400);
+$content: mat.define-palette(mat.$blue-grey-palette, 100, 50, 200);
 
 /* colors for component styling */
 $primary-darker: mat.get-color-from-palette($primary, 'darker');
@@ -20,6 +21,9 @@ $accent-lighter: mat.get-color-from-palette($accent, 'lighter');
 $warn-darker: mat.get-color-from-palette($warn, 'darker');
 $warn-normal: mat.get-color-from-palette($warn);
 $warn-lighter: mat.get-color-from-palette($warn, 'lighter');
+$content-darker: mat.get-color-from-palette($content, 'darker');
+$content-normal:  mat.get-color-from-palette($content);
+$content-lighter: mat.get-color-from-palette($content, 'lighter');
 
 /* add any styles below that are common across components */
 
@@ -48,8 +52,6 @@ $warn-lighter: mat.get-color-from-palette($warn, 'lighter');
 .fill-width {
   width: var(--element-width);
   margin-left: var(--default-gap-px);
-  padding-left: 0px;
-  padding-right: 0px;
 }
 
 /* global material components standard styling */
@@ -57,6 +59,7 @@ $warn-lighter: mat.get-color-from-palette($warn, 'lighter');
 mat-divider.mat-divider {
   margin-top: var(--default-gap-px);
   margin-bottom: var(--default-gap-px);
+  margin-left: var(--default-gap-px);
 }
 
 mat-progress-bar.mat-progress-bar {
@@ -66,7 +69,6 @@ mat-progress-bar.mat-progress-bar {
   z-index: 5000;
 }
 mat-icon.mat-icon {
-  float:left;
-  padding-right: var(--default-gap-px);
-  line-height: 36px;
+  vertical-align: middle;
+  line-height: 1.5rem;
 }

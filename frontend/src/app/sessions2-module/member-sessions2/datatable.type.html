@@ -4,11 +4,7 @@
   [rows]="model"
   [columns]="to.columns"
   [columnMode]="'flex'"
-  [rowHeight]="rowHeight"
-  [headerHeight]="rowHeight"
   [footerHeight]="0"
-  [scrollbarH]="true"
-  [scrollbarV]="false"
   [reorderable]="false"
   [swapColumns]="false"
   [externalSorting]="true"
@@ -16,9 +12,7 @@
   [selectionType]="selectionType"
   [trackByProp]="'name'"
   [virtualization]="true"
-  [summaryRow]="true"
-  summaryPosition="bottom"
-  [summaryHeight]="rowHeight"
+  [summaryRow]="enableSummary"
 >
   <ng-template
     #defaultColumn

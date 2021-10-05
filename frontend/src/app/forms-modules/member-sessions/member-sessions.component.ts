@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { ParamMap, Router } from '@angular/router';
 import { ActivatedRoute, Data } from '@angular/router';
-import { Location } from '@angular/common';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -55,7 +54,6 @@ export class MemberSessionsComponent implements AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
     private routeStateService: RouteStateService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
@@ -137,10 +135,6 @@ export class MemberSessionsComponent implements AfterViewInit {
       routes.session.path2,
       sid,
     ]);
-  }
-
-  goBack(): void {
-    this.location.back();
   }
 
   ngAfterViewInit() {

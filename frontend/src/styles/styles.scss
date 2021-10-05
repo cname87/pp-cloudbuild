@@ -1,7 +1,7 @@
 @use '../styles/components.scss' as c;
-/* Note: You can pass in colors using with() to replace default values */
-@use '~@swimlane/ngx-datatable/themes/material.scss';
+
 @import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 
 :root {
@@ -17,54 +17,77 @@
   --default-gap-diff: calc(var(--default-gap-max) - var(--default-gap-min));
   --sm-screen-px: calc(var(--sm-screen) * 1px);
   --big-screen-px: calc(var(--big-screen) * 1px);
-  --a: calc(min(var(--big-screen-px), 100vw));
-  --b: calc(max(var(--sm-screen-px), var(--a)));
-  --c: calc(var(--b) - var(--sm-screen-px));
+  --screen-px-or-max: calc(min(var(--big-screen-px), 100vw));
+  --screen-px-or-min: calc(max(var(--sm-screen-px), var(--screen-px-or-max)));
+  --excess-above-min: calc(var(--screen-px-or-min) - var(--sm-screen-px));
   /* (actual-screen - sm-screen) / sm-screen */
-  --ratio-px: calc(var(--c) / var(--sm-screen));
+  --ratio-px: calc(var(--excess-above-min) / var(--sm-screen));
+  --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
 
   /* calculate default-gap-px */
-  --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
   --default-gap-px: calc(var(--default-gap-min-px) + var(--default-gap-diff-px));
 
   /* base-font variable size = 1rem */
-  --base-font: calc(12px + var(--ratio-px) * 6);
+  --base-font: calc(12px + var(--ratio-px) * 4);  // 18px for maximum screen
 
   /* spacing for lists etc */
   --list-spacing: calc(var(--default-gap-px) / 2);
-  --list-height: calc(var(--default-gap-px) * 2);;
+  --list-height: calc(var(--default-gap-px) * 2);
 
-  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * 360));
+  /* table row heights */
+  --row-height-px: calc(var(--base) * 4 * 1px);
+
+  /* mat-icon line-height */
+  --icon-height-px: calc(var(--base) * 2 * 1px);
+
+  /* width of all tables etc */
+  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * var(--sm-screen)));
+
+  /* height of all tables etc */
+  --element-height: 480px;
+
   --button-width: 4rem;
+
+  /* colors */
+  --primary-color-darker: #{c.$primary-darker};
+  --primary-color-normal: #{c.$primary-normal};
+  --primary-color-lighter: #{c.$primary-lighter};
+  --accent-color-darker: #{c.$accent-darker};
+  --accent-color-normal: #{c.$accent-normal};
+  --accent-color-lighter: #{c.$accent-lighter};
+  --warn-color-darker: #{c.$warn-darker};
+  --warn-color-normal: #{c.$warn-normal};
+  --warn-color-lighter: #{c.$warn-lighter};
 }
 
 html {
-  height: 100%;
-  /* set 1rem size - standard is 16px */
+  box-sizing: border-box;
+  /* set 1rem size - browser standard is 16px */
   font-size: calc(var(--base-font));
 }
 
-body {
+html, body{
   height: 100%;
+  width: 100%;
+  padding: 0;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-/* default material-icons with the default level (24px) but referenced to rem with the ratio 16px = 1rem */
+*, *:before, *:after {
+  box-sizing: inherit;
+  /* override font in all mat elements etc */
+  font-family: 'Roboto', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: calc(var(--base-font));
+}
+
+/**
+ * Styles to penetrate encapsulation of material and other libraries which component styling can't override
+ */
+
+/* default to 24px when 1 rem = 16px */
 .material-icons { font-size: calc(24rem/16); }
 
-/* Workaround for https://github.com/angular/material2/issues/4580.
-Note: Global style, as material elements, e.g. mat-form-field, are part of Angular Material and has its own encapsulation which component styles can't override */
-
-/* The Snackbar call passes in 'snackBar' as a custom class */
-.mat-snack-bar-container.snackBar{
-  max-width: 100%;
-  button {
-    color:#ba68c8;
-  }
-}
-
-/* mat-form-field penetrating styling */
+/* Workaround for https://github.com/angular/material2/issues/4580 fro mat-hint and mat-error overrun */
 mat-form-field {
   .mat-form-field {
     &-underline {
@@ -81,80 +104,56 @@ mat-form-field {
   }
 }
 
-/*
-datatable in weekly questionaire table styles */
-
-/* table size */
-// ngx-datatable {
-  // width: 1000px !important;
-  // overflow-x: auto !important;
-  // overflow-y: auto !important;
-  // height: calc(var(--default-gap-px) * 40 ) !important;
-// }
-/* format header on the weekly questionaire table */
-div.table-header {
-  text-align: center;
-  background-color: c.$accent-lighter;
-  font-size: var(--base-font);
-  border: 1px solid rgba(0,0,0, 0.06);
+/* format help header in ngx-datatable embedded html */
+div.table-help {
+  background-color: c.$content-lighter;
+  margin-bottom: var(--default-gap-px);
   padding: 2px;
+  text-align: center;
 }
-// /* configure overall body rows */
-// datatable-body-row.datatable-body-row {
-//   height: calc(var(--default-gap-px) * 4 ) !important;
-// }
-// /* configure individual body cells */
-datatable-body-row.datatable-body-row datatable-body-cell.datatable-body-cell {
+
+ngx-datatable {
+  overflow-x: hidden !important;
+  height: 100vh;
+}
+
+/* hide datatable summary row */
+datatable-summary-row.datatable-summary-row {
+  display: none;
+}
+
+datatable-body-row.datatable-body-row {
   padding: 2px !important;
-  // font-size: var(--base-font) !important;
-  // border-top-color: red !important;
-  // border-top-style: solid !important;
-  // border-top-width: 1px !important;
-  // height: calc(var(--default-gap-px) * 4 ) !important;
-  // border-bottom-color: rgba(0, 0, 0, 0.87) !important;
-  // border-bottom-style: solid !important;
-  // border-bottom-width: 1px !important;
+  height: 34px !important;
 }
-// datatable-body-row.datatable-body-row datatable-body-cell.datatable-body-cell mat-form-field div {
-//   height: calc(var(--default-gap-px) * 4 ) !important;
-  // line-height: calc(var(--default-gap-px) * 2 ) !important;
-  // align-items: center !important;
-  // justify-content: center !important;
-// }
-// /* allow rows only go to configured width */
-// div.datatable-row-center {
-//   width: var(--element-width);
-// }
-// /* scale drop-down arrows with screen size */
-// .mat-select-arrow {
-//   border-left: calc(var(--default-gap-px) * 0.25 ) solid transparent !important;
-//   border-right: calc(var(--default-gap-px) * 0.25 ) solid transparent !important;
-//   border-top: calc(var(--default-gap-px) * 0.25 ) solid !important;
-//   margin: 0 calc(var(--default-gap-px) * 0.25 ) !important;
-// }
-/* configure overall summary row */
-// datatable-summary-row.datatable-summary-row {
-//   height: calc(var(--default-gap-px) * 4 ) !important;
-//   border-top-color: rgba(0, 0, 0, 0.87) !important;
-//   border-top-style: none !important;
-//   border-top-width: 0px !important;
-//   box-sizing: border-box !important;
-//   color: rgba(0, 0, 0, 0.87) !important;
-// }
-// /* configure summary rows cells */
-datatable-summary-row.datatable-summary-row datatable-body-cell.datatable-body-cell {
-  padding-left: 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  // justify-content: center !important;
-  // background-color: white !important;
-  // height: calc(var(--default-gap-px) * 4 ) !important;
-  // border-top-color: rgba(0, 0, 0, 0.87) !important;
-  // border-top-style: solid !important;
-  // border-top-width: 1px !important;
-  // box-sizing: border-box !important;
-  // color: rgba(0, 0, 0, 0.87) !important;
+
+datatable-body-cell.datatable-body-cell {
+  font-size: calc(var(--base-font)) !important;
+  padding: 2px !important;
 }
+
+.mat-form-field-flex {
+  line-height: 1 !important;
+  margin: 0px !important;
+}
+.mat-form-field-outline {
+  top: 0px !important;
+}
+.mat-form-field-infix {
+  border: 0px !important;
+  line-height: 1 !important;
+  padding-top: 6px !important;
+  padding-bottom: 4px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important ;
+}
+
+
+/* allow rows only to go to the scroll bar */
+div.datatable-row-center {
+  padding-right: 16px !important;
+}
+
 
 /* rightmost table column */
 // .scoresColumnRight {

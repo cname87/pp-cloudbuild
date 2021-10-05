@@ -15,8 +15,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   /* set to null to avoid cell colors when cells are selected on the table */
   selectionType = null as unknown as SelectionType;
 
-  /* set table row height */
-  rowHeight = 58;
+  enableSummary = false;
 
   constructor(private logger: NGXLogger) {
     super();

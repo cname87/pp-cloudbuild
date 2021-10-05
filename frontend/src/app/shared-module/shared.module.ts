@@ -1,5 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from './material-module/material.module';
 
@@ -14,8 +15,13 @@ import { httpInterceptorProviders } from './http-interceptors';
 
 @NgModule({
   declarations: [MemberBannerComponent],
-  imports: [CommonModule, MaterialModule],
-  exports: [CommonModule, MaterialModule, MemberBannerComponent],
+  imports: [CommonModule, FlexLayoutModule, MaterialModule],
+  exports: [
+    CommonModule,
+    FlexLayoutModule,
+    MaterialModule,
+    MemberBannerComponent,
+  ],
   providers: [
     {
       provide: ErrorHandler,
