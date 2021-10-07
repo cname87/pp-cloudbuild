@@ -1,0 +1,70 @@
+/**
+ * Styles to penetrate encapsulation of material and other libraries which component styling can't override
+ */
+
+ @use './themes.scss' as theme;
+
+
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+
+/* format help header in ngx-datatable embedded html */
+div.table-help {
+  background-color: theme.$content-lighter;
+  margin-bottom: var(--default-gap-px);
+  padding: 2px;
+  text-align: center;
+}
+
+ngx-datatable {
+  overflow-x: hidden !important;
+  height: 100vh;
+}
+
+/* hide datatable summary row */
+datatable-summary-row.datatable-summary-row {
+  display: none;
+}
+
+datatable-body-row.datatable-body-row {
+  padding: 2px !important;
+  height: 34px !important;
+}
+
+datatable-body-cell.datatable-body-cell {
+  font-size: calc(var(--base-font)) !important;
+  padding: 2px !important;
+}
+
+// .mat-form-field-flex {
+//   line-height: 1 !important;
+//   margin: 0px !important;
+// }
+// .mat-form-field-outline {
+//   top: 0px !important;
+// }
+// .mat-form-field-infix {
+//   border: 0px !important;
+//   line-height: 1 !important;
+//   padding-top: 6px !important;
+//   padding-bottom: 4px !important;
+//   padding-left: 0px !important;
+//   padding-right: 0px !important ;
+// }
+
+
+/* allow rows only to go to the scroll bar */
+div.datatable-row-center {
+  padding-right: 16px !important;
+}
+
+
+// /* rightmost table column */
+// .scoresColumnRight {
+//   margin-right: 1px !important;
+// }
+// /* leftmost table column */
+// .scoresColumnLeft div {
+//   margin-left: 1px !important;
+// }

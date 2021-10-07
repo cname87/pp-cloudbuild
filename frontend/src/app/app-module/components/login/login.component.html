@@ -1,4 +1,5 @@
 <mat-toolbar
+  class="full-width"
   fxLayout="row"
   fxLayoutAlign="start"
 >
@@ -41,16 +42,18 @@
   </button>
 
   <a
-    mat-raised-button
-    class="button"
-    fxFlex="0 0 auto"
-    fxFlexAlign="center"
-    id="profileBtn"
     *ngIf="isLoggedIn"
     [routerLink]="['profile']"
-    color="primary"
+    fxFlex="0 0 auto"
+    fxFlexAlign="center"
   >
-    My Account
+    <button
+      mat-raised-button
+      class="button"
+      id="profileBtn"
+    >
+      My Account
+    </button>
   </a>
 
 </mat-toolbar>

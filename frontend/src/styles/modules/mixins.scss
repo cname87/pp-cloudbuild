@@ -1,0 +1,11 @@
+@mixin fill-width {
+    margin-left: var(--default-gap-px);
+    margin-right: var(--default-gap-px);
+}
+
+/* styles cards used to present information */
+@mixin mat-card-info( $color: var(--accent-color-lighter)) {
+  background-color: $color;
+  padding-left: 0px;
+  padding-right: 0px;
+}

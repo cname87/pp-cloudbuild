@@ -1,19 +1,13 @@
-@use '../../../styles/components.scss' as c;
+@use '../../../styles/modules/mixins.scss' as mixins;
 
-mat-toolbar.fill-width {
-  background-color: var(--accent-color-lighter);
+.fill-width {
+  @include mixins.fill-width;
+  max-width: var(--element-width); // override width = 100%
+  @include mixins.mat-card-info;
   height: calc(var(--default-gap-px) * 4);
-  width: var(--element-width);
-  margin-left: var(--default-gap-px);
-  padding-left: 0px;
-  padding-right: 0px;
 }
 
 span.name {
   text-align: center;
   line-height: calc(36rem/16);
-}
-
-button.button {
-  height: calc(var(--default-gap-px) * 3);
 }
