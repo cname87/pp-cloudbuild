@@ -30,7 +30,6 @@
             ],
             "styles": [
               "src/styles/styles.scss",
-              "src/styles/themes.scss",
               /* regular style toast */
               "node_modules/ngx-toastr/toastr.css"
             ],
@@ -136,8 +135,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "styles": [
-              "src/styles/styles.scss",
-              "src/styles/themes.scss"
+              "src/styles/styles.scss"
             ],
             "scripts": [],
             "assets": [

@@ -1,19 +1,28 @@
-<app-login
-  [attr.data-isE2eTesting]=isE2eTesting
-  [attr.data-production]=production
-  [attr.data-logLevel]=logLevel
->
-</app-login>
+<main>
 
-<mat-divider class="fill-width"></mat-divider>
+  <app-login
+    [attr.data-isE2eTesting]=isE2eTesting
+    [attr.data-production]=production
+    [attr.data-logLevel]=logLevel
+  >
+  </app-login>
 
-<mat-progress-bar
-  *ngIf="isLoading$ | async"
-  mode="indeterminate"
-  color="warn"
->
-</mat-progress-bar>
+  <mat-divider></mat-divider>
 
-<app-nav></app-nav>
+  <mat-progress-bar
+    *ngIf="isLoading$ | async"
+    mode="indeterminate"
+    color="warn"
+  >
+  </mat-progress-bar>
 
-<router-outlet></router-outlet>
+  <app-nav></app-nav>
+
+  <mat-divider></mat-divider>
+
+  <router-outlet></router-outlet>
+
+  <mat-divider></mat-divider>
+
+
+</main>

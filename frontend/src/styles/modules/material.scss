@@ -1,0 +1,46 @@
+/**
+  Common Material components
+ */
+
+/* Note: use element.class to override material css */
+
+mat-divider.mat-divider {
+    margin-top: var(--default-gap-px);
+    margin-bottom: var(--default-gap-px);
+    margin-left: var(--default-gap-px);
+    margin-right: var(--default-gap-px);
+
+    // width:var(--element-width);
+}
+
+mat-progress-bar.mat-progress-bar {
+  position: absolute;
+  height: 0.5rem;
+  top: 0.1rem;
+  z-index: 5000;
+}
+
+mat-icon.mat-icon {
+  vertical-align: middle;
+}
+
+/* class provided to render downloaded material icons */
+/* default to 24px when 1 rem = 16px */
+.material-icons { font-size: calc(24rem/16); }
+
+/* Workaround for https://github.com/angular/material2/issues/4580 for mat-hint and mat-error overrun */
+mat-form-field {
+  .mat-form-field {
+    &-underline {
+      position: static;
+    }
+
+    &-wrapper {
+      padding-bottom: 0;
+    }
+
+    &-subscript-wrapper {
+      position: static;
+    }
+  }
+}

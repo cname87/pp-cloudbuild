@@ -1,12 +1,6 @@
-@use '../../../../styles/components.scss' as c;
-
-mat-toolbar.mat-toolbar {
+.full-width {
+  background-color: var(--accent-color-lighter);
   padding-left: var(--default-gap-px);
   padding-right: var(--default-gap-px);
-  background-color: c.$accent-lighter;
-}
-
-button.button {
-  padding-left: var(--default-gap-px);
 }
 

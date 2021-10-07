@@ -1,0 +1,56 @@
+/**
+  All css variables
+ */
+
+@use './themes.scss' as theme;
+
+:root {
+  /* fundamental constants */
+  --base: 16;
+  --sm-screen: 360;
+  --big-screen: 720;
+
+  /* growth ratio calculation */
+  --default-gap-min: calc(var(--base) * 0.5);
+  --default-gap-min-px: calc(var(--default-gap-min) * 1px);
+  --default-gap-max: var(--base);
+  --default-gap-diff: calc(var(--default-gap-max) - var(--default-gap-min));
+  --sm-screen-px: calc(var(--sm-screen) * 1px);
+  --big-screen-px: calc(var(--big-screen) * 1px);
+  --screen-px-or-max: calc(min(var(--big-screen-px), 100vw));
+  --screen-px-or-min: calc(max(var(--sm-screen-px), var(--screen-px-or-max)));
+  --excess-above-min: calc(var(--screen-px-or-min) - var(--sm-screen-px));
+  /* (actual-screen - sm-screen) / sm-screen */
+  --ratio-px: calc(var(--excess-above-min) / var(--sm-screen)); // (720 - 360)/360 = 1
+  --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
+
+  /* calculate default-gap-px */
+  --default-gap-px: calc(var(--default-gap-min-px) + var(--default-gap-diff-px));
+
+  /* base-font variable size = 1rem */
+  --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maximum screen
+
+  /* spacing for lists etc */
+  --list-spacing: calc(var(--default-gap-px) / 2);
+
+  /* table row heights */
+  --row-height-px: calc(var(--base) * 4 * 1px);
+
+  /* width of all tables etc */
+  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * var(--sm-screen)));
+
+  /* colors */
+  --primary-color-darker: #{theme.$primary-darker};
+  --primary-color-normal: #{theme.$primary-normal};
+  --primary-color-lighter: #{theme.$primary-lighter};
+  --accent-color-darker: #{theme.$accent-darker};
+  --accent-color-normal: #{theme.$accent-normal};
+  --accent-color-lighter: #{theme.$accent-lighter};
+  --warn-color-darker: #{theme.$warn-darker};
+  --warn-color-normal: #{theme.$warn-normal};
+  --warn-color-lighter: #{theme.$warn-lighter};
+  --content-color-darker: #{theme.$content-darker};
+  --content-color-normal: #{theme.$content-normal};
+  --content-color-lighter: #{theme.$content-lighter};
+
+}

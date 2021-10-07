@@ -19,7 +19,9 @@ export class RouteStateService {
   }
 
   updateIdState(newId: string) {
-    this.logger.trace(`${RouteStateService.name}: Updating route state`);
+    this.logger.trace(
+      `${RouteStateService.name}: Updating route state with id: ${newId || 0}`,
+    );
     this.idState.next(newId);
   }
 }

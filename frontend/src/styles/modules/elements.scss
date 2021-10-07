@@ -1,0 +1,35 @@
+@use './themes.scss' as theme;
+
+/**
+  Elements that are common across components
+ */
+
+html {
+  box-sizing: border-box;
+  /* set 1rem size - browser standard is 16px */
+  font-size: calc(var(--base-font));
+}
+
+html, body{
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+ /* buttons */
+
+ button.button {
+  margin-left: var(--default-gap-px);
+  padding-left: var(--default-gap-px);
+  padding-right: var(--default-gap-px);
+  background-color: theme.$primary-lighter;
+}
+
+.button:hover:enabled {
+  background-color: theme.$primary-darker;
+}

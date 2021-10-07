@@ -1,7 +1,9 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+/**
+  Custom Theming for Angular Material
+ */
+
+/* For more information: https://material.angular.io/guide/theming */
 @use '~@angular/material' as mat;
-// Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -13,7 +15,21 @@ $accent: mat.define-palette(mat.$amber-palette, 200, 100, 300);
 $warn: mat.define-palette(mat.$red-palette, A200, A100, A400);
 $content: mat.define-palette(mat.$blue-grey-palette, 100, 50, 200);
 
-/* define a custom typography config with the default typography levels but referenced to rem with the ratio 16px = 1rem, i.e. if you increase 1rem from 16px default these will scale accordingly */
+/* colors for component styling */
+$primary-darker: mat.get-color-from-palette($primary, 'darker');
+$primary-normal: mat.get-color-from-palette($primary);
+$primary-lighter: mat.get-color-from-palette($primary, 'lighter');
+$accent-darker: mat.get-color-from-palette($accent, 'darker');
+$accent-normal: mat.get-color-from-palette($accent);
+$accent-lighter: mat.get-color-from-palette($accent, 'lighter');
+$warn-darker: mat.get-color-from-palette($warn, 'darker');
+$warn-normal: mat.get-color-from-palette($warn);
+$warn-lighter: mat.get-color-from-palette($warn, 'lighter');
+$content-darker: mat.get-color-from-palette($content, 'darker');
+$content-normal:  mat.get-color-from-palette($content);
+$content-lighter: mat.get-color-from-palette($content, 'lighter');
+
+/* Define a custom typography config with the default typography levels but referenced to rem with the ratio 16px = 1rem, i.e. if you increase 1rem from 16px default these will scale accordingly */
 /* aiming to scale for a min screen size of 360px wide */
 $typoConfig: mat.define-typography-config(
   $font-family:   'Roboto, "Helvetica Neue", sans-serif',
@@ -34,15 +50,12 @@ $typoConfig: mat.define-typography-config(
   $input:         mat.define-typography-level(inherit, 1.125, 400),
 );
 
-// $title:         mat.define-typography-level(clamp(1rem, 4.5vw, 1.25rem), clamp(1.6rem, 7vw, 2rem), 500),  // 20px, 32px 500
-
 // Create the theme object. A theme consists of configurations for individual theming systems such as "color" or "typography".
 $theme: mat.define-light-theme((
   color: (
     primary: $primary,
     accent: $accent,
     warn: $warn,
-    content: $content,
   ),
   typography: $typoConfig,
 ));

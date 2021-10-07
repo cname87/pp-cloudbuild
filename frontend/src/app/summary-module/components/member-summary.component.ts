@@ -217,6 +217,7 @@ export class MemberSummaryComponent {
   ngOnDestroy(): void {
     this.#destroy.next();
     this.#destroy.complete();
+    this.routeStateService.updateIdState('');
   }
 
   /* Overrides banner goBack function */

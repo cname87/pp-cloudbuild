@@ -1,8 +1,14 @@
+@use '../../../../styles/modules/mixins.scss' as mixins;
+
+.fill-width {
+  @include mixins.fill-width;
+}
+
 a.id, a.detail {
-  margin-right: var(--list-spacing);
-  margin-bottom: var(--default-gap-px);
   background-color: var(--primary-color-lighter);
   height: var(--row-height);
+  margin-right: var(--list-spacing);
+  margin-bottom: var(--default-gap-px);
 }
 
 a:hover {
@@ -10,9 +16,9 @@ a:hover {
 }
 
 button.delete {
-  margin-bottom: var(--default-gap-px);
-  height: var(--row-height);
   background-color: var(--warn-color-lighter);
+  height: var(--row-height);
+  margin-bottom: var(--default-gap-px);
 }
 
 button.delete:hover {

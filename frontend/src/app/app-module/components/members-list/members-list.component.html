@@ -1,12 +1,9 @@
 <mat-nav-list class="fill-width">
-
   <div
-    class="list"
     *ngFor="let member of (members$ | async); trackBy: trackByFn"
     fxLayout="row"
     fxLayoutAlign="space-around"
   >
-
     <a
       mat-raised-button
       class="id"
@@ -39,9 +36,9 @@
 <mat-divider></mat-divider>
 
 <app-member-input
-[mode]="inputMode"
-inputText=""
-(inputEnter)='add($event)'
+  [mode]="inputMode"
+  inputText=""
+  (inputEnter)='add($event)'
 >
 </app-member-input>
 
