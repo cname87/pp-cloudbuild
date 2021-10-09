@@ -1,5 +1,6 @@
 @use '../../../../styles/modules/mixins.scss' as mixins;
 
+/* size set by font */
 .fill-width {
   @include mixins.fill-width;
   width: var(--element-width);
