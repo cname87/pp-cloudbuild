@@ -11,21 +11,23 @@
   --big-screen: 720;
 
   /* growth ratio calculation */
-  --default-gap-min: calc(var(--base) * 0.5);
-  --default-gap-min-px: calc(var(--default-gap-min) * 1px);
-  --default-gap-max: var(--base);
+  --default-gap-min: calc(var(--base) * 0.5); // 8
+  --default-gap-min-px: calc(var(--default-gap-min) * 1px); // 8px
+  --default-gap-max: var(--base); // 16
   --default-gap-diff: calc(var(--default-gap-max) - var(--default-gap-min));
   --sm-screen-px: calc(var(--sm-screen) * 1px);
   --big-screen-px: calc(var(--big-screen) * 1px);
   --screen-px-or-max: calc(min(var(--big-screen-px), 100vw));
   --screen-px-or-min: calc(max(var(--sm-screen-px), var(--screen-px-or-max)));
-  --excess-above-min: calc(var(--screen-px-or-min) - var(--sm-screen-px));
+  --excess-px-above-min: calc(var(--screen-px-or-min) - var(--sm-screen-px));
   /* (actual-screen - sm-screen) / sm-screen */
-  --ratio-px: calc(var(--excess-above-min) / var(--sm-screen)); // (720 - 360)/360 = 1
+  /* 0 to (720 - 360)/360 ie 1 */
+  --ratio-px: calc(var(--excess-px-above-min) / var(--sm-screen));
   --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
 
   /* calculate default-gap-px */
-  --default-gap-px: calc(var(--default-gap-min-px) + var(--default-gap-diff-px));
+  --default-gap-px: calc(var(--default-gap-min-px)
+    + var(--default-gap-diff-px));
 
   /* base-font variable size = 1rem */
   --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maximum screen
@@ -33,8 +35,8 @@
   /* spacing for lists etc */
   --list-spacing: calc(var(--default-gap-px) / 2);
 
-  /* table row heights */
-  --row-height-px: calc(var(--base) * 4 * 1px);
+  /* member list row heights - 16 to 32 px*/
+  --list-height-px: calc((1.5px + var(--ratio-px)) * var(--base));
 
   /* width of all tables etc */
   --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * var(--sm-screen)));

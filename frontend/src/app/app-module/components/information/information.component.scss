@@ -3,10 +3,20 @@
 .fill-width {
   @include mixins.mat-card-info;
   @include mixins.fill-width;
+  // height: calc(var(--list-height-px) * 2.5);
+  padding-top: var(--default-gap-px);
+  padding-bottom: var(--default-gap-px);
 }
 
-mat-card-actions {
+mat-card-title.mat-card-title {
+  margin-bottom: var(--default-gap-px);
+}
+
+mat-card-actions.mat-card-actions {
   margin-left: var(--default-gap-px);
+}
+.mat-card > .mat-card-actions:last-child {
+  margin-bottom: 0px;
 }
 
 /* pointer cursor and primary color only when login page showing */

@@ -6,7 +6,8 @@
 
 a.id, a.detail {
   background-color: var(--primary-color-lighter);
-  height: var(--row-height);
+  height: var(--list-height-px);
+  line-height: var(--list-height-px);
   margin-right: var(--list-spacing);
   margin-bottom: var(--default-gap-px);
 }
@@ -17,7 +18,8 @@ a:hover {
 
 button.delete {
   background-color: var(--warn-color-lighter);
-  height: var(--row-height);
+  height: var(--list-height-px);
+  line-height: var(--list-height-px);
   margin-bottom: var(--default-gap-px);
 }
 

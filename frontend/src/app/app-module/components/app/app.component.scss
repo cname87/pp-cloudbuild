@@ -1,3 +1,4 @@
+/* width is core element width + two margins */
 main {
   width: calc(var(--element-width) + 2 * var(--default-gap-px));
 }

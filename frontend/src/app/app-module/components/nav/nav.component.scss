@@ -5,9 +5,11 @@
 }
 
 a.mat-tab-link  {
+  height: calc(var(--list-height-px));
+  margin-right: var(--default-gap-px);
   min-width: max-content;
   padding: 0;
-  margin-right: var(--default-gap-px);
+
 }
 
 a.mat-tab-link:hover  {
