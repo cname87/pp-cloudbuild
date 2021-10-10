@@ -11,6 +11,10 @@ mat-icon.mat-icon {
   height: 100%;
 }
 
+app-button {
+  margin-left: var(--default-gap-px);
+}
+
 span.name {
   text-align: center;
   font-size: 1.25rem;

@@ -1,17 +1,13 @@
 /**
  * Styles to penetrate encapsulation of material and other libraries which component styling can't override
  */
-
- @use './themes.scss' as theme;
-
-
 @import '~@swimlane/ngx-datatable/index.css';
 @import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 
 /* format help header in ngx-datatable embedded html */
 div.table-help {
-  background-color: theme.$content-lighter;
+  background-color: var(--content-color-lighter);
   margin-bottom: var(--default-gap-px);
   padding: 2px;
   text-align: center;

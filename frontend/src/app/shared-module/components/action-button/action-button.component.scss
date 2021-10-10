@@ -1,24 +1,20 @@
-@use '../../../../styles/modules/themes.scss' as theme;
-
-
 .action-button {
   line-height: var(--list-height-px);
-  margin-left: var(--default-gap-px);
   padding-left: var(--default-gap-px);
   padding-right: var(--default-gap-px);
-  background-color: theme.$primary-lighter;
+  background-color: var(--primary-color-lighter);
 }
 
 .action-button:hover:enabled {
-  background-color: theme.$primary-darker;
+  background-color: var(--primary-color-darker);
 }
 
 .warn {
-    background-color: theme.$warn-lighter;
+    background-color: var(--warn-color-lighter);
 }
 
 .warn:hover:enabled {
-  background-color: theme.$warn-darker;
+  background-color: var(--warn-color-darker);
 }
 
 mat-icon.mat-icon {
