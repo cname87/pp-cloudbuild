@@ -4,7 +4,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MaterialModule } from './material-module/material.module';
 
-import { MemberBannerComponent } from './member-banner/member-banner.component';
+import { ActionButtonComponent } from './components/action-button/action-button.component';
+import { MemberBannerComponent } from './components/member-banner/member-banner.component';
 
 import {
   ErrorHandlerService,
@@ -15,13 +16,14 @@ import { httpInterceptorProviders } from './http-interceptors';
 import { FormlyBaseModule } from './formly-base-module/formly-base.module';
 
 @NgModule({
-  declarations: [MemberBannerComponent],
+  declarations: [ActionButtonComponent, MemberBannerComponent],
   imports: [CommonModule, FlexLayoutModule, MaterialModule],
   exports: [
     CommonModule,
     FlexLayoutModule,
     FormlyBaseModule,
     MaterialModule,
+    ActionButtonComponent,
     MemberBannerComponent,
   ],
   providers: [

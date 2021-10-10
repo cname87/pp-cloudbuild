@@ -1,14 +1,25 @@
-@use '../../../../styles/components.scss' as c;
+@use '../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
-  background-color: c.$accent-lighter;
+  @include mixins.mat-card-info(var(--content-color-lighter));
+  @include mixins.fill-width;
+  padding-top: var(--default-gap-px);
+  padding-bottom: var(--default-gap-px);
 }
+
+mat-card-title.mat-card-title {
+  margin-bottom: var(--default-gap-px);
+}
+
+mat-card-actions.mat-card-actions {
+  margin-left: var(--default-gap-px);
+}
+.mat-card > .mat-card-actions:last-child {
+  margin-bottom: 0px;
+}
+
 /* pointer cursor and primary color only when login page showing */
 .logPage {
   cursor: pointer;
-  background-color: c.$primary-lighter;
-}
-
-mat-card-actions {
-  margin-left: var(--default-gap-px);
+  background-color: var(--primary-color-lighter);
 }

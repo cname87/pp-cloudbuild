@@ -1,0 +1,21 @@
+/**
+  Elements that are common across components
+ */
+
+html {
+  box-sizing: border-box;
+  /* set 1rem size - browser standard is 16px */
+  font-size: calc(var(--base-font));
+}
+
+html, body{
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+  font-size: calc(var(--base-font));
+}

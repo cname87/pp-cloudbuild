@@ -1,20 +1,20 @@
-a.id, a.detail {
-  margin-right: var(--list-spacing);
-  margin-bottom: var(--default-gap-px);
+@use '../../../../styles/modules/mixins.scss' as mixins;
+
+.fill-width {
+  @include mixins.fill-width;
+}
+
+mat-nav-list div, a, app-button {
+  height: var(--list-height-px);
+  line-height: var(--list-height-px);
+  margin-right: calc(var(--default-gap-px) / 2);
+  margin-bottom: calc(var(--default-gap-px) / 2 );
+}
+
+a {
   background-color: var(--primary-color-lighter);
-  height: var(--row-height);
 }
 
 a:hover {
   background-color: var(--primary-color-darker);
-}
-
-button.delete {
-  margin-bottom: var(--default-gap-px);
-  height: var(--row-height);
-  background-color: var(--warn-color-lighter);
-}
-
-button.delete:hover {
-  background-color: var(--warn-color-darker);
 }

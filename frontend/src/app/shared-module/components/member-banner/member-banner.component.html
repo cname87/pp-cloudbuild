@@ -4,25 +4,23 @@ fxLayout="row"
 fxLayoutAlign="space-evenly center"
 >
 <span
-  fxFlex="1 1 33%"
+  fxFlex="1 1 30%"
+  (click)="goBack()"
 >
-  <button
-    mat-button
-    class="button"
-    (click)="goBack()"
+  <app-button
+    icon="arrow_back_ios"
   >
-    <mat-icon>arrow_back</mat-icon>
     BACK
-  </button>
+  </app-button>
 </span>
 <span
   class="name"
-  fxFlex="0 0 34%"
+  fxFlex="0 0 40%"
 >
   {{ (member$ | async)?.name?.toUpperCase() }}
 </span>
 <span
-  fxFlex="1 1 33%"
+  fxFlex="1 1 30%"
 ></span>
 </mat-toolbar>
 

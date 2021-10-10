@@ -1,0 +1,24 @@
+.action-button {
+  background-color: var(--primary-color-lighter);
+  height: var(--list-height-px);
+  line-height: var(--list-height-px);
+  padding-left: var(--default-gap-px);
+  padding-right: var(--default-gap-px);
+}
+
+.action-button:hover:enabled {
+  background-color: var(--primary-color-darker);
+}
+
+.warn {
+  background-color: var(--warn-color-lighter);
+}
+
+.warn:hover:enabled {
+  background-color: var(--warn-color-darker);
+}
+
+/* match the icon height to its actual height so there is no excess space on the bottom of the icon that would cause it to be non-centered */
+mat-icon.mat-icon {
+  height: calc(18px + var(--ratio-px) * 6);
+}

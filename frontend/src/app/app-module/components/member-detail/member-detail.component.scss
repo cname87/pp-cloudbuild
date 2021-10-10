@@ -1,19 +1,25 @@
-@use '../../../../styles/components.scss' as c;
+@use '../../../../styles/modules/mixins.scss' as mixins;
 
-mat-card.fill-width {
-  background-color: c.$content-lighter;
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-mat-list-item.mat-list-item {
-  height: 2rem;
+.fill-width {
+  @include mixins.mat-card-info(var(--content-color-lighter));
+  @include mixins.fill-width;
+  padding-top: var(--default-gap-px);
+  padding-bottom: var(--default-gap-px);
 }
 
 mat-card-actions {
   margin-left: var(--default-gap-px);
 }
 
+mat-list {
+  padding-top: 0px;
+}
+
+
+mat-list-item.mat-list-item {
+  height: 2rem;
+}
+
 .field-name {
-  color: c.$primary-darker;
+  color: var(--primary-color-darker);
 }

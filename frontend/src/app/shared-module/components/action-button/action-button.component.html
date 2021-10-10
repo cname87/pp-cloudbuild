@@ -1,0 +1,12 @@
+<button
+  mat-raised-button
+  class="action-button"
+  [ngClass]="isWarn ? 'warn' : ''"
+>
+  <mat-icon
+    *ngIf="icon"
+    >
+    {{ icon }}
+  </mat-icon>
+  <ng-content></ng-content>
+</button>

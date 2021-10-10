@@ -1,15 +1,12 @@
 <mat-nav-list class="fill-width">
-
   <div
-    class="list"
+   class="fill-width"
     *ngFor="let member of (members$ | async); trackBy: trackByFn"
     fxLayout="row"
-    fxLayoutAlign="space-around"
-  >
-
+    fxLayoutAlign="space-around center"
+   >
     <a
       mat-raised-button
-      class="id"
       fxFlex="1 1 10%"
       routerLink="/{{routes.member.path}}/{{member.id}}"
     >
@@ -18,31 +15,31 @@
 
     <a
       mat-raised-button
-      class="detail"
       fxFlex="1 1 80%"
       routerLink="/{{routes.member.path}}/{{member.id}}"
     >
       {{member.name}}
     </a>
 
-    <button
-      mat-raised-button
-      class="delete"
-      fxFlex="1 1 10%"
+    <app-button
+      icon="delete"
+      [isWarn]=true
       (click)="delete(member)"
     >
-      <mat-icon>delete</mat-icon>
-    </button>
+    </app-button>
+
   </div>
 </mat-nav-list>
 
 <mat-divider></mat-divider>
 
 <app-member-input
-[mode]="inputMode"
-inputText=""
-(inputEnter)='add($event)'
+  [mode]="inputMode"
+  inputText=""
+  (inputEnter)='add($event)'
 >
 </app-member-input>
+
+<mat-divider></mat-divider>
 
 <app-member-search></app-member-search>
