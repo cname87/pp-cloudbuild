@@ -4,12 +4,15 @@
   @include mixins.fill-width;
 }
 
-a {
-  background-color: var(--primary-color-lighter);
+mat-nav-list div, a, app-button {
   height: var(--list-height-px);
   line-height: var(--list-height-px);
-  margin-right: var(--list-spacing);
-  margin-bottom: var(--default-gap-px);
+  margin-right: calc(var(--default-gap-px) / 2);
+  margin-bottom: calc(var(--default-gap-px) / 2 );
+}
+
+a {
+  background-color: var(--primary-color-lighter);
 }
 
 a:hover {

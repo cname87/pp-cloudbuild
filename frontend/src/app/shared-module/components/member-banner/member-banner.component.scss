@@ -2,13 +2,9 @@
 
 .fill-width {
   @include mixins.fill-width;
-  max-width: var(--element-width); // override width = 100%
+  width: inherit; // override material style: width = 100%
   @include mixins.mat-card-info;
-  height: calc(var(--list-height-px)* 2);
-}
-
-mat-icon.mat-icon {
-  height: 100%;
+  min-height: calc(var(--list-height-px)* 2);
 }
 
 app-button {

@@ -32,14 +32,11 @@
   /* base-font variable size = 1rem */
   --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maximum screen
 
-  /* spacing for lists etc */
-  --list-spacing: calc(var(--default-gap-px) / 2);
-
   /* member list row heights - 16 to 32 px*/
   --list-height-px: calc((1.5px + var(--ratio-px)) * var(--base));
 
-  /* width of all tables etc */
-  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * var(--sm-screen)));
+  /* width of all main elements */
+  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * (var(--bg-screen) - var(--sm-screen))));
 
   /* colors */
   --primary-color-darker: #{theme.$primary-darker};
