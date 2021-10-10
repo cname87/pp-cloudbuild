@@ -5,3 +5,7 @@
   @include mixins.fill-width;
   width: var(--element-width);
 }
+
+mat-hint {
+  font-size: 75%;
+}

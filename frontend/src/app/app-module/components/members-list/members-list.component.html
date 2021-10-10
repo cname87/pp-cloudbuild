@@ -6,7 +6,6 @@
   >
     <a
       mat-raised-button
-      class="id"
       fxFlex="1 1 10%"
       routerLink="/{{routes.member.path}}/{{member.id}}"
     >
@@ -15,21 +14,17 @@
 
     <a
       mat-raised-button
-      class="detail"
       fxFlex="1 1 80%"
       routerLink="/{{routes.member.path}}/{{member.id}}"
     >
       {{member.name}}
     </a>
-
-    <button
-      mat-raised-button
-      class="delete"
-      fxFlex="1 1 10%"
-      (click)="delete(member)"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
+      <app-button
+        icon="delete"
+        [isWarn]=true
+        (click)="delete(member)"
+      >
+      </app-button>
   </div>
 </mat-nav-list>
 
@@ -41,5 +36,7 @@
   (inputEnter)='add($event)'
 >
 </app-member-input>
+
+<mat-divider></mat-divider>
 
 <app-member-search></app-member-search>

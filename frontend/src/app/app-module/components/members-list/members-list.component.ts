@@ -2,16 +2,9 @@ import { Component, OnInit, ErrorHandler } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { Observable, of, Subject, zip } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRoute, Data } from '@angular/router';
-import {
-  catchError,
-  map,
-  publishReplay,
-  refCount,
-  switchMap,
-  takeUntil,
-} from 'rxjs/operators';
+import { catchError, publishReplay, refCount, takeUntil } from 'rxjs/operators';
 import {
   IMember,
   IMemberWithoutId,
@@ -114,18 +107,13 @@ export class MembersListComponent implements OnInit {
     );
 
     const stopSignal$ = new Subject();
-
+    console.log(`Message: ${message}`);
     if (message) {
       /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
       this.isLoadingService.add(
-        zip()
-          .pipe(
-            map(() => {
-              return of({});
-            }),
-            takeUntil(stopSignal$),
-            switchMap(() => this.membersService.deleteMember(member.id)),
-          )
+        this.membersService
+          .deleteMember(member.id)
+          .pipe(takeUntil(stopSignal$))
           .subscribe((_count) => {
             this.members$ = this.getMembers();
             /* allow errors go to errorHandler */

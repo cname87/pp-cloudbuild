@@ -1,4 +1,4 @@
-@use '../../../styles/modules/mixins.scss' as mixins;
+@use '../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
   @include mixins.fill-width;
@@ -13,5 +13,5 @@ mat-icon.mat-icon {
 
 span.name {
   text-align: center;
-  line-height: calc(36rem/16);
+  font-size: 1.25rem;
 }

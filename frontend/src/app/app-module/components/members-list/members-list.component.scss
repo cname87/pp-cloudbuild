@@ -4,7 +4,7 @@
   @include mixins.fill-width;
 }
 
-a.id, a.detail {
+a {
   background-color: var(--primary-color-lighter);
   height: var(--list-height-px);
   line-height: var(--list-height-px);
@@ -14,15 +14,4 @@ a.id, a.detail {
 
 a:hover {
   background-color: var(--primary-color-darker);
-}
-
-button.delete {
-  background-color: var(--warn-color-lighter);
-  height: var(--list-height-px);
-  line-height: var(--list-height-px);
-  margin-bottom: var(--default-gap-px);
-}
-
-button.delete:hover {
-  background-color: var(--warn-color-darker);
 }

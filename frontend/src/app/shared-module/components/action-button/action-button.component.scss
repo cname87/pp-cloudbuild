@@ -1,0 +1,26 @@
+@use '../../../../styles/modules/themes.scss' as theme;
+
+
+.action-button {
+  line-height: var(--list-height-px);
+  margin-left: var(--default-gap-px);
+  padding-left: var(--default-gap-px);
+  padding-right: var(--default-gap-px);
+  background-color: theme.$primary-lighter;
+}
+
+.action-button:hover:enabled {
+  background-color: theme.$primary-darker;
+}
+
+.warn {
+    background-color: theme.$warn-lighter;
+}
+
+.warn:hover:enabled {
+  background-color: theme.$warn-darker;
+}
+
+mat-icon.mat-icon {
+  height: 100%;
+}

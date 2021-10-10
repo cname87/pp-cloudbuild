@@ -14,7 +14,7 @@ import { AuthService } from '../../../common/services/auth-service/auth.service'
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  header = 'Efficient Performance';
+  header = 'EFFICIENT PERFORMANCE';
 
   constructor(private logger: NGXLogger, private auth: AuthService) {
     this.logger.trace(

@@ -21,25 +21,3 @@ html, body{
   box-sizing: inherit;
   font-size: calc(var(--base-font));
 }
-
- /* buttons */
-
- button.button {
-  line-height: var(--list-height-px);
-  margin-left: var(--default-gap-px);
-  padding-left: var(--default-gap-px);
-  padding-right: var(--default-gap-px);
-  background-color: theme.$primary-lighter;
-}
-
-/* attempt tp prevent icon moving when screen changes size */
-// button.button * mat-icon {
-// position: absolute;
-// top:25%;
-// left: 4px;
-// transform: translate(-12px, -50%);
-// }
-
-.button:hover:enabled {
-  background-color: theme.$primary-darker;
-}

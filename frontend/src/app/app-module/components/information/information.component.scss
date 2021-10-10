@@ -1,9 +1,8 @@
 @use '../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
-  @include mixins.mat-card-info;
+  @include mixins.mat-card-info(var(--content-color-lighter));
   @include mixins.fill-width;
-  // height: calc(var(--list-height-px) * 2.5);
   padding-top: var(--default-gap-px);
   padding-bottom: var(--default-gap-px);
 }

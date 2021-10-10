@@ -3,6 +3,7 @@
 .fill-width {
   @include mixins.mat-card-info;
   @include mixins.fill-width;
+  background-color: var(--content-color-lighter);
 }
 
 mat-card-actions {

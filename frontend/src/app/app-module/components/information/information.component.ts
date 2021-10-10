@@ -58,10 +58,10 @@ export class InformationComponent implements OnInit {
     } else if (this.mode === 'login') {
       this.auth.isAuthenticated$.subscribe({
         next: (loggedIn) => {
-          this.header = loggedIn ? 'Log Out' : 'Log In';
+          this.header = loggedIn ? 'LOG OUT' : 'LOG IN';
           this.hint = loggedIn
-            ? "Click here or on the 'Log Out' button above (or click on a link above)"
-            : "Click here or on the 'Log In' button above";
+            ? "Click here or on the 'LOGOUT' button above to log out"
+            : "Click here or on the 'LOGIN' button above to log in";
           this.isGoBackVisible = false;
           this.clickAction = loggedIn
             ? () => this.auth.logout()
@@ -71,7 +71,7 @@ export class InformationComponent implements OnInit {
       /* else set up the page not found */
     } else {
       this.header = 'Page Not Found';
-      this.hint = "Click on 'Log In' or 'MEMBERS'";
+      this.hint = "Click on the 'MEMBERS' link above";
       this.isGoBackVisible = true;
     }
   }

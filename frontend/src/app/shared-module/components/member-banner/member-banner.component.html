@@ -5,15 +5,13 @@ fxLayoutAlign="space-evenly center"
 >
 <span
   fxFlex="1 1 30%"
+  (click)="goBack()"
 >
-  <button
-    mat-button
-    class="button"
-    (click)="goBack()"
+  <app-button
+    icon="arrow_back_ios"
   >
-    <mat-icon>arrow_back_ios</mat-icon>
-    <span>&nbsp; BACK</span>
-  </button>
+    BACK
+  </app-button>
 </span>
 <span
   class="name"
