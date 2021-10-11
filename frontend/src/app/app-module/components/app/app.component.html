@@ -7,8 +7,6 @@
   >
   </app-login>
 
-  <mat-divider></mat-divider>
-
   <mat-progress-bar
     *ngIf="isLoading$ | async"
     mode="indeterminate"
@@ -18,11 +16,6 @@
 
   <app-nav></app-nav>
 
-  <mat-divider></mat-divider>
-
   <router-outlet></router-outlet>
-
-  <mat-divider></mat-divider>
-
 
 </main>

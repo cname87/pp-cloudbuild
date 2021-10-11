@@ -4,3 +4,13 @@ main {
   margin-left: 0px;
   margin-right: 0px;
 }
+
+app-login, mat-progress-bar, app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+app-nav {
+  top: calc(var(--list-height-px)* 2);
+}

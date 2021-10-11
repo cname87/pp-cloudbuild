@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +24,6 @@ const material = [
   MatTabsModule,
   MatInputModule,
   MatIconModule,
-  MatDividerModule,
   MatSelectModule,
   MatListModule,
   MatCardModule,
