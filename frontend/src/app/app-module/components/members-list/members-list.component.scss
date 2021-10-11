@@ -7,12 +7,16 @@
 mat-nav-list div, a, app-button {
   height: var(--list-height-px);
   line-height: var(--list-height-px);
-  margin-right: calc(var(--default-gap-px) / 2);
   margin-bottom: calc(var(--default-gap-px) / 2 );
+}
+
+mat-nav-list div, app-button {
+    margin-right: 0px;
 }
 
 a {
   background-color: var(--primary-color-lighter);
+  margin-right: calc(var(--default-gap-px) / 2);
 }
 
 a:hover {

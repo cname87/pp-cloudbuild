@@ -3,6 +3,7 @@
 /* size set by font size */
 .fill-width {
   @include mixins.fill-width;
+  margin-top: calc(var(--default-gap-px) / 2);
   width: var(--element-width);
 }
 

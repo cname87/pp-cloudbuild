@@ -2,9 +2,10 @@
 
 .fill-width {
   @include mixins.fill-width;
-  width: inherit; // override material style: width = 100%
   @include mixins.mat-card-info;
+  margin-bottom: calc(var(--default-gap-px) / 2);
   min-height: calc(var(--list-height-px)* 2);
+  width: inherit; // override material style: width = 100%
 }
 
 app-button {

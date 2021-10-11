@@ -4,15 +4,6 @@
 
 /* Note: use element.class to override material css */
 
-mat-divider.mat-divider {
-    margin-top: var(--default-gap-px);
-    margin-bottom: var(--default-gap-px);
-    margin-left: var(--default-gap-px);
-    margin-right: var(--default-gap-px);
-
-    // width:var(--element-width);
-}
-
 mat-progress-bar.mat-progress-bar {
   position: absolute;
   height: 0.5rem;

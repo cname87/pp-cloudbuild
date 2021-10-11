@@ -36,7 +36,7 @@
   --list-height-px: calc((1.5px + var(--ratio-px)) * var(--base));
 
   /* width of all main elements */
-  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * (var(--bg-screen) - var(--sm-screen))));
+  --element-width: calc(var(--sm-screen-px) - ( 2 * var(--default-gap-px)) + (var(--ratio-px) * (var(--big-screen) - var(--sm-screen))));
 
   /* colors */
   --primary-color-darker: #{theme.$primary-darker};
