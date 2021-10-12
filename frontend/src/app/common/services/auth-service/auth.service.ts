@@ -28,12 +28,13 @@ import {
  * Auth0 Operation:
  * ---------------
  * 1. An AuthService instance is created which creates...
- * - A public observable to obtain the user authenticated status from the authentication utility.  Note: The authentication logged-in status has a timer that will time out as per configured OAuth0 server settings.
- * - A public variable to share the current user authenticated status - does not time out by itself.
+ * - A public observable to obtain the user authentication status from the authentication utility.  Note: The authentication logged-in status has a timer that will time out as per configured OAuth0 server settings.
+ * - A public variable to share the current user authentication status - does not time out by itself.
  * - Public methods to get the user profile, to login, to handle the login call back, & to logout.
  * 2. The app.component ngOnInit calls authService.localAuthSetup().
  * - This results in a call to getAuth0Client() creating a singleton Auth0Client instance, and checks with the server if the user is authenticated and sets the public variable, isLogged, to either false or to the logged-in user profile.
- * 3. If the login prompt is clicked then the Auth0 client instance loginWithRedirect() function is called which calls the Auth0 server which, on first call, presents a login page to the user, and following receipt of valid credentials, redirects to the CallbackComponent with a query parameter holding state data.  The CallbackComponent opens a configured page (i.e. memberslist).
+ * 3. If the login prompt is clicked then the Auth0 client instance loginWithRedirect() function is called with a component to call back (CallbackComponent) and a target url parameter that is later passed to the called back component.  The loginWithRedirect function calls the Auth0 server which, on first call, presents a login page to the user, and following receipt of valid credentials, redirects to the CallbackComponent.
+ * The CallbackComponent calls a redirect function below which reads the object returned from the Auth0 client. This contains the target url passed to the loginWithRedirect function above then navigates to a route configured in the router for that url.
  * - The Auth0 server response includes a cookie to the client which stores encrypted information allowing silent authentication - the client can determine that the user is logged in without requiring user input. Thus, if a browser is closed and reopened, or if a page is reloaded, a login page does not have to be presented to the user.  An authentication client timer will eventually timeout following which the login page will again be presented to the user.
  * - I confirmed Roating Token Refresh on the oauth0 server which means that the token can be refreshed silently (?)
  * - The Auth0 server also sends a token which is passed by the client to the backend server to get authorized access the backend API.
@@ -106,7 +107,7 @@ export class AuthService {
 
   /**
    * Calls the auth0 client instance handleRedirectCallback function.
-   * The handleRedirectCallback function returns an object that should include an appState object containing a target property holding the target route.
+   * The handleRedirectCallback function returns an object that should include an appState object containing a property called 'target' holding the target route.
    * Note: Called by the callback component via handleAuthCallback below.
    */
   private handleRedirectCallback$ = this.auth0Client$.pipe(

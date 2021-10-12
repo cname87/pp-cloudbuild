@@ -44,6 +44,8 @@ class Users {
   getUser = (id: string) => {
     debug(`${modulename}: running findUser`);
 
+    console.log(JSON.stringify(process.env.users));
+
     return this._users.find((user) => {
       return user.id === id;
     });
