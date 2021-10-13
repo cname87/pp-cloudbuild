@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import expressJwtPermissions from 'express-jwt-permissions';
 import { setupDebug } from '../utils/src/debugOutput';
+import permissions from '../../.envPermissions.json';
 
 const { modulename, debug } = setupDebug(__filename);
 
@@ -20,9 +21,11 @@ export const authorizeHandler = (
 ): void => {
   debug(`${modulename}: running authorizeHandler`);
 
-  /* the user will need 'all:performDB' permission if the production database is in use, otherwise 'all:testDB' is required */
+  /* the user will need specific permission, as configured on the OAuth server, to access either the test or production database */
   const requiredPermission =
-    process.env.DB_MODE === 'production' ? 'all:performDB' : 'all:testDB';
+    process.env.DB_MODE === 'production'
+      ? permissions.database.production
+      : permissions.database.test;
 
   /* server requests use a grant type of client-credentials and the permissions are contained in auth.scope or auth.permissions */
   const permissionsProperty =

@@ -45,6 +45,9 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    /* added to allow json .env file import */
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "showConfig": true,
     "skipLibCheck": true,
     "sourceMap": true,
