@@ -36,7 +36,7 @@ import {
  * 3. If the login prompt is clicked then the Auth0 client instance loginWithRedirect() function is called with a component to call back (CallbackComponent) and a target url parameter that is later passed to the called back component.  The loginWithRedirect function calls the Auth0 server which, on first call, presents a login page to the user, and following receipt of valid credentials, redirects to the CallbackComponent.
  * The CallbackComponent calls a redirect function below which reads the object returned from the Auth0 client. This contains the target url passed to the loginWithRedirect function above then navigates to a route configured in the router for that url.
  * - The Auth0 server response includes a cookie to the client which stores encrypted information allowing silent authentication - the client can determine that the user is logged in without requiring user input. Thus, if a browser is closed and reopened, or if a page is reloaded, a login page does not have to be presented to the user.  An authentication client timer will eventually timeout following which the login page will again be presented to the user.
- * - I confirmed Roating Token Refresh on the oauth0 server which means that the token can be refreshed silently (?)
+ * - I confirmed the Roating Token Refresh setting on the oauth0 server which means that the token can be refreshed silently.
  * - The Auth0 server also sends a token which is passed by the client to the backend server to get authorized access the backend API.
  * - The backend server confirms the token with the Auth0 server which sends back the relevant user information, including the configured scopes, to the server. (The token is unique to each user).
  * - See https://auth0.com/docs/flows/authorization-code-flow-with-proof-key-for-code-exchange-pkce for the authorization flow.
@@ -107,11 +107,11 @@ export class AuthService {
 
   /**
    * Calls the auth0 client instance handleRedirectCallback function.
-   * The handleRedirectCallback function returns an object that should include an appState object containing a property called 'target' holding the target route.
+   * The handleRedirectCallback function returns an object with a property called appState object which is the state passed in when the redirect request was made.  It should contain a property called 'target' holding the target route.
    * Note: Called by the callback component via handleAuthCallback below.
    */
   private handleRedirectCallback$ = this.auth0Client$.pipe(
-    /* the handleRedirectCallback function queries the url state parameter and will return an invalid state error if it not correct - this can be triggered by the browser back button or the user manually entering a invalid callback url => just present the login page on error */
+    /* the client.handleRedirectCallback function queries the url state parameter and will return an invalid state error if it not correct - this can be triggered by the browser back button => just present the login page on error */
     concatMap((client: Auth0Client) => from(client.handleRedirectCallback())),
     catchError((err: IErrReport) => {
       this.logger.trace(
@@ -210,7 +210,7 @@ export class AuthService {
   /**
    * Calls the Auth0 client instance loginWithDirect function.  The function is called with an object parameter that sets the redirect uri to the callback component and also an appState property passed to the callback component used to set the target route to which the app is ultimately sent.
    * The client loginWithDirect function presents a login page to the user and redirects the client browser to the callback component, (which calls handleAuthCallback).
-   * Note: Called when the user click 'login'.
+   * Note: Called when the user clicks 'login'.
    * @param redirectPath: The target redirect path supplied to the Auth loginWithRedirect function.  It defaults to '/', i.e. the app is ultimately redirected to the home page.
    */
   public login = (redirectPath = '/') => {

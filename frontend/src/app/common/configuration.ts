@@ -14,7 +14,7 @@ export const auth0Config = {
   useRefreshTokens: true,
   /* provides persistence across page refreshes and browser tabs */
   /**
-   * * Security risk - consider deleting. The user would have to click the log in button after browser refreshes.  Note that e2e tests would fail.
+   * * Security risk iff an attacker can achieve running JavaScript in the SPA using a cross-site scripting (XSS) attack, they can retrieve the tokens stored in local storage. Consider deleting. The user would have to click the log in button after browser refreshes. Note that e2e tests would fail.
    */
   cacheLocation: 'localstorage',
 };
