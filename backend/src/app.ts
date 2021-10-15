@@ -166,7 +166,7 @@ process.once('unhandledRejection', unhandledRejection);
  * @summary
  * Starts the database and stores the database object, and the database connection object, in a supplied object.
  * If the supplied object already includes a connected database it does nothing.
- * On connection it sets up listeners that throw untrapped errors in case of an unexpected error or disconnect after the connection has been established.
+ * On connection it sets up listeners that throw untrapped errors in case of an unexpected error, or disconnect after the connection has been established.
  * It catches any error during database startup, logs the error but does not throw on the error i.e. it allows retries.
  * @returns void
  * - If the connection is successful the supplied object is mutated to include a database instance and a database connection object.
