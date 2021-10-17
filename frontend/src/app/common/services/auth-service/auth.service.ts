@@ -22,6 +22,7 @@ import {
   IErrReport,
   routes,
   userClaims,
+  roles,
 } from '../../configuration';
 
 /**
@@ -180,7 +181,6 @@ export class AuthService {
     const checkAuth$ = this.isAuthenticated$.pipe(
       concatMap((loggedIn: boolean) => {
         if (loggedIn) {
-          /* Note: concatMap with return ensures that the getUser observable is subscribed */
           return this.getUser$();
         }
         return of(false);
@@ -198,46 +198,49 @@ export class AuthService {
   };
 
   /**
-   * Subscribes to the piped handleRedirectCallback$ observable, (which sets the target route and returns userProfile$ and isAuthenticated$).  It does not currently use the subscribed userProfile$ or isAuthenticated$ data.  It navigates to the target route.
-   * Note: The client handleRedirectCallback function returned object should include an appState object, set in the login function, containing a 'target' property holding the target route.  If it does not then the target route is set to '/'.
-   *
-   * Note: Called when app reloads after the Auth0 server redirects after the user is authenticated.
+   * This is called when when the app reloads after the Auth0 server redirects once the user is authenticated.
+   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, which contains the a target route property. If this is not found the the target route property defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in. (It does not currently use the subscribed userProfile$ or isAuthenticated$ data but simply navigates to the target route.
    */
   public handleAuthCallback = () => {
     let targetRoute: string;
     const authComplete$ = this.handleRedirectCallback$.pipe(
       tap((cbRes) => {
         /* set target route from callback results */
-        targetRoute =
-          cbRes.appState && cbRes.appState.target ? cbRes.appState.target : '/';
+        targetRoute = cbRes.appState.target ? cbRes.appState.target : '/';
       }),
-      /* concatMap return ensures getUser$ and isAuthenticated$ observables are subscribed */
       concatMap(() => combineLatest([this.getUser$(), this.isAuthenticated$])),
       catchError((err: IErrReport) => {
         this.logger.trace(
-          `${AuthService.name}: authComplete$ catchError called`,
+          `${AuthService.name}: handleAuthCallback catchError called`,
         );
         /* fail with warning */
         err.isHandled = false;
         return throwError(err);
       }),
     );
-    authComplete$.subscribe(([_user, _loggedIn]) => {
-      this.router.navigate([targetRoute]);
+    authComplete$.subscribe(([user, _loggedIn]) => {
+      if (userClaims.roles.indexOf(roles.admin)) {
+        this.router.navigate([targetRoute]);
+      } else {
+        this.router.navigate([`/member/${user}.id`]);
+      }
     });
   };
 
   /**
-   * Calls the Auth0 client instance loginWithDirect function.  The function is called with an object parameter that sets the redirect uri to the callback component and also an appState property passed to the callback component used to set the target route to which the app is ultimately sent.
-   * The client loginWithDirect function presents a login page to the user and redirects the client browser to the callback component, (which calls handleAuthCallback).
+   * Calls the Auth0 client instance loginWithDirect function.  The function is called with an object parameter that sets the redirect uri to the callback component, and also an appState property passed to the callback component, which is used to set the target route to which the app is ultimately sent.
+   * The client loginWithDirect function presents a login page to the user and redirects the client browser to the redirect uri (calback component), (which calls handleAuthCallback).
    * Note: Called when the user clicks 'login'.
    * @param redirectPath: The target redirect path supplied to the Auth loginWithRedirect function.  It defaults to '/', i.e. the app is ultimately redirected to the home page.
    */
-  public login = (redirectPath = '/') => {
+  public login = (
+    redirect_uri = `${window.location.origin}${routes.callback.path}`,
+    redirectPath = '/',
+  ) => {
     this.auth0Client$.subscribe(
       (client: Auth0Client) => {
         client.loginWithRedirect({
-          redirect_uri: `${window.location.origin}${routes.callback.path}`,
+          redirect_uri,
           appState: { target: redirectPath },
         });
       },
@@ -273,7 +276,7 @@ export class AuthService {
 
   /**
    * Calls the Auth0 client instance getTokenSilently function with a supplied options parameter and returns the received token as an observable.
-   * @param options: Parameter to be supplied to the Auth0 function - see documentation.  Optional and not currently used.
+   * @param options: Optional parameter to be supplied to the Auth0 function - see documentation.
    * Note: Called by auth.interceptor to add a token to the request.
    */
   public getTokenSilently$ = (options?: any): Observable<string> =>

@@ -184,4 +184,11 @@ export const apiConfiguration = new Configuration({
 export const userClaims = {
   id: 'https://project-perform.com/id',
   roles: 'https://project-perform.com/roles',
-}
+};
+
+/* roles set on Auth0 platform */
+export const roles = {
+  member: 'Member',
+  admin: 'Team Owner',
+  test: 'Test Owner',
+};
