@@ -219,10 +219,12 @@ export class AuthService {
       }),
     );
     authComplete$.subscribe(([user, _loggedIn]) => {
-      if (userClaims.roles.indexOf(roles.admin)) {
+      if (userClaims.roles.indexOf(roles.admin) >= 0) {
         this.router.navigate([targetRoute]);
+        this.logger.trace(`${AuthService.name}: routing to admin page`);
       } else {
-        this.router.navigate([`/member/${user}.id`]);
+        this.logger.trace(`${AuthService.name}: routing to member page`);
+        this.router.navigate([`/member/${user?.id}`]);
       }
     });
   };

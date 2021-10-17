@@ -212,37 +212,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
 /* middleware functions below */
 
 /**
- * Gets and stores the user (or throws an error).
- */
-const findUser = (req: Request, res: Response, next: NextFunction) => {
-  debug(`${modulename}: running findUser`);
-
-  let user: Perform.User | undefined;
-
-  if (req.auth) {
-    user = req.app.appLocals.getUser(req.auth.sub);
-  } else {
-    const error = new Error();
-    error.name = 'NoAuthentication';
-    error.message = 'Unknown authentication error - no req.auth created';
-    res.statusCode = 401;
-    next(error);
-  }
-
-  if (user) {
-    req.user = user;
-  } else {
-    const error = new Error();
-    error.name = 'NoUser';
-    error.message = 'No user matching authentication token was found';
-    res.statusCode = 401;
-    next(error);
-  }
-
-  next();
-};
-
-/**
  * This tests if the connection to the user members and sessions database collections have been created and, if not, creates them.  This results in members and sessions Mongoose models being created for the requesting user and stored in appLocals.models. Once the models exist they do not have to be recreated if that user makes another request.
  * @params req - the incoming API request.
  * @params next - next function.
@@ -253,7 +222,7 @@ const createDbCollectionConnection = (
   _res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running createCollectionConnection`);
+  debug(`${modulename}: running createDbCollectionConnection`);
 
   /* check that the database is connected */
   const { dbConnection } = req.app.appLocals;
@@ -280,25 +249,25 @@ const createDbCollectionConnection = (
       appLocals.models.members.modelName &&
       appLocals.models.members.modelName.substring(
         0,
-        req.user!.dbCollection.length,
-      ) === `${req.user!.dbCollection}`
+        process.env.DB_COLLECTION!.length,
+      ) === `${process.env.DB_COLLECTION}`
     )
   ) {
-    debug(`${modulename}: creating connection to the user collections`);
+    debug(`${modulename}: creating connection to the database collections`);
     appLocals.models.members = appLocals.createModelMembers(
       appLocals.database,
-      `${req.user!.dbCollection}_Member`,
-      `${req.user!.dbCollection}_members`,
+      `${process.env.DB_COLLECTION}_Member`,
+      `${process.env.DB_COLLECTION}_members`,
     );
     appLocals.models.scores = appLocals.createModelScores(
       appLocals.database,
-      `${req.user!.dbCollection}_Score`,
-      `${req.user!.dbCollection}_scores`,
+      `${process.env.DB_COLLECTION}_Score`,
+      `${process.env.DB_COLLECTION}_scores`,
     );
     appLocals.models.sessions = appLocals.createModelSessions(
       appLocals.database,
-      `${req.user!.dbCollection}_Sessions`,
-      `${req.user!.dbCollection}_sessions`,
+      `${process.env.DB_COLLECTION}_Sessions`,
+      `${process.env.DB_COLLECTION}_sessions`,
     );
   }
   next();
@@ -370,8 +339,6 @@ router.use(
   '/',
   authenticate,
   authorize,
-  /* get the user */
-  findUser,
   /* create connection to the user database model / collection */
   createDbCollectionConnection,
   /* call a handler based on the path and the api spec */

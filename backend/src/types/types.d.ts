@@ -213,8 +213,5 @@ declare namespace Perform {
     dumpError: DumpErrorFunction;
     /* event emitter used for test */
     event: import('events').EventEmitter;
-    User: typeof import('../users/user').User;
-    /* getUser function */
-    getUser: typeof import('../users/users').getUser;
   }
 }

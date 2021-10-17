@@ -50,10 +50,6 @@ import { sessionsHandlers } from './handlers/sessions-handlers';
 import { miscHandlers } from './handlers/misc-handlers';
 /* a utility to dump errors */
 import { DumpError } from './utils/src/dumpError';
-/* user class */
-import { User } from './users/user';
-/* getUser function */
-import { getUser } from './users/users';
 /* database creation function */
 import { startDatabase } from './database/src/startDatabase';
 
@@ -95,10 +91,6 @@ const createStore = (): Perform.IAppLocals => {
     createModelMembers,
     createModelScores,
     createModelSessions,
-    /*  user class */
-    User,
-    /* getUser utility */
-    getUser,
     /* event emitter to signal server is up, etc */
     /* create before db setup call as async nature of db setup means app exports before db up and app.event definition needed by mocha so it can await server up event */
     event: new EventEmitter(),
