@@ -12,7 +12,7 @@ The returned Datbase object has the following properties and methods:
 
 ### Properties
 
-- dbConnection: Contains a Mongoose connection object that encapsulates a connection to a MongoDB server - see https://mongoosejs.com/docs/api/connection.html#connection_Connection
+- dbConnection: Contains a Mongoose connection object that encapsulates a connection to a MongoDB server - see <https://mongoosejs.com/docs/api/connection.html#connection_Connection>
 
 This is used by the backend server to implement required database management and database calls.
 

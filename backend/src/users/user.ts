@@ -22,15 +22,15 @@ import { setupDebug } from '../utils/src/debugOutput';
 
 setupDebug(__filename);
 
+type userId = string;
+
+export interface TUsersData {
+  usersDevelopment: Record<userId, User>;
+  usersProduction: Record<userId, User>;
+  usersStaging: Record<userId, User>;
+}
+
 /* Describes an application user */
 export class User {
-  constructor(private _id: string, public _dbCollection: string) {}
-
-  public get id(): string {
-    return this._id;
-  }
-
-  public get dbCollection(): string {
-    return this._dbCollection;
-  }
+  constructor(public id: string, public dbCollection: string) {}
 }

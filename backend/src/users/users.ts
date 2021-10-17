@@ -3,46 +3,25 @@
  */
 
 import { setupDebug } from '../utils/src/debugOutput';
-
 import { User } from './user';
+import { usersList } from './envUsers';
 
 const { modulename, debug } = setupDebug(__filename);
 
-/* creates all users */
-const user1 = new User(
-  process.env.user1Id as string,
-  process.env.user1Db as string,
-);
-const user2 = new User(
-  process.env.user2Id as string,
-  process.env.user2Db as string,
-);
-const user3 = new User(
-  process.env.user3Id as string,
-  process.env.user3Db as string,
-);
-const user4 = new User(
-  process.env.user4Id as string,
-  process.env.user4Db as string,
-);
-const userTest = new User(
-  process.env.userTestId as string,
-  process.env.userTestDb as string,
-);
-const server = new User(
-  process.env.userServerId as string,
-  process.env.userServerDb as string,
-);
-
-const users = [user1, user2, user3, user4, userTest, server];
+const users: User[] = [];
+for (const user of Object.values(usersList)) {
+  users.push(new User(user.id, user.dbCollection));
+}
 
 /* application users pseudo database */
 class Users {
+  /* creates the users object from env parameters */
+  constructor(private _users: User[]) {}
   /**
    * Returns a user based on a supplied unique id or returns undefined if a matching user is not found.
    */
   getUser = (id: string) => {
-    debug(`${modulename}: running findUser`);
+    debug(`${modulename}: running getUser`);
 
     console.log(JSON.stringify(process.env.users));
 
@@ -50,10 +29,7 @@ class Users {
       return user.id === id;
     });
   };
-
-  /* creates the users object from env parameters */
-  constructor(private _users: User[]) {}
 }
 
-/* export the users findUser function */
+/* export the users getUser function */
 export const { getUser } = new Users(users);
