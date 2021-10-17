@@ -179,3 +179,9 @@ export const apiConfiguration = new Configuration({
   defaultHeaders,
   withCredentials: false,
 });
+
+/* the namespaced names for the user claims as set in the Auth0 Actions that set each user's id and roles after user login */
+export const userClaims = {
+  id: 'https://project-perform.com/id',
+  roles: 'https://project-perform.com/roles',
+}

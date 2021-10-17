@@ -4,7 +4,6 @@ import originalCreateAuth0Client, {
   GetUserOptions,
 } from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
-
 import {
   from,
   Observable,
@@ -13,7 +12,7 @@ import {
   combineLatest,
   of,
 } from 'rxjs';
-import { tap, catchError, concatMap, shareReplay } from 'rxjs/operators';
+import { tap, catchError, concatMap, shareReplay, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 
@@ -22,6 +21,7 @@ import {
   errorTypes,
   IErrReport,
   routes,
+  userClaims,
 } from '../../configuration';
 
 /**
@@ -55,10 +55,18 @@ export const CREATE_AUTH0_CLIENT = new InjectionToken<TCreateAuth0Client>(
   },
 );
 
+interface TUser {
+  email: string;
+  name: string;
+  id: number;
+  roles: Array<string>;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  //
   /**
    * Holds the user authentication status:
    * - true if the user has logged in
@@ -127,6 +135,7 @@ export class AuthService {
 
   /**
    * Broadcasts the user profile to all subscribers.
+   * The user profile includes
    * Note: getUser$ must be called during set up to make the user profile is available in userProfileSubject$.
    */
   /* a behaviour subject sends last emitted value to new subscribers and also sends new emitted values to all subscribers */
@@ -142,6 +151,17 @@ export class AuthService {
   private getUser$ = (options?: GetUserOptions): Observable<User | undefined> =>
     this.auth0Client$.pipe(
       concatMap((client: Auth0Client) => from(client.getUser(options))),
+      /* replace the namespaced properties with simpler names */
+      map((user) => {
+        if (!user) {
+          return throwError('No user returned by Auth0');
+        } else {
+          user.id = user[userClaims.id];
+          user.roles = user[userClaims.roles];
+          return user as TUser;
+        }
+      }),
+      tap((user) => console.log(`User: ${JSON.stringify(user)}`)),
       tap((user) => this.userProfileSubject$.next(user)),
       catchError((err: IErrReport) => {
         this.logger.trace(`${AuthService.name}: getUser$ catchError called`);

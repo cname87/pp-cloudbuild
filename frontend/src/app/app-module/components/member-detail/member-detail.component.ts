@@ -81,6 +81,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     this.destroy.complete();
     this.routeStateService.updateIdState('');
   }
+
   goBack(): void {
     this.location.back();
   }
