@@ -32,6 +32,22 @@
           EMAIL:  {{(userProfile$ | async)?.email}}
         </span>
       </mat-list-item>
+      <mat-list-item>
+        <span
+          mat-line
+          attr.data-displayed="{{(userProfile$ | async)?.id}}"
+        >
+          ID: {{(userProfile$ | async)?.id}}
+        </span>
+      </mat-list-item>
+        <mat-list-item>
+          <span
+            mat-line
+            attr.data-displayed="{{(userProfile$ | async)?.roles}}"
+          >
+            ROLES: {{(userProfile$ | async)?.roles}}
+          </span>
+        </mat-list-item>
     </mat-list>
 
 

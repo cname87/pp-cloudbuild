@@ -3,8 +3,8 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AuthService } from '../../../common/services/auth-service/auth.service';
 
-import { routes } from '../../../common/configuration';
-import { Observable } from 'rxjs';
+import { routes, roles } from '../../../common/configuration';
+import { combineLatest, of } from 'rxjs';
 import { RouteStateService } from '../../../common/services/route-state-service/router-state-service';
 
 interface ILink {
@@ -22,12 +22,11 @@ interface ILink {
   styleUrls: ['./nav.component.scss'],
 })
 export class NavComponent {
-  private membersList = routes.membersList;
-  private detail = routes.member;
-  private scores = routes.scores;
+  #membersList = routes.membersList;
+  #detail = routes.member;
+  #scores = routes.scores;
   #sessions = routes.sessions;
   #summary = routes.summary;
-  private id$: Observable<string>;
   links!: ILink[];
 
   constructor(
@@ -36,26 +35,30 @@ export class NavComponent {
     private routeStateService: RouteStateService,
   ) {
     this.logger.trace(`${NavComponent.name}: Starting ${NavComponent.name}`);
-    this.id$ = this.routeStateService.id$;
   }
 
   ngOnInit() {
-    this.id$.subscribe((id) => {
+    console.log(`id$: ${this.routeStateService.id$}`);
+    console.log(`userProfile$: ${this.auth.userProfile$}`);
+    combineLatest([
+      this.routeStateService.id$,
+      this.auth.userProfile$ || of({ roles: [''] }),
+    ]).subscribe(([id, user]) => {
       const disabled = id === '' ? true : false;
       this.links = [
         {
-          path: `/${this.membersList.path}`,
-          display: this.membersList.displayName,
-          disabled: false,
+          path: `/${this.#membersList.path}`,
+          display: this.#membersList.displayName,
+          disabled: !user?.roles.includes(roles.admin),
         },
         {
-          path: `/${this.detail.path}/${id}`,
-          display: this.detail.displayName,
+          path: `/${this.#detail.path}/${id}`,
+          display: this.#detail.displayName,
           disabled: disabled,
         },
         {
-          path: `/${this.scores.path}/${id}`,
-          display: this.scores.displayName,
+          path: `/${this.#scores.path}/${id}`,
+          display: this.#scores.displayName,
           disabled: disabled,
         },
         {

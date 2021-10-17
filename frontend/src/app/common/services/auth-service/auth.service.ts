@@ -136,7 +136,6 @@ export class AuthService {
 
   /**
    * Broadcasts the user profile to all subscribers.
-   * The user profile includes
    * Note: getUser$ must be called during set up to make the user profile is available in userProfileSubject$.
    */
   /* a behaviour subject sends last emitted value to new subscribers and also sends new emitted values to all subscribers */
@@ -149,7 +148,7 @@ export class AuthService {
   /**
    * Causes the client instance getUser function to be called returning an observable emitting the user profile.
    */
-  private getUser$ = (options?: GetUserOptions): Observable<User | undefined> =>
+  private getUser$ = (options?: GetUserOptions): Observable<User> =>
     this.auth0Client$.pipe(
       concatMap((client: Auth0Client) => from(client.getUser(options))),
       /* replace the namespaced properties with simpler names */
@@ -162,7 +161,6 @@ export class AuthService {
           return user as TUser;
         }
       }),
-      tap((user) => console.log(`User: ${JSON.stringify(user)}`)),
       tap((user) => this.userProfileSubject$.next(user)),
       catchError((err: IErrReport) => {
         this.logger.trace(`${AuthService.name}: getUser$ catchError called`);
@@ -199,7 +197,8 @@ export class AuthService {
 
   /**
    * This is called when when the app reloads after the Auth0 server redirects once the user is authenticated.
-   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, which contains the a target route property. If this is not found the the target route property defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in. (It does not currently use the subscribed userProfile$ or isAuthenticated$ data but simply navigates to the target route.
+   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, which contains the a target route property. If this is not found the the target route property defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in.
+   * It decides where to route based on whether the user is an Admin or not.
    */
   public handleAuthCallback = () => {
     let targetRoute: string;
@@ -218,12 +217,22 @@ export class AuthService {
         return throwError(err);
       }),
     );
-    authComplete$.subscribe(([user, _loggedIn]) => {
-      if (userClaims.roles.indexOf(roles.admin) >= 0) {
+    authComplete$.subscribe(([user, isLoggedIn]) => {
+      if (!isLoggedIn) {
+        this.logger.trace(
+          `${AuthService.name}: not logged in - routing to admin page`,
+        );
+        this.router.navigate([routes.loginPage.path]);
+      }
+      if (user.roles.includes(roles.admin)) {
+        this.logger.trace(
+          `${AuthService.name}: Team Owner - routing to admin page`,
+        );
         this.router.navigate([targetRoute]);
-        this.logger.trace(`${AuthService.name}: routing to admin page`);
       } else {
-        this.logger.trace(`${AuthService.name}: routing to member page`);
+        this.logger.trace(
+          `${AuthService.name}: Member - routing to member page`,
+        );
         this.router.navigate([`/member/${user?.id}`]);
       }
     });
