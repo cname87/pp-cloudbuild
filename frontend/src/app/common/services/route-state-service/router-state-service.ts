@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 
 /**
- * @title Updates a member id observable.  The value is passed in from the components from the active routed path and cleared when the component is destroSyed.
+ * @title Updates a member public id observable.  The value is passed in from the components from the active routed path and cleared when the component is destroyed.
  */
 
 @Injectable({ providedIn: 'root' })

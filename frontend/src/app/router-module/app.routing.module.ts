@@ -6,7 +6,6 @@ import { MemberDetailComponent } from '../app-module/components/member-detail/me
 import { InformationComponent } from '../app-module/components/information/information.component';
 import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
 import { CallbackComponent } from '../app-module/components/callback/callback.component';
-import { ProfileComponent } from '../app-module/components/user-profile/user-profile.component';
 import { MemberDetailResolverService } from '../common/resolvers/member-detail-resolver.service';
 import { MembersListResolverService } from '../common/resolvers/members-list-resolver.service';
 import { routes } from '../common/configuration';
@@ -41,12 +40,6 @@ const appRoutes: Routes = [
       member: MemberDetailResolverService,
     },
   },
-  // {
-  //   /* charts a member's sessions */
-  //   path: `${routes.charts.path}/:id`,
-  //   loadChildren: () =>
-  //     import('../charts-module/charts.module.ts.bak').then((m) => m.ChartsModule),
-  // },
   {
     /* shows a member's weekly questionaire scores */
     path: `${routes.scores.path}/:id`,
@@ -66,12 +59,6 @@ const appRoutes: Routes = [
     path: `${routes.summary.path}/:id`,
     loadChildren: () =>
       import('../summary-module/summary.module').then((m) => m.SummaryModule),
-  },
-  {
-    /* shows the authenticated user profile */
-    path: routes.profile.path,
-    component: ProfileComponent,
-    canActivate: [AuthGuard],
   },
   {
     /* shows not found, error, and login information */

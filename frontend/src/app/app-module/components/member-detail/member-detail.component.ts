@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
-import { Location } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 import { of, Observable, Subject, throwError } from 'rxjs';
 import { IsLoadingService } from '@service-work/is-loading';
@@ -11,6 +10,7 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { RouteStateService } from '../../../common/services/route-state-service/router-state-service';
 import { IErrReport } from '../../../common/configuration';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../../common/services/auth-service/auth.service';
 
 /**
  * @title This member shows detail on a member whose id is passed in via the url id parameter.
@@ -32,9 +32,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   inputMode = 'edit';
 
   constructor(
+    private auth: AuthService,
     private route: ActivatedRoute,
     private membersService: MembersService,
-    private location: Location,
     private logger: NGXLogger,
     private isLoadingService: IsLoadingService,
     private routeStateService: RouteStateService,
@@ -50,6 +50,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     this.route.data.subscribe((data: Data) => {
       this.member$ = of(data.member);
     });
+    /* update route state with member id */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -82,8 +83,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     this.routeStateService.updateIdState('');
   }
 
-  goBack(): void {
-    this.location.back();
+  get userProfile$() {
+    return this.auth.userProfile$;
   }
 
   /**
@@ -99,12 +100,14 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     if (!name) {
       return;
     }
-
     /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
-      this.membersService.updateMember({ id: +id, name }).subscribe(() => {
-        this.goBack();
-      }),
+      this.membersService
+        .updateMember({ id: +id, name })
+        .subscribe((member) => {
+          this.member$ = of(member);
+          this.logger.trace(`${MemberDetailComponent.name}: Member updated`);
+        }),
     );
   }
 }

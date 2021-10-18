@@ -23,7 +23,6 @@ import { MemberDetailComponent } from './components/member-detail/member-detail.
 import { MemberInputComponent } from './components/member-input/member-input.component';
 import { InformationComponent } from './components/information/information.component';
 import { CallbackComponent } from './components/callback/callback.component';
-import { ProfileComponent } from './components/user-profile/user-profile.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/nav/nav.component';
 
@@ -60,7 +59,6 @@ export function initApp(appLoadService: AppLoadService) {
     MemberInputComponent,
     InformationComponent,
     CallbackComponent,
-    ProfileComponent,
     LoginComponent,
     NavComponent,
   ],

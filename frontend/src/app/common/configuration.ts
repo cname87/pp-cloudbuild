@@ -26,7 +26,7 @@ const membersList = {
 };
 const member = {
   path: 'member',
-  displayName: 'MEMBER',
+  displayName: 'MY DETAIL',
 };
 const scores = {
   path: 'scores',
@@ -42,9 +42,6 @@ const summary = {
 };
 
 /* other routing elements */
-const profile = {
-  path: 'profile',
-};
 const loginPage = {
   path: '/information/login',
 };
@@ -63,7 +60,6 @@ export const routes = {
   scores,
   sessions,
   summary,
-  profile,
   loginPage,
   errorPage,
   loginTarget,
