@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../../common/services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 /**
  * This module provides log in and out functionality.

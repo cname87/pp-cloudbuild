@@ -6,7 +6,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { MemberInputComponent } from './member-input.component';
-import { findCssOrNot, sendInput } from '../../../common/test-helpers';
+import { findCssOrNot, sendInput } from '../../test-helpers';
 
 describe('memberInputComponent', () => {
   /* setup function run by each sub test suite */

@@ -10,8 +10,8 @@ import Rollbar from 'rollbar';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
-import { AuthService } from '../../../common/services/auth-service/auth.service';
-import { errorTypes, routes } from '../../../common/configuration';
+import { AuthService } from '../../../app-module/services/auth-service/auth.service';
+import { errorTypes, routes } from '../../../configuration/configuration';
 import { environment } from '../../../../environments/environment';
 
 /* set up the rollbar service */

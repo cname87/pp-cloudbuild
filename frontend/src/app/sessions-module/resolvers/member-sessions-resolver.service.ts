@@ -8,9 +8,9 @@ import {
 import { Observable, of } from 'rxjs';
 import { publishReplay, refCount, catchError, switchMap } from 'rxjs/operators';
 
-import { MembersService } from '../../common/services/members-service/members.service';
+import { MembersService } from '../../app-module/services/members-service/members.service';
 import { SessionsService } from '../services/sessions.service';
-import { IMember } from '../../common/models/models';
+import { IMember } from '../../app-module/models/models';
 import {
   dummySessions,
   ISessionsAndMember,

@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SessionsDataProvider } from '../data-providers/sessions.data-provider';
 import { ISessions } from '../data-providers/sessions-models';
-import { IErrReport } from '../../common/configuration';
+import { IErrReport } from '../../configuration/configuration';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.

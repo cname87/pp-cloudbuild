@@ -3,24 +3,24 @@ import { APP_BASE_HREF } from '@angular/common';
 import { ErrorHandler } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
-import { MembersListResolverService } from './members-list-resolver.service';
-import { AppModule } from '../../app-module/app.module';
+import { MemberDetailResolverService } from './member-detail-resolver.service';
+import { AppModule } from '../app.module';
 import { asyncError, asyncData } from '../test-helpers';
 import { members } from '../mocks/mock-members';
 import { MembersService } from '../services/members-service/members.service';
 
 interface IMembersServiceSpy {
-  getMembers: jasmine.Spy;
+  getMember: jasmine.Spy;
 }
 interface IErrorHandlerSpy {
   handleError: jasmine.Spy;
 }
-describe('MembersListResolverService', () => {
+describe('MemberDetailResolverService', () => {
   async function mainSetup() {
     /* stub logger to avoid console logs */
     const loggerSpy = jasmine.createSpyObj('NGXLogger', ['trace', 'error']);
     const membersServiceSpy = jasmine.createSpyObj('membersService', [
-      'getMembers',
+      'getMember',
     ]);
     const errorHandlerSpy = jasmine.createSpyObj('errorHandler', [
       'handleError',
@@ -33,7 +33,7 @@ describe('MembersListResolverService', () => {
         { provide: MembersService, useValue: membersServiceSpy },
         { provide: NGXLogger, useValue: loggerSpy },
         { provide: ErrorHandler, useValue: errorHandlerSpy },
-        MembersListResolverService,
+        MemberDetailResolverService,
       ],
     }).compileComponents();
   }
@@ -43,10 +43,10 @@ describe('MembersListResolverService', () => {
     errorHandlerSpy: IErrorHandlerSpy,
     isError = false,
   ) {
-    const getMembersSpy = memberServiceSpy.getMembers.and.callFake(
+    const getMembersSpy = memberServiceSpy.getMember.and.callFake(
       /* returns the mock members array unless an input flag parameter is set in which case an error is thrown. */
-      () =>
-        isError ? asyncError(new Error('Test Error')) : asyncData(members),
+      (id: number) =>
+        isError ? asyncError(new Error('Test Error')) : asyncData(members[id]),
     );
     const handleErrorSpy = errorHandlerSpy.handleError.and.stub();
 
@@ -58,7 +58,9 @@ describe('MembersListResolverService', () => {
   }
 
   function getService(isError = false) {
-    const membersListResolverService = TestBed.get(MembersListResolverService);
+    const memberDetailResolverService = TestBed.get(
+      MemberDetailResolverService,
+    );
     const membersServiceSpy = TestBed.get(MembersService);
     const errorHandlerSpy = TestBed.get(ErrorHandler);
 
@@ -70,7 +72,7 @@ describe('MembersListResolverService', () => {
     return {
       membersServiceSpy,
       handleErrorSpy,
-      membersListResolverService,
+      memberDetailResolverService,
     };
   }
 
@@ -80,27 +82,39 @@ describe('MembersListResolverService', () => {
   }
 
   it('should be created', async () => {
-    const { membersListResolverService } = await setup();
-    expect(membersListResolverService).toBeTruthy();
+    const { memberDetailResolverService } = await setup();
+    expect(memberDetailResolverService).toBeTruthy();
   });
 
-  it('should have an resolve function that returns the members', async () => {
-    const { membersListResolverService } = await setup();
+  it('should have an resolve function that returns a member', async () => {
+    const id = 4;
+    const route = {
+      paramMap: {
+        get: () => id,
+      },
+    };
+    const { memberDetailResolverService } = await setup();
     /* call resolve */
-    const members$ = membersListResolverService.resolve({}, {});
-    const membersReturned = await members$.toPromise();
-    expect(membersReturned).toEqual(members);
+    const member$ = memberDetailResolverService.resolve(route, {});
+    const member = await member$.toPromise();
+    expect(member.name).toEqual(members[id].name);
   });
 
   it('should have an resolve function that handles an error', async () => {
-    const { membersListResolverService, handleErrorSpy } = await setup(true);
+    const id = 4;
+    const route = {
+      paramMap: {
+        get: () => id,
+      },
+    };
+    const { memberDetailResolverService, handleErrorSpy } = await setup(true);
     /* call resolve */
-    const members$ = membersListResolverService.resolve({}, {});
-    const membersReturned = await members$.toPromise();
-    expect(membersReturned).toEqual([]);
+    const member$ = memberDetailResolverService.resolve(route, {});
+    const member = await member$.toPromise();
+    expect(member.id).toEqual(0);
     expect(handleErrorSpy).toHaveBeenCalledTimes(1);
     /* call the returned getMembers() subscribable again */
-    await members$.toPromise();
+    await member$.toPromise();
     /* handleError still only called once */
     expect(handleErrorSpy).toHaveBeenCalledTimes(1);
   });

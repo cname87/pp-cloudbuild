@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { of, throwError, defer } from 'rxjs';
 import { AppModule } from '../../app-module/app.module';
 import { HttpErrorInterceptor } from './http-error.interceptor';
-import { errorTypes } from '../../common/configuration';
+import { errorTypes } from '../../configuration/configuration';
 
 interface INgxLoggerSpy {
   trace: jasmine.Spy;

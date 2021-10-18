@@ -9,11 +9,11 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
-import { IMember } from '../../common/models/member';
+import { IMember } from '../../app-module/models/member';
 import { columnsToDisplay } from '../data-providers/summary-models';
 
-import { RouteStateService } from '../../common/services/route-state-service/router-state-service';
-import { IErrReport } from '../../common/configuration';
+import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { IErrReport } from '../../configuration/configuration';
 import { SingleSeries } from '@swimlane/ngx-charts';
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

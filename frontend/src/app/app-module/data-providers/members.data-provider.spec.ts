@@ -10,9 +10,9 @@ import {
   IMember,
 } from './members.data-provider';
 import { asyncData, asyncError } from '../test-helpers';
-import { apiConfiguration } from '../configuration';
+import { apiConfiguration } from '../../configuration/configuration';
 import { ICount } from '../models/count';
-import { AppModule } from '../../app-module/app.module';
+import { AppModule } from '../app.module';
 
 interface IHttpClientStub {
   post: jasmine.Spy;

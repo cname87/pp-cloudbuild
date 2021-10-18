@@ -11,7 +11,7 @@ import {
   click,
   findRouterLinks,
   RouterLinkDirectiveStub,
-} from '../../../common/test-helpers';
+} from '../../test-helpers';
 
 /* spy interfaces */
 interface IAuthServiceSpy {

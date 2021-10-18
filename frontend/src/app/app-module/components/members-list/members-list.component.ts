@@ -8,9 +8,9 @@ import { catchError, publishReplay, refCount, takeUntil } from 'rxjs/operators';
 import {
   IMember,
   IMemberWithoutId,
-} from '../../../common/data-providers/members.data-provider';
-import { MembersService } from '../../../common/services/members-service/members.service';
-import { routes } from '../../../common/configuration';
+} from '../../data-providers/members.data-provider';
+import { MembersService } from '../../services/members-service/members.service';
+import { routes } from '../../../configuration/configuration';
 
 /**
  * This component displays a list of members.

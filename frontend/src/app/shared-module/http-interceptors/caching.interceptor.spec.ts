@@ -6,7 +6,7 @@ import { HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { AppModule } from '../../app-module/app.module';
 import { CachingInterceptor } from './caching.interceptor';
-import { RequestCacheService } from '../../common/services/caching-service/request-cache.service';
+import { RequestCacheService } from '../../app-module/services/caching-service/request-cache.service';
 import { environment } from '../../../environments/environment';
 
 interface INgxLoggerSpy {

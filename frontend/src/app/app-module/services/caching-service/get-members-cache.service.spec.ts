@@ -3,7 +3,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 
 import { HttpResponse, HttpRequest } from '@angular/common/http';
-import { AppModule } from '../../../app-module/app.module';
+import { AppModule } from '../../app.module';
 import { GetMembersCache } from './get-members-cache.service';
 
 interface INgxLoggerSpy {

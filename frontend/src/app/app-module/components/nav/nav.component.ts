@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../../common/services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
-import { routes, roles } from '../../../common/configuration';
+import { routes, roles } from '../../../configuration/configuration';
 import { combineLatest, of } from 'rxjs';
-import { RouteStateService } from '../../../common/services/route-state-service/router-state-service';
+import { RouteStateService } from '../../services/route-state-service/router-state.service';
 
 interface ILink {
   path: string;

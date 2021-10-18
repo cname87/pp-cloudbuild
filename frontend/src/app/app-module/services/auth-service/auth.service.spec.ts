@@ -8,14 +8,14 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppModule } from '../../../app-module/app.module';
+import { AppModule } from '../../app.module';
 import { AuthService, CREATE_AUTH0_CLIENT } from './auth.service';
 import {
   auth0Config,
   routes,
   IErrReport,
   errorTypes,
-} from '../../configuration';
+} from '../../../configuration/configuration';
 
 describe('AuthService', () => {
   /* set any expected values */

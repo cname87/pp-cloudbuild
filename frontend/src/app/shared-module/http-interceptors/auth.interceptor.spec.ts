@@ -7,9 +7,9 @@ import { of, throwError } from 'rxjs';
 
 import { AppModule } from '../../app-module/app.module';
 import { AuthInterceptor } from './auth.interceptor';
-import { MockAuthService } from '../../common/mocks/mock-auth.service';
-import { AuthService } from '../../common/services/auth-service/auth.service';
-import { IErrReport, errorTypes } from '../../common/configuration';
+import { MockAuthService } from '../../app-module/mocks/mock-auth.service';
+import { AuthService } from '../../app-module/services/auth-service/auth.service';
+import { IErrReport, errorTypes } from '../../configuration/configuration';
 
 describe('AuthInterceptor', () => {
   async function mainSetup() {

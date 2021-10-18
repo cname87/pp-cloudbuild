@@ -14,13 +14,13 @@ import {
 import { asyncData, asyncError } from '../../test-helpers';
 import { members } from '../../mocks/mock-members';
 import { ICount } from '../../models/count';
-import { AppModule } from '../../../app-module/app.module';
+import { AppModule } from '../../app.module';
 import {
   IErrReport,
   E2E_TESTING,
   errorSearchTerm,
   errorTypes,
-} from '../../configuration';
+} from '../../../configuration/configuration';
 
 interface IMembersApiStub {
   getMembers: jasmine.Spy;

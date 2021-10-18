@@ -8,7 +8,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, tap } from 'rxjs/operators';
-import { apiConfiguration } from '../configuration';
+import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from './encoder';
 import { ICount, IMember, IMemberWithoutId } from '../models/models';
 

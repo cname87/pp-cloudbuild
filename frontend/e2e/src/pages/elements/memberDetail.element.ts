@@ -1,6 +1,6 @@
 import { by, element } from 'protractor';
 
-import { IMember } from 'src/app/common/models/member';
+import { IMember } from 'src/app/app-module/models/member';
 
 export function getMemberDetailElements() {
   /* DOM elements */

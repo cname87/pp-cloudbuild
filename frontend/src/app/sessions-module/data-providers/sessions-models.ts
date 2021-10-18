@@ -3,7 +3,7 @@
  */
 
 import { Observable } from 'rxjs';
-import { IMember } from '../../common/models/member';
+import { IMember } from '../../app-module/models/member';
 
 import { earliestDate } from '../../scores-module/data-providers/scores-models';
 

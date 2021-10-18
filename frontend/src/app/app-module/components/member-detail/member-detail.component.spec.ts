@@ -15,9 +15,9 @@ import {
   ActivatedRoute,
   ActivatedRouteStub,
   click,
-} from '../../../common/test-helpers';
-import { IMember } from '../../../common/data-providers/members.data-provider';
-import { members } from '../../../common/mocks/mock-members';
+} from '../../test-helpers';
+import { IMember } from '../../data-providers/members.data-provider';
+import { members } from '../../mocks/mock-members';
 
 interface IMembersServiceSpy {
   updateMember: jasmine.Spy;

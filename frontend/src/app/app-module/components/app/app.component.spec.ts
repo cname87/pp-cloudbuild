@@ -4,7 +4,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { NGXLogger } from 'ngx-logger';
 
 import { AppComponent } from './app.component';
-import { findAllCssOrNot } from '../../../common/test-helpers';
+import { findAllCssOrNot } from '../../test-helpers';
 import { AppModule } from '../../app.module';
 
 describe('AppComponent', () => {

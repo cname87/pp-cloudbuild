@@ -9,11 +9,11 @@ import { Observable, of, Subject, throwError } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
-import { IErrReport } from '../../common/configuration';
-import { IMember } from '../../common/data-providers/members.data-provider';
+import { IErrReport } from '../../configuration/configuration';
+import { IMember } from '../../app-module/data-providers/members.data-provider';
 import { ISessions } from '../data-providers/sessions-models';
 import { earliestDate } from '../../scores-module/data-providers/scores-models';
-import { RouteStateService } from '../../common/services/route-state-service/router-state-service';
+import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { SessionType } from '../data-providers/sessions-models';
 

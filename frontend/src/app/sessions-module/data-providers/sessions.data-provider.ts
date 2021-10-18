@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
-import { apiConfiguration } from '../../common/configuration';
+import { apiConfiguration } from '../../configuration/configuration';
 import { ISessions, ISessionsStripped } from './sessions-models';
 
 enum Days {

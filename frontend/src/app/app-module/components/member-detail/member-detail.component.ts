@@ -4,13 +4,13 @@ import { NGXLogger } from 'ngx-logger';
 import { of, Observable, Subject, throwError } from 'rxjs';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { MembersService } from '../../../common/services/members-service/members.service';
-import { IMember } from '../../../common/data-providers/members.data-provider';
+import { MembersService } from '../../services/members-service/members.service';
+import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { RouteStateService } from '../../../common/services/route-state-service/router-state-service';
-import { IErrReport } from '../../../common/configuration';
+import { RouteStateService } from '../../services/route-state-service/router-state.service';
+import { IErrReport } from '../../../configuration/configuration';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../../common/services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 /**
  * @title This member shows detail on a member whose id is passed in via the url id parameter.

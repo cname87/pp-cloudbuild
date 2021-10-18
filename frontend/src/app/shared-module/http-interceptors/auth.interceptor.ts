@@ -9,8 +9,8 @@ import { Observable, throwError } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 
-import { AuthService } from '../../common/services/auth-service/auth.service';
-import { IErrReport } from '../../common/configuration';
+import { AuthService } from '../../app-module/services/auth-service/auth.service';
+import { IErrReport } from '../../configuration/configuration';
 
 /**
  * Intercepts a http request and adds an Authorization header containing a jwt token.

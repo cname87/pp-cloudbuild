@@ -23,7 +23,7 @@ import {
   routes,
   userClaims,
   roles,
-} from '../../configuration';
+} from '../../../configuration/configuration';
 
 /**
  * Auth0 Operation:

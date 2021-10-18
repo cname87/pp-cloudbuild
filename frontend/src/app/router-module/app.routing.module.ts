@@ -6,9 +6,9 @@ import { MemberDetailComponent } from '../app-module/components/member-detail/me
 import { InformationComponent } from '../app-module/components/information/information.component';
 import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
 import { CallbackComponent } from '../app-module/components/callback/callback.component';
-import { MemberDetailResolverService } from '../common/resolvers/member-detail-resolver.service';
-import { MembersListResolverService } from '../common/resolvers/members-list-resolver.service';
-import { routes } from '../common/configuration';
+import { MemberDetailResolverService } from '../app-module/resolvers/member-detail-resolver.service';
+import { MembersListResolverService } from '../app-module/resolvers/members-list-resolver.service';
+import { routes } from '../configuration/configuration';
 
 const appRoutes: Routes = [
   {

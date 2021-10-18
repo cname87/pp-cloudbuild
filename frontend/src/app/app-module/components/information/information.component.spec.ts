@@ -11,7 +11,7 @@ import {
   ActivatedRoute,
   ActivatedRouteStub,
   click,
-} from '../../../common/test-helpers';
+} from '../../test-helpers';
 import { AuthService } from '../../common/auth-service/auth.service';
 
 interface ILocationSpy {

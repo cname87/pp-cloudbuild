@@ -13,7 +13,7 @@ import {
   errorMember,
   errorTestUrls,
   E2E_TESTING,
-} from '../../common/configuration';
+} from '../../configuration/configuration';
 
 @Injectable({ providedIn: 'root' })
 export class E2eTestInterceptor implements HttpInterceptor {

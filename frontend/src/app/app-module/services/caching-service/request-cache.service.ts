@@ -3,7 +3,7 @@ import { HttpRequest, HttpResponse } from '@angular/common/http';
 import { NGXLogger } from 'ngx-logger';
 import { StatusCodes } from 'http-status-codes';
 
-import { apiConfiguration } from '../../configuration';
+import { apiConfiguration } from '../../../configuration/configuration';
 import { GetMembersCache } from './get-members-cache.service';
 import { GetMemberCache } from './get-member-cache.service';
 

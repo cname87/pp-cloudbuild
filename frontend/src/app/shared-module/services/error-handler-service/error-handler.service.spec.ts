@@ -10,7 +10,7 @@ import {
   RollbarService,
   rollbarFactory,
 } from './error-handler.service';
-import { errorTypes } from '../../../common/configuration';
+import { errorTypes } from '../../../configuration/configuration';
 import { environment } from '../../../../environments/environment';
 
 interface INgxLoggerSpy {

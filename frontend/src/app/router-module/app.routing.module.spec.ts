@@ -9,17 +9,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { NGXLogger } from 'ngx-logger';
 
 import { of, Observable } from 'rxjs';
-import { click } from '../common/test-helpers';
+import { click } from '../app-module/test-helpers';
 import { AppModule } from '../app-module/app.module';
 import { AppComponent } from '../app-module/components/app/app.component';
 import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
-import { MembersService } from '../common/services/members-service/members.service';
-import { IMember } from '../common/models/models';
+import { MembersService } from '../app-module/services/members-service/members.service';
+import { IMember } from '../app-module/models/models';
 import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
 
-import { routes } from '../common/configuration';
+import { routes } from '../configuration/configuration';
 import { InformationComponent } from '../app-module/components/information/information.component';
-import { AuthService } from '../common/services/auth-service/auth.service';
+import { AuthService } from '../app-module/services/auth-service/auth.service';
 import { LoginComponent } from '../app-module/components/login/login.component';
 
 interface IMembersServiceStub {

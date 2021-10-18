@@ -6,15 +6,15 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { LoginComponent } from './login.component';
-import { AuthService } from '../../../common/services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 import { AuthGuard } from '../../../router-module/guards/auth.guard';
 import {
   findCssOrNot,
   click,
   findRouterLinks,
   RouterLinkDirectiveStub,
-} from '../../../common/test-helpers';
-import { routes } from '../../../common/configuration';
+} from '../../test-helpers';
+import { routes } from '../../../configuration/configuration';
 import { ProfileComponent } from '../user-profile/user-profile.component';
 
 /* spy interfaces */

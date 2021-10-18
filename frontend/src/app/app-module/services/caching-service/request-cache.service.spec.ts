@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { of } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { AppModule } from '../../../app-module/app.module';
+import { AppModule } from '../../app.module';
 import { RequestCacheService } from './request-cache.service';
 import { GetMembersCache } from './get-members-cache.service';
 

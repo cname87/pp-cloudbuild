@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import { AppModule } from '../../app.module';
 import { CallbackComponent } from './callback.component';
-import { AuthService } from '../../../common/services/auth-service/auth.service';
+import { AuthService } from '../../services/auth-service/auth.service';
 
 /* spy interfaces */
 interface IAuthServiceSpy {

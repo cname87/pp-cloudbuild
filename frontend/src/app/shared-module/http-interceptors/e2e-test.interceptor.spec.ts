@@ -9,7 +9,7 @@ import {
   errorMember,
   errorTestUrls,
   E2E_TESTING,
-} from '../../common/configuration';
+} from '../../configuration/configuration';
 
 interface INgxLoggerSpy {
   trace: jasmine.Spy;

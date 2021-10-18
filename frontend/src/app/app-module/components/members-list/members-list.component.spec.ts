@@ -17,12 +17,12 @@ import {
   click,
   asyncError,
   ActivatedRouteStub,
-} from '../../../common/test-helpers';
+} from '../../test-helpers';
 import {
   IMember,
   IMemberWithoutId,
-} from '../../../common/data-providers/members.data-provider';
-import { members } from '../../../common/mocks/mock-members';
+} from '../../data-providers/members.data-provider';
+import { members } from '../../mocks/mock-members';
 import { AppRoutingModule } from '../../../router-module/app.routing.module';
 
 /* spy interfaces */
