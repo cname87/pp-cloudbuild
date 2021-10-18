@@ -18,7 +18,6 @@ import { E2E_TESTING } from '../common/configuration';
 import { AppLoadService } from '../common/services/app-load.service/app-load.service';
 import { AppComponent } from './components/app/app.component';
 import { MembersListComponent } from './components/members-list/members-list.component';
-import { MemberSearchComponent } from './components/member-search/member-search.component';
 import { MemberDetailComponent } from './components/member-detail/member-detail.component';
 import { MemberInputComponent } from './components/member-input/member-input.component';
 import { InformationComponent } from './components/information/information.component';
@@ -54,7 +53,6 @@ export function initApp(appLoadService: AppLoadService) {
   declarations: [
     AppComponent,
     MembersListComponent,
-    MemberSearchComponent,
     MemberDetailComponent,
     MemberInputComponent,
     InformationComponent,
