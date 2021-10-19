@@ -5,11 +5,19 @@
   @include mixins.fill-width;
   padding-top: var(--default-gap-px);
   padding-bottom: var(--default-gap-px);
+  margin-top: var(--default-gap-px);
+  margin-bottom: var(--default-gap-px);
 }
 
-mat-card-title.mat-card-title {
+mat-card-content {
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+div > ul {
   color: var(--primary-color-darker);
-  margin-bottom: var(--default-gap-px);
+  margin: 0px;
+  padding-left: calc( 2 * var(--default-gap-px));
 }
 
 mat-card-actions.mat-card-actions {
@@ -17,9 +25,4 @@ mat-card-actions.mat-card-actions {
 }
 .mat-card > .mat-card-actions:last-child {
   margin-bottom: 0px;
-}
-
-/* pointer cursor only when login page showing */
-.logPage {
-  cursor: pointer;
 }

@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { of, Observable, Subject, throwError } from 'rxjs';
-import { IsLoadingService } from '@service-work/is-loading';
 
-import { MembersService } from '../../services/members-service/members.service';
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { RouteStateService } from '../../services/route-state-service/router-state.service';
@@ -28,15 +26,14 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   /* member to display */
   member$!: Observable<IMember>;
 
-  /* mode for input box */
-  inputMode = 'edit';
+  text =
+    // eslint-disable-next-line max-len
+    '<ul><li>Click on SCORES to enter your weekly assessment scores.</li><li>Click on SESSIONS to enter your weekly training sessions data.</li><li>Click on SUMMARY to see your data over the last 12 months.</li></ul>';
 
   constructor(
     private auth: AuthService,
     private route: ActivatedRoute,
-    private membersService: MembersService,
     private logger: NGXLogger,
-    private isLoadingService: IsLoadingService,
     private routeStateService: RouteStateService,
     private toastr: ToastrService,
   ) {
@@ -85,29 +82,5 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
 
   get userProfile$() {
     return this.auth.userProfile$;
-  }
-
-  /**
-   * Updates the name property of the member previously retrieved.
-   * Called by the input box when the user updates the input string and presses Enter (or clicks on the the Save icon).
-   * Note: member$ completes when page displayed => cannot get from id from member$ so got from page instead.
-   * @param name
-   * name: The input box string is supplied as the name parameter.
-   * id: The displayed member id is supplied as the member id.
-   */
-  save(name: string, id: string): void {
-    /* ignore if the input text is empty */
-    if (!name) {
-      return;
-    }
-    /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.membersService
-        .updateMember({ id: +id, name })
-        .subscribe((member) => {
-          this.member$ = of(member);
-          this.logger.trace(`${MemberDetailComponent.name}: Member updated`);
-        }),
-    );
   }
 }

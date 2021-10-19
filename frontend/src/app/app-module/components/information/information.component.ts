@@ -51,7 +51,7 @@ export class InformationComponent implements OnInit {
     /* set up error only if a mode query parameter of 'error' is passed in */
     if (this.mode === 'error') {
       this.header = 'Unexpected Error!';
-      this.hint = 'Click on a tab link above';
+      this.hint = 'Click on the back button';
       this.isGoBackVisible = true;
 
       /* set up log in only if a mode query parameter of 'login' is passed in */
@@ -71,7 +71,7 @@ export class InformationComponent implements OnInit {
       /* else set up the page not found */
     } else {
       this.header = 'Page Not Found';
-      this.hint = "Click on the 'MEMBERS' link above";
+      this.hint = '';
       this.isGoBackVisible = true;
     }
   }

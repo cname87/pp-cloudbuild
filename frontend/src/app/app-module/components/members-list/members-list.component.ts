@@ -107,7 +107,6 @@ export class MembersListComponent implements OnInit {
     );
 
     const stopSignal$ = new Subject();
-    console.log(`Message: ${message}`);
     if (message) {
       /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
       this.isLoadingService.add(

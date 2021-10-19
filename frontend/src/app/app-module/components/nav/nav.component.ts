@@ -38,8 +38,6 @@ export class NavComponent {
   }
 
   ngOnInit() {
-    console.log(`id$: ${this.routeStateService.id$}`);
-    console.log(`userProfile$: ${this.auth.userProfile$}`);
     combineLatest([
       this.routeStateService.id$,
       this.auth.userProfile$ || of({ roles: [''] }),
