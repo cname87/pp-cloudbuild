@@ -7,7 +7,11 @@ import { ToastrService } from 'ngx-toastr';
 
 import { MembersDataProvider } from '../../data-providers/members.data-provider';
 import { ICount, IMember, IMemberWithoutId } from '../../models/models';
-import { IErrReport, errorSearchTerm, E2E_TESTING } from '../../../configuration/configuration';
+import {
+  IErrReport,
+  errorSearchTerm,
+  E2E_TESTING,
+} from '../../../configuration/configuration';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.
@@ -121,7 +125,7 @@ export class MembersService {
           this.toastr.error('ERROR!', this.toastrMessage);
         }
         /* mark as handled */
-        errReport.isHandled = true;
+        errReport.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
         return throwError(errReport);

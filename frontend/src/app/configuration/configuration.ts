@@ -48,11 +48,8 @@ const loginPage = {
 const errorPage = {
   path: '/information/error',
 };
-const loginTarget = {
-  path: '/memberslist',
-};
 const callback = {
-  path: '/callback',
+  path: 'callback',
 };
 export const routes = {
   membersList,
@@ -62,7 +59,6 @@ export const routes = {
   summary,
   loginPage,
   errorPage,
-  loginTarget,
   callback,
 };
 

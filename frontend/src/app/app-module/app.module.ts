@@ -1,5 +1,5 @@
 /* angular */
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -24,6 +24,12 @@ import { InformationComponent } from './components/information/information.compo
 import { CallbackComponent } from './components/callback/callback.component';
 import { LoginComponent } from './components/login/login.component';
 import { NavComponent } from './components/nav/nav.component';
+import {
+  ErrorHandlerService,
+  RollbarService,
+  rollbarFactory,
+} from './services/error-handler-service/error-handler.service';
+import { httpInterceptorProviders } from './http-interceptors';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
@@ -62,6 +68,11 @@ export function initApp(appLoadService: AppLoadService) {
   ],
   bootstrap: [AppComponent],
   providers: [
+    {
+      provide: ErrorHandler,
+      useClass: ErrorHandlerService,
+    },
+    { provide: RollbarService, useFactory: rollbarFactory },
     { provide: E2E_TESTING, useValue: environment.e2eTesting },
     {
       provide: APP_INITIALIZER,
@@ -69,6 +80,7 @@ export function initApp(appLoadService: AppLoadService) {
       deps: [AppLoadService],
       multi: true,
     },
+    httpInterceptorProviders,
   ],
 })
 export class AppModule {}

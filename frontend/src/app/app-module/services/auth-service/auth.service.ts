@@ -116,7 +116,7 @@ export class AuthService {
 
   /**
    * Calls the auth0 client instance handleRedirectCallback function.
-   * The handleRedirectCallback function returns an object with a property called appState object which is the state passed in when the redirect request was made.  It should contain a property called 'target' holding the target route.
+   * The client handleRedirectCallback function returns an object with a property called appState, which is the state passed in when the redirect request was made.  This is set in the loginWithRedirect function to contain a property called 'target' holding the target route.
    * Note: Called by the callback component via handleAuthCallback below.
    */
   private handleRedirectCallback$ = this.auth0Client$.pipe(
@@ -197,15 +197,14 @@ export class AuthService {
 
   /**
    * This is called when when the app reloads after the Auth0 server redirects once the user is authenticated.
-   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, which contains the a target route property. If this is not found the the target route property defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in.
-   * It decides where to route based on whether the user is an Admin or not.
+   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, (passed in by loginWithRedirect), which contains the target route property. If this is not found the target route defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in.
+   * Note that '/' is redirected by a guard to a different route depending on whether the user is a manager or a member.
    */
   public handleAuthCallback = () => {
-    let targetRoute: string;
+    let appStateTarget = '/';
     const authComplete$ = this.handleRedirectCallback$.pipe(
       tap((cbRes) => {
-        /* set target route from callback results */
-        targetRoute = cbRes.appState.target ? cbRes.appState.target : '/';
+        appStateTarget = cbRes.appState.target ? cbRes.appState.target : '/';
       }),
       concatMap(() => combineLatest([this.getUser$(), this.isAuthenticated$])),
       catchError((err: IErrReport) => {
@@ -220,39 +219,31 @@ export class AuthService {
     authComplete$.subscribe(([user, isLoggedIn]) => {
       if (!isLoggedIn) {
         this.logger.trace(
-          `${AuthService.name}: not logged in - routing to admin page`,
+          `${AuthService.name}: not logged in - routing to login page`,
         );
         this.router.navigate([routes.loginPage.path]);
-      }
-      if (user.roles.includes(roles.admin)) {
+      } else {
         this.logger.trace(
           `${AuthService.name}: Team Owner - routing to admin page`,
         );
-        this.router.navigate([targetRoute]);
-      } else {
-        this.logger.trace(
-          `${AuthService.name}: Member - routing to member page`,
-        );
-        this.router.navigate([`/member/${user?.id}`]);
+        this.router.navigate(['/']);
       }
     });
   };
 
   /**
-   * Calls the Auth0 client instance loginWithDirect function.  The function is called with an object parameter that sets the redirect uri to the callback component, and also an appState property passed to the callback component, which is used to set the target route to which the app is ultimately sent.
-   * The client loginWithDirect function presents a login page to the user and redirects the client browser to the redirect uri (calback component), (which calls handleAuthCallback).
-   * Note: Called when the user clicks 'login'.
-   * @param redirectPath: The target redirect path supplied to the Auth loginWithRedirect function.  It defaults to '/', i.e. the app is ultimately redirected to the home page.
+   * Calls the Auth0 client instance loginWithDirect function.  The function is called with an object with a parameter that sets the redirect uri to the callback component.  It also passes an appState property to the callback component, which can be used to set the target route to which the app is ultimately sent.  Here we pass '/' but this is overwritten in the handleAuthCallback function.
+   * The client loginWithDirect function presents a login page to the user and redirects the client browser to the redirect uri, (which is the callback component which in turn calls handleAuthCallback.
+   * @param redirect_uri: The uri to which auth0 redirects after authentication.
    */
   public login = (
-    redirect_uri = `${window.location.origin}${routes.callback.path}`,
-    redirectPath = '/',
+    redirect_uri = `${window.location.origin}/${routes.callback.path}`,
   ) => {
     this.auth0Client$.subscribe(
       (client: Auth0Client) => {
         client.loginWithRedirect({
           redirect_uri,
-          appState: { target: redirectPath },
+          appState: { target: '/' },
         });
       },
       (err: IErrReport) => {

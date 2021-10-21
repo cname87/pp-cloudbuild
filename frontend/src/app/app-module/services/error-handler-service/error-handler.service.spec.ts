@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-import { AppModule } from '../../../app-module/app.module';
+import { AppModule } from '../../app.module';
 import {
   ErrorHandlerService,
   RollbarService,

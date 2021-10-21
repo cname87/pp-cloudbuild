@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 
 import { AuthService } from '../../services/auth-service/auth.service';
@@ -35,7 +34,7 @@ export class InformationComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private location: Location,
+    private router: Router,
     private auth: AuthService,
     private logger: NGXLogger,
   ) {
@@ -77,6 +76,6 @@ export class InformationComponent implements OnInit {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate([`/`]);
   }
 }

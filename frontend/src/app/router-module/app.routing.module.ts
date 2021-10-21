@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, NoPreloading } from '@angular/router';
 
 import { AuthGuard } from './guards/auth.guard';
+import { UserTypeGuard } from './guards/user-type.guard';
 import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
 import { InformationComponent } from '../app-module/components/information/information.component';
 import { MembersListComponent } from '../app-module/components/members-list/members-list.component';
@@ -14,12 +15,19 @@ const appRoutes: Routes = [
   {
     /* default path if no route supplied */
     path: '',
-    redirectTo: routes.loginTarget.path,
+    canActivate: [UserTypeGuard],
+    /* dummy - needed with canActivate as otherwise error thrown */
+    children: [],
     pathMatch: 'full',
+    data: {
+      managerRedirect: routes.membersList.path,
+      /* member user.id added to path in the guard */
+      memberRedirectRoot: routes.member.path,
+    },
   },
   {
-    /* callback from auth0 authentication - it redirects */
-    path: 'callback',
+    /* callback from auth0 authentication */
+    path: routes.callback.path,
     component: CallbackComponent,
   },
   {

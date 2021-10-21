@@ -31,7 +31,7 @@ export const authorizeHandler = (
   const permissionsProperty =
     (req.auth! as any).gty === 'client-credentials' ? 'scope' : 'permissions';
 
-  /* this will call next(err) on error => catch with an error handler next */
+  /* this will call next(err) on an authorization fail => catch with an error handler */
   const checkPermissions = expressJwtPermissions({
     requestProperty: 'auth',
     permissionsProperty,

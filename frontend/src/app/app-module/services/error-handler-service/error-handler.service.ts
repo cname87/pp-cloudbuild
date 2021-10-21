@@ -10,7 +10,7 @@ import Rollbar from 'rollbar';
 import { NGXLogger, NgxLoggerLevel } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
-import { AuthService } from '../../../app-module/services/auth-service/auth.service';
+import { AuthService } from '../auth-service/auth.service';
 import { errorTypes, routes } from '../../../configuration/configuration';
 import { environment } from '../../../../environments/environment';
 
@@ -41,12 +41,12 @@ export function rollbarFactory() {
  * - Throws on the error report with an isHandled property set true.
  * The original requesting function calls handleError passing the error report.
  * This handler:
- * - carry out any final actions on specific error types.
+ * - carries out any final actions on specific error types.
  * - logs the error with the logger service.
  * - logs the error with Rollbar.
  * - informs the user as appropriate, i.e. for unhandled errors.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ErrorHandlerService implements ErrorHandler {
   constructor(private injectors: Injector) {
     this.logger.trace(
@@ -130,6 +130,7 @@ export class ErrorHandlerService implements ErrorHandler {
     this.rollbar.error(errReport);
 
     /* navigate to an error page if the error has not been handled */
+    console.log(`Handled: ${errReport.isHandled}`);
     if (!errReport.isHandled) {
       /* using zone (and the gets above) resolved some issues accessing the services, and also handling unexpected errors (?) */
       /* "If a method is called from code that was invoked outside Angular's zone, everything runs outside the zone until this event is fully processed. With zone.run(...) you force execution back into Angular's zone." */

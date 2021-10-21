@@ -66,7 +66,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
                 errorsReceived === this.totalTries,
               /* if true we throw the last error */
               throwError(e),
-              /* issuing any non-error event trigger the retry */
+              /* issuing any non-error event triggers the retry */
               of('trigger').pipe(
                 /* issue after a delay */
                 delay(this.retryDelay),
