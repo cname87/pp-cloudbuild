@@ -302,19 +302,6 @@ const callApiHandler = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
-export const checkError = (
-  error: Record<string, unknown>,
-  _req: Request,
-  _res: Response,
-  next: NextFunction,
-): void => {
-  console.error(`${modulename}: Authorization fail`);
-  /* apply code 401 meaning there was a problem with credentials */
-  error.statusCode = 401;
-  error.dumped = false;
-  next(error);
-};
-
 const authenticate = Router();
 authenticate.use(
   (req: Request, res: Response, next: NextFunction) => {
@@ -322,23 +309,94 @@ authenticate.use(
     req.app.appLocals.handlers.authenticateHandler(req, res, next);
   },
   /* catch authentication errors */
-  checkError,
+  (
+    error: Record<string, unknown>,
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    console.error(`${modulename}: Database authorization fail`);
+    /* apply code 401 meaning there was a problem with credentials */
+    error.statusCode = 401;
+    error.dumped = false;
+    next(error);
+  },
 );
 
-const authorize = Router();
-authorize.use(
+const dbAuthorize = Router();
+dbAuthorize.use(
   (req: Request, res: Response, next: NextFunction) => {
     /* verify that the user is authorized for the configured database */
-    req.app.appLocals.handlers.authorizeHandler(req, res, next);
+    req.app.appLocals.handlers.dbAuthorizeHandler(req, res, next);
+  },
+  (req: Request, res: Response, next: NextFunction) => {
+    /* verify that the user is authorized for admin urls */
+    req.app.appLocals.handlers.managerAuthorizeHandler(req, res, next);
   },
   /* catch authorization errors */
-  checkError,
+  (
+    error: Record<string, unknown>,
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    console.error(`${modulename}: dbAuthorize fail`);
+    /* apply code 403 meaning there was a problem with authorization */
+    error.statusCode = 403;
+    error.dumped = false;
+    next(error);
+  },
+);
+
+const managerAuthorize = Router();
+managerAuthorize.use(
+  (req: Request, res: Response, next: NextFunction) => {
+    /* verify that the user is authorized for admin urls */
+    req.app.appLocals.handlers.managerAuthorizeHandler(req, res, next);
+  },
+  /* catch authorization errors */
+  (
+    error: Record<string, unknown>,
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    console.error(`${modulename}: managerAuthorize fail`);
+    /* apply code 403 meaning there was a problem with authorization */
+    error.statusCode = 403;
+    error.dumped = false;
+    next(error);
+  },
+);
+
+const memberAuthorize = Router();
+memberAuthorize.use(
+  '/members/:mid',
+  (req: Request, res: Response, next: NextFunction) => {
+    /* verify that the user is authorized for the configured database */
+    req.app.appLocals.handlers.memberAuthorizeHandler(req, res, next);
+  },
+  /* catch authorization errors */
+  (
+    error: Record<string, unknown>,
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    console.error(`${modulename}: memberAuthorize fail`);
+    /* apply code 403 meaning there was a problem with authorization */
+    error.statusCode = 403;
+    error.dumped = false;
+    next(error);
+  },
 );
 
 router.use(
   '/',
   authenticate,
-  authorize,
+  dbAuthorize,
+  managerAuthorize,
+  memberAuthorize,
   /* create connection to the user database model / collection */
   createDbCollectionConnection,
   /* call a handler based on the path and the api spec */

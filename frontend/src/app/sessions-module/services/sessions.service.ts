@@ -64,8 +64,7 @@ export class SessionsService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        /* mark as handled */
-        errReport.isHandled = true;
+        errReport.isHandled = false;
 
         this.logger.trace(`${SessionsService.name}: Throwing the error on`);
         return throwError(errReport);
@@ -110,8 +109,7 @@ export class SessionsService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        /* mark as handled */
-        errReport.isHandled = true;
+        errReport.isHandled = false;
 
         this.logger.trace(`${SessionsService.name}: Throwing the error on`);
         return throwError(errReport);

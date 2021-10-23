@@ -189,7 +189,9 @@ declare namespace Perform {
     miscHandlers: typeof import('../handlers/misc-handlers').miscHandlers;
     errorHandlers: typeof import('../handlers/error-handlers').errorHandlers;
     authenticateHandler: typeof import('../handlers/authenticate-handlers').authenticateHandler;
-    authorizeHandler: typeof import('../handlers/authorize-handlers').authorizeHandler;
+    dbAuthorizeHandler: typeof import('../handlers/authorize-handlers').dbAuthorizeHandler;
+    managerAuthorizeHandler: typeof import('../handlers/authorize-handlers').managerAuthorizeHandler;
+    memberAuthorizeHandler: typeof import('../handlers/authorize-handlers').memberAuthorizeHandler;
     membersApi: typeof import('../api/members-api').membersApi;
     scoresApi: typeof import('../api/scores-api').scoresApi;
     sessionsApi: typeof import('../api/sessions-api').sessionsApi;

@@ -6,7 +6,6 @@
 
 import { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
-import { URL } from 'url';
 import util from 'util';
 import { setupDebug } from '../utils/src/debugOutput';
 
@@ -79,18 +78,13 @@ function logError(
     `${modulename}: Logging detail on the request that caused the error`,
   );
 
-  console.error(
-    `${modulename}: http request detail:` +
-      `\nreq.url: ${req.url}\nreq.ip: ${req.ip}\nreq.method: ${
-        req.method
-      }\nurl query string: ${
-        new URL(req.originalUrl).search
-      }\nbody query string: ${util.inspect(
-        req.query,
-      )}\nsigned cookies: ${util.inspect(
-        req.signedCookies,
-      )}\nResponse http status code: ${res.statusCode}`,
-  );
+  console.error(`${modulename}: http request detail:`);
+  console.error(`req.url: ${req.url}`);
+  console.error(`req.ip: ${req.ip}`);
+  console.error(`req.method: ${req.method}`);
+  console.error(`Body query string: ${util.inspect(req.query)}`);
+  console.error(`Signed cookies: ${util.inspect(req.signedCookies)}`);
+  console.log(`Response http status code: ${res.statusCode}`);
 
   /* dump the error */
   dumpError(err);

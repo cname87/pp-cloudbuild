@@ -61,9 +61,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         catchError((err: IErrReport) => {
           this.logger.trace(`${MemberDetailComponent.name}: catchError called`);
 
-          /* inform user and mark as handled */
+          /* inform user but do not mark as handled */
           this.toastr.error('ERROR!', this.toastrMessage);
-          err.isHandled = true;
+          err.isHandled = false;
 
           this.logger.trace(
             `${MemberDetailComponent.name}: Throwing the error on`,

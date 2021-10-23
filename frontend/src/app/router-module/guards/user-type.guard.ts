@@ -43,13 +43,9 @@ export class UserTypeGuard implements CanActivate {
     const memberPathRoot = routeSnapshot.data['memberRedirectRoot'];
     return this.auth.userProfile$.pipe(
       map((user: User | undefined) => {
-        console.log(`User Roles 1: ${JSON.stringify(user?.roles)}`);
-        console.log(`User Roles 2: ${JSON.stringify(roles.admin)}`);
         if (!user || user.roles.includes(roles.admin)) {
-          console.log(`Manager Path: ${JSON.stringify(managerPath)}`);
           this.router.navigate([managerPath]);
         } else {
-          console.log(`MemberPath: ${JSON.stringify(memberPathRoot)}`);
           /* route the members detail page */
           this.router.navigate([`${memberPathRoot}/${user.id}`]);
         }

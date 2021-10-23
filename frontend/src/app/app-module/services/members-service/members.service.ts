@@ -81,9 +81,9 @@ export class MembersService {
       catchError((err: IErrReport) => {
         this.logger.trace(`${MembersService.name}: catchError called`);
 
-        /* inform user and mark as handled */
+        /* inform user but do not mark as handled */
         this.toastr.error('ERROR!', this.toastrMessage);
-        err.isHandled = true;
+        err.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
         return throwError(err);
@@ -124,7 +124,6 @@ export class MembersService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        /* mark as handled */
         errReport.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
@@ -155,9 +154,9 @@ export class MembersService {
       catchError((err: IErrReport) => {
         this.logger.trace(`${MembersService.name}: catchError called`);
 
-        /* inform user and mark as handled */
+        /* inform user but do not mark as handled */
         this.toastr.error('ERROR!', this.toastrMessage);
-        err.isHandled = true;
+        err.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
         return throwError(err);
@@ -200,8 +199,7 @@ export class MembersService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        /* mark as handled */
-        errReport.isHandled = true;
+        errReport.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
         return throwError(errReport);
@@ -241,8 +239,7 @@ export class MembersService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        /* mark as handled */
-        errReport.isHandled = true;
+        errReport.isHandled = false;
 
         this.logger.trace(`${MembersService.name}: Throwing the error on`);
         return throwError(errReport);

@@ -22,7 +22,6 @@ import {
   IErrReport,
   routes,
   userClaims,
-  roles,
 } from '../../../configuration/configuration';
 
 /**
@@ -197,7 +196,8 @@ export class AuthService {
 
   /**
    * This is called when when the app reloads after the Auth0 server redirects once the user is authenticated.
-   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, (passed in by loginWithRedirect), which contains the target route property. If this is not found the target route defaults to '/'. Also userProfile$ and isAuthenticated$ are piped in.
+   * It subscribes to the piped handleRedirectCallback$ observable, which returns an object containing an appState object, (passed in by loginWithRedirect), which contains the target route property. If this is not found the target route defaults to '/'.
+   * userProfile$ and isAuthenticated$ are piped in but not used.
    * Note that '/' is redirected by a guard to a different route depending on whether the user is a manager or a member.
    */
   public handleAuthCallback = () => {
@@ -216,18 +216,8 @@ export class AuthService {
         return throwError(err);
       }),
     );
-    authComplete$.subscribe(([user, isLoggedIn]) => {
-      if (!isLoggedIn) {
-        this.logger.trace(
-          `${AuthService.name}: not logged in - routing to login page`,
-        );
-        this.router.navigate([routes.loginPage.path]);
-      } else {
-        this.logger.trace(
-          `${AuthService.name}: Team Owner - routing to admin page`,
-        );
-        this.router.navigate(['/']);
-      }
+    authComplete$.subscribe(([_user, _loggedIn]) => {
+      this.router.navigate([appStateTarget]);
     });
   };
 

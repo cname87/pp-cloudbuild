@@ -307,9 +307,9 @@ export class MemberScoresComponent implements OnDestroy {
   #catcherror(err: IErrReport) {
     this.logger.trace(`${MemberScoresComponent.name}: catchError called`);
 
-    /* inform user and mark as handled */
+    /* inform user but do not mark as handled */
     this.toastr.error('ERROR!', this.#toastrMessage);
-    err.isHandled = true;
+    err.isHandled = false;
 
     this.logger.trace(`${MemberScoresComponent.name}: Throwing the error on`);
     return throwError(err);

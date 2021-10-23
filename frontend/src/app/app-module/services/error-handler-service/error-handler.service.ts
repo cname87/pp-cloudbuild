@@ -130,7 +130,6 @@ export class ErrorHandlerService implements ErrorHandler {
     this.rollbar.error(errReport);
 
     /* navigate to an error page if the error has not been handled */
-    console.log(`Handled: ${errReport.isHandled}`);
     if (!errReport.isHandled) {
       /* using zone (and the gets above) resolved some issues accessing the services, and also handling unexpected errors (?) */
       /* "If a method is called from code that was invoked outside Angular's zone, everything runs outside the zone until this event is fully processed. With zone.run(...) you force execution back into Angular's zone." */

@@ -34,8 +34,10 @@ import { apiController, initOpenApi } from './controllers/api-controller';
 import { failController } from './controllers/fail-controller';
 /* authentication handler */
 import { authenticateHandler } from './handlers/authenticate-handlers';
-/* authorization handler */
-import { authorizeHandler } from './handlers/authorize-handlers';
+/* authorization handlers */
+import { dbAuthorizeHandler } from './handlers/authorize-handlers';
+import { managerAuthorizeHandler } from './handlers/authorize-handlers';
+import { memberAuthorizeHandler } from './handlers/authorize-handlers';
 /* error handler middleware functions (and debug for mocha) */
 import { errorHandlers } from './handlers/error-handlers';
 /* handlers for apis */
@@ -75,7 +77,9 @@ const createStore = (): Perform.IAppLocals => {
     /* handlers object */
     handlers: {
       authenticateHandler,
-      authorizeHandler,
+      dbAuthorizeHandler,
+      managerAuthorizeHandler,
+      memberAuthorizeHandler,
       errorHandlers,
       membersHandlers,
       scoresHandlers,
