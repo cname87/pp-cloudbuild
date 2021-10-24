@@ -29,7 +29,7 @@ export class RequestCacheService {
    * @param cache A cache service with a clearCache function
    * @returns void
    */
-  public clearCache(cache?: GetMembersCache): void {
+  public clearCache(cache?: GetMemberCache | GetMembersCache): void {
     this.logger.trace(`${RequestCacheService.name}: running clearCache`);
     if (!cache) {
       this._cacheServices.forEach((cache) => cache.clearCache());
@@ -56,7 +56,7 @@ export class RequestCacheService {
       request.method === 'GET' &&
       this._memberRegex.test(request.urlWithParams) &&
       /**
-       * TODO Extend getMember cache so it stores Requests - currently it returns the same member even if you switch members on the list page
+       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page
        */
       false
     ) {
@@ -83,6 +83,9 @@ export class RequestCacheService {
       response.status !== StatusCodes.OK &&
       response.status !== StatusCodes.CREATED
     ) {
+      this.logger.trace(
+        `${RequestCacheService.name}: response: ${response.status} => clearing cache`,
+      );
       this.clearCache();
       return;
     }
@@ -107,8 +110,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPostOne(response);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the memberCache */
+          this.clearCache(this.memberCache);
         }
         break;
       }
@@ -118,8 +121,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPutOne(response);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the memberCache */
+          this.clearCache(this.memberCache);
         }
         break;
       }
@@ -131,14 +134,16 @@ export class RequestCacheService {
           /* if id != 0 and is a number */
           this.membersCache.setDeleteOne(request);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the memberCache */
+          this.clearCache(this.memberCache);
         }
         break;
       }
       /* all other request types */
       default: {
-        /* clear all caches */
+        this.logger.trace(
+          `${RequestCacheService.name}: unexpected method => clearing all caches`,
+        );
         this.clearCache();
         break;
       }

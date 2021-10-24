@@ -565,11 +565,27 @@
         }
       }
     },
-    "/scores": {
+    "/scores/{mid}": {
       "put": {
         "summary": "Updates a specific scores table.",
         "description": "A scores object is supplied which must have a id corresponding to an existing scores object.\nThe scores table with that id is updated with the supplied scores table.\n",
         "operationId": "updateScores",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Scores object.",
           "content": {

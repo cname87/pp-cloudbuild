@@ -6,7 +6,7 @@ import {
   ActivatedRouteSnapshot,
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { publishReplay, refCount, catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, shareReplay } from 'rxjs/operators';
 
 import { MembersService } from '../../app-module/services/members-service/members.service';
 import { SessionsService } from '../services/sessions.service';
@@ -76,9 +76,7 @@ export class MemberSessionsResolverService implements Resolve<any> {
         });
         return output;
       }),
-      publishReplay(1),
-      refCount(),
-
+      shareReplay(1),
       catchError((error: any) => {
         if (!errorHandlerCalled) {
           this.logger.trace(

@@ -6,7 +6,7 @@ import {
   ActivatedRouteSnapshot,
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { publishReplay, refCount, catchError } from 'rxjs/operators';
+import { catchError, shareReplay } from 'rxjs/operators';
 
 import { MembersService } from '../services/members-service/members.service';
 import { IMember } from '../models/models';
@@ -34,7 +34,7 @@ export class MemberDetailResolverService implements Resolve<IMember> {
     );
 
     /* get id of member to be displayed from the route */
-    const id = +(route.paramMap.get('id') || '0');
+    const memberId = +(route.paramMap.get('id') || '0');
 
     let errorHandlerCalled = false;
     const dummyMember = {
@@ -42,10 +42,8 @@ export class MemberDetailResolverService implements Resolve<IMember> {
       name: '',
     };
 
-    return this.membersService.getMember(id).pipe(
-      publishReplay(1),
-      refCount(),
-
+    return this.membersService.getMember(memberId).pipe(
+      shareReplay(1),
       catchError((error: any) => {
         if (!errorHandlerCalled) {
           this.logger.trace(
@@ -54,7 +52,6 @@ export class MemberDetailResolverService implements Resolve<IMember> {
           errorHandlerCalled = true;
           this.errorHandler.handleError(error);
         }
-        /* return dummy member */
         return of(dummyMember);
       }),
     );

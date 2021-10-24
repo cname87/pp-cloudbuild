@@ -1,18 +1,16 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, of, Subject, throwError } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
 import { IErrReport } from '../../configuration/configuration';
-import { IMember } from '../../app-module/data-providers/members.data-provider';
 import { IScores, earliestDate } from '../data-providers/scores-models';
-
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { ScoresService } from '../services/scores.service';
 
@@ -129,11 +127,9 @@ export class MemberScoresComponent implements OnDestroy {
     { value: 4, label: '4' },
     { value: 5, label: '5' },
   ];
-  #debounceDelay = 1500;
-  #changeTimerId!: NodeJS.Timeout;
-  member$ = of({}) as Observable<IMember>;
   form = new FormGroup({});
-  model$!: Observable<IScores>;
+  scores!: IScores;
+  /* form model */
   model!: IScores;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
@@ -269,22 +265,15 @@ export class MemberScoresComponent implements OnDestroy {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
     );
-    /* get data from route resolver */
+
+    /* get data from route resolver and load the model which fills and renders the table */
+    /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
       .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
-      .subscribe((data) => {
-        this.member$ = data.memberAndScores.member$;
-        this.model$ = data.memberAndScores.scores$;
+      .subscribe((data: Data) => {
+        this.model = data.scores;
       });
-    /* load the model which fills the table */
-    /* Note: loading in constructor to avoid angular change after checked error */
-    this.isLoadingService.add(
-      this.model$
-        .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
-        .subscribe((model: IScores) => {
-          this.model = model;
-        }),
-    );
+
     /* update route state service with routed member id */
     this.route.paramMap
       .pipe(
@@ -321,59 +310,41 @@ export class MemberScoresComponent implements OnDestroy {
    * @returns Sum of the numbers in the array.
    */
   #sum(cells: number[]): number {
+    this.logger.trace(`${MemberScoresComponent.name}: #sum called`);
     const filteredCells = cells.filter((cell) => !!cell);
     return filteredCells.reduce((sum, cell) => (sum += cell), 0);
   }
 
   /**
-   * Updates the backend database with the updated model.
-   */
-  #submitTable(updatedModel: IScores): void {
-    /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.scoresService
-        .updateScoresTable(updatedModel)
-        .pipe(takeUntil(this.#destroy$))
-        .subscribe((scores) => {
-          this.logger.trace(
-            `${
-              MemberScoresComponent.name
-            }: Scores table updated: ${JSON.stringify(scores)}`,
-          );
-          /* allow errors go to errorHandler */
-        }),
-    );
-  }
-
-  /**
-   * Runs after every table data change, (i.e. excluding the date), the data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
+   * Runs after every table data change, (i.e. excluding the date). The data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
   #onTableChange(updatedModel: IScores = this.model): void {
     this.logger.trace(`${MemberScoresComponent.name}: #onTableChange called}`);
-    const runChange = (updatedModel: IScores): void => {
-      this.logger.trace(`${MemberScoresComponent.name}: #runChange called}`);
-      this.#submitTable(updatedModel);
-      this.#tableChange.emit('modelChange');
-    };
+    this.scoresService
+      .updateScoresTable(updatedModel)
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
+      .subscribe((scores: IScores) => {
+        this.logger.trace(
+          `${
+            MemberScoresComponent.name
+          }: Scores table updated: ${JSON.stringify(scores)}`,
+        );
+      });
+    this.#tableChange.emit('modelChange');
     if (!this.form.valid) {
       this.logger.trace(
         `${MemberScoresComponent.name}: Form invalid, change not run}`,
       );
       return;
     }
-    clearTimeout(this.#changeTimerId);
-    this.#changeTimerId = setTimeout(
-      runChange,
-      this.#debounceDelay,
-      updatedModel,
-    );
   }
 
   /**
    * Requests a table object from the backend database and loads it into the data model.
    */
   #submitDate(updatedModel: IScores): void {
+    this.logger.trace(`${MemberScoresComponent.name}: #submitDate called`);
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
       this.scoresService
@@ -396,6 +367,7 @@ export class MemberScoresComponent implements OnDestroy {
    * @param updatedModel Updated table model.
    */
   #onDateChange(updatedModel: IScores = this.model): void {
+    this.logger.trace(`${MemberScoresComponent.name}: #onDateChange called`);
     if (this.form.valid) {
       this.#submitDate(updatedModel);
       this.#tableChange.emit('modelChange');
@@ -403,6 +375,7 @@ export class MemberScoresComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
     /* unsubscribe all */
     this.#destroy$.next();
     this.#destroy$.complete();

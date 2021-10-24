@@ -39,7 +39,7 @@ export class ScoresDataProvider {
   public getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
     this.logger.trace(`${ScoresDataProvider.name}: getOrCreateScores called`);
 
-    if (date === null || date === undefined) {
+    if (!date || !memberId) {
       throw new Error(
         'Required parameter date was null or undefined when calling getOrCreateScores.',
       );
@@ -93,7 +93,7 @@ export class ScoresDataProvider {
 
   /**
    * Updates a scores table.
-   * A scores table object is supplied which must have an id property.
+   * A scores table object is supplied which must have both an id property and a memberId property.
    * The scores table with that id is updated.
    * @param scores: Scores table containing detail to be updated.
    * @returns An observable returning the updated scores table.
@@ -118,8 +118,11 @@ export class ScoresDataProvider {
       `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.scoresPath}`,
     );
 
+    /* the member id is passed as a url parameter and is used to ensure the calling user matches the member id in the scores object */
+    const mid = scores.memberId;
+
     return this.httpClient
-      .put<IScores>(`${this.basePath}/${this.scoresPath}`, scores, {
+      .put<IScores>(`${this.basePath}/${this.scoresPath}/${mid}`, scores, {
         withCredentials: this.withCredentials,
         headers,
       })

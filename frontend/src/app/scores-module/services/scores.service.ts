@@ -45,7 +45,6 @@ export class ScoresService {
           }: Fetched or created scores table with date = ${data.date.toISOString()}`,
         );
       }),
-
       catchError((errReport: IErrReport) => {
         this.logger.trace(`${ScoresService.name}: catchError called`);
 

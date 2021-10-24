@@ -131,7 +131,7 @@ const getOrCreateScores = async (
       .exec()
       .then((doc) => {
         if (!doc) {
-          debug(`${modulename}: no scores object found or created`);
+          debug(`${modulename}: no scores object found`);
         }
         /* strip down to scores object and return */
         return resolve(doc?.toObject() as Perform.IScores);
@@ -152,6 +152,7 @@ const getOrCreateScores = async (
     addedScores
       .save()
       .then((savedScores: Document) => {
+        debug(`${modulename}: new scores object created`);
         /* return the added scores table as a JSON object */
         return resolve(savedScores.toObject() as Perform.IScores);
       })

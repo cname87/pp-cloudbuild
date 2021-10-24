@@ -16,7 +16,7 @@ const routes: Routes = [
     component: MemberScoresComponent,
     canActivate: [AuthGuard],
     resolve: {
-      memberAndScores: MemberScoresResolverService,
+      scores: MemberScoresResolverService,
     },
   },
 ];

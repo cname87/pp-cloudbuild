@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Data, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
-import { of, Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
@@ -44,9 +44,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     /* get the data as supplied from the route resolver */
-    this.route.data.subscribe((data: Data) => {
-      this.member$ = of(data.member);
-    });
+    this.member$ = this.route.data as Observable<IMember>;
+
     /* update route state with member id */
     this.route.paramMap
       .pipe(
