@@ -33,7 +33,7 @@ enum AMPM {
 export class SessionsDataProvider {
   //
   private basePath = apiConfiguration.basePath;
-  private sessions2Path = apiConfiguration.sessions2Path;
+  private sessionsPath = apiConfiguration.sessionsPath;
   private membersPath = apiConfiguration.membersPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
@@ -111,7 +111,7 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.sessions2Path}/`,
+      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.sessionsPath}/`,
     );
 
     /* create a body with the date string */
@@ -120,7 +120,7 @@ export class SessionsDataProvider {
     return this.httpClient
       .post<any>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
-          this.sessions2Path
+          this.sessionsPath
         }`,
         dateObject,
         {
@@ -183,12 +183,15 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.sessions2Path}`,
+      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.sessionsPath}`,
     );
+
+    /* the member id is passed as a url parameter and is used to ensure the calling user matches the member id in the object being accessed */
+    const memberId = sessions.memberId;
 
     return this.httpClient
       .put<ISessions>(
-        `${this.basePath}/${this.sessions2Path}`,
+        `${this.basePath}/${this.sessionsPath}/${encodeURIComponent(memberId)}`,
         sessionsStripped,
         {
           withCredentials: this.withCredentials,

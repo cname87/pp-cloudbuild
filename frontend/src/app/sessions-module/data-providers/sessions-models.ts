@@ -5,7 +5,7 @@
 import { Observable } from 'rxjs';
 import { IMember } from '../../app-module/models/member';
 
-import { earliestDate } from '../../scores-module/data-providers/scores-models';
+import { EARLIEST_DATE } from '../../scores-module/data-providers/scores-models';
 
 export enum SessionType {
   Conditioning = 'CONDITIONING',
@@ -232,7 +232,7 @@ export interface ISessionsAndMember {
 export const dummySessions: ISessions = {
   id: 0,
   memberId: 0,
-  date: earliestDate,
+  date: EARLIEST_DATE,
   sessions: [
     {
       day: Days.Monday,

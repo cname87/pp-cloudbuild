@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { ErrorHandler, Injectable } from '@angular/core';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 import { StatusCodes } from 'http-status-codes';
@@ -15,7 +15,8 @@ import { IErrReport } from '../../configuration/configuration';
 @Injectable({ providedIn: 'root' })
 export class SessionsService {
   constructor(
-    private sessions2DataProvider: SessionsDataProvider,
+    private errorHandler: ErrorHandler,
+    private sessionsDataProvider: SessionsDataProvider,
     private logger: NGXLogger,
     private toastr: ToastrService,
   ) {
@@ -37,7 +38,7 @@ export class SessionsService {
   getOrCreateSessions(memberId: number, date: Date): Observable<ISessions> {
     this.logger.trace(`${SessionsService.name}: getOrCreateSessions called`);
 
-    return this.sessions2DataProvider.getOrCreateSessions(memberId, date).pipe(
+    return this.sessionsDataProvider.getOrCreateSessions(memberId, date).pipe(
       tap((data: ISessions) => {
         this.logger.trace(
           `${
@@ -46,15 +47,11 @@ export class SessionsService {
         );
       }),
 
-      catchError((errReport: IErrReport) => {
+      catchError((err: any) => {
         this.logger.trace(`${SessionsService.name}: catchError called`);
 
         /* inform user */
-        if (
-          errReport.error &&
-          errReport.error.status === StatusCodes.NOT_FOUND
-        ) {
-          /* 404: sessions table did not exist */
+        if (err.error?.status === StatusCodes.NOT_FOUND) {
           this.logger.trace(
             `${
               SessionsService.name
@@ -64,10 +61,13 @@ export class SessionsService {
           /* otherwise a general fail */
           this.toastr.error('ERROR!', this.toastrMessage);
         }
-        errReport.isHandled = false;
+        err.isHandled = false;
 
         this.logger.trace(`${SessionsService.name}: Throwing the error on`);
-        return throwError(errReport);
+        console.log(`errReport: ${JSON.stringify(err)}`);
+        this.errorHandler.handleError(err);
+        const dummy = {} as any;
+        return of(dummy);
       }),
     );
   }
@@ -84,7 +84,7 @@ export class SessionsService {
   updateSessionsTable(sessions: ISessions): Observable<ISessions> {
     this.logger.trace(`${SessionsService.name}: updateSessionsTable called`);
 
-    return this.sessions2DataProvider.updateSessionsTable(sessions).pipe(
+    return this.sessionsDataProvider.updateSessionsTable(sessions).pipe(
       tap((data: ISessions) => {
         this.logger.trace(
           `${

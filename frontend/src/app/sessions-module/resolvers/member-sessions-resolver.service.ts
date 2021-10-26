@@ -22,7 +22,7 @@ import {
 export class MemberSessionsResolverService implements Resolve<any> {
   constructor(
     private membersService: MembersService,
-    private sessions2Service: SessionsService,
+    private sessionsService: SessionsService,
     private logger: NGXLogger,
     private errorHandler: ErrorHandler,
   ) {
@@ -66,7 +66,7 @@ export class MemberSessionsResolverService implements Resolve<any> {
     return of(memberId).pipe(
       switchMap((id: number) => {
         const member$ = this.membersService.getMember(id);
-        const sessions$ = this.sessions2Service.getOrCreateSessions(
+        const sessions$ = this.sessionsService.getOrCreateSessions(
           memberId,
           this.#getLastSunday(),
         );

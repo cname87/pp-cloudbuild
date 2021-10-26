@@ -5,12 +5,12 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, throwError } from 'rxjs';
-import { takeUntil, map, catchError } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil, map, catchError, tap } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
-import { IErrReport } from '../../configuration/configuration';
-import { IScores, earliestDate } from '../data-providers/scores-models';
+// import { IErrReport } from '../../configuration/configuration';
+import { IScores, EARLIEST_DATE } from '../data-providers/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { ScoresService } from '../services/scores.service';
 
@@ -30,8 +30,6 @@ export class MemberScoresComponent implements OnDestroy {
   #destroy$ = new Subject<void>();
   /* min width used in the datatable */
   #minWidth = 54;
-  /* error message displayed to the user */
-  #toastrMessage = 'A data access error has occurred';
   /* ngx-datatable columns */
   #columns = [
     {
@@ -143,7 +141,9 @@ export class MemberScoresComponent implements OnDestroy {
         {
           key: 'date',
           type: 'datepicker',
-          /* A date is entered as midnight local time but is stored as a UTC string.  UTC might be different from local time, e.g. one hour behind which means the UTC value is 23.00 of the day before which means the date stored could be a time during the day before. This causes problems if you pass the UTC value to calculate the date. To avoid this, subtract the local UTC offset from the stored value. EG: If IST is 60min ahead of UTC then July 4th 00:00 IST is stored as July 3rd 23:00 UTC.  In this case the IST offset from UTC is -60 min.  Subtracting -60min from the stored value results in the updated stored UTC value being July 4th 00:00 UTC - i.e. if it is used to calculate a date it will return the correct date of July 4th.*/
+          /* The date is entered as midnight local time on that date, e.g. 21st June is entered as 00:00 local time on 21st June. But it is stored as a UTC string.  UTC might be different from local time, e.g. one hour behind, which means that an entered date of 21st June would be stored as a UTC date of 23.00 on 20th June. This causes problems if you pass the UTC value to calculate the date. To avoid this, subtract the local UTC offset from the entered date before storing, so that the stored UTC value has the same date as the entered local value.
+          E.G.: If IST is 60min ahead of UTC then, with no intervention, 21st June 00:00 IST would be stored as 20th June 23:00 UTC.  The getTimezoneOffset function returns UTC - IST, i.e. -60 min for Irish Summer time. Subtracting -60min from, (which is equivalent to adding 60min to), the local value before storage, results in the stored value being 21st June 00:00 UTC.  If it is now used to calculate the date of the session it will return the correct date of 21st June.
+          This means the stored time will always be of the format 'yyyy-mm-ddT00:00:00.000Z'*/
           parsers: [
             (date) => {
               return new Date(
@@ -157,7 +157,7 @@ export class MemberScoresComponent implements OnDestroy {
             datepickerOptions: {
               /* allow only a certain period of dates be shown */
               max: new Date(),
-              min: earliestDate,
+              min: EARLIEST_DATE,
               dateChange: () => this.#onDateChange(),
               /* allow only Sunday's be shown */
               filter: (date: Date | null): boolean => {
@@ -265,11 +265,10 @@ export class MemberScoresComponent implements OnDestroy {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
     );
-
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
       .subscribe((data: Data) => {
         this.model = data.scores;
       });
@@ -285,45 +284,56 @@ export class MemberScoresComponent implements OnDestroy {
           return id;
         }),
         takeUntil(this.#destroy$),
-        catchError(this.#catcherror),
+        catchError(this.#catchError),
       )
       .subscribe((id) => {
         this.routeStateService.updateIdState(id);
       });
   }
 
-  /* error handler utility */
-  #catcherror(err: IErrReport) {
-    this.logger.trace(`${MemberScoresComponent.name}: catchError called`);
-
-    /* inform user but do not mark as handled */
-    this.toastr.error('ERROR!', this.#toastrMessage);
-    err.isHandled = false;
-
+  /**
+   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    /* error message displayed to the user for all update fails */
+    const toastrMessage = 'A table update error has occurred';
+    this.logger.trace(`${MemberScoresComponent.name}: #catchError called`);
+    this.logger.trace(
+      `${MemberScoresComponent.name}: Displaying a toastr message`,
+    );
+    this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${MemberScoresComponent.name}: Throwing the error on`);
-    return throwError(err);
-  }
+    throw err;
+  };
 
   /**
    * Sums the numbers in an input array.
    * @param cells Array with numbers.
    * @returns Sum of the numbers in the array.
    */
-  #sum(cells: number[]): number {
+  #sum = (cells: number[]): number => {
     this.logger.trace(`${MemberScoresComponent.name}: #sum called`);
     const filteredCells = cells.filter((cell) => !!cell);
     return filteredCells.reduce((sum, cell) => (sum += cell), 0);
-  }
+  };
 
   /**
    * Runs after every table data change, (i.e. excluding the date). The data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
-  #onTableChange(updatedModel: IScores = this.model): void {
+  #onTableChange = (updatedModel: IScores = this.model): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #onTableChange called}`);
     this.scoresService
       .updateScoresTable(updatedModel)
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
+      .pipe(
+        takeUntil(this.#destroy$),
+        tap(() => {
+          this.logger.trace('TEST');
+        }),
+        catchError(this.#catchError),
+      )
       .subscribe((scores: IScores) => {
         this.logger.trace(
           `${
@@ -338,48 +348,38 @@ export class MemberScoresComponent implements OnDestroy {
       );
       return;
     }
-  }
-
-  /**
-   * Requests a table object from the backend database and loads it into the data model.
-   */
-  #submitDate(updatedModel: IScores): void {
-    this.logger.trace(`${MemberScoresComponent.name}: #submitDate called`);
-    /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.scoresService
-        .getOrCreateScores(updatedModel.memberId, updatedModel.date)
-        .pipe(takeUntil(this.#destroy$))
-        .subscribe((scores) => {
-          this.model = scores;
-          this.logger.trace(
-            `${
-              MemberScoresComponent.name
-            }: Scores table created or retrieved: ${JSON.stringify(scores)}`,
-          );
-          /* allow errors go to errorHandler */
-        }),
-    );
-  }
+  };
 
   /**
    * After every date change a new table is requested from the database, loaded into the model, and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
-  #onDateChange(updatedModel: IScores = this.model): void {
+  #onDateChange = (updatedModel: IScores = this.model): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #onDateChange called`);
     if (this.form.valid) {
-      this.#submitDate(updatedModel);
+      this.isLoadingService.add(
+        this.scoresService
+          .getOrCreateScores(updatedModel.memberId, updatedModel.date)
+          .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+          .subscribe((scores) => {
+            this.model = scores;
+            this.logger.trace(
+              `${
+                MemberScoresComponent.name
+              }: Scores table created or retrieved: ${JSON.stringify(scores)}`,
+            );
+          }),
+      );
       this.#tableChange.emit('modelChange');
     }
-  }
+  };
 
-  ngOnDestroy(): void {
+  ngOnDestroy = (): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
     /* unsubscribe all */
     this.#destroy$.next();
     this.#destroy$.complete();
     /* update member id in the route state service */
     this.routeStateService.updateIdState('');
-  }
+  };
 }

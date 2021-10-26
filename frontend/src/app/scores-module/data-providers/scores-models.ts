@@ -1,17 +1,26 @@
 /**
- * Scores table information.
+ * Scores table types and constants.
  */
 
-import { Observable } from 'rxjs';
-import { IMember } from '../../app-module/models/member';
-
 type TScore = 0 | 1 | 2 | 3 | 4 | 5;
+
+/* list all questionaire query items */
+export enum ScoreType {
+  Sleep = 'SLEEP',
+  Fatigue = 'FATIGUE',
+  Soreness = 'SORENESS',
+  Stress = 'STRESS',
+  Motivation = 'MOTIVATION',
+  Health = 'HEALTH',
+  Nutrition = 'NUTRITION',
+  Mood = 'MOOD',
+}
 
 export interface IScores {
   id: number;
   memberId: number;
-  /* NOTE: The date field is filled by a datepicker input which supplies a Date object.  A parser edits the datepicker output so it supplies a date with a UTC time of 'yyyy-mm-ddT00:00:00.000Z'. The date field should only ever have such a date format so only one database record is created per day. */
-  /* NOTE: Dates are passed back and forth in http requests as ISO strings so conversion from and to an IScores object is required on sending and receiving IScores objects */
+  /* NOTE: The date field in the input form is filled by a datepicker input which supplies a Date object.  See the note in the component for how a parser edits the datepicker local time output so it stores a date object with a UTC format of 'yyyy-mm-ddT00:00:00.000Z'. */
+  /* NOTE: Dates are passed back and forth in http requests as ISO strings so conversion of the date field from and to a Date object is required on sending and receiving IScores objects. */
   date: Date;
   scores: [
     {
@@ -97,121 +106,5 @@ export interface IScores {
   ];
 }
 
-export interface IScoresAndMember {
-  member$: Observable<IMember>;
-  scores$: Observable<IScores>;
-}
-/* list all questionaire query items here first */
-export enum ScoreType {
-  Sleep = 'SLEEP',
-  Fatigue = 'FATIGUE',
-  Soreness = 'SORENESS',
-  Stress = 'STRESS',
-  Motivation = 'MOTIVATION',
-  Health = 'HEALTH',
-  Nutrition = 'NUTRITION',
-  Mood = 'MOOD',
-}
-
-export const ScoreTypeNames: ScoreType[] = Object.keys(ScoreType)
-  .map((key) => {
-    if (new RegExp(/[a-z]/g).test(key)) {
-      return ScoreType[key];
-    }
-  })
-  .filter((key) => key !== undefined);
-export interface IScoresChange {
-  member$: Observable<IMember>;
-  scores$: Observable<IScores>;
-}
-
-/* Cannot enter dates early than this */
-export const earliestDate = new Date('June 27, 2021');
-
-export const dummyScores: IScores = {
-  id: 0,
-  memberId: 0,
-  date: earliestDate,
-  scores: [
-    {
-      item: ScoreType.Sleep,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Fatigue,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Soreness,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Stress,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Motivation,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Health,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Nutrition,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-    {
-      item: ScoreType.Mood,
-      monday: 0,
-      tuesday: 0,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 0,
-      sunday: 0,
-    },
-  ],
-};
+/* cannot enter dates early than this */
+export const EARLIEST_DATE = new Date('June 27, 2021');

@@ -1,24 +1,23 @@
-import { ErrorHandler, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import {
   Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { ScoresService } from '../../scores-module/services/scores.service';
-import { dummyScores, IScores } from '../data-providers/scores-models';
+import { IScores } from '../data-providers/scores-models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MemberScoresResolverService implements Resolve<IScores> {
+export class MemberScoresResolverService implements Resolve<IScores | unknown> {
   constructor(
     private scoresService: ScoresService,
-    private logger: NGXLogger,
-    private errorHandler: ErrorHandler,
+    private logger: NGXLogger, // private errorHandler: ErrorHandler,
   ) {
     this.logger.trace(
       `${MemberScoresResolverService.name}: Starting MemberScoresResolverService`,
@@ -44,27 +43,24 @@ export class MemberScoresResolverService implements Resolve<IScores> {
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<IScores> {
+  ): Observable<IScores | unknown> {
     this.logger.trace(`${MemberScoresResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
 
-    let errorHandlerCalled = false;
-
     return this.scoresService
       .getOrCreateScores(memberId, this.#getLastSunday())
       .pipe(
         shareReplay(1),
-        catchError((error: any) => {
-          if (!errorHandlerCalled) {
-            this.logger.trace(
-              `${MemberScoresResolverService.name}: catchError called`,
-            );
-            errorHandlerCalled = true;
-            this.errorHandler.handleError(error);
-          }
-          return of(dummyScores);
+        catchError((err: any) => {
+          this.logger.trace(
+            `${MemberScoresResolverService.name}: catchError called`,
+          );
+          this.logger.trace(
+            `${MemberScoresResolverService.name}: not proceeding and throwing the error to the error handler`,
+          );
+          throw err;
         }),
       );
   }

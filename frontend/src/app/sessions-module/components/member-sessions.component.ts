@@ -12,7 +12,7 @@ import { EventEmitter } from 'events';
 import { IErrReport } from '../../configuration/configuration';
 import { IMember } from '../../app-module/data-providers/members.data-provider';
 import { ISessions } from '../data-providers/sessions-models';
-import { earliestDate } from '../../scores-module/data-providers/scores-models';
+import { EARLIEST_DATE } from '../../scores-module/data-providers/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { SessionType } from '../data-providers/sessions-models';
@@ -145,7 +145,7 @@ export class MemberSessionsComponent implements OnDestroy {
             datepickerOptions: {
               /* allow only a certain period of dates be shown */
               max: new Date(),
-              min: earliestDate,
+              min: EARLIEST_DATE,
               dateChange: () => this.#onDateChange(),
               /* allow only Sunday's be shown */
               filter: (date: Date | null): boolean => {
@@ -255,7 +255,7 @@ export class MemberSessionsComponent implements OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    private sessions2Service: SessionsService,
+    private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
     private toastr: ToastrService,
@@ -315,7 +315,7 @@ export class MemberSessionsComponent implements OnDestroy {
   #submitTable(updatedModel: ISessions): void {
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
-      this.sessions2Service
+      this.sessionsService
         .updateSessionsTable(updatedModel)
         .pipe(takeUntil(this.#destroy$))
         .subscribe((sessions) => {
@@ -362,7 +362,7 @@ export class MemberSessionsComponent implements OnDestroy {
   #submitDate(updatedModel: ISessions): void {
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
-      this.sessions2Service
+      this.sessionsService
         .getOrCreateSessions(updatedModel.memberId, updatedModel.date)
         .pipe(takeUntil(this.#destroy$))
         .subscribe((sessions) => {
