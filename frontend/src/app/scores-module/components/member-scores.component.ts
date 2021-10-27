@@ -4,12 +4,10 @@ import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
-import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { takeUntil, map, catchError, tap } from 'rxjs/operators';
+import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
-// import { IErrReport } from '../../configuration/configuration';
 import { IScores, EARLIEST_DATE } from '../data-providers/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { ScoresService } from '../services/scores.service';
@@ -260,7 +258,6 @@ export class MemberScoresComponent implements OnDestroy {
     private scoresService: ScoresService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
@@ -297,13 +294,7 @@ export class MemberScoresComponent implements OnDestroy {
    * @throws Throws the received error object
    */
   #catchError = (err: any): never => {
-    /* error message displayed to the user for all update fails */
-    const toastrMessage = 'A table update error has occurred';
     this.logger.trace(`${MemberScoresComponent.name}: #catchError called`);
-    this.logger.trace(
-      `${MemberScoresComponent.name}: Displaying a toastr message`,
-    );
-    this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${MemberScoresComponent.name}: Throwing the error on`);
     throw err;
   };
@@ -327,13 +318,7 @@ export class MemberScoresComponent implements OnDestroy {
     this.logger.trace(`${MemberScoresComponent.name}: #onTableChange called}`);
     this.scoresService
       .updateScoresTable(updatedModel)
-      .pipe(
-        takeUntil(this.#destroy$),
-        tap(() => {
-          this.logger.trace('TEST');
-        }),
-        catchError(this.#catchError),
-      )
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
       .subscribe((scores: IScores) => {
         this.logger.trace(
           `${

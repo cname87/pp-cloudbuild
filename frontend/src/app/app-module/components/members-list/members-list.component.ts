@@ -1,10 +1,10 @@
-import { Component, OnInit, ErrorHandler } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
 import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRoute, Data } from '@angular/router';
-import { catchError, publishReplay, refCount, takeUntil } from 'rxjs/operators';
+import { catchError, shareReplay, takeUntil } from 'rxjs/operators';
 import {
   IMember,
   IMemberWithoutId,
@@ -25,18 +25,17 @@ import { routes } from '../../../configuration/configuration';
 export class MembersListComponent implements OnInit {
   /* observable of array of members returned from search */
   members$!: Observable<IMember[]>;
-
   /* mode for input box */
   inputMode = 'add';
-
   /* route paths */
   routes = routes;
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private membersService: MembersService,
     private logger: NGXLogger,
-    private errorHandler: ErrorHandler,
     private isLoadingService: IsLoadingService,
   ) {
     this.logger.trace(
@@ -44,34 +43,37 @@ export class MembersListComponent implements OnInit {
     );
   }
 
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MembersListComponent.name}: #catchError called`);
+    this.logger.trace(`${MembersListComponent.name}: Throwing the error on`);
+    throw err;
+  };
+
   ngOnInit() {
     /* get the data as supplied from the route resolver */
-    this.route.data.subscribe((data: Data) => {
-      this.members$ = of(data.members);
-    });
+    this.route.data
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((data: Data) => {
+        this.members$ = of(data.members);
+      });
   }
 
   /* getMembers called after add() and delete() to reload from server */
   getMembers() {
     this.logger.trace(`${MembersListComponent.name}: Calling getMembers`);
 
-    let errorHandlerCalled = false;
-    const dummyMembers: IMember[] = [];
-
-    /* create a subject to multicast to elements on html page */
-    return this.membersService.getMembers().pipe(
-      publishReplay(1),
-      refCount(),
-      catchError((error: any) => {
-        if (!errorHandlerCalled) {
-          this.logger.trace(`${MembersListComponent.name}: catchError called`);
-          errorHandlerCalled = true;
-          this.errorHandler.handleError(error);
-        }
-        /* return dummy member */
-        return of(dummyMembers);
-      }),
-    );
+    return this.membersService
+      .getMembers()
+      .pipe(
+        shareReplay(1),
+        takeUntil(this.#destroy$),
+        catchError(this.#catchError),
+      );
   }
 
   add(name: string) {
@@ -88,13 +90,14 @@ export class MembersListComponent implements OnInit {
 
     /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
-      this.membersService.addMember(member).subscribe((_addedMember) => {
-        /* retrieve members list from server */
-        this.members$ = this.getMembers();
-        return this.members$;
-        /* allow errors go to errorHandler */
-        /* httpclient observable => unsubscribe not necessary */
-      }),
+      this.membersService
+        .addMember(member)
+        .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+        .subscribe((_addedMember) => {
+          /* retrieve members list from server */
+          this.members$ = this.getMembers();
+          return this.members$;
+        }),
     );
   }
 
@@ -106,20 +109,24 @@ export class MembersListComponent implements OnInit {
       '\nCAUTION: Confirm you wish to delete this member\n\n',
     );
 
-    const stopSignal$ = new Subject();
     if (message) {
       /* set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
       this.isLoadingService.add(
         this.membersService
           .deleteMember(member.id)
-          .pipe(takeUntil(stopSignal$))
+          .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
           .subscribe((_count) => {
             this.members$ = this.getMembers();
-            /* allow errors go to errorHandler */
           }),
       );
     }
   }
+
+  ngOnDestroy = (): void => {
+    this.logger.trace(`${MembersListComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
+  };
 
   trackByFn(_index: number, member: IMember): number | null {
     if (!member) {

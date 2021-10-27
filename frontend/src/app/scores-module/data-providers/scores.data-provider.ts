@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { IScores } from './scores-models';
@@ -27,28 +26,19 @@ export class ScoresDataProvider {
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
-  constructor(
-    private httpClient: HttpClient,
-    private logger: NGXLogger,
-    private toastr: ToastrService,
-  ) {
+  constructor(private httpClient: HttpClient, private logger: NGXLogger) {
     this.logger.trace(
       `${ScoresDataProvider.name}: Starting ScoresDataProvider`,
     );
   }
 
   /**
-   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * Picks up any upstream errors and throws on the error.
    * @param err An error object
    * @throws Throws the received error object
    */
   #catchError = (err: any): never => {
-    const toastrMessage = 'A server access error has occurred';
     this.logger.trace(`${ScoresDataProvider.name}: #catchError called`);
-    this.logger.trace(
-      `${ScoresDataProvider.name}: Displaying a toastr message`,
-    );
-    this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${ScoresDataProvider.name}: Throwing the error on`);
     throw err;
   };

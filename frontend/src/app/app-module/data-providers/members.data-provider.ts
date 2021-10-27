@@ -8,7 +8,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, tap } from 'rxjs/operators';
-import { ToastrService } from 'ngx-toastr';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from './encoder';
@@ -29,28 +28,18 @@ export class MembersDataProvider {
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
-  constructor(
-    private httpClient: HttpClient,
-    private logger: NGXLogger,
-    private toastr: ToastrService,
-  ) {
+  constructor(private httpClient: HttpClient, private logger: NGXLogger) {
     this.logger.trace(
       `${MembersDataProvider.name}: Starting MembersDataProvider`,
     );
   }
 
   /**
-   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * Picks up any upstream errors and throws on the error.
    * @param err An error object
    * @throws Throws the received error object
    */
-  #catchError = (err: any): never => {
-    const toastrMessage = 'A server access error has occurred';
-    this.logger.trace(`${MembersDataProvider.name}: #catchError called`);
-    this.logger.trace(
-      `${MembersDataProvider.name}: Displaying a toastr message`,
-    );
-    this.toastr.error('ERROR!', toastrMessage);
+  #catchError = (err: any): never => {    this.logger.trace(`${MembersDataProvider.name}: #catchError called`);
     this.logger.trace(`${MembersDataProvider.name}: Throwing the error on`);
     throw err;
   };

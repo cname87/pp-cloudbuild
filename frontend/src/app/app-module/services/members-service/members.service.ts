@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
+import { ToastrService } from 'ngx-toastr';
 
 import { MembersDataProvider } from '../../data-providers/members.data-provider';
 import { ICount, IMember, IMemberWithoutId } from '../../models/models';
@@ -19,6 +20,7 @@ export class MembersService {
     @Inject(E2E_TESTING) private isTesting: boolean,
     private membersDataProvider: MembersDataProvider,
     private logger: NGXLogger,
+    private toastr: ToastrService,
   ) {
     this.logger.trace(`${MembersService.name}: starting MembersService`);
   }
@@ -30,6 +32,10 @@ export class MembersService {
    */
   #catchError = (err: any): never => {
     this.logger.trace(`${MembersService.name}: #catchError called`);
+    /* error message displayed to the user for all update fails */
+    const toastrMessage = 'A table update error has occurred';
+    this.logger.trace(`${MembersService.name}: Displaying a toastr message`);
+    this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${MembersService.name}: Throwing the error on`);
     throw err;
   };

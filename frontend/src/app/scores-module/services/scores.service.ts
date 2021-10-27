@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
+import { ToastrService } from 'ngx-toastr';
 
 import { ScoresDataProvider } from '../data-providers/scores.data-provider';
 import { IScores } from '../data-providers/scores-models';
@@ -14,6 +15,7 @@ export class ScoresService {
   constructor(
     private scoresDataProvider: ScoresDataProvider,
     private logger: NGXLogger,
+    private toastr: ToastrService,
   ) {
     this.logger.trace(`${ScoresService.name}: starting ScoresService`);
   }
@@ -25,6 +27,11 @@ export class ScoresService {
    */
   #catchError = (err: any): never => {
     this.logger.trace(`${ScoresService.name}: #catchError called`);
+    /* error message displayed to the user for all update fails */
+    const toastrMessage = 'A table update error has occurred';
+    this.logger.trace(`${ScoresService.name}: #catchError called`);
+    this.logger.trace(`${ScoresService.name}: Displaying a toastr message`);
+    this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${ScoresService.name}: Throwing the error on`);
     throw err;
   };
@@ -72,7 +79,6 @@ export class ScoresService {
             ScoresService.name
           }: Updated scores table with date = ${data.date.toISOString()}`,
         );
-        throw new Error('TEST');
       }),
       catchError(this.#catchError),
     );
