@@ -1,13 +1,9 @@
-/**
- * Project Perform API V2.0.0
- * See https://app.swaggerhub.com/apis/cname87/Project-Perform/2.0.0
- */
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
+
 import { apiConfiguration } from '../../configuration/configuration';
 import { ISessions, ISessionsStripped } from './sessions-models';
 
@@ -43,6 +39,17 @@ export class SessionsDataProvider {
       `${SessionsDataProvider.name}: Starting SessionsDataProvider`,
     );
   }
+
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${SessionsDataProvider.name}: #catchError called`);
+    this.logger.trace(`${SessionsDataProvider.name}: Throwing the error on`);
+    throw err;
+  };
 
   #addFixedFields(table: ISessionsStripped): ISessions {
     const tableFilled = table as ISessions;
@@ -87,9 +94,10 @@ export class SessionsDataProvider {
   }
 
   /**
-   * Get a specific sessions table.
-   * @param date: The value of the date property of the sessions table.
-   * @returns An observable returning the sessions table retrieved.
+   * Get a specific sessions table that has given member id and date properties, or causes a new sessions table to be created in the backend with the given memberId and date properties.
+   * @param memberId The member id of the member to whom the table belongs.
+   * @param date The value of the date property of the sessions table to be retrieved, or to be created.
+   * @returns An observable returning the scores table retrieved or created.
    */
   public getOrCreateSessions(
     memberId: number,
@@ -101,12 +109,11 @@ export class SessionsDataProvider {
 
     if (!date || !memberId) {
       throw new Error(
-        'Required parameter date or memberId was not truthy when calling getOrCreateSessions.',
+        'A required parameter was invalid when calling getOrCreateScores.',
       );
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
@@ -144,22 +151,13 @@ export class SessionsDataProvider {
             )}`,
           );
         }),
-        catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
-          /* rethrow all errors */
-          this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
-          );
-          return throwError(errReport);
-        }),
+        catchError(this.#catchError),
       );
   }
 
   /**
-   * Updates a sessions table.
-   * A sessions table object is supplied which must have an id property.
-   * The sessions table with that id is updated.
-   * @param sessions: Sessions table containing detail to be updated.
+   * Updates a sessions table. A sessions table object is supplied which must have both valid id and memberId properties. The sessions table with the supplied id is updated.
+   * @param sessions Sessions table containing detail to be updated.
    * @returns An observable returning the updated sessions table.
    */
   public updateSessionsTable(sessions: ISessions): Observable<ISessions> {
@@ -169,25 +167,23 @@ export class SessionsDataProvider {
 
     if (!sessions) {
       throw new Error(
-        'Required parameter sessions was null or undefined when calling updateSessionsTable.',
+        'A required parameter was invalid when calling updateScoresTable.',
       );
     }
 
     const sessionsStripped = this.#stripFixedFields(sessions);
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
     headers = headers.set('Content-Type', 'application/json');
+
+    /* the member id from the supplied table is passed as a url parameter and is used to ensure the calling user either corresponds to that member id or is an admin user */
+    const memberId = sessions.memberId;
 
     this.logger.trace(
       // eslint-disable-next-line max-len
       `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.sessionsPath}`,
     );
-
-    /* the member id is passed as a url parameter and is used to ensure the calling user matches the member id in the object being accessed */
-    const memberId = sessions.memberId;
 
     return this.httpClient
       .put<ISessions>(
@@ -208,14 +204,7 @@ export class SessionsDataProvider {
             )}`,
           );
         }),
-        catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
-          /* rethrow all errors */
-          this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
-          );
-          return throwError(errReport);
-        }),
+        catchError(this.#catchError),
       );
   }
 }

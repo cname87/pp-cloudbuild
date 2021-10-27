@@ -141,7 +141,7 @@ export class MemberScoresComponent implements OnDestroy {
           type: 'datepicker',
           /* The date is entered as midnight local time on that date, e.g. 21st June is entered as 00:00 local time on 21st June. But it is stored as a UTC string.  UTC might be different from local time, e.g. one hour behind, which means that an entered date of 21st June would be stored as a UTC date of 23.00 on 20th June. This causes problems if you pass the UTC value to calculate the date. To avoid this, subtract the local UTC offset from the entered date before storing, so that the stored UTC value has the same date as the entered local value.
           E.G.: If IST is 60min ahead of UTC then, with no intervention, 21st June 00:00 IST would be stored as 20th June 23:00 UTC.  The getTimezoneOffset function returns UTC - IST, i.e. -60 min for Irish Summer time. Subtracting -60min from, (which is equivalent to adding 60min to), the local value before storage, results in the stored value being 21st June 00:00 UTC.  If it is now used to calculate the date of the session it will return the correct date of 21st June.
-          This means the stored time will always be of the format 'yyyy-mm-ddT00:00:00.000Z'*/
+          This means the stored time will always be of the format 'yyyy-mm-ddT00:00:00.000Z'. */
           parsers: [
             (date) => {
               return new Date(
@@ -152,6 +152,7 @@ export class MemberScoresComponent implements OnDestroy {
           templateOptions: {
             required: true,
             readonly: true,
+            label: 'Week commencing Sunday...',
             datepickerOptions: {
               /* allow only a certain period of dates be shown */
               max: new Date(),
@@ -361,10 +362,8 @@ export class MemberScoresComponent implements OnDestroy {
 
   ngOnDestroy = (): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
-    /* unsubscribe all */
     this.#destroy$.next();
     this.#destroy$.complete();
-    /* update member id in the route state service */
     this.routeStateService.updateIdState('');
   };
 }

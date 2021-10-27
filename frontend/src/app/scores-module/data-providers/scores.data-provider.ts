@@ -1,8 +1,3 @@
-/**
- * Project Perform API V2.0.0
- * See https://app.swaggerhub.com/apis/cname87/Project-Perform/2.0.0
- */
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -44,7 +39,7 @@ export class ScoresDataProvider {
   };
 
   /**
-   * Get a specific scores table belonging that has given member id and date properties, or causes a new scores table to be created in the backend with the given memberId and date properties.
+   * Get a specific scores table that has given member id and date properties, or causes a new scores table to be created in the backend with the given memberId and date properties.
    * @param memberId The member id of the member to whom the table belongs.
    * @param date The value of the date property of the scores table to be retrieved, or to be created.
    * @returns An observable returning the scores table retrieved or created.
@@ -59,7 +54,6 @@ export class ScoresDataProvider {
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
@@ -112,9 +106,7 @@ export class ScoresDataProvider {
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
     headers = headers.set('Content-Type', 'application/json');
 
     /* the member id from the supplied table is passed as a url parameter and is used to ensure the calling user either corresponds to that member id or is an admin user */
@@ -122,7 +114,9 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.scoresPath}/${memberId}`,
+      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${
+        this.scoresPath
+      }/${encodeURIComponent(memberId)}`,
     );
 
     return this.httpClient

@@ -1,11 +1,6 @@
 /**
- * Sessions table information.
+ * Sessions table types and constants.
  */
-
-import { Observable } from 'rxjs';
-import { IMember } from '../../app-module/models/member';
-
-import { EARLIEST_DATE } from '../../scores-module/data-providers/scores-models';
 
 export enum SessionType {
   Conditioning = 'CONDITIONING',
@@ -44,8 +39,8 @@ enum rpeScore {
 export interface ISessionsStripped {
   id: number;
   memberId: number;
-  /* NOTE: The date field is filled by a datepicker input which supplies a Date object.  A parser edits the datepicker output so it supplies a date with a UTC time of 'yyyy-mm-ddT00:00:00.000Z'. The date field should only ever have such a date format so only one database record is created per day. */
-  /* NOTE: Dates are passed back and forth in http requests as ISO strings so conversion from and to an ISessions object is required on sending and receiving ISessions objects */
+  /* NOTE: The date field in the input form is filled by a datepicker input which supplies a Date object.  See the note in the component for how a parser edits the datepicker local time output so it stores a date object with a UTC format of 'yyyy-mm-ddT00:00:00.000Z'. */
+  /* NOTE: Dates are passed back and forth in http requests as ISO strings so conversion of the date field from and to a Date object is required on sending and receiving IScores objects. */
   date: Date;
   sessions: [
     {
@@ -223,114 +218,3 @@ export interface ISessions extends ISessionsStripped {
     },
   ];
 }
-
-export interface ISessionsAndMember {
-  member$: Observable<IMember>;
-  sessions$: Observable<ISessions>;
-}
-
-export const dummySessions: ISessions = {
-  id: 0,
-  memberId: 0,
-  date: EARLIEST_DATE,
-  sessions: [
-    {
-      day: Days.Monday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Monday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Tuesday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Tuesday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Wednesday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Wednesday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Thursday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Thursday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Friday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Friday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Saturday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Saturday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Sunday,
-      ampm: AMPM.AM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-    {
-      day: Days.Sunday,
-      ampm: AMPM.PM,
-      type: '',
-      rpe: rpeScore.zero,
-      duration: 0,
-    },
-  ],
-};
