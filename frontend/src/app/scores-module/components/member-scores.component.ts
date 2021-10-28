@@ -263,6 +263,7 @@ export class MemberScoresComponent implements OnDestroy {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
     );
+
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data

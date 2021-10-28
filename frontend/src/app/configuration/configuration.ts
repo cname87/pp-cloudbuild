@@ -124,9 +124,10 @@ export interface IUserProfile {
 interface IConfigurationParameters {
   basePath: string;
   membersPath: string;
-  sessionsPath: string;
   questionairesPath: string;
   scoresPath: string;
+  sessionsPath: string;
+  summaryPath: string;
   defaultHeaders: HttpHeaders;
   withCredentials?: boolean;
 }
@@ -134,9 +135,10 @@ class Configuration {
   /* note that the same server is assumed e.g. the basePath is added to localhost:8080 or whatever the host domain that is running */
   basePath: string;
   membersPath: string;
-  sessionsPath: string;
   questionairesPath: string;
   scoresPath: string;
+  sessionsPath: string;
+  summaryPath: string;
   defaultHeaders: HttpHeaders;
   /* indicates whether or not cross-site Access-Control requests should be made using credentials - defaults to false */
   withCredentials?: boolean;
@@ -148,6 +150,7 @@ class Configuration {
     this.questionairesPath = configurationParameters.questionairesPath;
     this.scoresPath = configurationParameters.scoresPath;
     this.sessionsPath = configurationParameters.sessionsPath;
+    this.summaryPath = configurationParameters.summaryPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
     this.withCredentials = configurationParameters.withCredentials;
   }
@@ -162,9 +165,10 @@ defaultHeaders = defaultHeaders.set('Content-Type', 'application/json');
 export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
-  sessionsPath: 'sessions',
   questionairesPath: 'questionaires',
   scoresPath: 'scores',
+  sessionsPath: 'sessions',
+  summaryPath: 'summary',
   defaultHeaders,
   withCredentials: false,
 });

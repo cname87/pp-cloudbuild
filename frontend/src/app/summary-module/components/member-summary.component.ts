@@ -1,66 +1,19 @@
 import { Component } from '@angular/core';
-import { Location } from '@angular/common';
-import { ParamMap, ActivatedRoute } from '@angular/router';
+// import { Location } from '@angular/common';
+import { ParamMap, ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { Observable, of, Subject, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
+import { Observable, Subject } from 'rxjs';
 
 import { IMember } from '../../app-module/models/member';
 import { columnsToDisplay } from '../data-providers/summary-models';
 
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
-import { IErrReport } from '../../configuration/configuration';
 import { SingleSeries } from '@swimlane/ngx-charts';
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-/* Temporary */
-type namesData = [string, string, string, string, string, string];
 type rowData = Array<string | number>;
-type rowsData = [rowData, rowData, rowData, rowData, rowData, rowData];
-
-const rowNames: namesData = [
-  'Score',
-  'Load',
-  'Delta %',
-  'Monotony',
-  'ACWR',
-  'Sessions',
-];
-
-const score = [] as unknown as rowData;
-score[0] = rowNames[0];
-const load = [] as unknown as rowData;
-load[0] = rowNames[1];
-const delta = [] as unknown as rowData;
-delta[0] = rowNames[2];
-const monotony = [] as unknown as rowData;
-monotony[0] = rowNames[3];
-const acwr = [] as unknown as rowData;
-acwr[0] = rowNames[4];
-const sessionsCount = [] as unknown as rowData;
-sessionsCount[0] = rowNames[5];
-for (let index = 1; index <= 52; index++) {
-  score[index] = Math.round(Math.random() * 100);
-  load[index] = Math.round(Math.random() * 100);
-  delta[index] = Math.round(Math.random() * 100);
-  monotony[index] = Math.round(Math.random() * 100);
-  acwr[index] = Math.round(Math.random() * 100);
-  sessionsCount[index] = Math.round(Math.random() * 100);
-}
-const summaryTable: rowsData = [
-  score,
-  load,
-  delta,
-  monotony,
-  acwr,
-  sessionsCount,
-];
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * @title This component shows a scrollable table detailing all summary data by week linked to a member.
@@ -73,6 +26,8 @@ const summaryTable: rowsData = [
 })
 export class MemberSummaryComponent {
   //
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
   member$!: Observable<IMember>;
   /* sets which columns to display */
   #nameColumnToDisplay: string;
@@ -96,8 +51,6 @@ export class MemberSummaryComponent {
   rowChartData: SingleSeries = [];
   rowName = 'Metric';
   isChartShown = false;
-  #destroy = new Subject<void>();
-  #toastrMessage = 'A member access error has occurred';
 
   /* generate chart data */
   getChartData = (rowData: rowData) => {
@@ -120,10 +73,8 @@ export class MemberSummaryComponent {
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    private isLoadingService: IsLoadingService,
-    private location: Location,
+    // private location: Location,
     private logger: NGXLogger,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSummaryComponent.name}: Starting MemberSummaryComponent`,
@@ -160,29 +111,25 @@ export class MemberSummaryComponent {
       };
     }
 
-    /* get the data as supplied from the route resolver */
-    // this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
-    //   this.member$ = data.memberAndSummary.member;
-    //   this.#summary$ = data.memberAndSummary.questionaires;
-    // });
-    this.member$ = of({ id: 1, name: 'testMember' });
-    /* loads summary and fills table */
-    this.isLoadingService.add(
-      of(summaryTable)
-        .pipe(
-          takeUntil(this.#destroy),
-          map((summary) => {
-            this.logger.trace(
-              `${MemberSummaryComponent.name}: Summary retrieved`,
-            );
-            return summary;
-          }),
-        )
-        .subscribe((summaryTable: rowsData) => {
-          this.dataSource = new MatTableDataSource(summaryTable);
-        }),
-    );
+    /* get data from route resolver and load the model which fills and renders the table */
+    /* Note: loading in constructor to avoid angular change after checked error */
+    this.route.data
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((data: Data) => {
+        this.dataSource = new MatTableDataSource(data.summary);
+      });
   }
+
+  /**
+   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MemberSummaryComponent.name}: #catchError called`);
+    this.logger.trace(`${MemberSummaryComponent.name}: Throwing the error on`);
+    throw err;
+  };
 
   ngOnInit() {
     /* update service with routed member id */
@@ -195,37 +142,16 @@ export class MemberSummaryComponent {
           }
           return id;
         }),
-        takeUntil(this.#destroy),
-        catchError((err: IErrReport) => {
-          this.logger.trace(
-            `${MemberSummaryComponent.name}: catchError called`,
-          );
-
-          /* inform user but do not mark as handled */
-          this.toastr.error('ERROR!', this.#toastrMessage);
-          err.isHandled = false;
-
-          this.logger.trace(
-            `${MemberSummaryComponent.name}: Throwing the error on`,
-          );
-          return throwError(err);
-        }),
+        takeUntil(this.#destroy$),
+        catchError(this.#catchError),
       )
       .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
-  ngOnDestroy(): void {
-    this.#destroy.next();
-    this.#destroy.complete();
+  ngOnDestroy = (): void => {
+    this.logger.trace(`${MemberSummaryComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
     this.routeStateService.updateIdState('');
-  }
-
-  /* Overrides banner goBack function */
-  goBackOverride = () => {
-    if (this.isChartShown) {
-      this.isChartShown = false;
-    } else {
-      this.location.back();
-    }
   };
 }

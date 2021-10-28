@@ -8,17 +8,14 @@ import {
 import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
-import { ScoresService } from '../../scores-module/services/scores.service';
+import { ScoresService } from '../services/scores.service';
 import { IScores } from '../data-providers/scores-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MemberScoresResolverService implements Resolve<IScores | unknown> {
-  constructor(
-    private scoresService: ScoresService,
-    private logger: NGXLogger, // private errorHandler: ErrorHandler,
-  ) {
+  constructor(private scoresService: ScoresService, private logger: NGXLogger) {
     this.logger.trace(
       `${MemberScoresResolverService.name}: Starting MemberScoresResolverService`,
     );

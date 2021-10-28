@@ -1,6 +1,8 @@
 /**
- * Summary data.
+ * Summary table types and constants.
  */
+
+export type ISummary = any;
 
 const numberSummaryDataColumns = 52;
 
