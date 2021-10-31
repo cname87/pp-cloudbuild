@@ -1,5 +1,5 @@
 /**
- * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages scores details.  It defines the model schema for a scores table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
+ * This module creates a, or returns an existing, Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages scores details.  It defines the model schema for a scores table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
 import { Document, Schema } from 'mongoose';
@@ -7,16 +7,15 @@ import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
 import { scoresModel } from './models/models';
 
-/* Output a header and set up the debug function */
+/* Log a header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
 
 /**
  * @summary
  * Creates a Scores schema and returns a Mongoose model.
- * @params
- * - database - a connection to a mongoDB database.
- * - ModelName - the name for the created model.
- * - collection - the name of the mongoDB collection.
+ * @param database - A connection to a mongoDB database.
+ * @param ModelName - The name for the created model.
+ * @param collection - The name of the mongoDB collection.
  * @returns A Mongoose model.
  */
 function createModelScores(
@@ -30,7 +29,6 @@ function createModelScores(
   const scoresSchema = new Schema(scoresModel);
 
   /* Auto-increment the id field on document creation */
-  /* Note: resetCount() is called when delete all members is called */
   scoresSchema.plugin(autoIncrement, {
     model: ModelName,
     field: 'id',

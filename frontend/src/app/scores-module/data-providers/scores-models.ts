@@ -4,7 +4,7 @@
 
 type TScore = 0 | 1 | 2 | 3 | 4 | 5;
 
-/* list all questionaire query items */
+/* list all questionaire items */
 export enum ScoreType {
   Sleep = 'SLEEP',
   Fatigue = 'FATIGUE',

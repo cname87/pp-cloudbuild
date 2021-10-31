@@ -134,6 +134,18 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getScores: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.scoresApi.getScores(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       getOrCreateSessions: (
         context,
         request: Request,

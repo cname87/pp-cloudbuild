@@ -17,11 +17,11 @@ const dateIsSunday = (value: number): boolean => {
 };
 
 export const scoresModel = {
-  id: { type: Number, unique: true, index: true, min: 0 },
-  /* I tried creating a compond index using Mongoose but failed so create a compound index manually in mongosh with the command 'test> db.getCollection('darren.young22@outlook.com_scores').createIndex({memberId: 1, date: 1}, {unique: true})' */
-  memberId: { type: Number, min: 1 },
+  id: { type: Number, min: 0 },
+  memberId: { type: Number, index: true, min: 1 },
   date: {
-    type: String,
+    type: Date,
+    index: true,
     required: true,
     validator: dateIsSunday,
   },
@@ -39,14 +39,15 @@ export const scoresModel = {
           'NUTRITION',
           'MOOD',
         ],
+        required: true,
       },
-      monday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      tuesday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      wednesday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      thursday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      friday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      saturday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
-      sunday: { type: Number, enum: [0, 1, 2, 3, 4, 5] },
+      monday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      tuesday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      wednesday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      thursday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      friday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      saturday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
+      sunday: { type: Number, enum: [0, 1, 2, 3, 4, 5], default: 0 },
     },
   ],
 };

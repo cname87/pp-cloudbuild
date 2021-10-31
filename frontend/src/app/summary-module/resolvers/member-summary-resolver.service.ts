@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { SummaryService } from '../services/summary.service';
-import { ISummary } from '../data-providers/summary-models';
+import { ISummary } from '../models/summary-models';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +35,10 @@ export class MemberSummaryResolverService
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
 
-    return this.summaryService.getSummaryData(memberId).pipe(
+    /* passing this date returns all objects */
+    const earliestDate = new Date(2020, 1, 1);
+
+    return this.summaryService.getSummaryData(memberId, earliestDate).pipe(
       shareReplay(1),
       catchError((err: any) => {
         this.logger.trace(

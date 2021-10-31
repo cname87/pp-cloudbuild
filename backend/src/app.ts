@@ -105,7 +105,6 @@ const createStore = (): Perform.IAppLocals => {
       /* filled during a call in api-controller */
       members: {} as any as Perform.IModelExtended,
       sessions: {} as any as Perform.IModelExtended,
-      questionaires: {} as any as Perform.IModelExtended,
       scores: {} as any as Perform.IModelExtended,
     },
     /* database - filled during database startup */

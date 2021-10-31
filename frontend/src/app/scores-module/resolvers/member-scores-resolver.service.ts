@@ -30,7 +30,7 @@ export class MemberScoresResolverService implements Resolve<IScores | unknown> {
     dateTemp.setDate(dateTemp.getDate() - dateTemp.getDay());
     /* remove hours, minutes and seconds */
     dateTemp = new Date(dateTemp.toDateString());
-    /* move stored UTC value by local time offset to prevent the wrong day being stored */
+    /* move midnight local date zone to midnight UTC (so stored with format 'yyyy-mm-ddT00:00:00.000Z') to prevent the wrong day being stored */
     dateTemp = new Date(
       dateTemp.getTime() - dateTemp.getTimezoneOffset() * 60 * 1000,
     );

@@ -8,7 +8,7 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
 import { IMember } from '../../app-module/models/member';
-import { columnsToDisplay } from '../data-providers/summary-models';
+import { columnsToDisplay } from '../models/summary-models';
 
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SingleSeries } from '@swimlane/ngx-charts';

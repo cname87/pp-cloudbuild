@@ -118,13 +118,12 @@ export interface IUserProfile {
 }
 
 /**
- * Configuration object for members, sessions and questionaires service.
+ * Configuration object for members, sessions and service.
  */
 
 interface IConfigurationParameters {
   basePath: string;
   membersPath: string;
-  questionairesPath: string;
   scoresPath: string;
   sessionsPath: string;
   summaryPath: string;
@@ -135,7 +134,6 @@ class Configuration {
   /* note that the same server is assumed e.g. the basePath is added to localhost:8080 or whatever the host domain that is running */
   basePath: string;
   membersPath: string;
-  questionairesPath: string;
   scoresPath: string;
   sessionsPath: string;
   summaryPath: string;
@@ -147,7 +145,6 @@ class Configuration {
     this.basePath = configurationParameters.basePath;
     this.membersPath = configurationParameters.membersPath;
     this.sessionsPath = configurationParameters.sessionsPath;
-    this.questionairesPath = configurationParameters.questionairesPath;
     this.scoresPath = configurationParameters.scoresPath;
     this.sessionsPath = configurationParameters.sessionsPath;
     this.summaryPath = configurationParameters.summaryPath;
@@ -165,7 +162,6 @@ defaultHeaders = defaultHeaders.set('Content-Type', 'application/json');
 export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
-  questionairesPath: 'questionaires',
   scoresPath: 'scores',
   sessionsPath: 'sessions',
   summaryPath: 'summary',

@@ -107,6 +107,16 @@ const blankScores: Perform.IScoresWithoutId = {
   ],
 };
 
+const errFunction = (
+  err: any,
+  req: Request,
+  reject: (reason?: any) => void,
+) => {
+  /* report a general database unavailable error */
+  const functionName = 'getOrCreateScores';
+  return databaseUnavailable(err, functionName, req.app.appLocals, reject);
+};
+
 /**
  * Gets a scores object by member id & date, or adds a new scores object to the database.
  *
@@ -118,14 +128,14 @@ const blankScores: Perform.IScoresWithoutId = {
 const getOrCreateScores = async (
   req: Request,
   mid: number,
-  date: string,
+  date: Date,
 ): Promise<Perform.IScores> => {
   debug(`${modulename}: running getOrCreateScores`);
 
   /* get the scores mongodDB collection */
   const modelScores = req.app.appLocals.models.scores;
 
-  const foundDoc: Perform.IScores = await new Promise((resolve, _reject) => {
+  const foundDoc: Perform.IScores = await new Promise((resolve, reject) => {
     modelScores
       .findOne({ memberId: mid, date: date })
       .exec()
@@ -133,13 +143,23 @@ const getOrCreateScores = async (
         if (!doc) {
           debug(`${modulename}: no scores object found`);
         }
-        /* strip down to scores object and return */
-        return resolve(doc?.toObject() as Perform.IScores);
+        /* convert document to object */
+        const docObject = doc?.toObject() as Perform.IScores;
+        console.log(`ScoresIn: ${JSON.stringify(doc)}`);
+        /* stringify date for sending to frontend */
+        if (typeof docObject?.date === 'object') {
+          docObject.date = docObject.date.toISOString();
+        }
+        return resolve(docObject);
+      })
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
 
   /* if a document is returned then return it */
   if (foundDoc) {
+    debug(`${modulename}: scores object found`);
     return foundDoc;
   }
 
@@ -151,20 +171,19 @@ const getOrCreateScores = async (
   return new Promise((resolve, reject) => {
     addedScores
       .save()
-      .then((savedScores: Document) => {
+      .then((doc: Document) => {
         debug(`${modulename}: new scores object created`);
-        /* return the added scores table as a JSON object */
-        return resolve(savedScores.toObject() as Perform.IScores);
+        /* convert document to object */
+        const docObject = doc?.toObject() as Perform.IScores;
+        console.log(`ScoresIn: ${JSON.stringify(doc)}`);
+        /* stringify date for sending to frontend */
+        if (typeof docObject?.date === 'object') {
+          docObject.date = docObject.date.toISOString();
+        }
+        return resolve(docObject);
       })
       .catch((err: any) => {
-        /* report a general database unavailable error */
-        const functionName = 'getOrCreateScores';
-        return databaseUnavailable(
-          err,
-          functionName,
-          req.app.appLocals,
-          reject,
-        );
+        errFunction(err, req, reject);
       });
   });
 };
@@ -185,7 +204,12 @@ const updateScores = (
 ): Promise<Perform.IScores> => {
   debug(`${modulename}: running updateScores`);
 
-  /* get the scores mongodDB collection */
+  console.log(`ScoresIn: ${JSON.stringify(scores)}`);
+
+  /* convert to date before sending to MongoDB */
+  scores.date = new Date(scores.date);
+
+  /* get the scores mongoDB collection */
   const modelScores = req.app.appLocals.models.scores;
   const updatedScores = new modelScores(scores);
 
@@ -212,18 +236,69 @@ const updateScores = (
           };
           return reject(errNotFound);
         }
-        /* return new scores object */
-        resolve(doc.toObject() as Perform.IScores);
+        /* convert document to object */
+        const docObject = doc?.toObject() as Perform.IScores;
+        /* stringify date for sending to frontend */
+        if (typeof docObject?.date === 'object') {
+          docObject.date = docObject.date.toISOString();
+        }
+        return resolve(docObject);
       })
-      .catch((err) => {
-        /* report a general database unavailable error */
-        const functionName = 'updateScores';
-        databaseUnavailable(err, functionName, req.app.appLocals, reject);
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
+};
+
+/**
+ * Gets all scores table belonging to a specific member where the date is on or after a supplied date.
+ *
+ * @param req The http request being actioned (used to retrieve the data model).
+ * @param scores Scores object to add.
+ * @rejects Resolves to a reported error.
+ * @returns Promise that resolves to the scores object added.
+ */
+const getScores = (_req: Request, _date: Date): Promise<Perform.IScores[]> => {
+  debug(`${modulename}: running getScores`);
+
+  const temp: any = 'temp';
+  return temp;
+  /* get the scores mongoDB collection */
+  // const modelScores = req.app.appLocals.models.scores;
+
+  // return new Promise((resolve, reject) => {
+  //   modelScores
+  //     .find()
+  //     .where('name')
+  //     .regex('name', new RegExp(`^${sanitizedMatchString}.*`, 'i'))
+  //     .lean(true) // return json object
+  //     .select({ _id: 0, __v: 0 }) // exclude _id and __v fields
+  //     .exec()
+  //     .then((doc) => {
+  //       /* return error if no scores found */
+  //       if (!doc) {
+  //         console.error(`${modulename}: updateScores found no matching scores`);
+  //         const errNotFound: Perform.IErr = {
+  //           name: 'DATABASE_NOT_FOUND',
+  //           message: 'The supplied scores ID does not match a stored scores',
+  //           statusCode: 404,
+  //           dumped: false,
+  //         };
+  //         return reject(errNotFound);
+  //       }
+  //       /* return scores objects array */
+  //       return resolve(docs as unknown as [Perform.IMember])
+  //     .catch((err) => {
+  //       /* report a general database unavailable error */
+  //       const functionName ='getScores';
+  //       databaseUnavailable(err, functionName, req.app.appLocals, reject);
+  //     });
+  //   }
+  // });
 };
 
 export const scoresHandlers = {
   getOrCreateScores,
   updateScores,
+  getScores,
 };

@@ -61,7 +61,6 @@ declare namespace Perform {
   interface IModels {
     members: IModelExtended;
     sessions: IModelExtended;
-    questionaires: IModelExtended;
     scores: IModelExtended;
     sessions: IModelExtended;
   }
@@ -87,22 +86,6 @@ declare namespace Perform {
     id: number;
   }
 
-  /* defines a health questionaire for a team member */
-  export interface IQuestionaireNoId {
-    date: string;
-    sleep: number;
-    fatigue: number;
-    muscle: number;
-    stress: number;
-    motivation: number;
-    health: number;
-    mood: number;
-    memberId: number;
-    comment: string;
-  }
-  export interface IQuestionaire extends IQuestionaireNoId {
-    id: number;
-  }
   export enum ScoreType {
     Sleep = 'SLEEP',
     Fatigue = 'FATIGUE',
@@ -135,8 +118,7 @@ declare namespace Perform {
 
   export interface IScoresWithoutId {
     memberId: number;
-    /* the date is formatted as an ISO date string */
-    date: string;
+    date: Date | string;
     scores: IColumn[];
   }
 

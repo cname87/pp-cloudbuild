@@ -4,8 +4,42 @@ import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
+import { rowData, rowNames, ISummary } from '../models/summary-models';
 import { SummaryDataProvider } from '../data-providers/summary.data-provider';
-import { ISummary } from '../data-providers/summary-models';
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/* Temporary */
+
+const score = [] as unknown as rowData;
+score[0] = rowNames[0];
+const load = [] as unknown as rowData;
+load[0] = rowNames[1];
+const delta = [] as unknown as rowData;
+delta[0] = rowNames[2];
+const monotony = [] as unknown as rowData;
+monotony[0] = rowNames[3];
+const acwr = [] as unknown as rowData;
+acwr[0] = rowNames[4];
+const sessionsCount = [] as unknown as rowData;
+sessionsCount[0] = rowNames[5];
+for (let index = 1; index <= 52; index++) {
+  score[index] = Math.round(Math.random() * 100);
+  load[index] = Math.round(Math.random() * 100);
+  delta[index] = Math.round(Math.random() * 100);
+  monotony[index] = Math.round(Math.random() * 100);
+  acwr[index] = Math.round(Math.random() * 100);
+  sessionsCount[index] = Math.round(Math.random() * 100);
+}
+const summaryTable: ISummary = [
+  score,
+  load,
+  delta,
+  monotony,
+  acwr,
+  sessionsCount,
+];
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /**
  * This service provides functions to access summary data on the backend database.
@@ -42,12 +76,13 @@ export class SummaryService {
    * @returns An observable containing a summary data object.
    * @throws See #catchError.
    */
-  getSummaryData(memberId: number): Observable<ISummary> {
+  getSummaryData(memberId: number, date: Date): Observable<ISummary> {
     this.logger.trace(`${SummaryService.name}: getSummaryData called`);
 
-    return this.summaryDataProvider.getSummaryData(memberId).pipe(
+    return this.summaryDataProvider.getSummaryData(memberId, date).pipe(
       tap((_data: ISummary) => {
         this.logger.trace(`${SummaryService.name}: Fetched summary data`);
+        console.log(summaryTable);
       }),
       catchError(this.#catchError),
     );

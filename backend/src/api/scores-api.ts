@@ -30,15 +30,15 @@ const getOrCreateScores = (
     dumpError,
   } = setup(context, filter, req, next)!;
 
-  /* the format of the date property is an ISO date string */
-  const date: string = body.date;
-
-  /* confirm the format is of format 'yyyy-mm-ddT00:00:00.000Z' */
-  /* this is the format set by the client-side datepicker parser i.e. zero hours UTC, and you must save to the database with this format so only one database item is created for each day */
+  /* Confirm the format of the supplied date is of format 'yyyy-mm-ddT00:00:00.000Z' */
+  /* This is the format set by a client-side datepicker parser function i.e. zero hours UTC, and you must save to the database with this format so only one database item is created for each day */
   const dateRegex = new RegExp(/\d{4}-[01]\d-[0-3]\dT00:00:00.000Z/);
-  if (!dateRegex.test(date)) {
+  if (!dateRegex.test(body.date)) {
     throw new Error('Invalid date format for scores table object');
   }
+
+  /* convert to Date object for sending to MongoDB */
+  const date = new Date(body.date);
 
   scoresHandlers
     .getOrCreateScores(req, mid, date)
@@ -46,7 +46,7 @@ const getOrCreateScores = (
       miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err: any) => {
-     console.error(`${modulename}: handler getOrCreateScores returned error`);
+     console.error(`${modulename}: getOrCreateScores returned error`);
       dumpError(err);
       next(err);
     });
@@ -73,13 +73,43 @@ const updateScores = (
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {
-     console.error(`${modulename}: handler updateScores returned error`);
+     console.error(`${modulename}: updateScores returned error`);
       dumpError(err);
       next(err);
     });
 };
 
+const getScores = (
+  context: Context | undefined,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  debug(`${modulename}: running getScores`);
+
+  const {
+    scoresHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
+
+  const date = new Date();
+
+  scoresHandlers
+    .getScores(req, date)
+    .then((payload: Perform.IScores[]) => {
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
+    })
+    .catch((err: any) => {
+      console.error(`${modulename}: getScores returned error`);
+      dumpError(err);
+      next(err);
+    });
+};
+
+
 export const scoresApi = {
   getOrCreateScores,
   updateScores,
+  getScores,
 };

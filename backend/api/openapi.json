@@ -394,9 +394,87 @@
       }
     },
     "/members/{mid}/scores": {
+      "get": {
+        "summary": "Returns all the scores tables associated with a member whose date is on or after a date supplied in a query string.",
+        "description": "Returns all the scores tables associated with a member whose date is on or after a date supplied in a query string.\n",
+        "operationId": "getScores",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "A date string to limit the returned list.\nAll scores tables with the date property on or before the supplied 'date' will be returned. \n",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "maxLength": 35,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Scores tables returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Scores"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Gets, or creates, a scores table object.",
-        "description": "Gets, or creates, a scores table object, as determined by the member id and the date in the query string.\n",
+        "description": "Gets, or creates, a scores table object, as determined by the member id and the date in body.\n",
         "operationId": "getOrCreateScores",
         "parameters": [
           {
@@ -482,7 +560,7 @@
     "/members/{mid}/sessions": {
       "post": {
         "summary": "Gets, or creates, a sessions table object.",
-        "description": "Gets, or creates, a sessions table object, as determined by the member id and the date in the query string.\n",
+        "description": "Gets, or creates, a sessions table object, as determined by the member id and the date in the body.\n",
         "operationId": "getOrCreateSessions",
         "parameters": [
           {
@@ -651,11 +729,27 @@
         }
       }
     },
-    "/sessions": {
+    "/sessions/{mid}": {
       "put": {
         "summary": "Updates a specific sessions table.",
         "description": "A sessions object is supplied which must have a id corresponding to an existing sessions object.\nThe sessions table with that id is updated with the supplied sessions table.\n",
         "operationId": "updateSessions",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of a member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "maximum": 999,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Sessions object.",
           "content": {
