@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { SessionsService } from '../services/sessions.service';
-import { ISessions } from '../data-providers/sessions-models';
+import { ISessions } from '../models/sessions-models';
 
 @Injectable({
   providedIn: 'root',

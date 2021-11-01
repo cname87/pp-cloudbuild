@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
 import { SessionsDataProvider } from '../data-providers/sessions.data-provider';
-import { ISessions } from '../data-providers/sessions-models';
+import { ISessions } from '../models/sessions-models';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.

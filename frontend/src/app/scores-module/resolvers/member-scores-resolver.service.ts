@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { ScoresService } from '../services/scores.service';
-import { IScores } from '../data-providers/scores-models';
+import { IScores } from '../models/scores-models';
 
 @Injectable({
   providedIn: 'root',

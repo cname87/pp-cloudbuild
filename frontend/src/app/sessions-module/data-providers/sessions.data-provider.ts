@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { ISessions, ISessionsStripped } from './sessions-models';
+import { ISessions, ISessionsStripped } from '../models/sessions-models';
 
 enum Days {
   Monday = 'Monday',

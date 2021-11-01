@@ -145,11 +145,6 @@ const getOrCreateScores = async (
         }
         /* convert document to object */
         const docObject = doc?.toObject() as Perform.IScores;
-        console.log(`ScoresIn: ${JSON.stringify(doc)}`);
-        /* stringify date for sending to frontend */
-        if (typeof docObject?.date === 'object') {
-          docObject.date = docObject.date.toISOString();
-        }
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -175,11 +170,6 @@ const getOrCreateScores = async (
         debug(`${modulename}: new scores object created`);
         /* convert document to object */
         const docObject = doc?.toObject() as Perform.IScores;
-        console.log(`ScoresIn: ${JSON.stringify(doc)}`);
-        /* stringify date for sending to frontend */
-        if (typeof docObject?.date === 'object') {
-          docObject.date = docObject.date.toISOString();
-        }
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -203,8 +193,6 @@ const updateScores = (
   scores: Perform.IScores,
 ): Promise<Perform.IScores> => {
   debug(`${modulename}: running updateScores`);
-
-  console.log(`ScoresIn: ${JSON.stringify(scores)}`);
 
   /* convert to date before sending to MongoDB */
   scores.date = new Date(scores.date);
@@ -238,10 +226,6 @@ const updateScores = (
         }
         /* convert document to object */
         const docObject = doc?.toObject() as Perform.IScores;
-        /* stringify date for sending to frontend */
-        if (typeof docObject?.date === 'object') {
-          docObject.date = docObject.date.toISOString();
-        }
         return resolve(docObject);
       })
       .catch((err: any) => {

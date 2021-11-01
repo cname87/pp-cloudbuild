@@ -8,11 +8,11 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
-import { ISessions } from '../data-providers/sessions-models';
-import { EARLIEST_DATE } from '../../scores-module/data-providers/scores-models';
+import { ISessions } from '../models/sessions-models';
+import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
-import { SessionType } from '../data-providers/sessions-models';
+import { SessionType } from '../models/sessions-models';
 
 /**
  * @title This component shows a form table allowing weekly session results for a member to be viewed and entered or edited.
@@ -124,7 +124,7 @@ export class MemberSessionsComponent implements OnDestroy {
           type: 'datepicker',
           /* See comment under scores component. */
           parsers: [
-            (date) => {
+            (date: Date) => {
               return new Date(
                 date.getTime() - date.getTimezoneOffset() * 60 * 1000,
               );

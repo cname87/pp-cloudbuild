@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { ToastrService } from 'ngx-toastr';
 
 import { ScoresDataProvider } from '../data-providers/scores.data-provider';
-import { IScores } from '../data-providers/scores-models';
+import { IScores } from '../models/scores-models';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.

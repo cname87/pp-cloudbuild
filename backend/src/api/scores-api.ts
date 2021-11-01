@@ -37,12 +37,14 @@ const getOrCreateScores = (
     throw new Error('Invalid date format for scores table object');
   }
 
-  /* convert to Date object for sending to MongoDB */
+  /* convert incoming date string to a Date object for all internal manipulation, including sending to MongoDB */
   const date = new Date(body.date);
 
   scoresHandlers
     .getOrCreateScores(req, mid, date)
     .then((payload: Perform.IScores) => {
+      /* stringify date for sending to frontend */
+      payload.date = (payload.date as Date).toISOString();
       miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err: any) => {
@@ -70,6 +72,8 @@ const updateScores = (
   scoresHandlers
     .updateScores(req, body as Perform.IScores)
     .then((payload: Perform.IScores) => {
+      /* stringify date for sending to frontend */
+      payload.date = (payload.date as Date).toISOString();
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {

@@ -6,7 +6,7 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
-import { IScores } from '../../scores-module/data-providers/scores-models';
+import { IScores } from '../../scores-module/models/scores-models';
 
 /**
  * This service handles all communication from the summary component to the server.

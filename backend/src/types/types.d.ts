@@ -118,7 +118,7 @@ declare namespace Perform {
 
   export interface IScoresWithoutId {
     memberId: number;
-    date: Date | string;
+    date: Date | string; // using string to send to frontend
     scores: IColumn[];
   }
 
