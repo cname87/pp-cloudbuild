@@ -143,7 +143,7 @@ const getOrCreateScores = async (
         if (!doc) {
           debug(`${modulename}: no scores object found`);
         }
-        /* convert document to object */
+        /* convert Mongoose document to object */
         const docObject = doc?.toObject() as Perform.IScores;
         return resolve(docObject);
       })
@@ -234,55 +234,7 @@ const updateScores = (
   });
 };
 
-/**
- * Gets all scores table belonging to a specific member where the date is on or after a supplied date.
- *
- * @param req The http request being actioned (used to retrieve the data model).
- * @param scores Scores object to add.
- * @rejects Resolves to a reported error.
- * @returns Promise that resolves to the scores object added.
- */
-const getScores = (_req: Request, _date: Date): Promise<Perform.IScores[]> => {
-  debug(`${modulename}: running getScores`);
-
-  const temp: any = 'temp';
-  return temp;
-  /* get the scores mongoDB collection */
-  // const modelScores = req.app.appLocals.models.scores;
-
-  // return new Promise((resolve, reject) => {
-  //   modelScores
-  //     .find()
-  //     .where('name')
-  //     .regex('name', new RegExp(`^${sanitizedMatchString}.*`, 'i'))
-  //     .lean(true) // return json object
-  //     .select({ _id: 0, __v: 0 }) // exclude _id and __v fields
-  //     .exec()
-  //     .then((doc) => {
-  //       /* return error if no scores found */
-  //       if (!doc) {
-  //         console.error(`${modulename}: updateScores found no matching scores`);
-  //         const errNotFound: Perform.IErr = {
-  //           name: 'DATABASE_NOT_FOUND',
-  //           message: 'The supplied scores ID does not match a stored scores',
-  //           statusCode: 404,
-  //           dumped: false,
-  //         };
-  //         return reject(errNotFound);
-  //       }
-  //       /* return scores objects array */
-  //       return resolve(docs as unknown as [Perform.IMember])
-  //     .catch((err) => {
-  //       /* report a general database unavailable error */
-  //       const functionName ='getScores';
-  //       databaseUnavailable(err, functionName, req.app.appLocals, reject);
-  //     });
-  //   }
-  // });
-};
-
 export const scoresHandlers = {
   getOrCreateScores,
   updateScores,
-  getScores,
 };

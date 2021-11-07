@@ -1,6 +1,6 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file and api-controllers.ts.
- * Handles calls to <api-prefix>/members/{mid}/sessions and <api-prefix>/sessions
+ * Handles calls to <api-prefix>/members/{mid}/sessions
  */
 
 import { Request, Response, NextFunction } from 'express';
@@ -43,7 +43,7 @@ const getOrCreateSessions = (
   sessionsHandlers
     .getOrCreateSessions(req, mid, date)
     .then((payload: Perform.ISessions) => {
-      miscHandlers.writeJson(context, req, res, next, 201, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {
      console.error(`${modulename}: handler getOrCreateSessions returned error`);

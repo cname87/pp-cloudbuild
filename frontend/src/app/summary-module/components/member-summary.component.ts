@@ -1,22 +1,17 @@
 import { Component } from '@angular/core';
-// import { Location } from '@angular/common';
 import { ParamMap, ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
 import { IMember } from '../../app-module/models/member';
-import { columnsToDisplay } from '../models/summary-models';
-
+import { columnsToDisplay, rowData } from '../models/summary-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SingleSeries } from '@swimlane/ngx-charts';
 
-type rowData = Array<string | number>;
-
 /**
- * @title This component shows a scrollable table detailing all summary data by week linked to a member.
+ * @title This component shows a scrollable table detailing summary data by week linked to a member.
  */
 @Component({
   selector: 'app-summary',
@@ -73,7 +68,6 @@ export class MemberSummaryComponent {
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    // private location: Location,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -112,7 +106,6 @@ export class MemberSummaryComponent {
     }
 
     /* get data from route resolver and load the model which fills and renders the table */
-    /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
       .subscribe((data: Data) => {

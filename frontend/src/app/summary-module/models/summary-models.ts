@@ -2,6 +2,11 @@
  * Summary table types and constants.
  */
 
+export interface ISummaryItem {
+  date: string;
+  total: number;
+}
+
 type namesData = [string, string, string, string, string, string];
 export type rowData = Array<string | number>;
 export type ISummary = [rowData, rowData, rowData, rowData, rowData, rowData];

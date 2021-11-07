@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { SessionsService } from '../services/sessions.service';
+import { UtilsService } from '../../app-module/services/utils-service/utils.service';
 import { ISessions } from '../models/sessions-models';
 
 @Injectable({
@@ -17,27 +18,12 @@ import { ISessions } from '../models/sessions-models';
 export class MemberSessionsResolverService implements Resolve<any> {
   constructor(
     private sessionsService: SessionsService,
+    private utils: UtilsService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
       `${MemberSessionsResolverService.name}: Starting MemberSessionsResolverService`,
     );
-  }
-
-  /**
-   * @returns Returns the Sunday that is equal or prior to today. The date returned is in Date format.
-   */
-  #getLastSunday(): Date {
-    let dateTemp = new Date();
-    /* get last Sunday */
-    dateTemp.setDate(dateTemp.getDate() - dateTemp.getDay());
-    /* remove hours, minutes and seconds */
-    dateTemp = new Date(dateTemp.toDateString());
-    /* move stored UTC value by local time offset to prevent the wrong day being stored */
-    dateTemp = new Date(
-      dateTemp.getTime() - dateTemp.getTimezoneOffset() * 60 * 1000,
-    );
-    return dateTemp;
   }
 
   resolve(
@@ -50,7 +36,7 @@ export class MemberSessionsResolverService implements Resolve<any> {
     const memberId = +(route.paramMap.get('id') || '0');
 
     return this.sessionsService
-      .getOrCreateSessions(memberId, this.#getLastSunday())
+      .getOrCreateSessions(memberId, this.utils.getLastSunday())
       .pipe(
         shareReplay(1),
         catchError((err: any) => {

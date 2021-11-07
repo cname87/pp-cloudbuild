@@ -38,7 +38,7 @@ export const setup = (
   queryString = decodeQueryParam(queryString);
   /* the body may contain an element to be added or updated */
   const body = context.request.body;
-  const { membersHandlers, scoresHandlers, sessionsHandlers, miscHandlers } = req.app.appLocals.handlers;
+  const { membersHandlers, scoresHandlers, sessionsHandlers, summaryHandlers, miscHandlers } = req.app.appLocals.handlers;
   const { dumpError } = req.app.appLocals;
   return {
     mid,
@@ -48,6 +48,7 @@ export const setup = (
     membersHandlers,
     scoresHandlers,
     sessionsHandlers,
+    summaryHandlers,
     miscHandlers,
     dumpError,
   }

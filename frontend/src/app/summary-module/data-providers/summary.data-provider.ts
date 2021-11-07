@@ -6,7 +6,7 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
-import { IScores } from '../../scores-module/models/scores-models';
+import { ISummaryItem } from '../models/summary-models';
 
 /**
  * This service handles all communication from the summary component to the server.
@@ -45,10 +45,13 @@ export class SummaryDataProvider {
    * @param memberId The member id of the member to whom the table belongs.
    * @returns An observable returning the scores table retrieved or created.
    */
-  public getSummaryData(memberId: number, date: Date): Observable<any> {
+  public getSummaryData(
+    memberId: number,
+    numberWeeks: number,
+  ): Observable<ISummaryItem[]> {
     this.logger.trace(`${SummaryDataProvider.name}: getSummaryData called`);
 
-    if (!memberId || !date) {
+    if (!memberId || !numberWeeks) {
       throw new Error(
         'A required parameter was invalid when calling getSummaryData.',
       );
@@ -58,8 +61,8 @@ export class SummaryDataProvider {
     let queryParameters = new HttpParams();
     /* custom encoder handles '+' properly */
     const encoder = new CustomHttpUrlEncodingCodec();
-    const dateString = encoder.encodeValue(date.toISOString());
-    queryParameters = queryParameters.set('date', dateString);
+    const dateString = encoder.encodeValue(numberWeeks.toString());
+    queryParameters = queryParameters.set('weeks', dateString);
 
     let headers = this.defaultHeaders;
     headers = headers.set('Accept', 'application/json');
@@ -70,7 +73,7 @@ export class SummaryDataProvider {
     );
 
     return this.httpClient
-      .get<any>(
+      .get<ISummaryItem[]>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.summaryPath
         }`,
@@ -81,7 +84,7 @@ export class SummaryDataProvider {
         },
       )
       .pipe(
-        tap((data: IScores[]) => {
+        tap((data: ISummaryItem[]) => {
           this.logger.trace(
             `${SummaryDataProvider.name}: Received response: ${JSON.stringify(
               data,

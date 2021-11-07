@@ -1,6 +1,6 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file and api-controllers.ts.
- * Handles calls to <api-prefix>/members/{mid}/scores and <api-prefix>/scores
+ * Handles calls to <api-prefix>/members/{mid}/scores
  */
 
 import { Request, Response, NextFunction } from 'express';
@@ -43,9 +43,7 @@ const getOrCreateScores = (
   scoresHandlers
     .getOrCreateScores(req, mid, date)
     .then((payload: Perform.IScores) => {
-      /* stringify date for sending to frontend */
-      payload.date = (payload.date as Date).toISOString();
-      miscHandlers.writeJson(context, req, res, next, 201, payload);
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {
      console.error(`${modulename}: getOrCreateScores returned error`);
@@ -72,8 +70,6 @@ const updateScores = (
   scoresHandlers
     .updateScores(req, body as Perform.IScores)
     .then((payload: Perform.IScores) => {
-      /* stringify date for sending to frontend */
-      payload.date = (payload.date as Date).toISOString();
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {
@@ -83,37 +79,7 @@ const updateScores = (
     });
 };
 
-const getScores = (
-  context: Context | undefined,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  debug(`${modulename}: running getScores`);
-
-  const {
-    scoresHandlers,
-    miscHandlers,
-    dumpError,
-  } = setup(context, filter, req, next)!;
-
-  const date = new Date();
-
-  scoresHandlers
-    .getScores(req, date)
-    .then((payload: Perform.IScores[]) => {
-      miscHandlers.writeJson(context, req, res, next, 200, payload);
-    })
-    .catch((err: any) => {
-      console.error(`${modulename}: getScores returned error`);
-      dumpError(err);
-      next(err);
-    });
-};
-
-
 export const scoresApi = {
   getOrCreateScores,
   updateScores,
-  getScores,
 };

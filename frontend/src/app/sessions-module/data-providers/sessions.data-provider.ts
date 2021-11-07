@@ -122,14 +122,14 @@ export class SessionsDataProvider {
     );
 
     /* create a body with the date string */
-    const dateObject = { date: date.toISOString() };
+    const dateBody = { date: date };
 
     return this.httpClient
       .post<any>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
-        dateObject,
+        dateBody,
         {
           headers,
           observe: 'body',
@@ -182,12 +182,14 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.sessionsPath}`,
+      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}${this.sessionsPath}`,
     );
 
     return this.httpClient
       .put<ISessions>(
-        `${this.basePath}/${this.sessionsPath}/${encodeURIComponent(memberId)}`,
+        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+          this.sessionsPath
+        }`,
         sessionsStripped,
         {
           withCredentials: this.withCredentials,

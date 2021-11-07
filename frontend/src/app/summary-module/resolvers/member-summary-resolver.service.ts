@@ -35,10 +35,7 @@ export class MemberSummaryResolverService
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
 
-    /* passing this date returns all objects */
-    const earliestDate = new Date(2020, 1, 1);
-
-    return this.summaryService.getSummaryData(memberId, earliestDate).pipe(
+    return this.summaryService.getSummaryData(memberId).pipe(
       shareReplay(1),
       catchError((err: any) => {
         this.logger.trace(

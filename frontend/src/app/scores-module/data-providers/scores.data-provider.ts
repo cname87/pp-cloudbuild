@@ -61,15 +61,15 @@ export class ScoresDataProvider {
       `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}/`,
     );
 
-    /* create a body with the date string */
-    const dateObject = { date: date.toISOString() };
+    /* create a body with a date object*/
+    const dateBody = { date: date };
 
     return this.httpClient
-      .post<any>(
+      .post<IScores>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
-        dateObject,
+        dateBody,
         {
           headers,
           observe: 'body',
@@ -114,14 +114,14 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${
-        this.scoresPath
-      }/${encodeURIComponent(memberId)}`,
+      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}`,
     );
 
     return this.httpClient
       .put<IScores>(
-        `${this.basePath}/${this.scoresPath}/${encodeURIComponent(memberId)}`,
+        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+          this.scoresPath
+        }`,
         scores,
         {
           withCredentials: this.withCredentials,

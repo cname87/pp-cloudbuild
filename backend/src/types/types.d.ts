@@ -142,6 +142,13 @@ declare namespace Perform {
     id: number;
   }
 
+  interface summaryItem {
+    date: string;
+    total: number;
+  }
+
+  export type ISummary = Array<summaryItem>;
+
   /* extra fields for created errors */
   /* Error: 'name' is mandatory, 'message' is optional */
   export interface IErr extends Error {
@@ -168,6 +175,7 @@ declare namespace Perform {
     membersHandlers: typeof import('../handlers/members-handlers').membersHandlers;
     scoresHandlers: typeof import('../handlers/scores-handlers').scoresHandlers;
     sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
+    summaryHandlers: typeof import('../handlers/summary-handlers').summaryHandlers;
     miscHandlers: typeof import('../handlers/misc-handlers').miscHandlers;
     errorHandlers: typeof import('../handlers/error-handlers').errorHandlers;
     authenticateHandler: typeof import('../handlers/authenticate-handlers').authenticateHandler;
@@ -177,6 +185,7 @@ declare namespace Perform {
     membersApi: typeof import('../api/members-api').membersApi;
     scoresApi: typeof import('../api/scores-api').scoresApi;
     sessionsApi: typeof import('../api/sessions-api').sessionsApi;
+    summaryApi: typeof import('../api/summary-api').summaryApi;
   }
 
   export interface IAppLocals {
