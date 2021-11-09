@@ -37,7 +37,9 @@
         <br>
         {{column.header | date: 'yyyy' }}
       </mat-header-cell>
-      <mat-cell *matCellDef="let row">
+      <mat-cell
+        *matCellDef="let row"
+      >
         {{column.cell(row)}}
       </mat-cell>
     </ng-container>
@@ -48,9 +50,11 @@
     </mat-header-row>
 
     <mat-row
-      *matRowDef="let row; columns: columnsToDisplay; let even=even"
+      *matRowDef="let row; columns: columnsToDisplay; let even=even;"
+
       (click)="clickRow(row)"
       [class.row-is-even]=even
+      [class.hidden]="rowIsHidden(row)"
     >
     </mat-row>
 

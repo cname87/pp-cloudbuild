@@ -3,6 +3,10 @@ import { Component, Input } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { SingleSeries } from '@swimlane/ngx-charts/lib/models/chart-data.model';
 
+/**
+ * @title Summary chart data
+ * This component shows a bar chart detailing one of the rows of the member summary data table.
+ */
 @Component({
   selector: 'summary-chart',
   templateUrl: './summary-chart.component.html',
@@ -11,6 +15,7 @@ import { SingleSeries } from '@swimlane/ngx-charts/lib/models/chart-data.model';
 export class SummaryChartComponent {
   /* dataset to be charted */
   @Input() data: SingleSeries = [];
+  /* x-axis label */
   @Input() metric = 'Metric';
   elementWidth = document.getElementById('summary-table')?.scrollWidth || 2147;
   elementHeight = document.getElementById('summary-table')?.clientHeight || 398;

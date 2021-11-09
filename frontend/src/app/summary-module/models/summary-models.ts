@@ -2,18 +2,42 @@
  * Summary table types and constants.
  */
 
+export type TDateData = string[];
+export type TValueData = Array<string | number>;
+export type TSummary = [
+  TDateData,
+  TValueData,
+  TValueData,
+  TValueData,
+  TValueData,
+  TValueData,
+  TValueData,
+];
+
 export interface ISummaryItem {
   date: string;
   total: number;
 }
 
-type namesData = [string, string, string, string, string, string];
-export type rowData = Array<string | number>;
-export type ISummary = [rowData, rowData, rowData, rowData, rowData, rowData];
+/* identify row numbers */
+export enum ERowNumbers {
+  'Date' = 0,
+  'Score' = 1,
+  'Load' = 2,
+  'Delta' = 3,
+  'Monotony' = 4,
+  'ACWR' = 5,
+  'Sessions' = 6,
+}
 
-const numberSummaryDataColumns = 52;
+/* identify names and first data column numbers */
+export enum EColumns {
+  'Names' = 0,
+  'FirstData' = 1,
+}
 
-export const rowNames: namesData = [
+export const rowNames = [
+  '',
   'Score',
   'Load',
   'Delta %',
@@ -21,9 +45,3 @@ export const rowNames: namesData = [
   'ACWR',
   'Sessions',
 ];
-
-/* used by the summary table */
-export const columnsToDisplay = ['item'];
-for (let index = 1; index <= numberSummaryDataColumns; index++) {
-  columnsToDisplay.push(`wk${index}`);
-}

@@ -6,49 +6,18 @@ import { ToastrService } from 'ngx-toastr';
 
 import { UtilsService } from '../../app-module/services/utils-service/utils.service';
 import {
-  rowData,
-  rowNames,
-  ISummary,
+  TDateData,
+  TValueData,
+  TSummary,
   ISummaryItem,
+  ERowNumbers,
+  EColumns,
+  rowNames,
 } from '../models/summary-models';
 import { SummaryDataProvider } from '../data-providers/summary.data-provider';
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-/* Temporary */
-
-const score = [] as unknown as rowData;
-score[0] = rowNames[0];
-const load = [] as unknown as rowData;
-load[0] = rowNames[1];
-const delta = [] as unknown as rowData;
-delta[0] = rowNames[2];
-const monotony = [] as unknown as rowData;
-monotony[0] = rowNames[3];
-const acwr = [] as unknown as rowData;
-acwr[0] = rowNames[4];
-const sessionsCount = [] as unknown as rowData;
-sessionsCount[0] = rowNames[5];
-for (let index = 1; index <= 52; index++) {
-  score[index] = Math.round(Math.random() * 100);
-  load[index] = Math.round(Math.random() * 100);
-  delta[index] = Math.round(Math.random() * 100);
-  monotony[index] = Math.round(Math.random() * 100);
-  acwr[index] = Math.round(Math.random() * 100);
-  sessionsCount[index] = Math.round(Math.random() * 100);
-}
-const summaryTable: ISummary = [
-  score,
-  load,
-  delta,
-  monotony,
-  acwr,
-  sessionsCount,
-];
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 /**
- * This service provides functions to access summary data on the backend database.
+ * This service provides functions to access summary data for a member on the backend database.
  */
 @Injectable({ providedIn: 'root' })
 export class SummaryService {
@@ -63,6 +32,103 @@ export class SummaryService {
 
   /* default number of weeks of data to request from the server */
   #defaultWeeksToRetrieve = 52;
+
+  /**
+   * Returns an array of summary items, i.e. items of form { date: Date, total number }. The last element of the array is last Sunday's date (at 00:00:00.00Z). Each other array element is a date 7 days before it's successor. The field 'total' is zero in each element. The total number of elements equals the input 'numberWeeks' parameter. An extra blank element is also added.
+   * @param numberWeeks The number of date elements in the array to return. (Each element coresponds to a week).
+   * @returns An array consisting of one blank cell and a set of summary items with the date field being a set of ascending Sundays with the last element being last Sunday's date, and the total field being 0 in each element.
+   */
+  #getBlankSummaryTable(numberWeeks: number): TSummary {
+    this.logger.trace(`${SummaryService.name}: getBlankSummaryTable called`);
+
+    if (numberWeeks <= 0) {
+      throw new Error(`${SummaryService.name}:getBlankSummarTable error`);
+    }
+
+    /* capture the summary table length */
+    const arrayLength = numberWeeks + 1;
+
+    /* create empty array with names column filled and */
+    const dates = [] as TDateData;
+    dates[EColumns.Names] = rowNames[ERowNumbers.Date];
+    const scores = [] as TValueData;
+    scores[EColumns.Names] = rowNames[ERowNumbers.Score];
+    const loads = [] as TValueData;
+    loads[EColumns.Names] = rowNames[ERowNumbers.Load];
+    const delta = [] as TValueData;
+    delta[EColumns.Names] = rowNames[ERowNumbers.Delta];
+    const monotony = [] as TValueData;
+    monotony[EColumns.Names] = rowNames[ERowNumbers.Monotony];
+    const acwr = [] as TValueData;
+    acwr[EColumns.Names] = rowNames[ERowNumbers.ACWR];
+    const sessionsCount = [] as TValueData;
+    sessionsCount[EColumns.Names] = rowNames[ERowNumbers.Sessions];
+    for (let index = 1; index <= numberWeeks; index++) {
+      scores[index] = 0;
+      loads[index] = 0;
+      delta[index] = 0;
+      monotony[index] = 0;
+      acwr[index] = 0;
+      sessionsCount[index] = 0;
+    }
+    const summaryTable: TSummary = [
+      dates,
+      scores,
+      loads,
+      delta,
+      monotony,
+      acwr,
+      sessionsCount,
+    ];
+
+    /* load dates into the dates row */
+    const lastSunday = this.utils.getLastSunday();
+    summaryTable[ERowNumbers.Date][EColumns.Names] = lastSunday.toISOString();
+    for (let index = 1; index < numberWeeks; index++) {
+      lastSunday.setUTCDate(lastSunday.getUTCDate() - 7);
+      summaryTable[ERowNumbers.Date].unshift(lastSunday.toISOString());
+    }
+    /* add name cell */
+    summaryTable[ERowNumbers.Date].unshift(rowNames[ERowNumbers.Date]);
+
+    /* check output array length is correct */
+    if (summaryTable[ERowNumbers.Date].length !== arrayLength) {
+      throw new Error(`${SummaryService.name}:getBlankSummaryTable error`);
+    }
+
+    return summaryTable;
+  }
+
+  /**
+   * Takes an input array of summary items, i.e. items of form { date: Date, total number }, associated with the scores tables stored for a member, and the number of weeks (from last Sunday) that the array covers and returns an array of summary items with a summary item for each date - any dates that were not in the input array are filled with a summary item with total = 0.
+   * @param numberWeeks The number of weeks that the output array must cover.
+   * @param inputSummaryItems The array of summary items associated with a member in the date range from last Sunday back numberWeeks.
+   * @returns An array of summary items of length given by numberWeeks, with dates from last Sunday backwards and the total field taken from the input array, if it exists, or = 0, it=f it didn't.
+   */
+  #fillScores(
+    numberWeeks: number,
+    inputSummaryItems: ISummaryItem[],
+  ): TSummary {
+    this.logger.trace(`${SummaryService.name}: #fillScores called`);
+
+    const arrayLength = numberWeeks + 1;
+    const summaryTable = this.#getBlankSummaryTable(numberWeeks);
+
+    /* The input date/total array is sorted ascending by date. Compare the table date to the date in the input date/total array and if there is a match store the score value and increment inputIndex so the next comparison starts at the next date in the input date/total array. */
+    let inputIndex = 0;
+    for (let index = EColumns.FirstData; index < arrayLength; index++) {
+      if (
+        summaryTable[ERowNumbers.Date][index] ===
+        inputSummaryItems[inputIndex]?.date
+      ) {
+        summaryTable[ERowNumbers.Score][index] =
+          inputSummaryItems[inputIndex].total;
+        inputIndex++;
+      }
+    }
+    return summaryTable;
+  }
+
   /**
    * Picks up any upstream errors, displays a toaster message and throws on the error.
    * @param err An error object
@@ -80,48 +146,6 @@ export class SummaryService {
   };
 
   /**
-   * Returns an array of summary items, i.e. items of form { date: Date, total number }.  The length of the array is given by an input parameter. The last element of the array is last Sunday's date (at 00:00:00.00Z). Each other array element is 7 days before it's successor. The field 'total' is zero in each element.
-   * @param numberWeeks The length of the array to return. (Each element coresponds to a week).
-   * @returns An array of summary items with the date field being a set of ascending Sundays withthe last element being last Sunday's date, and the total field being 0.
-   */
-  #getBlankSummaryRow(numberWeeks: number): ISummaryItem[] {
-    if (numberWeeks < 0) {
-      throw new Error(`${SummaryService.name}:getBlankSummaryRow error`);
-    }
-    const outputRow = [];
-    const lastSunday = this.utils.getLastSunday();
-    outputRow[0] = { date: lastSunday.toISOString(), total: 0 };
-    for (let index = 1; index < numberWeeks; index++) {
-      lastSunday.setDate(lastSunday.getDate() - 7);
-      outputRow.unshift({ date: lastSunday.toISOString(), total: 0 });
-    }
-    /* check output array length is correct */
-    if (outputRow.length !== numberWeeks) {
-      throw new Error(`${SummaryService.name}:getBlankSummaryRow error`);
-    }
-    return outputRow;
-  }
-
-  /**
-   * Takes an input array of summary items, i.e. items of form { date: Date, total number }, associated with the scores tables stored for a member, and the number of weeks (from last Sunday) that the array covers and returns an array of summary items with a summary item for each date - any dates that were not in the input array are filled with a summary item with total = 0.
-   * @param numberWeeks The number of weeks that the output array must cover.
-   * @param inputSummaryItems The array of summary items associated with a member in the date range from last Sunday back numberWeeks.
-   * @returns An array of summary items of length given by numberWeeks, with dates from last Sunday backwards and the total field taken from the input array, if it exists, or = 0, it=f it didn't.
-   */
-  #fillScoresRow(numberWeeks: number, inputSummaryItems: ISummaryItem[]) {
-    const outputRow = this.#getBlankSummaryRow(numberWeeks);
-    let inputIndex = 0;
-    const mapDates = (item: ISummaryItem) => {
-      if (item.date === inputSummaryItems[inputIndex].date) {
-        item.total = inputSummaryItems[inputIndex].total;
-        inputIndex++;
-      }
-    };
-    outputRow.map(mapDates);
-    return outputRow;
-  }
-
-  /**
    * Gets summary data.
    * * TO DO *
    * @returns An observable containing a summary data object.
@@ -130,20 +154,20 @@ export class SummaryService {
   getSummaryData(
     memberId: number,
     numberWeeks = this.#defaultWeeksToRetrieve,
-  ): Observable<any> {
+  ): Observable<TSummary> {
     this.logger.trace(`${SummaryService.name}: getSummaryData called`);
 
     return this.summaryDataProvider.getSummaryData(memberId, numberWeeks).pipe(
-      map((scoresArray: any) => {
-        const filledScoresRow = this.#fillScoresRow(numberWeeks, scoresArray);
-        for (let index = 0; index < numberWeeks; index++) {
-          summaryTable[0][index] = filledScoresRow[index].total;
-        }
-        return summaryTable as any;
+      map((scoresArray: ISummaryItem[]): TSummary => {
+        const filledScores = this.#fillScores(numberWeeks, scoresArray);
+        return filledScores;
       }),
-      tap((scoresTotals: ISummaryItem[]) => {
-        this.logger.trace(`${SummaryService.name}: Fetched summary data`);
-        console.log(`Summary data retrieved: ${JSON.stringify(scoresTotals)}`);
+      tap((scoresTotals: TSummary) => {
+        this.logger.trace(
+          `${SummaryService.name}: Fetched summary data:\n${JSON.stringify(
+            scoresTotals,
+          )}`,
+        );
       }),
       catchError(this.#catchError),
     );

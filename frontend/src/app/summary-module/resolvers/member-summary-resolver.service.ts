@@ -9,13 +9,13 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { SummaryService } from '../services/summary.service';
-import { ISummary } from '../models/summary-models';
+import { TSummary } from '../models/summary-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MemberSummaryResolverService
-  implements Resolve<ISummary | unknown>
+  implements Resolve<TSummary | unknown>
 {
   constructor(
     private summaryService: SummaryService,
@@ -29,7 +29,7 @@ export class MemberSummaryResolverService
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<ISummary | unknown> {
+  ): Observable<TSummary> {
     this.logger.trace(`${MemberSummaryResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */

@@ -32,7 +32,7 @@
   /* base-font variable size = 1rem */
   --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maximum screen
 
-  /* member list row heights - 16 to 32 px*/
+  /* member list row heights - 24 to 40 px*/
   --list-height-px: calc((1.5px + var(--ratio-px)) * var(--base));
 
   /* width of all main elements */
