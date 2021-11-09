@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
@@ -11,6 +11,7 @@ import {
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../services/members-service/members.service';
 import { routes } from '../../../configuration/configuration';
+import { RouteStateService } from '../../services/route-state-service/router-state.service';
 
 /**
  * This component displays a list of members.
@@ -22,7 +23,7 @@ import { routes } from '../../../configuration/configuration';
   templateUrl: './members-list.component.html',
   styleUrls: ['./members-list.component.scss'],
 })
-export class MembersListComponent implements OnInit {
+export class MembersListComponent implements OnInit, OnDestroy {
   /* observable of array of members returned from search */
   members$!: Observable<IMember[]>;
   /* mode for input box */
@@ -35,6 +36,7 @@ export class MembersListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private membersService: MembersService,
+    private routeStateService: RouteStateService,
     private logger: NGXLogger,
     private isLoadingService: IsLoadingService,
   ) {
@@ -122,11 +124,12 @@ export class MembersListComponent implements OnInit {
     }
   }
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     this.logger.trace(`${MembersListComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-  };
+    this.routeStateService.updateIdState('');
+  }
 
   trackByFn(_index: number, member: IMember): number | null {
     if (!member) {

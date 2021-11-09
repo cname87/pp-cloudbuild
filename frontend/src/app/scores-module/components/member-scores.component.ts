@@ -355,10 +355,10 @@ export class MemberScoresComponent implements OnDestroy {
     }
   };
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
-  };
+  }
 }

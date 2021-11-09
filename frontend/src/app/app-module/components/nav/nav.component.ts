@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
 import { AuthService } from '../../services/auth-service/auth.service';
@@ -22,7 +22,7 @@ interface ILink {
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
-export class NavComponent {
+export class NavComponent implements OnInit {
   #membersList = routes.membersList;
   #detail = routes.member;
   #scores = routes.scores;

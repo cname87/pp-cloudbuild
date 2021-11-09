@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -31,7 +32,9 @@ import { RouteStateService } from '../../app-module/services/route-state-service
   styleUrls: ['./member-summary.component.scss'],
   providers: [],
 })
-export class MemberSummaryComponent implements OnInit, AfterViewInit {
+export class MemberSummaryComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild('scrollframe', { static: false }) scrollFrame!: ElementRef;
   //
   /* used to unsubscribe */
@@ -159,7 +162,7 @@ export class MemberSummaryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit = (): void => {
+  ngOnInit(): void {
     /* update service with routed member id */
     this.route.paramMap
       .pipe(
@@ -173,8 +176,10 @@ export class MemberSummaryComponent implements OnInit, AfterViewInit {
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
-  };
+      .subscribe((id) => {
+        this.routeStateService.updateIdState(id);
+      });
+  }
 
   ngAfterViewInit(): void {
     const matTable = document.getElementById('summary-table');
@@ -183,10 +188,10 @@ export class MemberSummaryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     this.logger.trace(`${MemberSummaryComponent.name}: ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
-  };
+  }
 }

@@ -73,11 +73,12 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
       .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-  };
+    this.routeStateService.updateIdState('');
+  }
 
   get userProfile$() {
     return this.auth.userProfile$;
