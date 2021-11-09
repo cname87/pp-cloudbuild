@@ -34,8 +34,8 @@ const getSummary = (
 
   summaryHandlers
     .getSummary(req, mid, weeksRequested)
-    .then((payload: Perform.ISummary) => {
-      
+    .then((payload: Array<Perform.TSummary>) => {
+
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err: any) => {

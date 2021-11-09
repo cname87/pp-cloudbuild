@@ -13,7 +13,6 @@ const { modulename, debug } = setupDebug(__filename);
 /* the name of query parmeter in the url */
 const filter = 'date';
 
-
 const getOrCreateScores = (
   context: Context | undefined,
   req: Request,

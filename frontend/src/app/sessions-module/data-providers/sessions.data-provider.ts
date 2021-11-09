@@ -99,17 +99,14 @@ export class SessionsDataProvider {
    * @param date The value of the date property of the sessions table to be retrieved, or to be created.
    * @returns An observable returning the scores table retrieved or created.
    */
-  public getOrCreateSessions(
-    memberId: number,
-    date: Date,
-  ): Observable<ISessions> {
+  getOrCreateSessions(memberId: number, date: Date): Observable<ISessions> {
     this.logger.trace(
       `${SessionsDataProvider.name}: getOrCreateSessions called`,
     );
 
     if (!date || !memberId) {
       throw new Error(
-        'A required parameter was invalid when calling getOrCreateScores.',
+        'A required parameter was invalid when calling getOrCreateSessions.',
       );
     }
 
@@ -121,11 +118,11 @@ export class SessionsDataProvider {
       `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.sessionsPath}/`,
     );
 
-    /* create a body with the date string */
+    /* create a body with a date object */
     const dateBody = { date: date };
 
     return this.httpClient
-      .post<any>(
+      .post<ISessions>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
@@ -167,7 +164,7 @@ export class SessionsDataProvider {
 
     if (!sessions) {
       throw new Error(
-        'A required parameter was invalid when calling updateScoresTable.',
+        'A required parameter was invalid when calling updateSessionsTable.',
       );
     }
 

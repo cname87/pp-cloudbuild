@@ -133,8 +133,7 @@ declare namespace Perform {
 
   export interface ISessionsWithoutId {
     memberId: number;
-    /* the date is formatted as an ISO date string */
-    date: string;
+    date: Date | string; // using string to send to frontend
     sessions: ISessionsColumn[];
   }
 
@@ -142,12 +141,12 @@ declare namespace Perform {
     id: number;
   }
 
-  interface summaryItem {
+  interface ISummaryItem {
     date: string;
     total: number;
   }
 
-  export type ISummary = Array<summaryItem>;
+  export type TSummary = Array<ISummaryItem>;
 
   /* extra fields for created errors */
   /* Error: 'name' is mandatory, 'message' is optional */

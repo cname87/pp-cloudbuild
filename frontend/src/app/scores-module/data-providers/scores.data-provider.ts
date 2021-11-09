@@ -44,7 +44,7 @@ export class ScoresDataProvider {
    * @param date The value of the date property of the scores table to be retrieved, or to be created.
    * @returns An observable returning the scores table retrieved or created.
    */
-  public getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
+  getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
     this.logger.trace(`${ScoresDataProvider.name}: getOrCreateScores called`);
 
     if (!date || !memberId) {

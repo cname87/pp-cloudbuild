@@ -306,7 +306,7 @@ export class MemberSessionsComponent implements OnDestroy {
         this.logger.trace(
           `${
             MemberSessionsComponent.name
-          }: Scores table updated: ${JSON.stringify(scores)}`,
+          }: Sessions table updated: ${JSON.stringify(scores)}`,
         );
       });
     this.#tableChange.emit('modelChange');
@@ -329,12 +329,10 @@ export class MemberSessionsComponent implements OnDestroy {
         this.sessionsService
           .getOrCreateSessions(updatedModel.memberId, updatedModel.date)
           .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-          .subscribe((scores) => {
-            this.model = scores;
+          .subscribe((sessions) => {
+            this.model = sessions;
             this.logger.trace(
-              `${
-                MemberSessionsComponent.name
-              }: Scores table created or retrieved: ${JSON.stringify(scores)}`,
+              `${MemberSessionsComponent.name}: Sessions table created or retrieved`,
             );
           }),
       );

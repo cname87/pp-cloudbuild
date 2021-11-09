@@ -17,7 +17,7 @@ const dateIsSunday = (value: number): boolean => {
 };
 
 export const scoresModel = {
-  id: { type: Number, min: 0 },
+  id: { type: Number, unique: true, min: 0 },
   memberId: { type: Number, index: true, min: 1 },
   date: {
     type: Date,
@@ -53,17 +53,24 @@ export const scoresModel = {
 };
 
 export const sessionsModel = {
-  id: { type: Number, unique: true, index: true, min: 0 },
+  id: { type: Number, unique: true, min: 0 },
   memberId: { type: Number, min: 1 },
   date: {
-    type: String,
+    type: Date,
+    index: true,
     required: true,
     validator: dateIsSunday,
   },
   sessions: [
     {
-      type: { type: String, enum: ['', 'STRENGTH', 'CONDITIONING'] },
-      rpe: { type: Number, enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+      type: {
+        type: String,
+        enum: ['', 'STRENGTH', 'CONDITIONING', 'SPORT'],
+      },
+      rpe: {
+        type: Number,
+        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      },
       duration: { type: Number, min: 0 },
     },
   ],

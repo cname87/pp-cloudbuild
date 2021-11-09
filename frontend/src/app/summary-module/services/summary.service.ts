@@ -107,25 +107,28 @@ export class SummaryService {
    */
   #fillScores(
     numberWeeks: number,
-    inputSummaryItems: ISummaryItem[],
+    summaryArray: Array<ISummaryItem[]>,
   ): TSummary {
     this.logger.trace(`${SummaryService.name}: #fillScores called`);
 
     const arrayLength = numberWeeks + 1;
     const summaryTable = this.#getBlankSummaryTable(numberWeeks);
 
-    /* The input date/total array is sorted ascending by date. Compare the table date to the date in the input date/total array and if there is a match store the score value and increment inputIndex so the next comparison starts at the next date in the input date/total array. */
-    let inputIndex = 0;
-    for (let index = EColumns.FirstData; index < arrayLength; index++) {
-      if (
-        summaryTable[ERowNumbers.Date][index] ===
-        inputSummaryItems[inputIndex]?.date
-      ) {
-        summaryTable[ERowNumbers.Score][index] =
-          inputSummaryItems[inputIndex].total;
-        inputIndex++;
+    summaryArray.forEach((elementArray, elementIndex) => {
+      /* The input date/total array is sorted ascending by date. Compare the table date to the date in the input date/total array and if there is a match store the value and increment inputIndex so the next comparison starts at the next date in the input date/total array. */
+      let inputIndex = 0;
+      for (let index = EColumns.FirstData; index < arrayLength; index++) {
+        if (
+          summaryTable[ERowNumbers.Date][index] ===
+          elementArray[inputIndex]?.date
+        ) {
+          summaryTable[elementIndex + 1][index] =
+            elementArray[inputIndex].total;
+          inputIndex++;
+        }
       }
-    }
+    });
+
     return summaryTable;
   }
 
@@ -158,8 +161,8 @@ export class SummaryService {
     this.logger.trace(`${SummaryService.name}: getSummaryData called`);
 
     return this.summaryDataProvider.getSummaryData(memberId, numberWeeks).pipe(
-      map((scoresArray: ISummaryItem[]): TSummary => {
-        const filledScores = this.#fillScores(numberWeeks, scoresArray);
+      map((summaryArray: Array<ISummaryItem[]>): TSummary => {
+        const filledScores = this.#fillScores(numberWeeks, summaryArray);
         return filledScores;
       }),
       tap((scoresTotals: TSummary) => {

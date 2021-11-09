@@ -48,7 +48,7 @@ export class SummaryDataProvider {
   public getSummaryData(
     memberId: number,
     numberWeeks: number,
-  ): Observable<ISummaryItem[]> {
+  ): Observable<Array<ISummaryItem[]>> {
     this.logger.trace(`${SummaryDataProvider.name}: getSummaryData called`);
 
     if (!memberId || !numberWeeks) {
@@ -73,7 +73,7 @@ export class SummaryDataProvider {
     );
 
     return this.httpClient
-      .get<ISummaryItem[]>(
+      .get<Array<ISummaryItem[]>>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.summaryPath
         }`,
@@ -84,7 +84,7 @@ export class SummaryDataProvider {
         },
       )
       .pipe(
-        tap((data: ISummaryItem[]) => {
+        tap((data: Array<ISummaryItem[]>) => {
           this.logger.trace(
             `${SummaryDataProvider.name}: Received response: ${JSON.stringify(
               data,

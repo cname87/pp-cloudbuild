@@ -5,53 +5,108 @@
 /* Select the database to use */
 use('test');
 
-// db['project-perform_scores'].find();
+// db['project-perform_sessions'].find();
 
-const back364Days = new Date(new Date().setDate(new Date().getDate()- (7 * 52)));
-/* Build an aggregation */
-const aggregation = [
-  /* select the specific member */
-  { $match: { memberId: 3 } },
-  /* select all tables in the last 52 weeks */
-  { $match: { date: { $gt: back364Days } } },
-  /* sort by date ascending */
-  { $sort: { date: 1 } },
-  { $project:
-    {
-      _id: 0,
-      date: 1,
-      totalMonday: { $sum: "$scores.monday" },
-      totalTuesday: { $sum: "$scores.tuesday" },
-      totalWednesday: { $sum: "$scores.wednesday" },
-      totalThursday: { $sum: "$scores.thursday" },
-      totalFriday: { $sum: "$scores.friday" },
-      totalSaturday: { $sum: "$scores.saturday" },
-      totalSunday: { $sum: "$scores.sunday" },
-    },
-  },
-  { $project:
-    {
-      date: 1,
-      total: {
-        $sum: [
-          "$totalMonday",
-          "$totalTuesday",
-          "$totalWednesday",
-          "$totalThursday",
-          "$totalFriday",
-          "$totalSaturday",
-          "$totalSunday",
-        ],
-      },
-    },
-  },
-];
+const model = 'project-perform_scores';
+const memberId = 3;
+const weeks = 52;
+const retrieveDays = new Date(
+  new Date().setDate(new Date().getDate() - 7 * weeks),
+);
 
+  // const aggregation = [
+  //   /* select the specific member */
+  //   { $match: { memberId: memberId } },
+  //   /* select all tables in the last requested number of weeks */
+  //   { $match: { date: { $gt: retrieveDays } } },
+  //   /* sort by date ascending */
+  //   { $sort: { date: 1 } },
+  //   /* sum the products of rep and duration of each session */
+  //   { $project: {
+  //       _id: 0,
+  //       date: 1,
+  //       total: {
+  //           $sum: {
+  //               $map: {
+  //                   input: '$sessions',
+  //                   as: 'session',
+  //                   in: { $multiply: [
+  //                       { $ifNull: [ '$$session.rpe', 0 ] },
+  //                       { $ifNull: [ "$$session.duration", 0 ] },
+  //                   ]},
+  //               },
+  //           },
+  //       },
+  //   }},
+  // ];
+
+
+  const aggregation = [
+    /* select the specific member */
+    { $match: { memberId: memberId } },
+    /* select all tables in the last requested number of weeks */
+    { $match: { date: { $gt: retrieveDays } } },
+    /* sort by date ascending */
+    { $sort: { date: 1 } },
+    { $project: {
+        _id: 0,
+        date: 1,
+        total: {
+          /* sum the output of the calculation on each array element */
+            $sum: {
+              /* iterate over each element in the scores array and for each element output a sum of all scores in that element */
+                $map: {
+                    input: '$scores',
+                    as: 'score',
+                    in: { $sum: [
+                        { $ifNull: [ '$$score.monday', 0 ] },
+                        { $ifNull: [ "$$score.tuesday", 0 ] },
+                        { $ifNull: [ '$$score.wednesday', 0 ] },
+                        { $ifNull: [ '$$score.thursday', 0 ] },
+                        { $ifNull: [ '$$score.friday', 0 ] },
+                        { $ifNull: [ "$$score.saturday", 0 ] },
+                        { $ifNull: [ '$$score.sunday', 0 ] },
+                    ]},
+                },
+            },
+        },
+    }},
+
+    // {
+    //   $project: {
+    //     _id: 0,
+    //     date: 1,
+    //     totalMonday: { $sum: '$scores.monday' },
+    //     totalTuesday: { $sum: '$scores.tuesday' },
+    //     totalWednesday: { $sum: '$scores.wednesday' },
+    //     totalThursday: { $sum: '$scores.thursday' },
+    //     totalFriday: { $sum: '$scores.friday' },
+    //     totalSaturday: { $sum: '$scores.saturday' },
+    //     totalSunday: { $sum: '$scores.sunday' },
+    //   },
+    // },
+    // {
+    //   $project: {
+    //     date: 1,
+    //     total: {
+    //       $sum: [
+    //         '$totalMonday',
+    //         '$totalTuesday',
+    //         '$totalWednesday',
+    //         '$totalThursday',
+    //         '$totalFriday',
+    //         '$totalSaturday',
+    //         '$totalSunday',
+    //       ],
+    //     },
+    //   },
+    // },
+  ];
 
 // Run the aggregation and open a cursor to the results.
 // Use toArray() to exhaust the cursor to return the whole result set.
 // You can use hasNext()/next() to iterate through the cursor page by page.
-db.['project-perform_scores'].aggregate(aggregation)
+db.[model].aggregate(aggregation)
 
 
 // The drop() command destroys all data from a collection.
