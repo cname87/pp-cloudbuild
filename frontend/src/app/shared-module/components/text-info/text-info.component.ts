@@ -1,11 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { Location } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
 /**
- * This component displays key error information along with advice to the user to click on a tab to restart. It is routed to by the error handler after an error is thrown.
- * The default information displayed shows 'page not found'.
- * If a mode of 'error' is passed in via a url query parameter the information shown is relevant to an unexpected error.
+ * This component displays simple text information on a page.  It includes a button that can be shown, which emits an event when clicked.
  */
 @Component({
   selector: 'app-text-info',
@@ -13,14 +10,18 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./text-info.component.scss'],
 })
 export class TextInfoComponent {
-  @Input() text = '';
-  @Input() isGoBackVisible = false;
+  @Input() line1 = '';
+  @Input() line2 = '';
+  @Input() line3 = '';
+  @Input() line4 = '';
+  @Input() isGoBackVisible = true;
+  @Output() backClicked = new EventEmitter<string>();
 
-  constructor(private location: Location, private logger: NGXLogger) {
+  constructor(private logger: NGXLogger) {
     this.logger.trace(`${TextInfoComponent.name}: Starting TextInfoComponent`);
   }
 
-  goBack(): void {
-    this.location.back();
+  clickBack(flag = 'default'): void {
+    this.backClicked.emit(flag);
   }
 }

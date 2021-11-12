@@ -23,10 +23,6 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
 
-  text =
-    // eslint-disable-next-line max-len
-    '<ul><li>Click on SCORES to enter your weekly assessment scores.</li><li>Click on SESSIONS to enter your weekly training sessions data.</li><li>Click on SUMMARY to see your data over the last 12 months.</li></ul>';
-
   constructor(
     private auth: AuthService,
     private route: ActivatedRoute,
@@ -37,6 +33,13 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
       `${MemberDetailComponent.name}: Starting MemberDetailComponent`,
     );
   }
+
+  /* define the text info card */
+  line1 = '- Click on SCORES to enter your weekly assessment scores';
+  line2 = '- Click on SESSIONS to enter your weekly training sessions';
+  line3 = '- Click on SUMMARY to see your data over the last 12 months';
+  line4 = '';
+  isGoBackVisible = false;
 
   /**
    * Picks up any upstream errors and throws on the error.

@@ -34,9 +34,9 @@ export class SummaryService {
   #defaultWeeksToRetrieve = 52;
 
   /**
-   * Returns an array of summary items, i.e. items of form { date: Date, total number }. The last element of the array is last Sunday's date (at 00:00:00.00Z). Each other array element is a date 7 days before it's successor. The field 'total' is zero in each element. The total number of elements equals the input 'numberWeeks' parameter. An extra blank element is also added.
-   * @param numberWeeks The number of date elements in the array to return. (Each element coresponds to a week).
-   * @returns An array consisting of one blank cell and a set of summary items with the date field being a set of ascending Sundays with the last element being last Sunday's date, and the total field being 0 in each element.
+   * Returns a blank array that will be filled with summary data.
+   * @param numberWeeks The number of date elements in the array to return. (Each element corresponds to a week).
+   * @returns An array consisting of a filled in names column and a filled in top dates row. All other cells are 0.
    */
   #getBlankSummaryTable(numberWeeks: number): TSummary {
     this.logger.trace(`${SummaryService.name}: getBlankSummaryTable called`);
@@ -49,21 +49,14 @@ export class SummaryService {
     const arrayLength = numberWeeks + 1;
 
     /* create empty array with names column filled and */
-    const dates = [] as TDateData;
-    dates[EColumns.Names] = rowNames[ERowNumbers.Date];
-    const scores = [] as TValueData;
-    scores[EColumns.Names] = rowNames[ERowNumbers.Score];
-    const loads = [] as TValueData;
-    loads[EColumns.Names] = rowNames[ERowNumbers.Load];
-    const delta = [] as TValueData;
-    delta[EColumns.Names] = rowNames[ERowNumbers.Delta];
-    const monotony = [] as TValueData;
-    monotony[EColumns.Names] = rowNames[ERowNumbers.Monotony];
-    const acwr = [] as TValueData;
-    acwr[EColumns.Names] = rowNames[ERowNumbers.ACWR];
-    const sessionsCount = [] as TValueData;
-    sessionsCount[EColumns.Names] = rowNames[ERowNumbers.Sessions];
-    for (let index = 1; index <= numberWeeks; index++) {
+    const dates = [rowNames[ERowNumbers.Date]] as TDateData;
+    const scores = [rowNames[ERowNumbers.Score]] as TValueData;
+    const loads = [rowNames[ERowNumbers.Load]] as TValueData;
+    const delta = [rowNames[ERowNumbers.Delta]] as TValueData;
+    const monotony = [rowNames[ERowNumbers.Monotony]] as TValueData;
+    const acwr = [rowNames[ERowNumbers.ACWR]] as TValueData;
+    const sessionsCount = [rowNames[ERowNumbers.Sessions]] as TValueData;
+    for (let index = EColumns.Names + 1; index <= numberWeeks; index++) {
       scores[index] = 0;
       loads[index] = 0;
       delta[index] = 0;
@@ -100,36 +93,67 @@ export class SummaryService {
   }
 
   /**
-   * Takes an input array of summary items, i.e. items of form { date: Date, total number }, associated with the scores tables stored for a member, and the number of weeks (from last Sunday) that the array covers and returns an array of summary items with a summary item for each date - any dates that were not in the input array are filled with a summary item with total = 0.
-   * @param numberWeeks The number of weeks that the output array must cover.
-   * @param inputSummaryItems The array of summary items associated with a member in the date range from last Sunday back numberWeeks.
-   * @returns An array of summary items of length given by numberWeeks, with dates from last Sunday backwards and the total field taken from the input array, if it exists, or = 0, it=f it didn't.
+   * Returns a b array of summary items, i.e. items of form { date: Date, total number }. The last element of the array is last Sunday's date (at 00:00:00.00Z). Each other array element is a date 7 days before it's successor. The field 'total' is zero in each element. The total number of elements equals the input 'numberWeeks' parameter. An extra blank element is also added.
+   * @param numberWeeks The number of date elements in the array to return. (Each element coresponds to a week).
+   * @returns An array consisting of one blank cell and a set of summary items with the date field being a set of ascending Sundays with the last element being last Sunday's date, and the total field being 0 in each element.
    */
-  #fillScores(
-    numberWeeks: number,
-    summaryArray: Array<ISummaryItem[]>,
+
+  /**
+   * Takes (i) an input array with two elements, both of which are arrays of summary items, i.e. items of form { date: Date, total number }, and (ii) the number of weeks (from last Sunday) that the output summary array will cover. Calls for a blank summary array and fills in the second 2 rows (under the top date row) with the summary totals for each date - any dates that were not in the input array are filled with summary items = 0.
+   * The input array must be sorted as [[scores], [sessions]]
+   * @param numberWeeks The number of weeks that the output array must cover.
+   * @param array2DInputSummaryItems The array of scores and sessions summary item arrays associated with a member in the date range from last Sunday back <numberWeeks> weeks.
+   * @returns The filled in summary array.
+   */
+  #fillValues(
+    summaryTable: TSummary,
+    array2DInputSummaryItems: Array<ISummaryItem[]>,
   ): TSummary {
-    this.logger.trace(`${SummaryService.name}: #fillScores called`);
+    this.logger.trace(`${SummaryService.name}: #fillValues called`);
 
-    const arrayLength = numberWeeks + 1;
-    const summaryTable = this.#getBlankSummaryTable(numberWeeks);
-
-    summaryArray.forEach((elementArray, elementIndex) => {
-      /* The input date/total array is sorted ascending by date. Compare the table date to the date in the input date/total array and if there is a match store the value and increment inputIndex so the next comparison starts at the next date in the input date/total array. */
+    array2DInputSummaryItems.forEach((array1DSummaryItems, itemIndex) => {
+      /* The input summary item (date/total) array is sorted ascending by date. Compare the output summary table date to the date in the input date/total array and if there is a match store the value under the date in the output array, and increment inputIndex so the next comparison starts at the next date in the input summary item (date/total) array. */
       let inputIndex = 0;
-      for (let index = EColumns.FirstData; index < arrayLength; index++) {
+      for (
+        let index = EColumns.FirstData;
+        index < summaryTable[ERowNumbers.Date].length;
+        index++
+      ) {
         if (
           summaryTable[ERowNumbers.Date][index] ===
-          elementArray[inputIndex]?.date
+          array1DSummaryItems[inputIndex]?.date
         ) {
-          summaryTable[elementIndex + 1][index] =
-            elementArray[inputIndex].total;
+          (summaryTable[itemIndex + 1][index] as number) =
+            array1DSummaryItems[inputIndex].total;
           inputIndex++;
         }
       }
     });
 
     return summaryTable;
+  }
+
+  /**
+   * Fills in the '% Change from Last Week' row
+   * @param table A summary table containing a filled in session row.
+   * @returns The summary table with the % Delta row filled out.
+   */
+  #fillDelta(table: TSummary): TSummary {
+    const loadRow = table[ERowNumbers.Load];
+    const deltaRow = table[ERowNumbers.Delta];
+    /* set first data element (which has no predecessor) to 0 */
+    deltaRow[EColumns.FirstData] = 0;
+    /* set the following values to the delta */
+    for (let index = EColumns.FirstData + 1; index < deltaRow.length; index++) {
+      const n0 = loadRow[index - 1] as number;
+      const n1 = loadRow[index] as number;
+      let n2 = n1 !== 0 ? Math.round(((n1 - n0) * 100) / n1) : 0;
+      n2 = Math.min(n2, 999);
+      n2 = Math.max(-999, n2);
+      deltaRow[index] = n2;
+    }
+    table[ERowNumbers.Delta] = deltaRow;
+    return table;
   }
 
   /**
@@ -149,9 +173,8 @@ export class SummaryService {
   };
 
   /**
-   * Gets summary data.
-   * * TO DO *
-   * @returns An observable containing a summary data object.
+   * Returns the filled summary data table for display.
+   * @returns An observable containing a filled summary data table object for display.
    * @throws See #catchError.
    */
   getSummaryData(
@@ -161,9 +184,14 @@ export class SummaryService {
     this.logger.trace(`${SummaryService.name}: getSummaryData called`);
 
     return this.summaryDataProvider.getSummaryData(memberId, numberWeeks).pipe(
-      map((summaryArray: Array<ISummaryItem[]>): TSummary => {
-        const filledScores = this.#fillScores(numberWeeks, summaryArray);
-        return filledScores;
+      map((dataFromBackend: Array<ISummaryItem[]>): TSummary => {
+        const blankSummaryArray = this.#getBlankSummaryTable(numberWeeks);
+        const filledValues = this.#fillValues(
+          blankSummaryArray,
+          dataFromBackend,
+        );
+        const filledDelta = this.#fillDelta(filledValues);
+        return filledDelta;
       }),
       tap((scoresTotals: TSummary) => {
         this.logger.trace(

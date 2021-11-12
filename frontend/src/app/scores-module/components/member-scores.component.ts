@@ -123,17 +123,21 @@ export class MemberScoresComponent implements OnDestroy {
     { value: 4, label: '4' },
     { value: 5, label: '5' },
   ];
+
+  /* define the text info card */
+  line1 =
+    '- Select 1 to 5, where 1 is the WORST feeling and 5 is the BEST feeling';
+  line2 = '- For example: High Stress is 1, and Low Stress is 5';
+  line3 = '';
+  line4 = '';
+  isGoBackVisible = false;
+
   form = new FormGroup({});
   scores!: IScores;
   /* form model */
   model!: IScores;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
-    {
-      template:
-        // eslint-disable-next-line max-len
-        '<div class="table-help">Select 1 to 5, where 1 is the WORST feeling and 5 is the BEST feeling<br>e.g. high stress is 1 and low stress is 5</div>',
-    },
     {
       fieldGroup: [
         {

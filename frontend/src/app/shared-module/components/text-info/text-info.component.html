@@ -1,28 +1,24 @@
-  <!-- include class=LogPage when paramMap 'mode' = 'login' -->
 <mat-card
   class="fill-width"
 >
   <mat-card-content>
     <div>
-      <ul>
-        <li>Click on SCORES to enter your weekly assessment scores.</li>
-        <li>Click on SESSIONS to enter your weekly training sessions data.</li>
-        <li>Click on SUMMARY to see your data over the last 12 months.</li>
-      </ul>
+      <p>{{ line1 }}</p>
+      <p>{{ line2 }}</p>
+      <p>{{ line3 }}</p>
+      <p>{{ line4 }}</p>
     </div>
   </mat-card-content>
 
-  <mat-card-actions>
-    <span
-      *ngIf="isGoBackVisible"
-      (click)="goBack()"
+  <mat-card-actions
+    *ngIf="isGoBackVisible"
+  >
+    <app-button
+      icon="arrow_back_ios"
+      (click)="clickBack()"
     >
-      <app-button
-        icon="arrow_back_ios"
-      >
-        BACK
-      </app-button>
-    </span>
+      BACK
+    </app-button>
   </mat-card-actions>
 
 </mat-card>

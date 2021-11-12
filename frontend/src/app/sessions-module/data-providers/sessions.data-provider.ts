@@ -111,6 +111,7 @@ export class SessionsDataProvider {
     }
 
     let headers = this.defaultHeaders;
+    headers = headers.set('content-type', 'application/json');
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
@@ -171,8 +172,8 @@ export class SessionsDataProvider {
     const sessionsStripped = this.#stripFixedFields(sessions);
 
     let headers = this.defaultHeaders;
-    headers = headers.set('Accept', 'application/json');
     headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     /* the member id from the supplied table is passed as a url parameter and is used to ensure the calling user either corresponds to that member id or is an admin user */
     const memberId = sessions.memberId;

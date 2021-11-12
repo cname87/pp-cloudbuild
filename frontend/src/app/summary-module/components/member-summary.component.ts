@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ParamMap, ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NGXLogger } from 'ngx-logger';
@@ -35,16 +28,31 @@ import { RouteStateService } from '../../app-module/services/route-state-service
 export class MemberSummaryComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  @ViewChild('scrollframe', { static: false }) scrollFrame!: ElementRef;
   //
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
-  /* raw table data from resolver */
+  /* raw table data from the resolver */
   #data!: TSummary;
   /* unique column names used by the table template */
   #nameColumnToDisplay = '';
   #dataColumnsToDisplay: string[] = [];
   columnsToDisplay: string[] = [];
+
+  /* define the summary table text info card */
+  summaryLine1 =
+    '- This shows weekly data on your wellness scores and training sessions';
+  summaryLine2 = '- Click on a row to see a bar chart of that item';
+  isSummaryBackVisible = false;
+
+  /* define the chart table text info card */
+  chartLine1 = '- Scroll left to see previous weeks';
+  chartLine2 = '- Click Back to return to the Summary Table';
+  isChartBackVisible = true;
+  onChartBackClicked = () => {
+    this.#clearChart();
+    this.#scrollToEnd();
+  };
+
   /* called in html template to define the names column */
   dataNames: {
     columnDef: string;
@@ -67,17 +75,17 @@ export class MemberSummaryComponent
   isChartShown = false;
 
   /**
-   * Returns chart data from a supplied summary table row.
+   * Returns data fro the chart from a supplied summary table row.
    * @param rowData A row of the summary data table.
    * @returns An array containing a column of data to display in the chart.
    */
   #getChartData = (rowData: TValueData): SingleSeries => {
     /* remove the column containing the name */
-    const valueData = rowData.slice(EColumns.Names);
+    const valueData = rowData.slice(EColumns.FirstData);
     const chartData = [];
-    for (let i = 0; i < this.dataColumns.length; i++) {
+    for (let i = 0; i < valueData.length; i++) {
       chartData[i] = {
-        name: this.dataColumns[i].header,
+        name: this.dataColumns[i].header.substring(0, 10),
         value: valueData[i] as number,
       };
     }
@@ -93,6 +101,31 @@ export class MemberSummaryComponent
     this.logger.trace(`${MemberSummaryComponent.name}: #catchError called`);
     this.logger.trace(`${MemberSummaryComponent.name}: Throwing the error on`);
     throw err;
+  };
+
+  /* scrolls the summary table to the end */
+  #scrollToEnd = () => {
+    this.logger.trace(`${MemberSummaryComponent.name}: #scrollToEnd called`);
+    let cycles = 0;
+    const checkExist = setInterval(() => {
+      cycles++;
+      const matTable = document.getElementById('summary-table');
+      if (matTable) {
+        matTable.scrollLeft = matTable.scrollWidth;
+        clearInterval(checkExist);
+      }
+      if (cycles === 10) {
+        this.logger.error(
+          `${MemberSummaryComponent.name}: Chart scroll to end NOT implemented`,
+        );
+        clearInterval(checkExist);
+      }
+    }, 100); // check every 100ms
+  };
+
+  /* hides the table and shows the chart */
+  #clearChart = () => {
+    this.isChartShown = false;
   };
 
   /**
@@ -112,7 +145,7 @@ export class MemberSummaryComponent
    */
   clickRow = (rowData: TValueData): void => {
     this.rowChartData = this.#getChartData(rowData);
-    this.rowName = rowData[EColumns.Names] as string;
+    this.rowName = rowData[EColumns.Names];
     this.isChartShown = true;
   };
 
@@ -182,10 +215,7 @@ export class MemberSummaryComponent
   }
 
   ngAfterViewInit(): void {
-    const matTable = document.getElementById('summary-table');
-    if (matTable) {
-      matTable.scrollLeft = matTable.scrollWidth;
-    }
+    this.#scrollToEnd();
   }
 
   ngOnDestroy(): void {

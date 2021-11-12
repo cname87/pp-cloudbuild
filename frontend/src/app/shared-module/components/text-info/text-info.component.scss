@@ -14,10 +14,10 @@ mat-card-content {
   padding: 0px;
 }
 
-div > ul {
+div > p {
   color: var(--primary-color-darker);
   margin: 0px;
-  padding-left: calc( 2 * var(--default-gap-px));
+  padding-left: var(--default-gap-px);
 }
 
 mat-card-actions.mat-card-actions {

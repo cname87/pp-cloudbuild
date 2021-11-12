@@ -39,7 +39,8 @@ export class MembersDataProvider {
    * @param err An error object
    * @throws Throws the received error object
    */
-  #catchError = (err: any): never => {    this.logger.trace(`${MembersDataProvider.name}: #catchError called`);
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MembersDataProvider.name}: #catchError called`);
     this.logger.trace(`${MembersDataProvider.name}: Throwing the error on`);
     throw err;
   };
@@ -58,7 +59,9 @@ export class MembersDataProvider {
       throw new Error('Required parameter was invalid.');
     }
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}`,
@@ -97,7 +100,9 @@ export class MembersDataProvider {
       queryParameters = queryParameters.set('name', name);
     }
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}`,
@@ -131,7 +136,9 @@ export class MembersDataProvider {
       );
     }
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}/${id}`,
@@ -171,7 +178,9 @@ export class MembersDataProvider {
       );
     }
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}`,
@@ -204,7 +213,9 @@ export class MembersDataProvider {
       );
     }
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}/${id}`,
@@ -235,7 +246,9 @@ export class MembersDataProvider {
   public deleteMembers(): Observable<ICount> {
     this.logger.trace(`${MembersDataProvider.name}: deleteMembers called`);
 
-    const headers = this.defaultHeaders;
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
       `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}`,

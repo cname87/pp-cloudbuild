@@ -3,7 +3,7 @@
  */
 
 export type TDateData = string[];
-export type TValueData = Array<string | number>;
+export type TValueData = [string, ...number[]];
 export type TSummary = [
   TDateData,
   TValueData,
@@ -38,10 +38,10 @@ export enum EColumns {
 
 export const rowNames = [
   '',
-  'Score',
-  'Load',
-  'Delta %',
-  'Monotony',
+  'Wellness Score Total',
+  'Sessions Load Total',
+  '% Change From Last Week',
+  'Number of Sessions',
+  'Sessions Load Average',
   'ACWR',
-  'Sessions',
 ];

@@ -54,6 +54,7 @@ export class ScoresDataProvider {
     }
 
     let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
@@ -106,8 +107,8 @@ export class ScoresDataProvider {
     }
 
     let headers = this.defaultHeaders;
-    headers = headers.set('Accept', 'application/json');
     headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
 
     /* the member id from the supplied table is passed as a url parameter and is used to ensure the calling user either corresponds to that member id or is an admin user */
     const memberId = scores.memberId;

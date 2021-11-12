@@ -107,16 +107,19 @@ export class MemberSessionsComponent implements OnDestroy {
     { value: 9, label: '9' },
     { value: 10, label: '10' },
   ];
+
+  /* define the text info card */
+  line1 = '- RPE is the Rate of Perceived Exertion of the session';
+  line2 = '- Select from 0, for no exertion, to 10, for extreme exertion';
+  line3 = '';
+  line4 = '';
+  isGoBackVisible = false;
+
   form = new FormGroup({});
   model$!: Observable<ISessions>;
   model!: ISessions;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
-    {
-      template:
-        // eslint-disable-next-line max-len
-        '<div class="table-help">RPE is the Rate of Perceived Exertion of the session.<br>Select from 0, for no exertion, to 10, for extreme exertion</div>',
-    },
     {
       fieldGroup: [
         {

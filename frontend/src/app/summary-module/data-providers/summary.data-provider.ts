@@ -40,9 +40,9 @@ export class SummaryDataProvider {
   };
 
   /**
-   * Get summary data...
-   * * TO DO *
-   * @param memberId The member id of the member to whom the table belongs.
+   * Get the summary data for a member.
+   * The summary data is an array containing two elements containing scores and sessions summary data.  Both elements are themselves arrays containing summary items, which are weekly dates and totals.
+   * @param memberId The member id of the member to whom the summary date belongs.
    * @returns An observable returning the scores table retrieved or created.
    */
   public getSummaryData(
@@ -65,6 +65,7 @@ export class SummaryDataProvider {
     queryParameters = queryParameters.set('weeks', dateString);
 
     let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(

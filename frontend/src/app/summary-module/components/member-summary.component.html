@@ -1,7 +1,16 @@
+
+
 <div
   class="container mat-elevation-z8"
   *ngIf="!isChartShown"
 >
+
+<app-text-info
+  [line1]='summaryLine1'
+  [line2]='summaryLine2'
+  [isGoBackVisible]='isSummaryBackVisible'
+>
+</app-text-info>
 
   <mat-table
     id="summary-table"
@@ -62,9 +71,21 @@
 
 </div>
 
-<summary-chart
+<div
   *ngIf="isChartShown"
-  [metric]="rowName"
-  [data]="rowChartData"
->
-</summary-chart>
+  >
+
+  <app-text-info
+    [line1]='chartLine1'
+    [isGoBackVisible]='isChartBackVisible'
+    (backClicked)="onChartBackClicked()"
+  >
+  </app-text-info>
+
+  <summary-chart
+    [metric]="rowName"
+    [data]="rowChartData"
+  >
+  </summary-chart>
+
+</div>
