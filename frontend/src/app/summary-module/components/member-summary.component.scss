@@ -21,7 +21,6 @@ div.container {
   padding: 0px;
 }
 
-
 .mat-cell,
 .mat-header-cell {
   display: table-cell;
@@ -32,7 +31,6 @@ div.container {
 .mat-header-cell {
   border-bottom: 0.25px solid black;
   color: var(--primary-color-darker);
-  font-weight: bold;
 }
 
 @mixin mat-table-columns($columns) {
@@ -77,7 +75,6 @@ $numberSummaryColumns: 104;
 @include mat-table-columns(
   (wk0: (
     color: var(--primary-color-darker),
-    font-weight: bold,
   ))
 );
 

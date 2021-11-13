@@ -125,8 +125,7 @@ export class MemberScoresComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 =
-    '- Select 1 to 5, where 1 is the WORST feeling and 5 is the BEST feeling';
+  line1 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
   line2 = '- For example: High Stress is 1, and Low Stress is 5';
   line3 = '';
   line4 = '';
