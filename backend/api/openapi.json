@@ -817,7 +817,7 @@
         "type": "object",
         "properties": {
           "name": {
-            "$ref": "#/components/schemas/PositiveInteger"
+            "$ref": "#/components/schemas/Name"
           }
         },
         "description": "Member information without id field"
@@ -938,28 +938,20 @@
       "Summary": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/SummaryElement"
+          "$ref": "#/components/schemas/SummaryRow"
         }
       },
-      "SummaryElement": {
+      "SummaryRow": {
         "type": "array",
         "items": {
-          "$ref": "#/components/schemas/SummaryItem"
-        }
-      },
-      "SummaryItem": {
-        "required": [
-          "date",
-          "total"
-        ],
-        "type": "object",
-        "properties": {
-          "date": {
-            "$ref": "#/components/schemas/Object"
-          },
-          "total": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          }
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
         }
       },
       "DateString": {

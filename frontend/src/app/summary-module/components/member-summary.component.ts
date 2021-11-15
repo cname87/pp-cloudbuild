@@ -45,8 +45,9 @@ export class MemberSummaryComponent
   isSummaryBackVisible = false;
 
   /* define the chart table text info card */
-  chartLine1 = '- Scroll left to see previous weeks';
-  chartLine2 = '- Click Back to return to the Summary Table';
+  chartLine1 = '- This is a bar chart of the row you clicked';
+  chartLine2 = '- Scroll left to see previous weeks';
+  chartLine3 = '- Click Back to return to the Summary Table';
   isChartBackVisible = true;
   onChartBackClicked = () => {
     this.#clearChart();
@@ -146,6 +147,7 @@ export class MemberSummaryComponent
   clickRow = (rowData: TValueData): void => {
     this.rowChartData = this.#getChartData(rowData);
     this.rowName = rowData[EColumns.Names];
+    this.chartLine1 = `This is a bar chart of the ${this.rowName.toUpperCase()} metric`;
     this.isChartShown = true;
   };
 

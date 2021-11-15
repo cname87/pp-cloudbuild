@@ -19,15 +19,15 @@ export interface ISummaryItem {
   total: number;
 }
 
-/* identify row numbers */
+export interface ISessionsSummaryItem extends ISummaryItem {
+  count: number;
+  average: number;
+  stdDev: number;
+}
+
+/* identify date row number */
 export enum ERowNumbers {
   'Date' = 0,
-  'Score' = 1,
-  'Load' = 2,
-  'Delta' = 3,
-  'Monotony' = 4,
-  'ACWR' = 5,
-  'Sessions' = 6,
 }
 
 /* identify names and first data column numbers */
@@ -35,13 +35,3 @@ export enum EColumns {
   'Names' = 0,
   'FirstData' = 1,
 }
-
-export const rowNames = [
-  '',
-  'Wellness Score Total',
-  'Sessions Load Total',
-  '% Change From Last Week',
-  'Number of Sessions',
-  'Sessions Load Average',
-  'ACWR',
-];

@@ -241,7 +241,7 @@ const createDbCollectionConnection = (
   const { dbConnection } = req.app.appLocals;
   if (
     !dbConnection ||
-    dbConnection.readyState !== Perform.DbReadyState.Connected
+    dbConnection.readyState !== Perform.EDbReadyState.Connected
   ) {
     console.error(`${modulename}: Database not connected`);
     const errDb: Perform.IErr = {

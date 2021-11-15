@@ -5,40 +5,12 @@
 /* Select the database to use */
 use('test');
 
-// db['project-perform_sessions'].find();
-
-const model = 'project-perform_scores';
+const model = 'project-perform_sessions';
 const memberId = 3;
 const weeks = 52;
 const retrieveDays = new Date(
   new Date().setDate(new Date().getDate() - 7 * weeks),
 );
-
-  // const aggregation = [
-  //   /* select the specific member */
-  //   { $match: { memberId: memberId } },
-  //   /* select all tables in the last requested number of weeks */
-  //   { $match: { date: { $gt: retrieveDays } } },
-  //   /* sort by date ascending */
-  //   { $sort: { date: 1 } },
-  //   /* sum the products of rep and duration of each session */
-  //   { $project: {
-  //       _id: 0,
-  //       date: 1,
-  //       total: {
-  //           $sum: {
-  //               $map: {
-  //                   input: '$sessions',
-  //                   as: 'session',
-  //                   in: { $multiply: [
-  //                       { $ifNull: [ '$$session.rpe', 0 ] },
-  //                       { $ifNull: [ "$$session.duration", 0 ] },
-  //                   ]},
-  //               },
-  //           },
-  //       },
-  //   }},
-  // ];
 
 
   const aggregation = [
@@ -48,90 +20,137 @@ const retrieveDays = new Date(
     { $match: { date: { $gt: retrieveDays } } },
     /* sort by date ascending */
     { $sort: { date: 1 } },
-    { $project: {
+    /* add extra fields to each document */
+    {
+      $project: {
         _id: 0,
         date: 1,
+        /* sum of the product of rpe and duration (load) for all sessions */
         total: {
-          /* sum the output of the calculation on each array element */
-            $sum: {
-              /* iterate over each element in the scores array and for each element output a sum of all scores in that element */
-                $map: {
-                    input: '$scores',
-                    as: 'score',
-                    in: { $sum: [
-                        { $ifNull: [ '$$score.monday', 0 ] },
-                        { $ifNull: [ "$$score.tuesday", 0 ] },
-                        { $ifNull: [ '$$score.wednesday', 0 ] },
-                        { $ifNull: [ '$$score.thursday', 0 ] },
-                        { $ifNull: [ '$$score.friday', 0 ] },
-                        { $ifNull: [ "$$score.saturday", 0 ] },
-                        { $ifNull: [ '$$score.sunday', 0 ] },
-                    ]},
-                },
+          $sum: {
+            $map: {
+              input: '$sessions',
+              as: 'session',
+              in: {
+                $multiply: [
+                  { $ifNull: ['$$session.rpe', 0] },
+                  { $ifNull: ['$$session.duration', 0] },
+                ],
+              },
             },
+          },
         },
-    }},
-
-    // {
-    //   $project: {
-    //     _id: 0,
-    //     date: 1,
-    //     totalMonday: { $sum: '$scores.monday' },
-    //     totalTuesday: { $sum: '$scores.tuesday' },
-    //     totalWednesday: { $sum: '$scores.wednesday' },
-    //     totalThursday: { $sum: '$scores.thursday' },
-    //     totalFriday: { $sum: '$scores.friday' },
-    //     totalSaturday: { $sum: '$scores.saturday' },
-    //     totalSunday: { $sum: '$scores.sunday' },
-    //   },
-    // },
-    // {
-    //   $project: {
-    //     date: 1,
-    //     total: {
-    //       $sum: [
-    //         '$totalMonday',
-    //         '$totalTuesday',
-    //         '$totalWednesday',
-    //         '$totalThursday',
-    //         '$totalFriday',
-    //         '$totalSaturday',
-    //         '$totalSunday',
-    //       ],
-    //     },
-    //   },
-    // },
+        /* count of the number of non-zero sessions */
+        count: {
+          $sum: {
+            $map: {
+              input: '$sessions',
+              as: 'session',
+              in: {
+                $cond: {
+                  if: {
+                    $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+        },
+        /* standard deviation of the load of all non-zero sessions */
+        average: {
+          $round: [
+            {
+              $avg: {
+                $map: {
+                  input: '$sessions',
+                  as: 'session',
+                  in: {
+                    $cond: {
+                      if: {
+                        $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                      },
+                      then: {
+                        $multiply: [
+                          { $ifNull: ['$$session.rpe', 0] },
+                          { $ifNull: ['$$session.duration', 0] },
+                        ],
+                      },
+                      else: null,
+                    },
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+        /* standard deviation of the load of all non-zero sessions */
+        stdDev: {
+          $round: [
+            {
+              $stdDevPop: {
+                $map: {
+                  input: '$sessions',
+                  as: 'session',
+                  in: {
+                    $cond: {
+                      if: {
+                        $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                      },
+                      then: {
+                        $multiply: [
+                          { $ifNull: ['$$session.rpe', 0] },
+                          { $ifNull: ['$$session.duration', 0] },
+                        ],
+                      },
+                      else: null,
+                    },
+                  },
+                },
+              },
+            },
+            0,
+          ],
+        },
+      },
+    },
   ];
+
+  // const aggregation = [
+  //   /* select the specific member */
+  //   { $match: { memberId: memberId } },
+  //   /* select all tables in the last requested number of weeks */
+  //   { $match: { date: { $gt: retrieveDays } } },
+  //   /* sort by date ascending */
+  //   { $sort: { date: 1 } },
+  //   { $project: {
+  //       _id: 0,
+  //       date: 1,
+  //       total: {
+  //         /* sum the output of the calculation on each array element */
+  //           $sum: {
+  //             /* iterate over each element in the scores array and for each element output a sum of all scores in that element */
+  //               $map: {
+  //                   input: '$scores',
+  //                   as: 'score',
+  //                   in: { $sum: [
+  //                       { $ifNull: [ '$$score.monday', 0 ] },
+  //                       { $ifNull: [ "$$score.tuesday", 0 ] },
+  //                       { $ifNull: [ '$$score.wednesday', 0 ] },
+  //                       { $ifNull: [ '$$score.thursday', 0 ] },
+  //                       { $ifNull: [ '$$score.friday', 0 ] },
+  //                       { $ifNull: [ "$$score.saturday", 0 ] },
+  //                       { $ifNull: [ '$$score.sunday', 0 ] },
+  //                   ]},
+  //               },
+  //           },
+  //       },
+  //   }},
+  // ];
 
 // Run the aggregation and open a cursor to the results.
 // Use toArray() to exhaust the cursor to return the whole result set.
 // You can use hasNext()/next() to iterate through the cursor page by page.
 db.[model].aggregate(aggregation)
-
-
-// The drop() command destroys all data from a collection.
-// Make sure you run it against the correct database and collection.
-// db.sales.drop();
-
-// Insert a few documents into the sales collection.
-// db.sales.insertMany([
-//   { '_id': 1, 'item': 'abc', 'price': 10, 'quantity': 2, 'date': new Date('2014-03-01T08:00:00Z') },
-//   { '_id': 2, 'item': 'jkl', 'price': 20, 'quantity': 1, 'date': new Date('2014-03-01T09:00:00Z') },
-//   { '_id': 3, 'item': 'xyz', 'price': 5, 'quantity': 10, 'date': new Date('2014-03-15T09:00:00Z') },
-//   { '_id': 4, 'item': 'xyz', 'price': 5, 'quantity':  20, 'date': new Date('2014-04-04T11:21:39.736Z') },
-//   { '_id': 5, 'item': 'abc', 'price': 10, 'quantity': 10, 'date': new Date('2014-04-04T21:23:13.331Z') },
-//   { '_id': 6, 'item': 'def', 'price': 7.5, 'quantity': 5, 'date': new Date('2015-06-04T05:08:13Z') },
-//   { '_id': 7, 'item': 'def', 'price': 7.5, 'quantity': 10, 'date': new Date('2015-09-10T08:43:00Z') },
-//   { '_id': 8, 'item': 'abc', 'price': 10, 'quantity': 5, 'date': new Date('2016-02-06T20:20:13Z') },
-// ]);
-
-// Build an aggregation to view total sales for each product in 2014.
-// const aggregation = [
-//   { $match: { date: { $gte: new Date('2014-01-01'), $lt: new Date('2015-01-01') } } },
-//   { $group: { _id: '$item', totalSaleAmount: { $sum: { $multiply: [ '$price', '$quantity' ] } } } }
-// ];
-
-// Run the aggregation and open a cursor to the results.
-// Use toArray() to exhaust the cursor to return the whole result set.
-// You can use hasNext()/next() to iterate through the cursor page by page.
-// db.sales.aggregate(aggregation);

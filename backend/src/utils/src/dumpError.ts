@@ -26,10 +26,10 @@ const { modulename } = setupDebug(__filename);
 
 class DumpError {
   /* holds the singleton instance */
-  public static instance: Perform.DumpErrorFunction;
+  public static instance: Perform.TDumpErrorFunction;
 
   /* the function that dumps the error */
-  public static dump: Perform.DumpErrorFunction;
+  public static dump: Perform.TDumpErrorFunction;
 
   /* instantiates if necessary and sets dump to console.error */
   public constructor() {

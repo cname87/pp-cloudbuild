@@ -25,3 +25,19 @@ export const databaseUnavailable = (
   };
   return reject(errDb);
 };
+
+/**
+ * @returns Returns the Sunday that is equal or prior to today. The date is returned as a Date object.
+ */
+export const getLastSunday = (): Date => {
+  let lastSunday = new Date();
+  /* get last Sunday */
+  lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());
+  /* remove hours, minutes and seconds */
+  lastSunday = new Date(lastSunday.toDateString());
+  /* move by the local time offset to move the UTC value to 00:00 on the Sunday */
+  lastSunday = new Date(
+    lastSunday.getTime() - lastSunday.getTimezoneOffset() * 60 * 1000,
+  );
+  return lastSunday;
+};

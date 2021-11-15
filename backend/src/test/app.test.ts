@@ -29,7 +29,7 @@ describe('the application', () => {
   const appPath = '../app';
 
   /* internal dumpError utility */
-  const dumpError = new DumpError() as Perform.DumpErrorFunction;
+  const dumpError = new DumpError() as Perform.TDumpErrorFunction;
 
   let app: any = {};
   let runIndex: (extraOptions?: Record<string, unknown>) => void;

@@ -21,7 +21,7 @@ enum AMPM {
   PM = 'PM',
 }
 /**
- * This service handles all communication with the server. It implements all the function to create/get or update a weekly sessions table on the server.
+ * This service handles all communication with the server. It implements all the function to create/get or update a weekly sessions table on the backend.
  */
 @Injectable({
   providedIn: 'root',

@@ -8,7 +8,7 @@ import { setupDebug } from '../../utils/src/debugOutput';
 /* Output header and set up the debug function */
 const { modulename, debug } = setupDebug(__filename);
 
-function createModel(database: Perform.Database): Model<Document> {
+function createModel(database: Perform.TDatabase): Model<Document> {
   debug(`${modulename}: running createModel`);
 
   /* Set up schema, collection, and model name */

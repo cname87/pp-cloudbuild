@@ -119,6 +119,7 @@ export class MembersListComponent implements OnInit, OnDestroy {
           .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
           .subscribe((_count) => {
             this.members$ = this.getMembers();
+            return this.members$;
           }),
       );
     }

@@ -56,7 +56,7 @@ export class RequestCacheService {
       request.method === 'GET' &&
       this._memberRegex.test(request.urlWithParams) &&
       /**
-       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page
+       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page. (So I am returning undefined i.e. a cache miss) now.
        */
       false
     ) {
@@ -99,7 +99,7 @@ export class RequestCacheService {
         }
         /* set member cache */
         if (this._memberRegex.test(request.urlWithParams)) {
-          this.memberCache.setGetAll(response);
+          this.memberCache.setGetOne(response);
         }
         /* don't set any cache for any other GET */
         break;
@@ -110,8 +110,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPostOne(response);
         } else {
-          /* clear the memberCache */
-          this.clearCache(this.memberCache);
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }
@@ -121,8 +121,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPutOne(response);
         } else {
-          /* clear the memberCache */
-          this.clearCache(this.memberCache);
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }
@@ -130,12 +130,16 @@ export class RequestCacheService {
       case 'DELETE': {
         /* set members cache i.e. delete a member */
         const id = +request.urlWithParams.slice(this._members.length + 1);
-        if (request.urlWithParams === this._members && id && !isNaN(id)) {
+        if (
+          id &&
+          !isNaN(id) &&
+          request.urlWithParams === this._members + `/${id}`
+        ) {
           /* if id != 0 and is a number */
           this.membersCache.setDeleteOne(request);
         } else {
-          /* clear the memberCache */
-          this.clearCache(this.memberCache);
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }

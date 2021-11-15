@@ -29,7 +29,6 @@ export class SessionsService {
     this.logger.trace(`${SessionsService.name}: #catchError called`);
     /* error message displayed to the user for all update fails */
     const toastrMessage = 'A table update error has occurred';
-    this.logger.trace(`${SessionsService.name}: #catchError called`);
     this.logger.trace(`${SessionsService.name}: Displaying a toastr message`);
     this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${SessionsService.name}: Throwing the error on`);

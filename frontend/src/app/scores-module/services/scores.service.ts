@@ -29,7 +29,6 @@ export class ScoresService {
     this.logger.trace(`${ScoresService.name}: #catchError called`);
     /* error message displayed to the user for all update fails */
     const toastrMessage = 'A table update error has occurred';
-    this.logger.trace(`${ScoresService.name}: #catchError called`);
     this.logger.trace(`${ScoresService.name}: Displaying a toastr message`);
     this.toastr.error('ERROR!', toastrMessage);
     this.logger.trace(`${ScoresService.name}: Throwing the error on`);

@@ -33,7 +33,7 @@ export const addMember = (
 
   membersHandlers
     .addMember(req, body as bodyNoId)
-    .then((payload) => {
+    .then((payload: Perform.IMember) => {
       miscHandlers.writeJson(context, req, res, next, 201, payload);
     })
     .catch((err) => {
@@ -60,7 +60,7 @@ export const getMember = (
 
   membersHandlers
     .getMember(req, mid)
-    .then((payload) => {
+    .then((payload: Perform.IMember) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
@@ -87,7 +87,7 @@ export const getMembers = (
 
   membersHandlers
     .getMembers(req, queryString)
-    .then((payload) => {
+    .then((payload: Perform.IMember[]) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
@@ -114,7 +114,7 @@ export const updateMember = (
 
   membersHandlers
     .updateMember(req, body as bodyWithId)
-    .then((payload) => {
+    .then((payload: Perform.IMember) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
     .catch((err) => {
@@ -142,7 +142,7 @@ export const deleteMember = (
   membersHandlers
 
     .deleteMember(req, mid)
-    .then((number) => {
+    .then((number: number) => {
       const payload = { count: number };
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })

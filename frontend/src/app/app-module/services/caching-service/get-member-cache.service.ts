@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { IMember } from '../../models/models';
 
 /**
- * This service provides a cache holding the response to a get one member request that matches the content of the server.  The stored response is cleared if ever a member request other than a GET request is sent.  This cache is triggered by a http interceptor so get all get member requests are served out of cache, if there is a hot, rather than incurring a server request.
+ * This service provides a cache holding the response to a get one member request that matches the content of the server.  The stored response is cleared if ever a member request other than a GET request is sent.  This cache is triggered by a http interceptor so get all get member requests are served out of cache, if there is a hit, rather than incurring a server request.
  */
 
 @Injectable({ providedIn: 'root' })
@@ -37,7 +37,7 @@ export class GetMemberCache {
    * @param getMemberResponse
    * - The response from an earlier get member request.
    */
-  setGetAll(getMemberResponse: HttpResponse<IMember>) {
+  setGetOne(getMemberResponse: HttpResponse<IMember>) {
     this.logger.trace(
       `${GetMemberCache.name}: putting ${JSON.stringify(
         getMemberResponse.body,

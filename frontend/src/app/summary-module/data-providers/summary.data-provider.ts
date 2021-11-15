@@ -6,7 +6,7 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
-import { ISummaryItem } from '../models/summary-models';
+import { TSummary } from '../models/summary-models';
 
 /**
  * This service handles all communication from the summary component to the server.
@@ -48,7 +48,7 @@ export class SummaryDataProvider {
   public getSummaryData(
     memberId: number,
     numberWeeks: number,
-  ): Observable<Array<ISummaryItem[]>> {
+  ): Observable<TSummary> {
     this.logger.trace(`${SummaryDataProvider.name}: getSummaryData called`);
 
     if (!memberId || !numberWeeks) {
@@ -74,7 +74,7 @@ export class SummaryDataProvider {
     );
 
     return this.httpClient
-      .get<Array<ISummaryItem[]>>(
+      .get<TSummary>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.summaryPath
         }`,
@@ -85,7 +85,7 @@ export class SummaryDataProvider {
         },
       )
       .pipe(
-        tap((data: Array<ISummaryItem[]>) => {
+        tap((data: TSummary) => {
           this.logger.trace(
             `${SummaryDataProvider.name}: Received response: ${JSON.stringify(
               data,

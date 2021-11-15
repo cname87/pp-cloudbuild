@@ -15,7 +15,7 @@ const { modulename, debug } = setupDebug(__filename);
 type TStartServer = (
   app: express.Application,
   servers: Server[],
-  dumpError: Perform.DumpErrorFunction,
+  dumpError: Perform.TDumpErrorFunction,
 ) => Promise<void>;
 
 /**
@@ -33,7 +33,7 @@ type TStartServer = (
 const startServer: TStartServer = async (
   app: express.Application,
   servers: Server[],
-  dumpError: Perform.DumpErrorFunction,
+  dumpError: Perform.TDumpErrorFunction,
 ) => {
   debug(`${modulename}: running startServer`);
 

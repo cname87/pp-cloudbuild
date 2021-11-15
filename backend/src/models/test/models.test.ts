@@ -18,7 +18,7 @@ const { expect } = chai;
 describe('Database models operations', () => {
   debug(`Running ${modulename} describe - Database models operation`);
 
-  let database: Perform.Database;
+  let database: Perform.TDatabase;
   interface ITestModel {
     id: number;
     name: string;

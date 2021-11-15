@@ -62,7 +62,7 @@ const { modulename, debug } = setupDebug(__filename);
 const sleep = util.promisify(setTimeout);
 
 /* Create the single instances of the dumpError utility.  This is used in this module and also passed via the appLocals object. (Other modules can create a new instance later and they will receive the same instance). */
-const dumpError = new DumpError() as Perform.DumpErrorFunction;
+const dumpError = new DumpError() as Perform.TDumpErrorFunction;
 
 /**
  * An object is created to be added to the express app object containing objects and variables needed across requests.
@@ -112,7 +112,7 @@ const createStore = (): Perform.IAppLocals => {
       scores: {} as any as Perform.IModelExtended,
     },
     /* database - filled during database startup */
-    database: {} as any as Perform.Database,
+    database: {} as any as Perform.TDatabase,
     /* dbConnection is filled during database startup */
     dbConnection: {} as any as Connection,
   };
@@ -172,17 +172,17 @@ process.once('unhandledRejection', unhandledRejection);
 
  */
 const storeDatabase = async (store: {
-  database: Perform.Database;
+  database: Perform.TDatabase;
   dbConnection: Connection;
   models: Perform.IModels;
-  dumpError: Perform.DumpErrorFunction;
+  dumpError: Perform.TDumpErrorFunction;
 }) => {
   debug(`${modulename}: calling storeDatabase`);
 
   /* Check if a valid connection exists and, if so, exit */
   if (
     store.dbConnection &&
-    store.dbConnection.readyState === Perform.DbReadyState.Connected
+    store.dbConnection.readyState === Perform.EDbReadyState.Connected
   ) {
     return;
   }
@@ -197,7 +197,7 @@ const storeDatabase = async (store: {
           `${modulename}: database.closeConnection error - ignoring and continuing`,
         );
       }
-      store.database = {} as any as Perform.Database;
+      store.database = {} as any as Perform.TDatabase;
       store.dbConnection = {} as any as Connection;
     }
 
@@ -270,7 +270,7 @@ const storeDatabase = async (store: {
  */
 
 const storeServer = async (store: {
-  servers: Perform.Server[];
+  servers: Perform.TServer[];
   controllers: Perform.IControllers;
   handlers: Perform.IHandlers;
   event: EventEmitter;
@@ -278,7 +278,7 @@ const storeServer = async (store: {
   debug(`${modulename}: calling storeServer`);
 
   /* holds connected servers */
-  const servers: Perform.Server[] = [];
+  const servers: Perform.TServer[] = [];
   await startServer(
     app,
     servers, // filled with connected server on return
@@ -317,8 +317,8 @@ async function runApp(store: Perform.IAppLocals) {
 
   /* try connect to database until successful */
   console.info('\n*** STARTING THE DATABASE ***\n');
-  let isDbReady = Perform.DbReadyState.Disconnected;
-  while (isDbReady !== Perform.DbReadyState.Connected) {
+  let isDbReady = Perform.EDbReadyState.Disconnected;
+  while (isDbReady !== Perform.EDbReadyState.Connected) {
     /* starts database and stores database and connection in store */
     await storeDatabase(store);
     if (!store.dbConnection.readyState) {
@@ -401,8 +401,8 @@ const sigint: Perform.TSigint = async (signal = 'Internal Shutdown') => {
  * @param database Created database instance.
  */
 async function closeAll(
-  servers: Perform.Server[] = appLocals.servers,
-  database: Perform.Database = appLocals.database,
+  servers: Perform.TServer[] = appLocals.servers,
+  database: Perform.TDatabase = appLocals.database,
 ) {
   try {
     debug(`${modulename}: closing connections...`);

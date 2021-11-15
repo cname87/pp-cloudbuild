@@ -87,7 +87,7 @@ describe('startDatabase', () => {
       debug('test for an open database connection');
       database.dbConnection
         ? expect(database.dbConnection.readyState).to.eql(
-            Perform.DbReadyState.Connected,
+            Perform.EDbReadyState.Connected,
           )
         : expect.fail('no dbConnection object returned');
 

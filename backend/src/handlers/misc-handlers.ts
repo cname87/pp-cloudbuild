@@ -101,17 +101,15 @@ const writeJson = (
   payload?:
     | Perform.IMember
     | Perform.IMember[]
-    | Perform.ISession
-    | Perform.ISession[]
-    | Perform.ISessions
+    | { count: number }
     | Perform.IScores
-    | Perform.IScores[]
-    | Perform.TSummary[]
-    | Record<string, unknown>,
+    | Perform.ISessions
+    | Summary.TSummary
+    | { isTestDatabase: boolean },
 ): void => {
   debug(`${modulename}: running writeJson`);
 
-  /* validate the pore-serialized payload */
+  /* validate the pre-serialized payload */
   const validationResult = isResponseValid(context, payload, code);
 
   if (!validationResult.valid) {

@@ -10,7 +10,7 @@ import { setupDebug } from '../utils/src/debugOutput';
 
 const { modulename, debug } = setupDebug(__filename);
 
-enum ScoreType {
+const enum ScoreType {
   Sleep = 'SLEEP',
   Fatigue = 'FATIGUE',
   Soreness = 'SORENESS',

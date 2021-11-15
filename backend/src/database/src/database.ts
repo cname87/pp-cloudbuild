@@ -42,7 +42,7 @@ const { modulename, debug } = setupDebug(__filename);
 async function connectToDb(
   uri: string,
   options: ConnectionOptions,
-  dumpError: Perform.DumpErrorFunction = console.error,
+  dumpError: Perform.TDumpErrorFunction = console.error,
 ): Promise<Connection> {
   debug(`${modulename}: running connectToDb`);
 
@@ -190,7 +190,7 @@ class Database {
   constructor(
     protected connectionUrl: string,
     protected connectionOptions: ConnectionOptions,
-    protected dumpError: Perform.DumpErrorFunction = console.error,
+    protected dumpError: Perform.TDumpErrorFunction = console.error,
   ) {
     /* Get a promise to the database */
     this.dbConnectionPromise = connectToDb(

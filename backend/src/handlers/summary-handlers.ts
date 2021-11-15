@@ -1,6 +1,6 @@
 /**
- * Holds all handlers for the scores table objects.
- * Called by functions in scores-api.ts.
+ * Holds all handlers for the summary table objects.
+ * Called by functions in summary-api.ts.
  */
 
 import { Request } from 'express';
@@ -31,7 +31,7 @@ const getScoresSummary = (
   req: Request,
   memberId: number,
   weeks: number,
-): Promise<Perform.TSummary> => {
+): Promise<Summary.TScoresSummaryItems> => {
   debug(`${modulename}: running getScoresSummary`);
 
   const retrieveDays = new Date(
@@ -49,7 +49,7 @@ const getScoresSummary = (
       $project: {
         _id: 0,
         date: 1,
-        total: {
+        scoresTotal: {
           /* sum the output of the calculation on each array element */
           $sum: {
             /* iterate over each element in the scores array and for each element output a sum of all scores in that element */
@@ -84,7 +84,7 @@ const getScoresSummary = (
       .then((summary) => {
         /* return error if no summary returned found */
         if (!summary) {
-          console.error(`${modulename}: getSummary returned no summary`);
+          console.error(`${modulename}: getScoresSummary returned no summary`);
           const errNotFound: Perform.IErr = {
             name: 'DATABASE_NOT_FOUND',
             message: 'No summary returned',
@@ -95,7 +95,7 @@ const getScoresSummary = (
         }
 
         /* return summary object */
-        return resolve(summary as Perform.TSummary);
+        return resolve(summary as Summary.TScoresSummaryItems);
       })
       .catch((err: any) => {
         errFunction(err, req, reject);
@@ -115,7 +115,7 @@ const getSessionsSummary = (
   req: Request,
   memberId: number,
   weeks: number,
-): Promise<Perform.TSummary> => {
+): Promise<Summary.TSessionsSummaryItems> => {
   debug(`${modulename}: running getSessionsSummary`);
 
   const retrieveDays = new Date(
@@ -129,15 +129,14 @@ const getSessionsSummary = (
     { $match: { date: { $gt: retrieveDays } } },
     /* sort by date ascending */
     { $sort: { date: 1 } },
-    /* sum the products of rep and duration of each session */
+    /* add extra fields to each document */
     {
       $project: {
         _id: 0,
         date: 1,
-        total: {
-          /* sum the output of the calculation on each array element */
+        /* sum of the product of rpe and duration (load) for all sessions */
+        sessionsTotal: {
           $sum: {
-            /* iterate over each element in the sessions array and for each element output the product of rpe and duration for that element */
             $map: {
               input: '$sessions',
               as: 'session',
@@ -149,6 +148,92 @@ const getSessionsSummary = (
               },
             },
           },
+        },
+        /* count of the number of non-zero sessions */
+        count: {
+          $sum: {
+            $map: {
+              input: '$sessions',
+              as: 'session',
+              in: {
+                $cond: {
+                  if: {
+                    $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                  },
+                  then: 1,
+                  else: 0,
+                },
+              },
+            },
+          },
+        },
+        /* average of the load of all non-zero duration sessions */
+        average: {
+          /* return 0, and not null, if no non-zro sessions */
+          $ifNull: [
+            {
+              $round: [
+                {
+                  $avg: {
+                    $map: {
+                      input: '$sessions',
+                      as: 'session',
+                      in: {
+                        $cond: {
+                          if: {
+                            $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                          },
+                          then: {
+                            $multiply: [
+                              { $ifNull: ['$$session.rpe', 0] },
+                              { $ifNull: ['$$session.duration', 0] },
+                            ],
+                          },
+                          else: null,
+                        },
+                      },
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+            0,
+          ],
+        },
+        /* standard deviation of the load of all non-zero duration sessions */
+        stdDev: {
+          /* return 0, and not null, if no non-zro sessions */
+          $ifNull: [
+            {
+              $round: [
+                {
+                  $stdDevPop: {
+                    $map: {
+                      input: '$sessions',
+                      as: 'session',
+                      in: {
+                        $cond: {
+                          if: {
+                            $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
+                          },
+                          then: {
+                            $multiply: [
+                              { $ifNull: ['$$session.rpe', 0] },
+                              { $ifNull: ['$$session.duration', 0] },
+                            ],
+                          },
+                          else: null,
+                        },
+                      },
+                    },
+                  },
+                },
+                0,
+              ],
+            },
+            0,
+          ],
         },
       },
     },
@@ -177,7 +262,7 @@ const getSessionsSummary = (
         }
 
         /* return summary object */
-        return resolve(summary as Perform.TSummary);
+        return resolve(summary as Summary.TSessionsSummaryItems);
       })
       .catch((err: any) => {
         errFunction(err, req, reject);
@@ -198,7 +283,7 @@ const getSummary = (
   req: Request,
   memberId: number,
   weeks: number,
-): Promise<Array<Perform.TSummary>> => {
+): Promise<[Summary.TScoresSummaryItems, Summary.TSessionsSummaryItems]> => {
   debug(`${modulename}: running getSummary`);
   return Promise.all([
     getScoresSummary(req, memberId, weeks),
@@ -207,7 +292,5 @@ const getSummary = (
 };
 
 export const summaryHandlers = {
-  getScoresSummary,
-  getSessionsSummary,
   getSummary,
 };

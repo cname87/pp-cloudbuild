@@ -1,6 +1,6 @@
 /**
  * Holds all members handlers e.g. getMember.
- * Called by functions in sessions-api.ts.
+ * Called by functions in members-api.ts.
  */
 
 import { Document } from 'mongoose';
@@ -106,7 +106,7 @@ const getMember = (
 const getMembers = (
   req: Request,
   matchString = '',
-): Promise<[Perform.IMember]> => {
+): Promise<Perform.IMember[]> => {
   debug(`${modulename}: running getMembers`);
 
   const modelMembers = req.app.appLocals.models.members;
