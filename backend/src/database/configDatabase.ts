@@ -8,9 +8,8 @@
  * Note: The paths to some files (e.g. certs) rely on process.cwd being equal to the backend root directory.
  */
 
-import { ConnectionOptions } from 'mongoose';
+import mongoose from 'mongoose';
 import { format } from 'util';
-import fs from 'fs';
 import { resolve } from 'path';
 import { setupDebug } from '../utils/src/debugOutput';
 
@@ -75,13 +74,13 @@ export const configDatabase = {
   /**
    * This method returns the options parameter used in Mongoose.createConnection(uri, options) function that connects to a MongoDB database server.
    */
-  getConnectionOptions: (): ConnectionOptions => {
+  getConnectionOptions: (): mongoose.ConnectOptions => {
     /* Read the certificate authority */
     const ROOT_CA = resolve('certs', 'database', 'rootCA.crt');
-    const ca = [fs.readFileSync(ROOT_CA)];
+    const ca = ROOT_CA;
     /* Read the private key and public cert (both stored in the same file) */
     const HTTPS_KEY = resolve('certs', 'database', 'mongoKeyAndCert.pem');
-    const key = fs.readFileSync(HTTPS_KEY);
+    const key: any = HTTPS_KEY;
     const cert = key;
     /* The cloud Atlas server does not support certificate validation (i.e. the node server confirming a cert returned from the mongodb server).  This ued to work on a local mongodb server (so I used to set sslValidate = process.env.DB_IS_LOCAL === 'true'; but this stopped working and I simply set to false.  I could troubleshoot but I am not sure it bsi supported and it adds no value. */
     const sslValidate = false;
@@ -93,20 +92,11 @@ export const configDatabase = {
       sslValidate,
       /* set false if you have a large database and are changing indexes as could result in a slow start up - not a problem for a small database and impact is on only on startup*/
       autoIndex: true,
-      /* Don't buffer commands if not connected, i.e. return error immediately */
-      bufferMaxEntries: 0,
-      /* Next 4 prevent mongoose deprecation warnings */
-      useNewUrlParser: true,
-      useFindAndModify: false,
-      useCreateIndex: true,
-      useUnifiedTopology: true,
-      poolSize: 10, // default = 5
       keepAlive: true, // default true
       keepAliveInitialDelay: 300000, // default 300000
       socketTimeoutMS: 0, // default 360000
-      appname: 'perform',
+      appName: 'perform',
       loggerLevel: 'error', // default 'error'
-      validateOptions: true,
     };
   },
 

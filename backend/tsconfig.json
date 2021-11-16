@@ -3,7 +3,7 @@
     "./src/**/*.ts",
   ],
   "exclude": [
-    "./utils-build", // only needed by npm scripts using ts-node
+    // "./utils-build", // only needed by npm scripts using ts-node
     "./src/test/client-static", // no ts files in client-static
   ],
 
@@ -17,13 +17,13 @@
     "rootDir": ".",
 
     /* target and lib */
-    "target": "esnext",  // Compiles to this JS version - higher for better debug support, lower for wider browser support
+    "target": "ESNext",  // Compiles to this JS version - higher for better debug support, lower for wider browser support
     "lib": [
       "dom" // needed for puppeteer
     ], // for browser-side scripts - extra types which you know browser will support
 
     /* module option */
-    "module": "commonjs",  // module loader format (independent of target) commonjs for node
+    "module": "CommonJS",  // module loader format (independent of target) commonjs for node
 
     /* All other compiler options */
     "allowJs": true,

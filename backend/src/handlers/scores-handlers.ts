@@ -144,7 +144,7 @@ const getOrCreateScores = async (
           debug(`${modulename}: no scores object found`);
         }
         /* convert Mongoose document to object */
-        const docObject = doc?.toObject() as Perform.IScores;
+        const docObject = doc?.toObject() as unknown as Perform.IScores;
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -225,7 +225,7 @@ const updateScores = (
           return reject(errNotFound);
         }
         /* convert document to object */
-        const docObject = doc?.toObject() as Perform.IScores;
+        const docObject = doc?.toObject() as unknown as Perform.IScores;
         return resolve(docObject);
       })
       .catch((err: any) => {

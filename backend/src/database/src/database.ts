@@ -16,7 +16,6 @@
 
 import mongoose, {
   Connection,
-  ConnectionOptions,
   Document,
   Model,
   Schema,
@@ -41,7 +40,7 @@ const { modulename, debug } = setupDebug(__filename);
  */
 async function connectToDb(
   uri: string,
-  options: ConnectionOptions,
+  options: mongoose.ConnectOptions,
   dumpError: Perform.TDumpErrorFunction = console.error,
 ): Promise<Connection> {
   debug(`${modulename}: running connectToDb`);
@@ -49,7 +48,9 @@ async function connectToDb(
   try {
     debug(`${modulename}: trying to connect to the database server`);
 
-    const dbConnection = await mongoose.createConnection(uri, options);
+    const dbConnection = await mongoose
+      .createConnection(uri, options)
+      .asPromise();
 
     /* Disable buffering commands for all models so an error is thrown immediately when a connection goes down */
     mongoose.set('bufferCommands', false);
@@ -189,7 +190,7 @@ class Database {
    * - a dumperror function may be provided */
   constructor(
     protected connectionUrl: string,
-    protected connectionOptions: ConnectionOptions,
+    protected connectionOptions: mongoose.ConnectOptions,
     protected dumpError: Perform.TDumpErrorFunction = console.error,
   ) {
     /* Get a promise to the database */

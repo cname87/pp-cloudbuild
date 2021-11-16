@@ -84,7 +84,7 @@ const getMember = (
           return reject(errNotFound);
         }
         /* strip down to member object and return */
-        return resolve(doc.toObject() as Perform.IMember);
+        return resolve(doc.toObject() as unknown as Perform.IMember);
       })
       .catch((err) => {
         /* report a general database unavailable error */
@@ -175,7 +175,7 @@ const updateMember = (
           return reject(errNotFound);
         }
         /* return new member object */
-        resolve(doc.toObject() as Perform.IMember);
+        resolve(doc.toObject() as unknown as Perform.IMember);
       })
       .catch((err) => {
         /* report a general database unavailable error */
@@ -204,7 +204,7 @@ const deleteMember = (req: Request, memberId: number): Promise<number> => {
       .exec()
       .then((doc) => {
         /* return error if no member deleted */
-        if (doc.n === 0) {
+        if (doc.deletedCount === 0) {
           console.error(
             `${modulename}: delete Member found no matching member`,
           );
@@ -217,7 +217,7 @@ const deleteMember = (req: Request, memberId: number): Promise<number> => {
           return reject(errNotFound);
         }
         /* return count (= 1) to match api */
-        return resolve(doc.n!);
+        return resolve(doc.deletedCount!);
       })
       .catch((err) => {
         /* report a general database unavailable error */
@@ -247,7 +247,7 @@ const deleteMembers = (req: Request): Promise<number> => {
         /* reset id autoincrement count to 1 */
         modelMembers.resetCount();
         /* return number of members deleted */
-        return resolve(docs.n!);
+        return resolve(docs.deletedCount!);
       })
       .catch((err) => {
         /* report a general database unavailable error */

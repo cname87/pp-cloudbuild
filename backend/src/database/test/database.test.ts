@@ -223,7 +223,7 @@ describe('Database connection', () => {
       database.dbConnection = await database.dbConnectionPromise;
       /* will throw an error */
       expect.fail('Should not have reached this point');
-    } catch (err) {
+    } catch (err: any) {
       expect(err.name, 'Should be a MongoParseError').to.eql('MongoParseError');
     }
   });
@@ -358,7 +358,7 @@ describe('Database connection', () => {
       debug('fail to create a Mongoose model');
       database.createModel(testModel, testSchema, dummyCollection);
       expect.fail('Should not have reached this point');
-    } catch (err) {
+    } catch (err: any) {
       debug('run tests');
       expect(err.message, 'Should be a connection error').to.eql(
         'collection name must be a String',

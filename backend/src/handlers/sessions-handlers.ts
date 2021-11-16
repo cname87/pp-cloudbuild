@@ -124,7 +124,7 @@ const getOrCreateSessions = async (
           debug(`${modulename}: no sessions object found or created`);
         }
         /* convert Mongoose document to object */
-        const docObject = doc?.toObject() as Perform.ISessions;
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -149,7 +149,7 @@ const getOrCreateSessions = async (
       .then((doc: Document) => {
         debug(`${modulename}: new sessions object created`);
         /* convert document to object */
-        const docObject = doc?.toObject() as Perform.ISessions;
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -207,7 +207,7 @@ const updateSessions = (
           return reject(errNotFound);
         }
         /* convert document to object */
-        const docObject = doc?.toObject() as Perform.ISessions;
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
         return resolve(docObject);
       })
       .catch((err: any) => {
