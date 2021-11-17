@@ -209,13 +209,15 @@ const fillACWR = (table: Summary.TSummary): Summary.TSummary => {
   acwrRow[EColumns.FirstData + 2] = 0;
   acwrRow[EColumns.FirstData + 3] = 0;
 
-  /* set the following values to the running average */
-  for (let index = EColumns.FirstData + 4; index < acwrRow.length; index++) {
-    const n1 = loadRow[index - 1] as number;
-    const n2 = loadRow[index - 2] as number;
-    const n3 = loadRow[index - 3] as number;
-    const n4 = loadRow[index - 4] as number;
-    acwrRow[index] = Math.round((n1 + n2 +n3 + n4) / 4);
+  /* set the following values to the ACWR */
+  for (let index = +EColumns.FirstData; index < acwrRow.length; index++) {
+    const n0 = +loadRow[index];
+    const n1 = index - 1 > 0 ? +loadRow[index - 1] : 0;
+    const n2 = index - 2 > 0 ? +loadRow[index - 2] : 0;
+    const n3 = index - 3 > 0 ? +loadRow[index - 3] : 0;
+    const n4 = index - 4 > 0 ? +loadRow[index - 4] : 0;
+    /* ACWR is left as zero if there the week's session is 0 */
+    acwrRow[index] = n0 ? Math.round((n1 + n2 +n3 + n4) / n0) : 0;
   }
   table[ERowNumbers.ACWR] = acwrRow;
   return table;
@@ -257,8 +259,6 @@ const getSummary = (
       );
       const filledDelta = fillDelta(filledScoresAndSessions);
       const filled = fillACWR(filledDelta);
-
-      console.log(JSON.stringify(filled));
 
       miscHandlers.writeJson(context, req, res, next, 200, filled);
     })
