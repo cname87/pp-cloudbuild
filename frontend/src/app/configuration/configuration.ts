@@ -118,16 +118,15 @@ export interface IUserProfile {
 }
 
 /**
- * Configuration object for members, sessions and questionaires service.
+ * Configuration object for members, sessions and service.
  */
 
 interface IConfigurationParameters {
   basePath: string;
   membersPath: string;
-  sessionsPath: string;
-  questionairesPath: string;
   scoresPath: string;
-  sessions2Path: string;
+  sessionsPath: string;
+  summaryPath: string;
   defaultHeaders: HttpHeaders;
   withCredentials?: boolean;
 }
@@ -135,10 +134,9 @@ class Configuration {
   /* note that the same server is assumed e.g. the basePath is added to localhost:8080 or whatever the host domain that is running */
   basePath: string;
   membersPath: string;
-  sessionsPath: string;
-  questionairesPath: string;
   scoresPath: string;
-  sessions2Path: string;
+  sessionsPath: string;
+  summaryPath: string;
   defaultHeaders: HttpHeaders;
   /* indicates whether or not cross-site Access-Control requests should be made using credentials - defaults to false */
   withCredentials?: boolean;
@@ -147,9 +145,9 @@ class Configuration {
     this.basePath = configurationParameters.basePath;
     this.membersPath = configurationParameters.membersPath;
     this.sessionsPath = configurationParameters.sessionsPath;
-    this.questionairesPath = configurationParameters.questionairesPath;
     this.scoresPath = configurationParameters.scoresPath;
-    this.sessions2Path = configurationParameters.sessions2Path;
+    this.sessionsPath = configurationParameters.sessionsPath;
+    this.summaryPath = configurationParameters.summaryPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
     this.withCredentials = configurationParameters.withCredentials;
   }
@@ -164,10 +162,9 @@ defaultHeaders = defaultHeaders.set('Content-Type', 'application/json');
 export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
-  sessionsPath: 'sessions',
-  questionairesPath: 'questionaires',
   scoresPath: 'scores',
-  sessions2Path: 'sessions',
+  sessionsPath: 'sessions',
+  summaryPath: 'summary',
   defaultHeaders,
   withCredentials: false,
 });

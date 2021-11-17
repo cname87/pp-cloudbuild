@@ -1,69 +1,23 @@
-import { Component } from '@angular/core';
-import { Location } from '@angular/common';
-import { ParamMap, ActivatedRoute } from '@angular/router';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { ParamMap, ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
-
-import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { Observable, of, Subject, throwError } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-
-import { IMember } from '../../app-module/models/member';
-import { columnsToDisplay } from '../data-providers/summary-models';
-
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
-import { IErrReport } from '../../configuration/configuration';
+import { Subject } from 'rxjs';
 import { SingleSeries } from '@swimlane/ngx-charts';
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-/* Temporary */
-type namesData = [string, string, string, string, string, string];
-type rowData = Array<string | number>;
-type rowsData = [rowData, rowData, rowData, rowData, rowData, rowData];
-
-const rowNames: namesData = [
-  'Score',
-  'Load',
-  'Delta %',
-  'Monotony',
-  'ACWR',
-  'Sessions',
-];
-
-const score = [] as unknown as rowData;
-score[0] = rowNames[0];
-const load = [] as unknown as rowData;
-load[0] = rowNames[1];
-const delta = [] as unknown as rowData;
-delta[0] = rowNames[2];
-const monotony = [] as unknown as rowData;
-monotony[0] = rowNames[3];
-const acwr = [] as unknown as rowData;
-acwr[0] = rowNames[4];
-const sessionsCount = [] as unknown as rowData;
-sessionsCount[0] = rowNames[5];
-for (let index = 1; index <= 52; index++) {
-  score[index] = Math.round(Math.random() * 100);
-  load[index] = Math.round(Math.random() * 100);
-  delta[index] = Math.round(Math.random() * 100);
-  monotony[index] = Math.round(Math.random() * 100);
-  acwr[index] = Math.round(Math.random() * 100);
-  sessionsCount[index] = Math.round(Math.random() * 100);
-}
-const summaryTable: rowsData = [
-  score,
-  load,
-  delta,
-  monotony,
-  acwr,
-  sessionsCount,
-];
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+import {
+  TSummary,
+  TValueData,
+  EColumns,
+  ERowNumbers,
+  TDateData,
+} from '../models/summary-models';
+import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 
 /**
- * @title This component shows a scrollable table detailing all summary data by week linked to a member.
+ * @title Summary data table and charts
+ * This component shows a scrollable table detailing member summary data by week.  A row on the table can be displayed on a bar chart.
  */
 @Component({
   selector: 'app-summary',
@@ -71,120 +25,179 @@ const summaryTable: rowsData = [
   styleUrls: ['./member-summary.component.scss'],
   providers: [],
 })
-export class MemberSummaryComponent {
+export class MemberSummaryComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   //
-  member$!: Observable<IMember>;
-  /* sets which columns to display */
-  #nameColumnToDisplay: string;
-  #dataColumnsToDisplay: string[];
-  columnsToDisplay: string[];
-  /* defines the names column */
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
+  /* raw table data from the resolver */
+  #data!: TSummary;
+  /* unique column names used by the table template */
+  #nameColumnToDisplay = '';
+  #dataColumnsToDisplay: string[] = [];
+  columnsToDisplay: string[] = [];
+
+  /* define the summary table text info card */
+  summaryLine1 =
+    '- This shows weekly data on your wellness scores and training sessions';
+  summaryLine2 = '- Click on a row to see a bar chart of that item';
+  isSummaryBackVisible = false;
+
+  /* define the chart table text info card */
+  chartLine1 = '- This is a bar chart of the row you clicked';
+  chartLine2 = '- Scroll left to see previous weeks';
+  chartLine3 = '- Click Back to return to the Summary Table';
+  isChartBackVisible = true;
+  onChartBackClicked = () => {
+    this.#clearChart();
+    this.#scrollToEnd();
+  };
+
+  /* called in html template to define the names column */
   dataNames: {
     columnDef: string;
     header: string;
     cell: (rowData: Array<string>) => string;
   };
-  /* defines the data columns */
+  /* called in html template to define the data columns - a row of data is passed in to get the cell value */
   dataColumns: {
     columnDef: string;
-    header: Date;
+    header: string;
     cell: (rowData: Array<number>) => number;
   }[] = [];
-  /* data sent to the table */
-  dataSource!: MatTableDataSource<rowData>;
+  /* data retrieved from the resolver and displayed in the table */
+  dataSource!: MatTableDataSource<TSummary>;
   /* data sent to chart showing one table row of data */
   rowChartData: SingleSeries = [];
+  /* x-axis label sent to chart */
   rowName = 'Metric';
+  /* shows chart */
   isChartShown = false;
-  #destroy = new Subject<void>();
-  #toastrMessage = 'A member access error has occurred';
 
-  /* generate chart data */
-  getChartData = (rowData: rowData) => {
-    const valueData = rowData.slice(1);
-    for (let i = 0; i < this.dataColumns.length; i++) {
-      this.rowChartData[i] = {
-        name: this.dataColumns[i].header,
+  /**
+   * Returns data fro the chart from a supplied summary table row.
+   * @param rowData A row of the summary data table.
+   * @returns An array containing a column of data to display in the chart.
+   */
+  #getChartData = (rowData: TValueData): SingleSeries => {
+    /* remove the column containing the name */
+    const valueData = rowData.slice(EColumns.FirstData);
+    const chartData = [];
+    for (let i = 0; i < valueData.length; i++) {
+      chartData[i] = {
+        name: this.dataColumns[i].header.substring(0, 10),
         value: valueData[i] as number,
       };
     }
+    return chartData;
   };
 
-  /* call up a chart of a summary row */
-  clickRow = (rowData: rowData) => {
-    this.getChartData(rowData);
-    this.rowName = rowData[0] as string;
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MemberSummaryComponent.name}: #catchError called`);
+    this.logger.trace(`${MemberSummaryComponent.name}: Throwing the error on`);
+    throw err;
+  };
+
+  /* scrolls the summary table to the end */
+  #scrollToEnd = () => {
+    this.logger.trace(`${MemberSummaryComponent.name}: #scrollToEnd called`);
+    let cycles = 0;
+    const checkExist = setInterval(() => {
+      cycles++;
+      const matTable = document.getElementById('summary-table');
+      if (matTable) {
+        matTable.scrollLeft = matTable.scrollWidth;
+        clearInterval(checkExist);
+      }
+      if (cycles === 10) {
+        this.logger.error(
+          `${MemberSummaryComponent.name}: Chart scroll to end NOT implemented`,
+        );
+        clearInterval(checkExist);
+      }
+    }, 100); // check every 100ms
+  };
+
+  /* hides the table and shows the chart */
+  #clearChart = () => {
+    this.isChartShown = false;
+  };
+
+  /**
+   * Hides the date row by enabling a 'hidden' style in the template.
+   * @param row The data for the row
+   * @returns True to hide the row
+   */
+  rowIsHidden = (row: TDateData | TValueData): boolean => {
+    return row[EColumns.Names] === this.#data[ERowNumbers.Date][EColumns.Names];
+  };
+
+  /**
+   * Causes a chart of a supplied summary row to be displayed.
+   * Called by a click on a summary table row.
+   * @param rowData A row of the summary data table.
+   * @returns Void.
+   */
+  clickRow = (rowData: TValueData): void => {
+    this.rowChartData = this.#getChartData(rowData);
+    this.rowName = rowData[EColumns.Names];
+    this.chartLine1 = `This is a bar chart of the ${this.rowName.toUpperCase()} metric`;
     this.isChartShown = true;
   };
 
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    private isLoadingService: IsLoadingService,
-    private location: Location,
     private logger: NGXLogger,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSummaryComponent.name}: Starting MemberSummaryComponent`,
     );
 
-    /* define the displayed columns */
-    this.#nameColumnToDisplay = columnsToDisplay[0];
-    this.#dataColumnsToDisplay = columnsToDisplay.slice(1);
-    this.columnsToDisplay = columnsToDisplay;
+    /* get summary data from route resolver and load the model which fills and renders the table */
+    this.route.data
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((data: Data) => {
+        this.#data = data.summary;
+        this.dataSource = new MatTableDataSource<TSummary>(data.summary);
+      });
 
-    /* define the first column */
+    /* define the column names used by the table template */
+    for (let index = 0; index < this.#data[0].length; index++) {
+      this.columnsToDisplay.push(`wk${index}`);
+    }
+    this.#nameColumnToDisplay = this.columnsToDisplay[EColumns.Names];
+    this.#dataColumnsToDisplay = this.columnsToDisplay.slice(
+      EColumns.FirstData,
+    );
+
+    /* define the first column with names */
     this.dataNames = {
       columnDef: this.#nameColumnToDisplay,
       header: '',
-      cell: (rowData) => rowData[0],
+      cell: (rowData) => rowData[EColumns.Names],
     };
 
     /* define the columns that contain the data */
-    const addDays = (date: Date, numDays: number) => {
-      const newDate = new Date();
-      newDate.setDate(date.getDate() + numDays);
-      return newDate;
-    };
     for (let i = 0; i < this.#dataColumnsToDisplay.length; i++) {
-      const firstDate = new Date();
-      const date = addDays(firstDate, 7 * i);
       this.dataColumns[i] = {
         columnDef: this.#dataColumnsToDisplay[i],
-        header: date,
+        header: this.#data[ERowNumbers.Date].slice(EColumns.FirstData)[i],
         cell: (rowData) => {
-          const valueData = rowData.slice(1);
+          const valueData = rowData.slice(EColumns.FirstData);
           return valueData[i];
         },
       };
     }
-
-    /* get the data as supplied from the route resolver */
-    // this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
-    //   this.member$ = data.memberAndSummary.member;
-    //   this.#summary$ = data.memberAndSummary.questionaires;
-    // });
-    this.member$ = of({ id: 1, name: 'testMember' });
-    /* loads summary and fills table */
-    this.isLoadingService.add(
-      of(summaryTable)
-        .pipe(
-          takeUntil(this.#destroy),
-          map((summary) => {
-            this.logger.trace(
-              `${MemberSummaryComponent.name}: Summary retrieved`,
-            );
-            return summary;
-          }),
-        )
-        .subscribe((summaryTable: rowsData) => {
-          this.dataSource = new MatTableDataSource(summaryTable);
-        }),
-    );
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     /* update service with routed member id */
     this.route.paramMap
       .pipe(
@@ -195,37 +208,22 @@ export class MemberSummaryComponent {
           }
           return id;
         }),
-        takeUntil(this.#destroy),
-        catchError((err: IErrReport) => {
-          this.logger.trace(
-            `${MemberSummaryComponent.name}: catchError called`,
-          );
-
-          /* inform user but do not mark as handled */
-          this.toastr.error('ERROR!', this.#toastrMessage);
-          err.isHandled = false;
-
-          this.logger.trace(
-            `${MemberSummaryComponent.name}: Throwing the error on`,
-          );
-          return throwError(err);
-        }),
+        takeUntil(this.#destroy$),
+        catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => {
+        this.routeStateService.updateIdState(id);
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.#scrollToEnd();
   }
 
   ngOnDestroy(): void {
-    this.#destroy.next();
-    this.#destroy.complete();
+    this.logger.trace(`${MemberSummaryComponent.name}: ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
     this.routeStateService.updateIdState('');
   }
-
-  /* Overrides banner goBack function */
-  goBackOverride = () => {
-    if (this.isChartShown) {
-      this.isChartShown = false;
-    } else {
-      this.location.back();
-    }
-  };
 }

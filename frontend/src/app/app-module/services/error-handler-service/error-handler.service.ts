@@ -123,7 +123,7 @@ export class ErrorHandlerService implements ErrorHandler {
 
     /* log an error report to console */
     this.logger.trace(`${ErrorHandlerService.name}: Logging the error`);
-    this.logger.error(errReport);
+    this.logger.error('Error Report: ', errReport);
 
     /* send the error to rollbar */
     this.logger.trace(`${ErrorHandlerService.name}: Sending error to Rollbar`);

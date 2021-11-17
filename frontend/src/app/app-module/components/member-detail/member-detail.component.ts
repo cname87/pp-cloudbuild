@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
-import { of, Observable, Subject, throwError } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { RouteStateService } from '../../services/route-state-service/router-state.service';
-import { IErrReport } from '../../../configuration/configuration';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 /**
@@ -20,33 +18,48 @@ import { AuthService } from '../../services/auth-service/auth.service';
 })
 export class MemberDetailComponent implements OnInit, OnDestroy {
   //
-  private destroy = new Subject<void>();
-  private toastrMessage = 'A member access error has occurred';
-
   /* member to display */
   member$!: Observable<IMember>;
-
-  text =
-    // eslint-disable-next-line max-len
-    '<ul><li>Click on SCORES to enter your weekly assessment scores.</li><li>Click on SESSIONS to enter your weekly training sessions data.</li><li>Click on SUMMARY to see your data over the last 12 months.</li></ul>';
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
 
   constructor(
     private auth: AuthService,
     private route: ActivatedRoute,
     private logger: NGXLogger,
     private routeStateService: RouteStateService,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberDetailComponent.name}: Starting MemberDetailComponent`,
     );
   }
 
+  /* define the text info card */
+  line1 = '- Click on SCORES to enter your weekly assessment scores';
+  line2 = '- Click on SESSIONS to enter your weekly training sessions';
+  line3 = '- Click on SUMMARY to see your data over the last 12 months';
+  line4 = '';
+  isGoBackVisible = false;
+
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MemberDetailComponent.name}: #catchError called`);
+    this.logger.trace(`${MemberDetailComponent.name}: Throwing the error on`);
+    throw err;
+  };
+
   ngOnInit() {
     /* get the data as supplied from the route resolver */
-    this.route.data.subscribe((data: Data) => {
-      this.member$ = of(data.member);
-    });
+    this.route.data
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((data: Data) => {
+        this.member$ = of(data.member);
+      });
+
     /* update route state with member id */
     this.route.paramMap
       .pipe(
@@ -57,26 +70,16 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
           }
           return id;
         }),
-        takeUntil(this.destroy),
-        catchError((err: IErrReport) => {
-          this.logger.trace(`${MemberDetailComponent.name}: catchError called`);
-
-          /* inform user but do not mark as handled */
-          this.toastr.error('ERROR!', this.toastrMessage);
-          err.isHandled = false;
-
-          this.logger.trace(
-            `${MemberDetailComponent.name}: Throwing the error on`,
-          );
-          return throwError(err);
-        }),
+        takeUntil(this.#destroy$),
+        catchError(this.#catchError),
       )
       .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
-  ngOnDestroy() {
-    this.destroy.next();
-    this.destroy.complete();
+  ngOnDestroy(): void {
+    this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
     this.routeStateService.updateIdState('');
   }
 

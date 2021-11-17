@@ -1,21 +1,18 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
-import { ToastrService } from 'ngx-toastr';
-import { Observable, of, Subject, throwError } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
-import { IErrReport } from '../../configuration/configuration';
-import { IMember } from '../../app-module/data-providers/members.data-provider';
-import { ISessions } from '../data-providers/sessions-models';
-import { earliestDate } from '../../scores-module/data-providers/scores-models';
+import { ISessions } from '../models/sessions-models';
+import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
-import { SessionType } from '../data-providers/sessions-models';
+import { SessionType } from '../models/sessions-models';
 
 /**
  * @title This component shows a form table allowing weekly session results for a member to be viewed and entered or edited.
@@ -33,8 +30,6 @@ export class MemberSessionsComponent implements OnDestroy {
   #destroy$ = new Subject<void>();
   /* min width used in the datatable */
   #minWidth = 42;
-  /* error message displayed to the user */
-  #toastrMessage = 'A data access error has occurred';
   /* ngx-datatable columns */
   #columns = [
     {
@@ -106,33 +101,33 @@ export class MemberSessionsComponent implements OnDestroy {
     { value: 3, label: '3' },
     { value: 4, label: '4' },
     { value: 5, label: '5' },
-    { value: 1, label: '6' },
-    { value: 2, label: '7' },
-    { value: 3, label: '8' },
-    { value: 4, label: '9' },
-    { value: 5, label: '10' },
+    { value: 6, label: '6' },
+    { value: 7, label: '7' },
+    { value: 8, label: '8' },
+    { value: 9, label: '9' },
+    { value: 10, label: '10' },
   ];
-  #debounceDelay = 1500;
-  #changeTimerId!: NodeJS.Timeout;
-  member$ = of({}) as Observable<IMember>;
+
+  /* define the text info card */
+  line1 = '- RPE is the Rate of Perceived Exertion of the session';
+  line2 = '- Select from 0, for no exertion, to 10, for extreme exertion';
+  line3 = '';
+  line4 = '';
+  isGoBackVisible = false;
+
   form = new FormGroup({});
   model$!: Observable<ISessions>;
   model!: ISessions;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
-      template:
-        // eslint-disable-next-line max-len
-        '<div class="table-help">RPE is the Rate of Perceived Exertion of the session.<br>Select from 0, for no exertion, to 10, for extreme exertion</div>',
-    },
-    {
       fieldGroup: [
         {
           key: 'date',
           type: 'datepicker',
-          /* A date is entered as midnight local time but is stored as a UTC string.  UTC might be different from local time, e.g. one hour behind which means the UTC value is 23.00 of the day before which means the date stored could be a time during the day before. This causes problems if you pass the UTC value to calculate the date. To avoid this, subtract the local UTC offset from the stored value. EG: If IST is 60min ahead of UTC then July 4th 00:00 IST is stored as July 3rd 23:00 UTC.  In this case the IST offset from UTC is -60 min.  Subtracting -60min from the stored value results in the updated stored UTC value being July 4th 00:00 UTC - i.e. if it is used to calculate a date it will return the correct date of July 4th.*/
+          /* See comment under scores component. */
           parsers: [
-            (date) => {
+            (date: Date) => {
               return new Date(
                 date.getTime() - date.getTimezoneOffset() * 60 * 1000,
               );
@@ -145,7 +140,7 @@ export class MemberSessionsComponent implements OnDestroy {
             datepickerOptions: {
               /* allow only a certain period of dates be shown */
               max: new Date(),
-              min: earliestDate,
+              min: EARLIEST_DATE,
               dateChange: () => this.#onDateChange(),
               /* allow only Sunday's be shown */
               filter: (date: Date | null): boolean => {
@@ -255,30 +250,21 @@ export class MemberSessionsComponent implements OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    private sessions2Service: SessionsService,
+    private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
     );
-    /* get data from route resolver */
-    this.route.data
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
-      .subscribe((data) => {
-        this.member$ = data.memberAndSessions.member$;
-        this.model$ = data.memberAndSessions.sessions$;
-      });
-    /* load the model which fills the table */
+    /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
-    this.isLoadingService.add(
-      this.model$
-        .pipe(takeUntil(this.#destroy$), catchError(this.#catcherror))
-        .subscribe((model: ISessions) => {
-          this.model = model;
-        }),
-    );
+    this.route.data
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((data: Data) => {
+        this.model = data.sessions;
+      });
+
     /* update route state service with routed member id */
     this.route.paramMap
       .pipe(
@@ -290,44 +276,23 @@ export class MemberSessionsComponent implements OnDestroy {
           return id;
         }),
         takeUntil(this.#destroy$),
-        catchError(this.#catcherror),
+        catchError(this.#catchError),
       )
       .subscribe((id) => {
         this.routeStateService.updateIdState(id);
       });
   }
 
-  /* error handler utility */
-  #catcherror(err: IErrReport) {
-    this.logger.trace(`${MemberSessionsComponent.name}: catchError called`);
-
-    /* inform user but do not mark as handled */
-    this.toastr.error('ERROR!', this.#toastrMessage);
-    err.isHandled = false;
-
-    this.logger.trace(`${MemberSessionsComponent.name}: Throwing the error on`);
-    return throwError(err);
-  }
-
   /**
-   * Updates the backend database with the updated model.
+   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
    */
-  #submitTable(updatedModel: ISessions): void {
-    /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.sessions2Service
-        .updateSessionsTable(updatedModel)
-        .pipe(takeUntil(this.#destroy$))
-        .subscribe((sessions) => {
-          this.logger.trace(
-            `${
-              MemberSessionsComponent.name
-            }: Sessions table updated: ${JSON.stringify(sessions)}`,
-          );
-          /* allow errors go to errorHandler */
-        }),
-    );
-  }
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MemberSessionsComponent.name}: #catchError called`);
+    this.logger.trace(`${MemberSessionsComponent.name}: Throwing the error on`);
+    throw err;
+  };
 
   /**
    * Runs after every table data change, (i.e. excluding the date), the data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
@@ -337,64 +302,51 @@ export class MemberSessionsComponent implements OnDestroy {
     this.logger.trace(
       `${MemberSessionsComponent.name}: #onTableChange called}`,
     );
-    const runChange = (updatedModel: ISessions): void => {
-      this.logger.trace(`${MemberSessionsComponent.name}: #runChange called}`);
-      this.#submitTable(updatedModel);
-      this.#tableChange.emit('modelChange');
-    };
+    this.sessionsService
+      .updateSessionsTable(updatedModel)
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((scores: ISessions) => {
+        this.logger.trace(
+          `${
+            MemberSessionsComponent.name
+          }: Sessions table updated: ${JSON.stringify(scores)}`,
+        );
+      });
+    this.#tableChange.emit('modelChange');
     if (!this.form.valid) {
       this.logger.trace(
         `${MemberSessionsComponent.name}: Form invalid, change not run}`,
       );
       return;
     }
-    clearTimeout(this.#changeTimerId);
-    this.#changeTimerId = setTimeout(
-      runChange,
-      this.#debounceDelay,
-      updatedModel,
-    );
-  }
-
-  /**
-   * Requests a table object from the backend database and loads it into the data model.
-   */
-  #submitDate(updatedModel: ISessions): void {
-    /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
-    this.isLoadingService.add(
-      this.sessions2Service
-        .getOrCreateSessions(updatedModel.memberId, updatedModel.date)
-        .pipe(takeUntil(this.#destroy$))
-        .subscribe((sessions) => {
-          this.model = sessions;
-          this.logger.trace(
-            `${
-              MemberSessionsComponent.name
-            }: Sessions table created or retrieved: ${JSON.stringify(
-              sessions,
-            )}`,
-          );
-          /* allow errors go to errorHandler */
-        }),
-    );
   }
 
   /**
    * After every date change a new table is requested from the database, loaded into the model, and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
-  #onDateChange(updatedModel: ISessions = this.model): void {
+  #onDateChange = (updatedModel: ISessions = this.model): void => {
+    this.logger.trace(`${MemberSessionsComponent.name}: #onDateChange called`);
     if (this.form.valid) {
-      this.#submitDate(updatedModel);
+      this.isLoadingService.add(
+        this.sessionsService
+          .getOrCreateSessions(updatedModel.memberId, updatedModel.date)
+          .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+          .subscribe((sessions) => {
+            this.model = sessions;
+            this.logger.trace(
+              `${MemberSessionsComponent.name}: Sessions table created or retrieved`,
+            );
+          }),
+      );
       this.#tableChange.emit('modelChange');
     }
-  }
+  };
 
   ngOnDestroy(): void {
-    /* unsubscribe all */
+    this.logger.trace(`${MemberSessionsComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    /* update member id in the route state service */
     this.routeStateService.updateIdState('');
   }
 }

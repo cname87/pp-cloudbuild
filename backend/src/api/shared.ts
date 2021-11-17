@@ -31,8 +31,6 @@ export const setup = (
   }
   /* the uri may contain the member id */
   const mid = Number.parseInt(context.request.params.mid as string, 10);
-  /* the uri may contain the questionaire id */
-  const qid = Number.parseInt(context.request.params.qid as string, 10);
   /* the uri may contain the session id */
   const sid = Number.parseInt(context.request.params.sid as string, 10);
   /* gets the named query parameter  */
@@ -40,17 +38,17 @@ export const setup = (
   queryString = decodeQueryParam(queryString);
   /* the body may contain an element to be added or updated */
   const body = context.request.body;
-  const { membersHandlers, scoresHandlers, sessionsHandlers, miscHandlers } = req.app.appLocals.handlers;
+  const { membersHandlers, scoresHandlers, sessionsHandlers, summaryHandlers, miscHandlers } = req.app.appLocals.handlers;
   const { dumpError } = req.app.appLocals;
   return {
     mid,
-    qid,
     sid,
     queryString,
     body,
     membersHandlers,
     scoresHandlers,
     sessionsHandlers,
+    summaryHandlers,
     miscHandlers,
     dumpError,
   }

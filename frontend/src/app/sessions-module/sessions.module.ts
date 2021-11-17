@@ -16,7 +16,7 @@ const routes: Routes = [
     component: MemberSessionsComponent,
     canActivate: [AuthGuard],
     resolve: {
-      memberAndSessions: MemberSessionsResolverService,
+      sessions: MemberSessionsResolverService,
     },
   },
 ];

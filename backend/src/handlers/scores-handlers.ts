@@ -10,7 +10,7 @@ import { setupDebug } from '../utils/src/debugOutput';
 
 const { modulename, debug } = setupDebug(__filename);
 
-enum ScoreType {
+const enum ScoreType {
   Sleep = 'SLEEP',
   Fatigue = 'FATIGUE',
   Soreness = 'SORENESS',
@@ -107,6 +107,16 @@ const blankScores: Perform.IScoresWithoutId = {
   ],
 };
 
+const errFunction = (
+  err: any,
+  req: Request,
+  reject: (reason?: any) => void,
+) => {
+  /* report a general database unavailable error */
+  const functionName = 'getOrCreateScores';
+  return databaseUnavailable(err, functionName, req.app.appLocals, reject);
+};
+
 /**
  * Gets a scores object by member id & date, or adds a new scores object to the database.
  *
@@ -118,28 +128,33 @@ const blankScores: Perform.IScoresWithoutId = {
 const getOrCreateScores = async (
   req: Request,
   mid: number,
-  date: string,
+  date: Date,
 ): Promise<Perform.IScores> => {
   debug(`${modulename}: running getOrCreateScores`);
 
   /* get the scores mongodDB collection */
   const modelScores = req.app.appLocals.models.scores;
 
-  const foundDoc: Perform.IScores = await new Promise((resolve, _reject) => {
+  const foundDoc: Perform.IScores = await new Promise((resolve, reject) => {
     modelScores
       .findOne({ memberId: mid, date: date })
       .exec()
       .then((doc) => {
         if (!doc) {
-          debug(`${modulename}: no scores object found or created`);
+          debug(`${modulename}: no scores object found`);
         }
-        /* strip down to scores object and return */
-        return resolve(doc?.toObject() as Perform.IScores);
+        /* convert Mongoose document to object */
+        const docObject = doc?.toObject() as unknown as Perform.IScores;
+        return resolve(docObject);
+      })
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
 
   /* if a document is returned then return it */
   if (foundDoc) {
+    debug(`${modulename}: scores object found`);
     return foundDoc;
   }
 
@@ -151,19 +166,14 @@ const getOrCreateScores = async (
   return new Promise((resolve, reject) => {
     addedScores
       .save()
-      .then((savedScores: Document) => {
-        /* return the added scores table as a JSON object */
-        return resolve(savedScores.toObject() as Perform.IScores);
+      .then((doc: Document) => {
+        debug(`${modulename}: new scores object created`);
+        /* convert document to object */
+        const docObject = doc?.toObject() as Perform.IScores;
+        return resolve(docObject);
       })
       .catch((err: any) => {
-        /* report a general database unavailable error */
-        const functionName = 'getOrCreateScores';
-        return databaseUnavailable(
-          err,
-          functionName,
-          req.app.appLocals,
-          reject,
-        );
+        errFunction(err, req, reject);
       });
   });
 };
@@ -184,7 +194,10 @@ const updateScores = (
 ): Promise<Perform.IScores> => {
   debug(`${modulename}: running updateScores`);
 
-  /* get the scores mongodDB collection */
+  /* convert to date before sending to MongoDB */
+  scores.date = new Date(scores.date);
+
+  /* get the scores mongoDB collection */
   const modelScores = req.app.appLocals.models.scores;
   const updatedScores = new modelScores(scores);
 
@@ -211,13 +224,12 @@ const updateScores = (
           };
           return reject(errNotFound);
         }
-        /* return new scores object */
-        resolve(doc.toObject() as Perform.IScores);
+        /* convert document to object */
+        const docObject = doc?.toObject() as unknown as Perform.IScores;
+        return resolve(docObject);
       })
-      .catch((err) => {
-        /* report a general database unavailable error */
-        const functionName = 'updateScores';
-        databaseUnavailable(err, functionName, req.app.appLocals, reject);
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
 };

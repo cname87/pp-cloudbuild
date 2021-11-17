@@ -159,6 +159,18 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getSummary: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.summaryApi.getSummary(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       validationFail: (
         context,
         _request: Request,
@@ -175,9 +187,9 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           dumped: false,
         };
 
-        if (!(context && context.validation && context.validation.errors)) {
+        if (!context!.validation!.errors) {
           /* openapi-backend types require this test */
-          /* unexpected error if context.validation.errors returned */
+          /* unexpected error if no context.validation.errors returned */
           err.message += ': unexpected openapi error';
           err.statusCode = 500;
           return nextFunction(err);
@@ -189,8 +201,9 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         )}`;
         appLocals.dumpError(err);
         err.message = 'API validation fail';
-        nextFunction(err);
+        return nextFunction(err);
       },
+
       notFound: async (
         /* called if path not matched - needed or an exception thrown */
         _context,
@@ -228,7 +241,7 @@ const createDbCollectionConnection = (
   const { dbConnection } = req.app.appLocals;
   if (
     !dbConnection ||
-    dbConnection.readyState !== Perform.DbReadyState.Connected
+    dbConnection.readyState !== Perform.EDbReadyState.Connected
   ) {
     console.error(`${modulename}: Database not connected`);
     const errDb: Perform.IErr = {

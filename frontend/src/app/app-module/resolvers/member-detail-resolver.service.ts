@@ -1,12 +1,12 @@
-import { Injectable, ErrorHandler } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import {
   Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { publishReplay, refCount, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError, shareReplay } from 'rxjs/operators';
 
 import { MembersService } from '../services/members-service/members.service';
 import { IMember } from '../models/models';
@@ -18,7 +18,6 @@ export class MemberDetailResolverService implements Resolve<IMember> {
   constructor(
     private membersService: MembersService,
     private logger: NGXLogger,
-    private errorHandler: ErrorHandler,
   ) {
     this.logger.trace(
       `${MemberDetailResolverService.name}: Starting MemberDetailResolverService`,
@@ -34,28 +33,18 @@ export class MemberDetailResolverService implements Resolve<IMember> {
     );
 
     /* get id of member to be displayed from the route */
-    const id = +(route.paramMap.get('id') || '0');
+    const memberId = +(route.paramMap.get('id') || '0');
 
-    let errorHandlerCalled = false;
-    const dummyMember = {
-      id: 0,
-      name: '',
-    };
-
-    return this.membersService.getMember(id).pipe(
-      publishReplay(1),
-      refCount(),
-
-      catchError((error: any) => {
-        if (!errorHandlerCalled) {
-          this.logger.trace(
-            `${MemberDetailResolverService.name}: catchError called`,
-          );
-          errorHandlerCalled = true;
-          this.errorHandler.handleError(error);
-        }
-        /* return dummy member */
-        return of(dummyMember);
+    return this.membersService.getMember(memberId).pipe(
+      shareReplay(1),
+      catchError((err: any) => {
+        this.logger.trace(
+          `${MemberDetailResolverService.name}: catchError called`,
+        );
+        this.logger.trace(
+          `${MemberDetailResolverService.name}: not proceeding and throwing the error to the error handler`,
+        );
+        throw err;
       }),
     );
   }

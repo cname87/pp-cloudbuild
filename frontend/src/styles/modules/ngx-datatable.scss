@@ -13,9 +13,9 @@ div.table-help {
   text-align: center;
 }
 
-ngx-datatable {
-  overflow-x: hidden !important;
-  height: 100vh;
+datatable-body {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
 }
 
 /* hide datatable summary row */
@@ -25,7 +25,7 @@ datatable-summary-row.datatable-summary-row {
 
 datatable-body-row.datatable-body-row {
   padding: 2px !important;
-  height: 34px !important;
+  height: calc(var(--base-font) *2) !important;
 }
 
 datatable-body-cell.datatable-body-cell {
@@ -33,34 +33,34 @@ datatable-body-cell.datatable-body-cell {
   padding: 2px !important;
 }
 
-// .mat-form-field-flex {
-//   line-height: 1 !important;
-//   margin: 0px !important;
-// }
-// .mat-form-field-outline {
-//   top: 0px !important;
-// }
-// .mat-form-field-infix {
-//   border: 0px !important;
-//   line-height: 1 !important;
-//   padding-top: 6px !important;
-//   padding-bottom: 4px !important;
-//   padding-left: 0px !important;
-//   padding-right: 0px !important ;
-// }
-
-
-/* allow rows only to go to the scroll bar */
-div.datatable-row-center {
-  padding-right: 16px !important;
+.mat-form-field-flex {
+  line-height: 1 !important;
 }
 
+.mat-form-field-outline {
+  top: 0px !important;
+}
 
-// /* rightmost table column */
-// .scoresColumnRight {
-//   margin-right: 1px !important;
-// }
-// /* leftmost table column */
-// .scoresColumnLeft div {
-//   margin-left: 1px !important;
-// }
+/* the box around each cell */
+.mat-form-field-infix {
+  border: 0px !important;
+  line-height: 1 !important;
+  padding-top: 6px !important;
+  padding-bottom: 4px !important;
+  padding-left: 0px !important;
+  padding-right: 0px !important ;
+}
+
+/* set the height of a drop down option */
+mat-option.mat-option {
+  height: calc(var(--base-font) *2) !important;
+}
+
+div.mat-select-panel {
+  max-height: unset;
+}
+
+/* padding right of the rows */
+div.datatable-row-center {
+  padding-right: 4px;
+}

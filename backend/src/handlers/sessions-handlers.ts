@@ -87,6 +87,16 @@ const blankSessions: Perform.ISessionsWithoutId = {
   ],
 };
 
+const errFunction = (
+  err: any,
+  req: Request,
+  reject: (reason?: any) => void,
+) => {
+  /* report a general database unavailable error */
+  const functionName = 'getOrCreateScores';
+  return databaseUnavailable(err, functionName, req.app.appLocals, reject);
+};
+
 /**
  * Gets a sessions object by member id & date, or adds a new sessions object to the database.
  *
@@ -98,14 +108,14 @@ const blankSessions: Perform.ISessionsWithoutId = {
 const getOrCreateSessions = async (
   req: Request,
   mid: number,
-  date: string,
+  date: Date,
 ): Promise<Perform.ISessions> => {
   debug(`${modulename}: running getOrCreateSessions`);
 
   /* get the sessions mongodDB collection */
   const modelSessions = req.app.appLocals.models.sessions;
 
-  const foundDoc: Perform.ISessions = await new Promise((resolve, _reject) => {
+  const foundDoc: Perform.ISessions = await new Promise((resolve, reject) => {
     modelSessions
       .findOne({ memberId: mid, date: date })
       .exec()
@@ -113,13 +123,18 @@ const getOrCreateSessions = async (
         if (!doc) {
           debug(`${modulename}: no sessions object found or created`);
         }
-        /* strip down to sessions object and return */
-        return resolve(doc?.toObject() as Perform.ISessions);
+        /* convert Mongoose document to object */
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
+        return resolve(docObject);
+      })
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
 
   /* if a document is returned then return it */
   if (foundDoc) {
+    debug(`${modulename}: scores object found`);
     return foundDoc;
   }
 
@@ -131,19 +146,14 @@ const getOrCreateSessions = async (
   return new Promise((resolve, reject) => {
     addedSessions
       .save()
-      .then((savedSessions: Document) => {
-        /* return the added sessions table as a JSON object */
-        return resolve(savedSessions.toObject() as Perform.ISessions);
+      .then((doc: Document) => {
+        debug(`${modulename}: new sessions object created`);
+        /* convert document to object */
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
+        return resolve(docObject);
       })
       .catch((err: any) => {
-        /* report a general database unavailable error */
-        const functionName = 'getOrCreateSessions';
-        return databaseUnavailable(
-          err,
-          functionName,
-          req.app.appLocals,
-          reject,
-        );
+        errFunction(err, req, reject);
       });
   });
 };
@@ -164,6 +174,9 @@ const updateSessions = (
 ): Promise<Perform.ISessions> => {
   debug(`${modulename}: running updateSessions`);
 
+  /* convert to date before sending to MongoDB */
+  sessions.date = new Date(sessions.date);
+
   /* get the sessions mongodDB collection */
   const modelSessions = req.app.appLocals.models.sessions;
   const updatedSessions = new modelSessions(sessions);
@@ -180,27 +193,25 @@ const updateSessions = (
       )
       .exec()
       .then((doc) => {
-        /* return error if no sessions found */
+        /* return error if no scores found */
         if (!doc) {
           console.error(
-            `${modulename}: updateSessions found no matching sessions`,
+            `${modulename}: updateSessions found no matching scores`,
           );
           const errNotFound: Perform.IErr = {
             name: 'DATABASE_NOT_FOUND',
-            message:
-              'The supplied sessions ID does not match a stored sessions',
+            message: 'The supplied sessions ID does not match a stored session',
             statusCode: 404,
             dumped: false,
           };
           return reject(errNotFound);
         }
-        /* return new sessions object */
-        resolve(doc.toObject() as Perform.ISessions);
+        /* convert document to object */
+        const docObject = doc?.toObject() as unknown as Perform.ISessions;
+        return resolve(docObject);
       })
-      .catch((err) => {
-        /* report a general database unavailable error */
-        const functionName = 'updateSessions';
-        databaseUnavailable(err, functionName, req.app.appLocals, reject);
+      .catch((err: any) => {
+        errFunction(err, req, reject);
       });
   });
 };

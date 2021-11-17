@@ -168,16 +168,16 @@
       "type": "pwa-node",
       "request": "launch",
       "linux": {
-        "runtimeExecutable": "/home/cname87/.nvm/versions/node/v16.8.0/bin/node",
+        "runtimeExecutable": "/home/cname87/.nvm/versions/node/v16.13.0/bin/node",
       },
       "program": "${workspaceFolder}/backend/src/app.ts",
       "cwd": "${workspaceFolder}/backend",
       "env": {
         /* If debug needed in production mode */
         "DEBUG": "PP*",
-        "NODE_ENV": "development",
+        // "NODE_ENV": "development",
         // "NODE_ENV": "staging",
-        // "NODE_ENV": "production" // Caution!
+        "NODE_ENV": "production" // Caution!
       },
       "outputCapture": "std",
       "console": "integratedTerminal",
@@ -200,11 +200,12 @@
       /* Starts Chrome and connects to localhost:4200.
       The backend server is started, and the frontend is served on localhost:4200, in a prelaunch task. */
       "name": "Open http://localhost:4200/",
-      "type": "pwa-msedge",
+      "type": "pwa-chrome",
       "preLaunchTask": "Serve Frontend with Backend",
       "postDebugTask": "Taskkill node.exe",
       "request": "launch",
       "linux": {
+        // "runtimeExecutable": "/usr/bin/microsoft-edge-beta",
         "runtimeExecutable": "/usr/bin/google-chrome",
       },
       "windows": {
@@ -401,7 +402,7 @@
     // Run current .ts file
     {
       "type": "node",
-      // "runtimeVersion": "16.3.0",
+      // "runtimeVersion": "16.13.0",
       "request": "launch",
       "name": "Run the currently opened .ts file",
       "cwd": "${workspaceFolder}/backend",
@@ -419,6 +420,15 @@
         "TS_NODE_PROJECT": "tsconfig.json",
       },
     },
+
+    /* Test */
+    {
+        "type": "pwa-msedge",
+        "request": "launch",
+        "name": "Launch Edge",
+        "url": "http://localhost:4200",
+        // "webRoot": "${workspaceFolder}"
+    }
 
   ],
   "compounds": [

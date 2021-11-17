@@ -29,7 +29,7 @@ export class RequestCacheService {
    * @param cache A cache service with a clearCache function
    * @returns void
    */
-  public clearCache(cache?: GetMembersCache): void {
+  public clearCache(cache?: GetMemberCache | GetMembersCache): void {
     this.logger.trace(`${RequestCacheService.name}: running clearCache`);
     if (!cache) {
       this._cacheServices.forEach((cache) => cache.clearCache());
@@ -56,7 +56,7 @@ export class RequestCacheService {
       request.method === 'GET' &&
       this._memberRegex.test(request.urlWithParams) &&
       /**
-       * TODO Extend getMember cache so it stores Requests - currently it returns the same member even if you switch members on the list page
+       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page. (So I am returning undefined i.e. a cache miss) now.
        */
       false
     ) {
@@ -83,6 +83,9 @@ export class RequestCacheService {
       response.status !== StatusCodes.OK &&
       response.status !== StatusCodes.CREATED
     ) {
+      this.logger.trace(
+        `${RequestCacheService.name}: response: ${response.status} => clearing cache`,
+      );
       this.clearCache();
       return;
     }
@@ -96,7 +99,7 @@ export class RequestCacheService {
         }
         /* set member cache */
         if (this._memberRegex.test(request.urlWithParams)) {
-          this.memberCache.setGetAll(response);
+          this.memberCache.setGetOne(response);
         }
         /* don't set any cache for any other GET */
         break;
@@ -107,8 +110,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPostOne(response);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }
@@ -118,8 +121,8 @@ export class RequestCacheService {
         if (request.urlWithParams === this._members) {
           this.membersCache.setPutOne(response);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }
@@ -127,18 +130,24 @@ export class RequestCacheService {
       case 'DELETE': {
         /* set members cache i.e. delete a member */
         const id = +request.urlWithParams.slice(this._members.length + 1);
-        if (request.urlWithParams === this._members && id && !isNaN(id)) {
+        if (
+          id &&
+          !isNaN(id) &&
+          request.urlWithParams === this._members + `/${id}`
+        ) {
           /* if id != 0 and is a number */
           this.membersCache.setDeleteOne(request);
         } else {
-          /* clear all caches */
-          this.clearCache();
+          /* clear the membersCache */
+          this.clearCache(this.membersCache);
         }
         break;
       }
       /* all other request types */
       default: {
-        /* clear all caches */
+        this.logger.trace(
+          `${RequestCacheService.name}: unexpected method => clearing all caches`,
+        );
         this.clearCache();
         break;
       }

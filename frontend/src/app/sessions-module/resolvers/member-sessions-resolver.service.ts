@@ -1,98 +1,53 @@
-import { Injectable, ErrorHandler } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import {
   Resolve,
   RouterStateSnapshot,
   ActivatedRouteSnapshot,
 } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { publishReplay, refCount, catchError, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError, shareReplay } from 'rxjs/operators';
 
-import { MembersService } from '../../app-module/services/members-service/members.service';
 import { SessionsService } from '../services/sessions.service';
-import { IMember } from '../../app-module/models/models';
-import {
-  dummySessions,
-  ISessionsAndMember,
-} from '../data-providers/sessions-models';
+import { UtilsService } from '../../app-module/services/utils-service/utils.service';
+import { ISessions } from '../models/sessions-models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MemberSessionsResolverService implements Resolve<any> {
   constructor(
-    private membersService: MembersService,
-    private sessions2Service: SessionsService,
+    private sessionsService: SessionsService,
+    private utils: UtilsService,
     private logger: NGXLogger,
-    private errorHandler: ErrorHandler,
   ) {
     this.logger.trace(
       `${MemberSessionsResolverService.name}: Starting MemberSessionsResolverService`,
     );
   }
 
-  /**
-   * @returns Returns the Sunday that is equal or prior to today. The date returned is in Date format.
-   */
-  #getLastSunday(): Date {
-    let dateTemp = new Date();
-    /* get last Sunday */
-    dateTemp.setDate(dateTemp.getDate() - dateTemp.getDay());
-    /* remove hours, minutes and seconds */
-    dateTemp = new Date(dateTemp.toDateString());
-    /* move stored UTC value by local time offset to prevent the wrong day being stored */
-    dateTemp = new Date(
-      dateTemp.getTime() - dateTemp.getTimezoneOffset() * 60 * 1000,
-    );
-    return dateTemp;
-  }
-
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<ISessionsAndMember> {
+  ): Observable<ISessions> {
     this.logger.trace(`${MemberSessionsResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */
-    const memberIdString = route.paramMap.get('id');
-    const memberId = +(memberIdString || '0');
+    const memberId = +(route.paramMap.get('id') || '0');
 
-    let errorHandlerCalled = false;
-    const dummyMember: IMember = {
-      id: memberId,
-      name: 'ERROR',
-    };
-
-    return of(memberId).pipe(
-      switchMap((id: number) => {
-        const member$ = this.membersService.getMember(id);
-        const sessions$ = this.sessions2Service.getOrCreateSessions(
-          memberId,
-          this.#getLastSunday(),
-        );
-        const output: Observable<ISessionsAndMember> = of({
-          member$: member$,
-          sessions$: sessions$,
-        });
-        return output;
-      }),
-      publishReplay(1),
-      refCount(),
-
-      catchError((error: any) => {
-        if (!errorHandlerCalled) {
+    return this.sessionsService
+      .getOrCreateSessions(memberId, this.utils.getLastSunday())
+      .pipe(
+        shareReplay(1),
+        catchError((err: any) => {
           this.logger.trace(
             `${MemberSessionsResolverService.name}: catchError called`,
           );
-          errorHandlerCalled = true;
-          this.errorHandler.handleError(error);
-        }
-        const dummyOutput: Observable<ISessionsAndMember> = of({
-          member$: of(dummyMember),
-          sessions$: of(dummySessions),
-        });
-        return dummyOutput;
-      }),
-    );
+          this.logger.trace(
+            `${MemberSessionsResolverService.name}: not proceeding and throwing the error to the error handler`,
+          );
+          throw err;
+        }),
+      );
   }
 }

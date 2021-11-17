@@ -18,7 +18,7 @@ const { expect } = chai;
 describe('Database models operations', () => {
   debug(`Running ${modulename} describe - Database models operation`);
 
-  let database: Perform.Database;
+  let database: Perform.TDatabase;
   interface ITestModel {
     id: number;
     name: string;
@@ -155,7 +155,7 @@ describe('Database models operations', () => {
     try {
       await modelTests.find();
       expect.fail('Should have failed earlier');
-    } catch (err) {
+    } catch (err: any) {
       expect(err.name, 'Should return an Error').to.eql('MongooseError');
     }
   });

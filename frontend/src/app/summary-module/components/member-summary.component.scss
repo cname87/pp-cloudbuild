@@ -8,28 +8,29 @@ div.container {
   overflow-x: scroll;
 }
 
+.mat-table-sticky {
+  border-right: 0.25px solid black;
+}
+
+.mat-row, .mat-header-row {
+  box-sizing: border-box;
+  display: table-row;
+}
+
+.mat-row {
+  padding: 0px;
+}
+
 .mat-cell,
 .mat-header-cell {
   display: table-cell;
-  padding-left: 4px;
-  padding-right: 4px
-}
-.mat-header-cell {
-  color: var(--primary-color-darker);
+  padding-left: calc(var(--base-font) / 4);
+  padding-right: calc(var(--base-font) / 4);
 }
 
-.mat-header-row {
-  border-top: 0.25px solid black;
+.mat-header-cell {
   border-bottom: 0.25px solid black;
-  box-sizing: border-box;
-  display: table-row;
-  min-height: 60px; // ensures first cell with no content is the same height as the others
-}
-.mat-row {
-  border-bottom: 0.25px solid black;
-  box-sizing: border-box;
-  display: table-row;
-  padding: 0px;
+  color: var(--primary-color-darker);
 }
 
 @mixin mat-table-columns($columns) {
@@ -51,22 +52,36 @@ div.container {
         @if map-has-key($props, 'color') {
           color: map-get($props, 'color');
         }
+        @if map-has-key($props, 'font-weight') {
+          font-weight: map-get($props, 'font-weight');
+        }
       }
     }
   }
 }
 
-@include mat-table-columns((item: (pc-flex: 15%, padding: 5px, color: var(--primary-color-darker))));
+@include mat-table-columns((item:
+  ( pc-flex: 15%,
+    padding: calc(var(--base-font) / 4),
+    color: var(--primary-color-darker),
+  )));
 /* set the number of columns to a maximum possible value - it will work with smaller numbers of columns so no need to edit here if you reduce */
-$numberSummaryColumns: 100;
+$numberSummaryColumns: 104;
 @for $i from 1 through $numberSummaryColumns {
   @include mat-table-columns((wk#{$i}: (pc-flex: 8.5%)));
 }
 
-.mat-column-item {
-  border-left: 0.25px solid black;
-}
+/* style the first column */
+@include mat-table-columns(
+  (wk0: (
+    color: var(--primary-color-darker),
+  ))
+);
 
 .row-is-even {
   background: rgb(215, 215, 215);
+}
+
+.hidden {
+  display: none;
 }

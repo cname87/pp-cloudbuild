@@ -54,19 +54,19 @@ const isResponseValid = (
   payload: any,
   statusCode: number,
 ): ValidationResult => {
-  debug(`${modulename}: running postResponseHandler`);
+  debug(`${modulename}: running isResponseValid`);
 
+  /* check responses object exists */
   if (!context?.operation?.responses) {
-    /* return invalid */
     return {
       valid: false,
       errors: [
         {
-          keyword: 'unexpected',
+          keyword: 'Unexpected',
           instancePath: '',
           schemaPath: '',
           params: [],
-          message: 'context or operation missing in response validation call',
+          message: 'responses missing in response validation call',
         },
       ],
     };
@@ -101,16 +101,15 @@ const writeJson = (
   payload?:
     | Perform.IMember
     | Perform.IMember[]
-    | Perform.ISession
-    | Perform.ISession[]
-    | Perform.IQuestionaire
-    | Perform.IQuestionaire[]
+    | { count: number }
     | Perform.IScores
     | Perform.ISessions
-    | Record<string, unknown>,
+    | Summary.TSummary
+    | { isTestDatabase: boolean },
 ): void => {
   debug(`${modulename}: running writeJson`);
 
+  /* validate the pre-serialized payload */
   const validationResult = isResponseValid(context, payload, code);
 
   if (!validationResult.valid) {
@@ -126,9 +125,8 @@ const writeJson = (
     req.app.appLocals.dumpError(err);
     err.message = 'Response validation fail';
 
-    next(err);
+    return next(err);
   } else {
-    /* no error */
     debug(`${modulename}: sending response`);
     res.status(code).json(payload);
   }

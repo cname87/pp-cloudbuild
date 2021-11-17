@@ -30,7 +30,7 @@ describe('dumpError tests', () => {
 
     /* use proxyquire to reload DumpError */
     const { DumpError } = proxyquire(dumpErrorPath, {});
-    const dumpError = new DumpError() as Perform.DumpErrorFunction;
+    const dumpError = new DumpError() as Perform.TDumpErrorFunction;
 
     /* start intercepting stdout and stderr */
     let capturedConsoleLog = '';

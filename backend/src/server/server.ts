@@ -223,7 +223,7 @@ function configureServer(this: any, name = '', dumpError = console.error) {
 export class Server {
   public name: string;
 
-  public dumpError: Perform.DumpErrorFunction;
+  public dumpError: Perform.TDumpErrorFunction;
 
   public listenErrors: number;
 

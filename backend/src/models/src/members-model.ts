@@ -20,7 +20,7 @@ const { modulename, debug } = setupDebug(__filename);
  * @returns A Mongoose model.
  */
 function createModelMembers(
-  database: Perform.Database,
+  database: Perform.TDatabase,
   ModelName: string,
   collection: string,
 ): Perform.IModelExtended {

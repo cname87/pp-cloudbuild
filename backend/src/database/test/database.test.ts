@@ -26,7 +26,7 @@ describe('Database connection', () => {
   debug(`Running ${modulename} describe - Database.connection`);
 
   /* set up module  variables */
-  let database: Perform.Database;
+  let database: Perform.TDatabase;
   const spyDebug = sinon.spy();
 
   /* derive db name from the connection uri */
@@ -63,7 +63,7 @@ describe('Database connection', () => {
     if (
       database &&
       database.dbConnection &&
-      database.dbConnection.readyState === Perform.DbReadyState.Connected
+      database.dbConnection.readyState === Perform.EDbReadyState.Connected
     ) {
       await database.closeConnection(database.dbConnection);
     }
@@ -131,7 +131,7 @@ describe('Database connection', () => {
       expect(
         database.dbConnection.readyState,
         'Connection should be open',
-      ).to.equal(Perform.DbReadyState.Connected);
+      ).to.equal(Perform.EDbReadyState.Connected);
     } else {
       expect.fail('database or dbConnection or db is falsy');
     }
@@ -165,7 +165,7 @@ describe('Database connection', () => {
       expect(
         database.dbConnection.readyState,
         'Connection should be open',
-      ).to.equal(Perform.DbReadyState.Connected);
+      ).to.equal(Perform.EDbReadyState.Connected);
     } else {
       expect.fail('database or dbConnection or db is falsy');
     }
@@ -194,7 +194,7 @@ describe('Database connection', () => {
       expect(
         database2.dbConnection.readyState,
         'Connection should be open',
-      ).to.equal(Perform.DbReadyState.Connected);
+      ).to.equal(Perform.EDbReadyState.Connected);
 
       debug('close the 2nd dbConnection');
       await database2.closeConnection(database2.dbConnection);
@@ -223,7 +223,7 @@ describe('Database connection', () => {
       database.dbConnection = await database.dbConnectionPromise;
       /* will throw an error */
       expect.fail('Should not have reached this point');
-    } catch (err) {
+    } catch (err: any) {
       expect(err.name, 'Should be a MongoParseError').to.eql('MongoParseError');
     }
   });
@@ -252,7 +252,7 @@ describe('Database connection', () => {
       expect(
         database.dbConnection.readyState,
         'Connection should be open',
-      ).to.eql(Perform.DbReadyState.Connected);
+      ).to.eql(Perform.EDbReadyState.Connected);
 
       debug('close the database');
       await database.closeConnection(database.dbConnection);
@@ -358,7 +358,7 @@ describe('Database connection', () => {
       debug('fail to create a Mongoose model');
       database.createModel(testModel, testSchema, dummyCollection);
       expect.fail('Should not have reached this point');
-    } catch (err) {
+    } catch (err: any) {
       debug('run tests');
       expect(err.message, 'Should be a connection error').to.eql(
         'collection name must be a String',
@@ -396,7 +396,7 @@ describe('Database connection', () => {
       expect(
         database.dbConnection.readyState,
         'Connection should be open',
-      ).to.equal(Perform.DbReadyState.Connected);
+      ).to.equal(Perform.EDbReadyState.Connected);
     } else {
       expect.fail('database or dbConnection or db is falsy');
     }

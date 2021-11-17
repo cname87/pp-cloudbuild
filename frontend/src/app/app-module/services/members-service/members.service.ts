@@ -1,14 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, throwError, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
-import { StatusCodes } from 'http-status-codes';
 import { ToastrService } from 'ngx-toastr';
 
 import { MembersDataProvider } from '../../data-providers/members.data-provider';
 import { ICount, IMember, IMemberWithoutId } from '../../models/models';
 import {
-  IErrReport,
   errorSearchTerm,
   E2E_TESTING,
 } from '../../../configuration/configuration';
@@ -27,8 +25,20 @@ export class MembersService {
     this.logger.trace(`${MembersService.name}: starting MembersService`);
   }
 
-  /* common toastr message */
-  private toastrMessage = 'A server access error has occurred';
+  /**
+   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${MembersService.name}: #catchError called`);
+    /* error message displayed to the user for all update fails */
+    const toastrMessage = 'A table update error has occurred';
+    this.logger.trace(`${MembersService.name}: Displaying a toastr message`);
+    this.toastr.error('ERROR!', toastrMessage);
+    this.logger.trace(`${MembersService.name}: Throwing the error on`);
+    throw err;
+  };
 
   /**
    * Gets members from the server.
@@ -78,16 +88,7 @@ export class MembersService {
           );
         }
       }),
-      catchError((err: IErrReport) => {
-        this.logger.trace(`${MembersService.name}: catchError called`);
-
-        /* inform user but do not mark as handled */
-        this.toastr.error('ERROR!', this.toastrMessage);
-        err.isHandled = false;
-
-        this.logger.trace(`${MembersService.name}: Throwing the error on`);
-        return throwError(err);
-      }),
+      catchError(this.#catchError),
     );
   }
 
@@ -110,25 +111,7 @@ export class MembersService {
         );
       }),
 
-      catchError((errReport: IErrReport) => {
-        this.logger.trace(`${MembersService.name}: catchError called`);
-
-        /* inform user */
-        if (
-          errReport.error &&
-          errReport.error.status === StatusCodes.NOT_FOUND
-        ) {
-          /* 404: member did not exist */
-          this.toastr.error(`ERROR: Did not find member with id = ${id}`);
-        } else {
-          /* otherwise a general fail */
-          this.toastr.error('ERROR!', this.toastrMessage);
-        }
-        errReport.isHandled = false;
-
-        this.logger.trace(`${MembersService.name}: Throwing the error on`);
-        return throwError(errReport);
-      }),
+      catchError(this.#catchError),
     );
   }
 
@@ -151,16 +134,7 @@ export class MembersService {
         );
       }),
 
-      catchError((err: IErrReport) => {
-        this.logger.trace(`${MembersService.name}: catchError called`);
-
-        /* inform user but do not mark as handled */
-        this.toastr.error('ERROR!', this.toastrMessage);
-        err.isHandled = false;
-
-        this.logger.trace(`${MembersService.name}: Throwing the error on`);
-        return throwError(err);
-      }),
+      catchError(this.#catchError),
     );
   }
 
@@ -185,25 +159,7 @@ export class MembersService {
         );
       }),
 
-      catchError((errReport: IErrReport) => {
-        this.logger.trace(`${MembersService.name}: catchError called`);
-
-        /* inform user */
-        if (
-          errReport.error &&
-          errReport.error.status === StatusCodes.NOT_FOUND
-        ) {
-          /* 404: member did not exist */
-          this.toastr.error(`ERROR: Did not find member with id = ${id}`);
-        } else {
-          /* otherwise a general fail */
-          this.toastr.error('ERROR!', this.toastrMessage);
-        }
-        errReport.isHandled = false;
-
-        this.logger.trace(`${MembersService.name}: Throwing the error on`);
-        return throwError(errReport);
-      }),
+      catchError(this.#catchError),
     );
   }
 
@@ -226,24 +182,7 @@ export class MembersService {
         );
       }),
 
-      catchError((errReport: IErrReport) => {
-        this.logger.trace(`${MembersService.name}: catchError called`);
-
-        /* inform user */
-        if (
-          errReport.error &&
-          errReport.error.status === StatusCodes.NOT_FOUND
-        ) {
-          /* 404: member did not exist */
-        } else {
-          /* otherwise a general fail */
-          this.toastr.error('ERROR!', this.toastrMessage);
-        }
-        errReport.isHandled = false;
-
-        this.logger.trace(`${MembersService.name}: Throwing the error on`);
-        return throwError(errReport);
-      }),
+      catchError(this.#catchError),
     );
   }
 }

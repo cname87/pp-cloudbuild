@@ -9,7 +9,7 @@ module.exports = {
   globals: {
     chai: 'writable',
   },
-  extends: ['airbnb/base', 'eslint:recommended', 'prettier'],
+  extends: ['eslint:recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',

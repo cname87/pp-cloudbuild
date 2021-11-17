@@ -1,15 +1,11 @@
-/**
- * Project Perform API V2.0.0
- * See https://app.swaggerhub.com/apis/cname87/Project-Perform/2.0.0
- */
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError } from 'rxjs/operators';
+
 import { apiConfiguration } from '../../configuration/configuration';
-import { IScores } from './scores-models';
+import { IScores } from '../models/scores-models';
 
 /**
  * This service handles all communication with the server. It implements all the function to create/get or update a weekly scores table on the server.
@@ -32,21 +28,33 @@ export class ScoresDataProvider {
   }
 
   /**
-   * Get a specific scores table.
-   * @param date: The value of the date property of the scores table.
-   * @returns An observable returning the scores table retrieved.
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
    */
-  public getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
+  #catchError = (err: any): never => {
+    this.logger.trace(`${ScoresDataProvider.name}: #catchError called`);
+    this.logger.trace(`${ScoresDataProvider.name}: Throwing the error on`);
+    throw err;
+  };
+
+  /**
+   * Get a specific scores table that has given member id and date properties, or causes a new scores table to be created in the backend with the given memberId and date properties.
+   * @param memberId The member id of the member to whom the table belongs.
+   * @param date The value of the date property of the scores table to be retrieved, or to be created.
+   * @returns An observable returning the scores table retrieved or created.
+   */
+  getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
     this.logger.trace(`${ScoresDataProvider.name}: getOrCreateScores called`);
 
-    if (date === null || date === undefined) {
+    if (!date || !memberId) {
       throw new Error(
-        'Required parameter date was null or undefined when calling getOrCreateScores.',
+        'A required parameter was invalid when calling getOrCreateScores.',
       );
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
+    headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
@@ -54,15 +62,15 @@ export class ScoresDataProvider {
       `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}/`,
     );
 
-    /* create a body with the date string */
-    const dateObject = { date: date.toISOString() };
+    /* create a body with a date object*/
+    const dateBody = { date: date };
 
     return this.httpClient
-      .post<any>(
+      .post<IScores>(
         `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
-        dateObject,
+        dateBody,
         {
           headers,
           observe: 'body',
@@ -80,49 +88,47 @@ export class ScoresDataProvider {
             )}`,
           );
         }),
-        catchError((errReport) => {
-          this.logger.trace(`${ScoresDataProvider.name}: catchError called`);
-          /* rethrow all errors */
-          this.logger.trace(
-            `${ScoresDataProvider.name}: Throwing the error on`,
-          );
-          return throwError(errReport);
-        }),
+        catchError(this.#catchError),
       );
   }
 
   /**
-   * Updates a scores table.
-   * A scores table object is supplied which must have an id property.
-   * The scores table with that id is updated.
-   * @param scores: Scores table containing detail to be updated.
+   * Updates a scores table. A scores table object is supplied which must have both valid id and memberId properties. The scores table with the supplied id is updated.
+   * @param scores Scores table containing detail to be updated.
    * @returns An observable returning the updated scores table.
    */
   public updateScoresTable(scores: IScores): Observable<IScores> {
     this.logger.trace(`${ScoresDataProvider.name}: updateScoresTable called`);
 
-    if (scores === null || scores === undefined) {
+    if (!scores) {
       throw new Error(
-        'Required parameter scores was null or undefined when calling updateScoresTable.',
+        'A required parameter was invalid when calling updateScoresTable.',
       );
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
     headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
+
+    /* the member id from the supplied table is passed as a url parameter and is used to ensure the calling user either corresponds to that member id or is an admin user */
+    const memberId = scores.memberId;
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.scoresPath}`,
+      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}`,
     );
 
     return this.httpClient
-      .put<IScores>(`${this.basePath}/${this.scoresPath}`, scores, {
-        withCredentials: this.withCredentials,
-        headers,
-      })
+      .put<IScores>(
+        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+          this.scoresPath
+        }`,
+        scores,
+        {
+          withCredentials: this.withCredentials,
+          headers,
+        },
+      )
       .pipe(
         tap((data: IScores) => {
           /* convert the incoming date property which is an ISO string to a Date object (so it works with the form datepicker) */
@@ -133,14 +139,7 @@ export class ScoresDataProvider {
             )}`,
           );
         }),
-        catchError((errReport) => {
-          this.logger.trace(`${ScoresDataProvider.name}: catchError called`);
-          /* rethrow all errors */
-          this.logger.trace(
-            `${ScoresDataProvider.name}: Throwing the error on`,
-          );
-          return throwError(errReport);
-        }),
+        catchError(this.#catchError),
       );
   }
 }

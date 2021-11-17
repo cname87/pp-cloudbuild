@@ -83,8 +83,10 @@ export const memberAuthorizeHandler = (
 ): void => {
   debug(`${modulename}: running memberAuthorizeHandler`);
 
-  const id = +req.params.mid;
-  const isMatchedId = id === (req.auth as any)[authConfig.idInfo.id];
+  /* the api must call for a url parameter named mid corresponding to the member id of the property being accessed */
+  const idToAccess = +req.params.mid;
+  const callingUserId = (req.auth as any)[authConfig.idInfo.id];
+  const isMatchedId = idToAccess === callingUserId;
   const isManager = req.auth?.permissions.includes(
     authConfig.permissions.manage.all,
   );

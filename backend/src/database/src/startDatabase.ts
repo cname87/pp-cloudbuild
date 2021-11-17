@@ -36,8 +36,8 @@ async function startDatabase(
   DB_MODE: string | undefined,
   DB_DATABASE: string | undefined,
   DB_DATABASE_TEST: string | undefined,
-  dumpError: Perform.DumpErrorFunction = console.error,
-): Promise<Perform.Database> {
+  dumpError: Perform.TDumpErrorFunction = console.error,
+): Promise<Perform.TDatabase> {
   debug(`${modulename}: running startDatabase`);
 
   try {

@@ -52,7 +52,8 @@ export function initApp(appLoadService: AppLoadService) {
       disableConsoleLogging: false,
     }),
     ToastrModule.forRoot({
-      timeOut: 5000,
+      timeOut: 3000,
+      /* if toastr issued in different modules all have the message 'ERROR!' then only the first will be shown */
       preventDuplicates: true,
     }),
   ],

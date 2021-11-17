@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 /**
  * This module is loaded first by the loadMocha html page
  * and loads mocha, chai and sinon and sets up mocha.

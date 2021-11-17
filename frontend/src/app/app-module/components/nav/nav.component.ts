@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 
 import { AuthService } from '../../services/auth-service/auth.service';
@@ -11,6 +11,7 @@ interface ILink {
   path: string;
   display: string;
   disabled: boolean;
+  hidden: any;
 }
 
 /**
@@ -21,7 +22,7 @@ interface ILink {
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
-export class NavComponent {
+export class NavComponent implements OnInit {
   #membersList = routes.membersList;
   #detail = routes.member;
   #scores = routes.scores;
@@ -48,26 +49,31 @@ export class NavComponent {
           path: `/${this.#membersList.path}`,
           display: this.#membersList.displayName,
           disabled: !user?.roles.includes(roles.admin),
+          hidden: !user?.roles.includes(roles.admin),
         },
         {
           path: `/${this.#detail.path}/${id}`,
           display: this.#detail.displayName,
           disabled: disabled,
+          hidden: false,
         },
         {
           path: `/${this.#scores.path}/${id}`,
           display: this.#scores.displayName,
           disabled: disabled,
+          hidden: false,
         },
         {
           path: `/${this.#sessions.path}/${id}`,
           display: this.#sessions.displayName,
           disabled: disabled,
+          hidden: false,
         },
         {
           path: `/${this.#summary.path}/${id}`,
           display: this.#summary.displayName,
           disabled: disabled,
+          hidden: false,
         },
       ];
     });

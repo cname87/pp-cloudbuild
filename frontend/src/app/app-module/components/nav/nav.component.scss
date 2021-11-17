@@ -26,3 +26,7 @@ a.mat-tab-link.item-active {
   /* override the disabled color so disabled tabs can appear as selected (when they are selected via route) */
   color: rgba(0, 0, 0, 1.00);
 }
+
+a.mat-tab-link.hidden {
+  display: none;
+}

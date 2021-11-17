@@ -46,7 +46,7 @@ describe('Start server tests', () => {
   it('Start http server only', async () => {
     try {
       await startServer(app, objects.servers, objects.dumpError);
-    } catch (err) {
+    } catch (err: any) {
       expect.fail('Should not throw an error');
     }
 
@@ -64,7 +64,7 @@ describe('Start server tests', () => {
       await startServer(app, objects.servers, objects.dumpError);
       await startServer(app, objects.servers, objects.dumpError);
       expect.fail('Should not have reached here');
-    } catch (err) {
+    } catch (err: any) {
       expect(err.code, 'Should throw a port busy error').to.eql('EADDRINUSE');
     }
   });

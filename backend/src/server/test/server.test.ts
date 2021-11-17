@@ -93,7 +93,7 @@ describe('Server operations tests', () => {
         isServerListening,
         'Should leave a listening server object',
       ).to.eql(true);
-    } catch (err) {
+    } catch (err: any) {
       expect.fail('Should not throw an error');
     }
   });
@@ -117,7 +117,7 @@ describe('Server operations tests', () => {
 
     try {
       await server2.listenServer(serverPort, listenTries, listenTimeout);
-    } catch (err) {
+    } catch (err: any) {
       /* copy parameters to be tested and close server before tests */
       const isServer1Listening = server1.expressServer.listening;
       const isServer2Listening = server2.expressServer.listening;
@@ -179,7 +179,7 @@ describe('Server operations tests', () => {
         isServer1Listening,
         'Should return a non-listening server object',
       ).to.eql(false);
-    } catch (err) {
+    } catch (err: any) {
       expect.fail('Should not throw an error');
     }
   });
@@ -208,7 +208,7 @@ describe('Server operations tests', () => {
     const stubError = sinon.stub(console, 'error');
     try {
       await server1.listenServer();
-    } catch (err) {
+    } catch (err: any) {
       /* test that an error is eventually thrown */
       expect(err.code, 'Should be test error').to.eql('Test Error');
     }
