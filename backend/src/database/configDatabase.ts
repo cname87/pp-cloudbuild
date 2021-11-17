@@ -90,11 +90,11 @@ export const configDatabase = {
       sslCert: cert,
       sslKey: key,
       sslValidate,
-      /* set false if you have a large database and are changing indexes as could result in a slow start up - not a problem for a small database and impact is on only on startup*/
+      /* Builds any required indexes on startup.  Build indexes in a maintenance window and set this false if you have a large database and are changing indexes, as database response could be slow during an index build.  This is not a problem for a small database and if I am not changing indexes during production operation */
       autoIndex: true,
       keepAlive: true, // default true
       keepAliveInitialDelay: 300000, // default 300000
-      socketTimeoutMS: 0, // default 360000
+      socketTimeoutMS: 30000, // default 30000
       appName: 'perform',
       loggerLevel: 'error', // default 'error'
     };

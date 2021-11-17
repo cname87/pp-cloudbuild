@@ -157,7 +157,7 @@ const fillValues = (
             summaryItem.average;
         }
         if ('stdDev' in summaryItem  && summaryItem.stdDev) {
-          /* calculate monotony */
+          /* calculate monotony as a percentage*/
           const monotony = summaryItem.average / summaryItem.stdDev;
           (summaryTable[ERowNumbers.Monotony][index] as number) =
             Math.round((monotony + Number.EPSILON) * 100) / 100;
@@ -203,21 +203,16 @@ const fillDelta = (table: Summary.TSummary): Summary.TSummary => {
 const fillACWR = (table: Summary.TSummary): Summary.TSummary => {
   const loadRow = table[ERowNumbers.Load];
   const acwrRow = table[ERowNumbers.ACWR];
-  /* set first 4 data elements to 0 */
-  acwrRow[EColumns.FirstData] = 0;
-  acwrRow[EColumns.FirstData + 1] = 0;
-  acwrRow[EColumns.FirstData + 2] = 0;
-  acwrRow[EColumns.FirstData + 3] = 0;
 
-  /* set the following values to the ACWR */
   for (let index = +EColumns.FirstData; index < acwrRow.length; index++) {
     const n0 = +loadRow[index];
+    /* ensure no negative indexes in 4 week average calculation*/
     const n1 = index - 1 > 0 ? +loadRow[index - 1] : 0;
     const n2 = index - 2 > 0 ? +loadRow[index - 2] : 0;
     const n3 = index - 3 > 0 ? +loadRow[index - 3] : 0;
     const n4 = index - 4 > 0 ? +loadRow[index - 4] : 0;
-    /* ACWR is left as zero if there the week's session is 0 */
-    acwrRow[index] = n0 ? Math.round((n1 + n2 +n3 + n4) / n0) : 0;
+    /* ACWR to two significant places and left as zero if the 4 week average is 0 */
+    acwrRow[index] = (n1 +n2 + n3 + n4) ? ((4 * n0)/(n1 + n2 +n3 + n4)).toPrecision(2) : 0;
   }
   table[ERowNumbers.ACWR] = acwrRow;
   return table;
