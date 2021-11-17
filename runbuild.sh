@@ -32,7 +32,7 @@ cd ..
 
 cd ./frontend || exit
 npm run build:prod
-docker build --no-cache --tag="${FRONTEND_IMAGE}" ./Dockerfile
+docker build --no-cache --tag="${FRONTEND_IMAGE}" .
 docker push "${FRONTEND_IMAGE}"
 cd ..
 

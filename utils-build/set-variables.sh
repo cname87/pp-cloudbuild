@@ -16,3 +16,6 @@ export PRODUCTION="production"
 
 export BACKEND_IMAGE="gcr.io/${PROJECT}/${BACKEND_DIRECTORY}/${DEVELOPMENT}"
 export FRONTEND_IMAGE="gcr.io/${PROJECT}/${FRONTEND_DIRECTORY}/${DEVELOPMENT}"
+
+# Set the gcloud run region
+export CLOUD_RUN_REGION="europe-west1"
