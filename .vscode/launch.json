@@ -168,16 +168,16 @@
       "type": "pwa-node",
       "request": "launch",
       "linux": {
-        "runtimeExecutable": "/home/cname87/.nvm/versions/node/v16.8.0/bin/node",
+        "runtimeExecutable": "/home/cname87/.nvm/versions/node/v16.13.0/bin/node",
       },
       "program": "${workspaceFolder}/backend/src/app.ts",
       "cwd": "${workspaceFolder}/backend",
       "env": {
         /* If debug needed in production mode */
         "DEBUG": "PP*",
-        "NODE_ENV": "development",
+        // "NODE_ENV": "development",
         // "NODE_ENV": "staging",
-        // "NODE_ENV": "production" // Caution!
+        "NODE_ENV": "production" // Caution!
       },
       "outputCapture": "std",
       "console": "integratedTerminal",
@@ -402,7 +402,7 @@
     // Run current .ts file
     {
       "type": "node",
-      // "runtimeVersion": "16.3.0",
+      // "runtimeVersion": "16.13.0",
       "request": "launch",
       "name": "Run the currently opened .ts file",
       "cwd": "${workspaceFolder}/backend",

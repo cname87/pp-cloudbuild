@@ -27,6 +27,8 @@
   },
   "scripts": {
     "start": "node ./dist/src/app.js",
+    "start:prod": "NODE_ENV='production' node ./dist/src/app.js",
+    "start:prod:debug": "NODE_ENV=production DEBUG=PP* node ./dist/src/app.js",
     "isServerUp": "ts-node --project ./tsconfig.json ./utils-build/isServerUp.ts",
     "checkServer": "ts-node --project ./tsconfig.json ./utils-build/checkServer.ts",
     "delDist": "ts-node ./utils-build/delDistDir.ts",
