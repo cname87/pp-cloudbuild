@@ -83,7 +83,129 @@
             }
           },
           "400": {
-            "description": "The request is not valid.",
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member": {
+      "post": {
+        "summary": "Adds a member.",
+        "description": "Adds a supplied member.\nA member object without an id property must be supplied in the body.\n",
+        "operationId": "addMember",
+        "requestBody": {
+          "description": "Member detail (without id field).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Member created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/{mid}": {
+      "get": {
+        "summary": "Returns a specific member.",
+        "description": "Get the member defined by the supplied id.\n",
+        "operationId": "getMember",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member information returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -118,6 +240,19 @@
         "summary": "Updates a member.",
         "description": "Updates a member. A member object is supplied which must have an id property.\nThe member with that id is updated.\n",
         "operationId": "updateMember",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Member object.",
           "content": {
@@ -132,136 +267,6 @@
         "responses": {
           "200": {
             "description": "Member updated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Member"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request is not valid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "A member with the supplied member ID was not found.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "The database service is not available.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Adds a member.",
-        "description": "Adds a supplied member.\nA member object without an id property must be supplied in the body.\n",
-        "operationId": "addMember",
-        "requestBody": {
-          "description": "Member detail (without id field).",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/MemberWithoutId"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Member created.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Member"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "The request is not valid.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "The database service is not available.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "default": {
-            "description": "Unexpected error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/members/{mid}": {
-      "get": {
-        "summary": "Returns a specific member.",
-        "description": "Get the member defined by the supplied id.\n",
-        "operationId": "getMember",
-        "parameters": [
-          {
-            "name": "mid",
-            "in": "path",
-            "description": "The value of the id property of the member.",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "$ref": "#/components/schemas/PositiveInteger"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Member information returned.",
             "content": {
               "application/json": {
                 "schema": {
@@ -383,7 +388,7 @@
         }
       }
     },
-    "/members/{mid}/scores": {
+    "/member/{mid}/scores": {
       "put": {
         "summary": "Updates a specific scores table.",
         "description": "A scores object is supplied which must have a id corresponding to an existing scores object.\nThe scores table with that id is updated with the supplied scores table.\n",
@@ -424,7 +429,7 @@
             }
           },
           "400": {
-            "description": "The request is not valid.",
+            "description": "The request is not a valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -467,7 +472,7 @@
       },
       "post": {
         "summary": "Gets, or creates, a scores table object.",
-        "description": "Gets, or creates, a scores table object, as determined by the member id and the date in body.\n",
+        "description": "Gets, or creates, a scores table object, as determined by the member id and the date in the body.\n",
         "operationId": "getOrCreateScores",
         "parameters": [
           {
@@ -537,7 +542,7 @@
         }
       }
     },
-    "/members/{mid}/sessions": {
+    "/member/{mid}/sessions": {
       "put": {
         "summary": "Updates a specific sessions table.",
         "description": "A sessions object is supplied which must have a id corresponding to an existing sessions object.\nThe sessions table with that id is updated with the supplied sessions table.\n",
@@ -578,7 +583,7 @@
             }
           },
           "400": {
-            "description": "The request is not valid.",
+            "description": "The request is not a valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -659,7 +664,7 @@
             }
           },
           "400": {
-            "description": "The request is not valid.",
+            "description": "The request is not a valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -691,7 +696,7 @@
         }
       }
     },
-    "/members/{mid}/summary": {
+    "/member/{mid}/summary": {
       "get": {
         "summary": "Returns a summary of a number of weeks of scores tables associated with a member.",
         "description": "Returns a summary of a number of weeks of scores tables associated with a member.\nThe number of weeks in the returned summary table is determined by the 'weeks' query parameter.\nIf no scores table is stored for a particular date then it is summarized as a zero score.\n",
@@ -732,7 +737,7 @@
             }
           },
           "400": {
-            "description": "The request is not valid.",
+            "description": "The request is not a valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -788,6 +793,26 @@
         "format": "string",
         "example": "John Doe"
       },
+      "DateString": {
+        "maxLength": 24,
+        "type": "string",
+        "description": "Date string",
+        "format": "date-string",
+        "example": "2021-07-18T00:00:00.000Z"
+      },
+      "Date": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "$ref": "#/components/schemas/DateString"
+          }
+        },
+        "description": "Simple date object"
+      },
+      "Object": {
+        "type": "object",
+        "description": "Represents pre-serialized date objects sent from the backend"
+      },
       "Member": {
         "required": [
           "id",
@@ -804,12 +829,6 @@
         },
         "description": "Member information"
       },
-      "Members": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Member"
-        }
-      },
       "MemberWithoutId": {
         "required": [
           "name"
@@ -821,6 +840,42 @@
           }
         },
         "description": "Member information without id field"
+      },
+      "Members": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Member"
+        }
+      },
+      "Scores-row": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "format": "binary"
+          },
+          "monday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "tuesday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "wednesday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "thursday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "friday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "saturday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "sunday": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          }
+        }
       },
       "Scores": {
         "required": [
@@ -856,32 +911,17 @@
           }
         }
       },
-      "Scores-row": {
+      "Sessions-row": {
         "type": "object",
         "properties": {
-          "item": {
+          "session-type": {
             "type": "string",
             "format": "binary"
           },
-          "monday": {
+          "rpe": {
             "$ref": "#/components/schemas/ZeroUpInteger"
           },
-          "tuesday": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "wednesday": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "thursday": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "friday": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "saturday": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "sunday": {
+          "duration": {
             "$ref": "#/components/schemas/ZeroUpInteger"
           }
         }
@@ -920,27 +960,6 @@
           }
         }
       },
-      "Sessions-row": {
-        "type": "object",
-        "properties": {
-          "session-type": {
-            "type": "string",
-            "format": "binary"
-          },
-          "rpe": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          },
-          "duration": {
-            "$ref": "#/components/schemas/ZeroUpInteger"
-          }
-        }
-      },
-      "Summary": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/SummaryRow"
-        }
-      },
       "SummaryRow": {
         "type": "array",
         "items": {
@@ -954,25 +973,11 @@
           ]
         }
       },
-      "DateString": {
-        "maxLength": 24,
-        "type": "string",
-        "description": "Date string",
-        "format": "date-string",
-        "example": "2021-07-18T00:00:00.000Z"
-      },
-      "Date": {
-        "type": "object",
-        "properties": {
-          "date": {
-            "$ref": "#/components/schemas/DateString"
-          }
-        },
-        "description": "Simple date object"
-      },
-      "Object": {
-        "type": "object",
-        "description": "Represents pre-serialized date objects sent from the backend"
+      "Summary": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/SummaryRow"
+        }
       },
       "Count": {
         "required": [
@@ -1016,6 +1021,38 @@
           }
         },
         "description": "The value true informs that the test database is in use."
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "The request is not a valid.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "The database service is not available.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "default": {
+        "description": "Unexpected error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
       }
     }
   }

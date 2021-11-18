@@ -17,7 +17,7 @@ export class ScoresDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private scoresPath = apiConfiguration.scoresPath;
-  private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -59,7 +59,7 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}/`,
+      `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.scoresPath}/`,
     );
 
     /* create a body with a date object*/
@@ -67,7 +67,7 @@ export class ScoresDataProvider {
 
     return this.httpClient
       .post<IScores>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
         dateBody,
@@ -115,12 +115,12 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}`,
+      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.scoresPath}`,
     );
 
     return this.httpClient
       .put<IScores>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
         scores,

@@ -9,10 +9,12 @@ import { GetMemberCache } from './get-member-cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class RequestCacheService {
-  private _members = `${apiConfiguration.basePath}/${apiConfiguration.membersPath}`;
-  /* Note: must match 'members/1' but not 'members/1/sessions' */
-  private _memberRegex = new RegExp(this._members + `\/[1-9]\d*$`);
-  private _cacheServices = [this.membersCache, this.memberCache];
+  //
+  #members = `${apiConfiguration.basePath}/${apiConfiguration.membersPath}`;
+  #member = `${apiConfiguration.basePath}/${apiConfiguration.memberPath}`;
+  /* Note: must match 'member/1' but not 'member/1/sessions' */
+  #memberWithId = new RegExp(this.#member + `\/[1-9]\d*$`);
+  #cacheServices = [this.membersCache, this.memberCache];
 
   constructor(
     private membersCache: GetMembersCache,
@@ -29,38 +31,34 @@ export class RequestCacheService {
    * @param cache A cache service with a clearCache function
    * @returns void
    */
-  public clearCache(cache?: GetMemberCache | GetMembersCache): void {
+  clearCache(cache?: GetMemberCache | GetMembersCache): void {
     this.logger.trace(`${RequestCacheService.name}: running clearCache`);
     if (!cache) {
-      this._cacheServices.forEach((cache) => cache.clearCache());
+      this.#cacheServices.forEach((cache) => cache.clearCache());
     } else {
       cache.clearCache();
     }
   }
 
   /**
-   * Called by a http interceptor asking for a cached http response to a http request. It will only match to a specific url which is 'api-v1/members'
+   * Called by a http interceptor asking for a cached http response to a http request. It will only match to a specific urls'
    * @param request: The http interceptor sends in the request for which a cached response is required.
    * @returns
    * - Returns a cached http response if it has one.
    * - Returns undefined if there is no cached response.
    */
-  public getCache(request: HttpRequest<any>): HttpResponse<any> | undefined {
+  getCache(request: HttpRequest<any>): HttpResponse<any> | undefined {
     this.logger.trace(`${RequestCacheService.name}: running getCache`);
     /* return cache for get all members */
-    if (request.method === 'GET' && request.urlWithParams === this._members) {
+    if (request.method === 'GET' && request.urlWithParams === this.#members) {
       return this.membersCache.response;
     }
     /* return cache for get one member */
     if (
       request.method === 'GET' &&
-      this._memberRegex.test(request.urlWithParams) &&
-      /**
-       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page. (So I am returning undefined i.e. a cache miss) now.
-       */
-      false
+      this.#memberWithId.test(request.urlWithParams)
     ) {
-      return this.memberCache.response;
+      return this.memberCache.getCache(request);
     }
     /* otherwise return that the cache is empty */
     return undefined;
@@ -72,10 +70,7 @@ export class RequestCacheService {
    * @param response The response to the sent request.
    * @returns void
    */
-  public putCache(
-    request: HttpRequest<any>,
-    response: HttpResponse<any>,
-  ): void {
+  putCache(request: HttpRequest<any>, response: HttpResponse<any>): void {
     this.logger.trace(`${RequestCacheService.name}: running putCache`);
 
     /* clear all caches if anything other than a 200 or 201 response */
@@ -90,60 +85,64 @@ export class RequestCacheService {
       return;
     }
 
+    /* exit if not in the cacheable url list */
+    if (
+      request.urlWithParams !== this.#members &&
+      request.urlWithParams !== this.#member &&
+      !this.#memberWithId.test(request.urlWithParams)
+    ) {
+      return;
+    }
+
     /* decide action based on the request method & url */
     switch (request.method) {
       case 'GET': {
         /* set members cache */
-        if (request.urlWithParams === this._members) {
+        if (request.urlWithParams === this.#members) {
           this.membersCache.setGetAll(response);
         }
         /* set member cache */
-        if (this._memberRegex.test(request.urlWithParams)) {
-          this.memberCache.setGetOne(response);
+        if (this.#memberWithId.test(request.urlWithParams)) {
+          this.memberCache.setGetOne(request, response);
         }
-        /* don't set any cache for any other GET */
         break;
       }
 
       case 'POST': {
-        /* set members cache, i.e. add a member */
-        if (request.urlWithParams === this._members) {
+        /* if this is an add member */
+        if (request.urlWithParams === this.#member) {
+          /* add a member to the members cache */
           this.membersCache.setPostOne(response);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
         }
         break;
       }
 
       case 'PUT': {
-        /* set members cache, i.e. update a member */
-        if (request.urlWithParams === this._members) {
+        /* if this is a member update */
+        if (this.#memberWithId.test(request.urlWithParams)) {
+          /* update a member in the members cache and clear the member cache */
           this.membersCache.setPutOne(response);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
+          this.memberCache.clearCache(request);
         }
         break;
       }
 
       case 'DELETE': {
-        /* set members cache i.e. delete a member */
-        const id = +request.urlWithParams.slice(this._members.length + 1);
+        /* if this is a delete member */
+        const id = +request.urlWithParams.slice(this.#member.length + 1);
         if (
+          this.#memberWithId.test(request.urlWithParams) &&
           id &&
-          !isNaN(id) &&
-          request.urlWithParams === this._members + `/${id}`
+          !isNaN(id)
         ) {
-          /* if id != 0 and is a number */
-          this.membersCache.setDeleteOne(request);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
+          /* delete a member in the members cache and clear the member cache */
+          /* set members cache i.e. delete a member */
+          this.membersCache.setDeleteOne(id);
+          this.memberCache.clearCache(request);
         }
         break;
       }
-      /* all other request types */
+      /* all other request types - unexpected */
       default: {
         this.logger.trace(
           `${RequestCacheService.name}: unexpected method => clearing all caches`,

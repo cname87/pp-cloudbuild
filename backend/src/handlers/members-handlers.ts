@@ -227,41 +227,10 @@ const deleteMember = (req: Request, memberId: number): Promise<number> => {
   });
 };
 
-/**
- * Deletes all the members in a team.
- * Resets the autoincrement id function so the next member created will have an id of 1.
- * @param req The http request being actioned (used to retrieve the data model).
- * @rejects Resolves to a reported error.
- * @returns Promise that resolves to undefined.
- */
-const deleteMembers = (req: Request): Promise<number> => {
-  debug(`${modulename}: running deleteMembers`);
-
-  const modelMembers = req.app.appLocals.models.members;
-
-  return new Promise((resolve, reject) => {
-    modelMembers
-      .deleteMany({})
-      .exec()
-      .then((docs) => {
-        /* reset id autoincrement count to 1 */
-        modelMembers.resetCount();
-        /* return number of members deleted */
-        return resolve(docs.deletedCount!);
-      })
-      .catch((err) => {
-        /* report a general database unavailable error */
-        const functionName = 'deleteMembers';
-        databaseUnavailable(err, functionName, req.app.appLocals, reject);
-      });
-  });
-};
-
 export const membersHandlers = {
   addMember,
   getMember,
   getMembers,
   updateMember,
   deleteMember,
-  deleteMembers,
 };

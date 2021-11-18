@@ -18,7 +18,7 @@ export class SummaryDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private summaryPath = apiConfiguration.summaryPath;
-  private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -70,12 +70,12 @@ export class SummaryDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SummaryDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.summaryPath}/`,
+      `${SummaryDataProvider.name}: Sending GET request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.summaryPath}/`,
     );
 
     return this.httpClient
       .get<TSummary>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.summaryPath
         }`,
         {

@@ -30,7 +30,7 @@ export class SessionsDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private sessionsPath = apiConfiguration.sessionsPath;
-  private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -116,7 +116,7 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.sessionsPath}/`,
+      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.sessionsPath}/`,
     );
 
     /* create a body with a date object */
@@ -124,7 +124,7 @@ export class SessionsDataProvider {
 
     return this.httpClient
       .post<ISessions>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
         dateBody,
@@ -180,12 +180,12 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}${this.sessionsPath}`,
+      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}${this.sessionsPath}`,
     );
 
     return this.httpClient
       .put<ISessions>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
         sessionsStripped,
