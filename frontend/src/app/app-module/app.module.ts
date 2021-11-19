@@ -30,6 +30,7 @@ import {
   rollbarFactory,
 } from './services/error-handler-service/error-handler.service';
 import { httpInterceptorProviders } from './http-interceptors';
+import { CustomPreloadStrategy } from './services/custom-preload-strategy.service/custom-preload-strategy.service';
 
 export function initApp(appLoadService: AppLoadService) {
   return () => appLoadService.initApp();
@@ -82,6 +83,7 @@ export function initApp(appLoadService: AppLoadService) {
       multi: true,
     },
     httpInterceptorProviders,
+    CustomPreloadStrategy,
   ],
 })
 export class AppModule {}

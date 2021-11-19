@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, of, Subject } from 'rxjs';
@@ -16,7 +16,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.scss'],
 })
-export class MemberDetailComponent implements OnInit, OnDestroy {
+export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   //
   /* member to display */
   member$!: Observable<IMember>;
@@ -81,6 +81,13 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
+  }
+
+  ngAfterViewInit(): void {
+    /* load all lazy loaded modules to shorten their eventual load times */
+    import('../../../scores-module/components/member-scores.component');
+    import('../../../sessions-module/components/member-sessions.component');
+    import('../../../summary-module/components/member-summary.component');
   }
 
   get userProfile$() {

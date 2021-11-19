@@ -13,7 +13,7 @@ export class RequestCacheService {
   #members = `${apiConfiguration.basePath}/${apiConfiguration.membersPath}`;
   #member = `${apiConfiguration.basePath}/${apiConfiguration.memberPath}`;
   /* Note: must match 'member/1' but not 'member/1/sessions' */
-  #memberWithId = new RegExp(this.#member + `\/[1-9]\d*$`);
+  #memberWithId = new RegExp(this.#member + `\/[1-9]\\d*$`);
   #cacheServices = [this.membersCache, this.memberCache];
 
   constructor(
@@ -49,6 +49,7 @@ export class RequestCacheService {
    */
   getCache(request: HttpRequest<any>): HttpResponse<any> | undefined {
     this.logger.trace(`${RequestCacheService.name}: running getCache`);
+
     /* return cache for get all members */
     if (request.method === 'GET' && request.urlWithParams === this.#members) {
       return this.membersCache.response;
