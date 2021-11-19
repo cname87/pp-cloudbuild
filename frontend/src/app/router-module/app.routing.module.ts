@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-
+import { NoPreloading, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { UserTypeGuard } from './guards/user-type.guard';
 import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
@@ -10,8 +9,6 @@ import { CallbackComponent } from '../app-module/components/callback/callback.co
 import { MemberDetailResolverService } from '../app-module/resolvers/member-detail-resolver.service';
 import { MembersListResolverService } from '../app-module/resolvers/members-list-resolver.service';
 import { routes } from '../configuration/configuration';
-// eslint-disable-next-line max-len
-import { CustomPreloadStrategy } from '../app-module/services/custom-preload-strategy.service/custom-preload-strategy.service';
 
 const appRoutes: Routes = [
   {
@@ -55,7 +52,6 @@ const appRoutes: Routes = [
     path: `${routes.scores.path}/:id`,
     loadChildren: () =>
       import('../scores-module/scores.module').then((m) => m.ScoresModule),
-    data: { preload: false, delay: 3000 },
   },
   {
     /* shows a member's weekly session data */
@@ -64,14 +60,12 @@ const appRoutes: Routes = [
       import('../sessions-module/sessions.module').then(
         (m) => m.SessionsModule,
       ),
-    data: { preload: false, delay: 3000 },
   },
   {
     /* shows a member's summary data */
     path: `${routes.summary.path}/:id`,
     loadChildren: () =>
       import('../summary-module/summary.module').then((m) => m.SummaryModule),
-    data: { preload: false, delay: 3000 },
   },
   {
     /* shows not found, error, and login information */
@@ -89,7 +83,7 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(appRoutes, {
       enableTracing: false, // true for debugging purposes only
-      preloadingStrategy: CustomPreloadStrategy,
+      preloadingStrategy: NoPreloading, // lazy loaded modules manually loaded after member detail screen has loaded
     }),
   ],
   exports: [RouterModule],
