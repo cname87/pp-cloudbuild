@@ -1,4 +1,10 @@
-import { Component, ViewChild, OnInit, TemplateRef } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  TemplateRef,
+  AfterViewInit,
+} from '@angular/core';
 import { FormlyFieldConfig, FieldArrayType } from '@ngx-formly/core';
 import { SelectionType, TableColumn } from '@swimlane/ngx-datatable';
 import { NGXLogger } from 'ngx-logger';
@@ -8,7 +14,10 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./datatable.type.scss'],
   templateUrl: './datatable.type.html',
 })
-export class DatatableTypeComponent extends FieldArrayType implements OnInit {
+export class DatatableTypeComponent
+  extends FieldArrayType
+  implements AfterViewInit, OnInit
+{
   @ViewChild('defaultColumn', { static: true })
   defaultColumn!: TemplateRef<any>;
 
@@ -23,6 +32,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     this.logger.trace(
       `${DatatableTypeComponent.name}: Starting DatatableTypeComponent`,
     );
+    console.timeLog('scores');
   }
   ngOnInit() {
     /* Note: 'this.to' refers to the templateOptions set in the MemberScoresComponent */
@@ -42,6 +52,10 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
       /* force datatable table update */
       this.to.columns = [...this.to.columns];
     });
+  }
+
+  ngAfterViewInit(): void {
+    console.timeLog('scores');
   }
 
   /* set up table fields */

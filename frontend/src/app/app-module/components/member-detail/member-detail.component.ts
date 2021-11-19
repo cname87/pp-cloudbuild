@@ -7,6 +7,9 @@ import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { RouteStateService } from '../../services/route-state-service/router-state.service';
 import { AuthService } from '../../services/auth-service/auth.service';
+import { ScoresService } from '../../../scores-module/services/scores.service';
+import { SessionsService } from '../../../sessions-module/services/sessions.service';
+import { SummaryService } from '../../../summary-module/services/summary.service';
 
 /**
  * @title This member shows detail on a member whose id is passed in via the url id parameter.
@@ -20,12 +23,17 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   //
   /* member to display */
   member$!: Observable<IMember>;
+  /* member id from url path */
+  #id = 0;
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
 
   constructor(
     private auth: AuthService,
     private route: ActivatedRoute,
+    private summary: SummaryService,
+    private scores: ScoresService,
+    private sessions: SessionsService,
     private logger: NGXLogger,
     private routeStateService: RouteStateService,
   ) {
@@ -52,6 +60,10 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     throw err;
   };
 
+  get userProfile$() {
+    return this.auth.userProfile$;
+  }
+
   ngOnInit() {
     /* get the data as supplied from the route resolver */
     this.route.data
@@ -68,6 +80,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           if (!id) {
             throw new Error('id path parameter was null');
           }
+          this.#id = +id;
           return id;
         }),
         takeUntil(this.#destroy$),
@@ -76,21 +89,33 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
-  ngOnDestroy(): void {
-    this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
-    this.#destroy$.next();
-    this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
-  }
-
   ngAfterViewInit(): void {
     /* load all lazy loaded modules to shorten their eventual load times */
     import('../../../scores-module/components/member-scores.component');
     import('../../../sessions-module/components/member-sessions.component');
     import('../../../summary-module/components/member-summary.component');
+    /* calls to load caches */
+    this.scores.getOrCreateScores(this.#id).subscribe(() => {
+      this.logger.trace(
+        `${MemberDetailComponent.name}: GetOrCreateScores called to load cache`,
+      );
+    });
+    this.sessions.getOrCreateSessions(this.#id).subscribe(() => {
+      this.logger.trace(
+        `${MemberDetailComponent.name}: GetOrCreateSessions called to load cache`,
+      );
+    });
+    this.summary.getSummaryData(this.#id).subscribe(() => {
+      this.logger.trace(
+        `${MemberDetailComponent.name}: GetSummary called to load cache`,
+      );
+    });
   }
 
-  get userProfile$() {
-    return this.auth.userProfile$;
+  ngOnDestroy(): void {
+    this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
+    this.routeStateService.updateIdState('');
   }
 }

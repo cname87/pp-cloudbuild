@@ -42,7 +42,7 @@ export class MemberSummaryResolverService
           `${MemberSummaryResolverService.name}: catchError called`,
         );
         this.logger.trace(
-          `${MemberSummaryResolverService.name}: not proceeding and throwing the error to the error handler`,
+          `${MemberSummaryResolverService.name}: Not proceeding and throwing the error to the error handler`,
         );
         throw err;
       }),

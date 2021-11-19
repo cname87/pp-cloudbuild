@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { ScoresDataProvider } from '../data-providers/scores.data-provider';
 import { IScores } from '../models/scores-models';
+import { UtilsService } from '../../app-module/services/utils-service/utils.service';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.
@@ -16,6 +17,7 @@ export class ScoresService {
     private scoresDataProvider: ScoresDataProvider,
     private logger: NGXLogger,
     private toastr: ToastrService,
+    private utils: UtilsService,
   ) {
     this.logger.trace(`${ScoresService.name}: starting ScoresService`);
   }
@@ -41,7 +43,10 @@ export class ScoresService {
    * @returns An observable containing a scores table object.
    * @throws See #catchError.
    */
-  getOrCreateScores(memberId: number, date: Date): Observable<IScores> {
+  getOrCreateScores(
+    memberId: number,
+    date = this.utils.getLastSunday(),
+  ): Observable<IScores> {
     this.logger.trace(`${ScoresService.name}: getOrCreateScores called`);
 
     return this.scoresDataProvider.getOrCreateScores(memberId, date).pipe(

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
@@ -20,7 +20,7 @@ import { ScoresService } from '../services/scores.service';
   styleUrls: ['./member-scores.component.scss'],
   templateUrl: './member-scores.component.html',
 })
-export class MemberScoresComponent implements OnDestroy {
+export class MemberScoresComponent implements AfterViewInit, OnDestroy {
   //
   /* used to report table change */
   #tableChange = new EventEmitter();
@@ -264,6 +264,7 @@ export class MemberScoresComponent implements OnDestroy {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
     );
+    console.time('scores');
 
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
@@ -357,6 +358,10 @@ export class MemberScoresComponent implements OnDestroy {
       this.#tableChange.emit('modelChange');
     }
   };
+
+  ngAfterViewInit(): void {
+    console.timeEnd('scores');
+  }
 
   ngOnDestroy(): void {
     this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
