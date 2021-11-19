@@ -218,3 +218,8 @@ export interface ISessions extends ISessionsStripped {
     },
   ];
 }
+
+/* used in request body */
+export interface IDate {
+  date: Date;
+}

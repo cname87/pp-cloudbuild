@@ -44,7 +44,7 @@ export class GetMemberCache {
    * @param request A get member request to be cached.
    * @param response The response from an earlier get member request.
    */
-  setGetOne(request: HttpRequest<IMember>, response: HttpResponse<IMember>) {
+  setGet(request: HttpRequest<IMember>, response: HttpResponse<IMember>) {
     this.logger.trace(
       `${GetMemberCache.name}: putting ${
         request.urlWithParams

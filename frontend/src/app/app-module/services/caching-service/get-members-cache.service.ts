@@ -47,7 +47,7 @@ export class GetMembersCache {
    * @param postOneResponse
    * - The uncached response from an earlier post /members request.
    */
-  setPostOne(postOneResponse: HttpResponse<IMember>) {
+  setPost(postOneResponse: HttpResponse<IMember>) {
     if (this.#response?.body && postOneResponse?.body) {
       /* get the member to add from the request body */
       const addedMember: IMember = postOneResponse.body;

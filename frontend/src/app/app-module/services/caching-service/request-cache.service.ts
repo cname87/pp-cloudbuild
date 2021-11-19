@@ -6,6 +6,9 @@ import { StatusCodes } from 'http-status-codes';
 import { apiConfiguration } from '../../../configuration/configuration';
 import { GetMembersCache } from './get-members-cache.service';
 import { GetMemberCache } from './get-member-cache.service';
+import { GetScoresCache } from './get-scores-cache.service';
+import { GetSessionsCache } from './get-sessions-cache.service';
+import { GetSummaryCache } from './get-summary-cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class RequestCacheService {
@@ -14,11 +17,27 @@ export class RequestCacheService {
   #member = `${apiConfiguration.basePath}/${apiConfiguration.memberPath}`;
   /* Note: must match 'member/1' but not 'member/1/sessions' */
   #memberWithId = new RegExp(this.#member + `\/[1-9]\\d*$`);
-  #cacheServices = [this.membersCache, this.memberCache];
+  #scores = `${apiConfiguration.scoresPath}`;
+  #scoresWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#scores}`);
+  #sessions = `${apiConfiguration.sessionsPath}`;
+  #sessionsWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#sessions}`);
+  #summary = `${apiConfiguration.summaryPath}`;
+  #summaryWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#summary}`);
+
+  #cacheServices = [
+    this.membersCache,
+    this.memberCache,
+    this.scoresCache,
+    this.sessionsCache,
+    this.summaryCache,
+  ];
 
   constructor(
     private membersCache: GetMembersCache,
     private memberCache: GetMemberCache,
+    private scoresCache: GetScoresCache,
+    private sessionsCache: GetSessionsCache,
+    private summaryCache: GetSummaryCache,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -27,7 +46,7 @@ export class RequestCacheService {
   }
 
   /**
-   * Called to clear a specific cache. If no cache service is passed in then all caches are cleared.
+   * Called to clear a specific cache fully. If no cache service is passed in then all caches are cleared.
    * @param cache A cache service with a clearCache function
    * @returns void
    */
@@ -61,6 +80,27 @@ export class RequestCacheService {
     ) {
       return this.memberCache.getCache(request);
     }
+    /* return cache for get or create a scores table */
+    if (
+      request.method === 'POST' &&
+      this.#scoresWithId.test(request.urlWithParams)
+    ) {
+      return this.scoresCache.getCache(request);
+    }
+    /* return cache for get or create a sessions table */
+    if (
+      request.method === 'POST' &&
+      this.#sessionsWithId.test(request.urlWithParams)
+    ) {
+      return this.sessionsCache.getCache(request);
+    }
+    /* return cache for get a summary table */
+    if (
+      request.method === 'GET' &&
+      this.#summaryWithId.test(request.urlWithParams)
+    ) {
+      return this.summaryCache.getCache(request);
+    }
     /* otherwise return that the cache is empty */
     return undefined;
   }
@@ -90,7 +130,10 @@ export class RequestCacheService {
     if (
       request.urlWithParams !== this.#members &&
       request.urlWithParams !== this.#member &&
-      !this.#memberWithId.test(request.urlWithParams)
+      !this.#memberWithId.test(request.urlWithParams) &&
+      !this.#scoresWithId.test(request.urlWithParams) &&
+      !this.#sessionsWithId.test(request.urlWithParams) &&
+      !this.#summaryWithId.test(request.urlWithParams)
     ) {
       return;
     }
@@ -104,7 +147,11 @@ export class RequestCacheService {
         }
         /* set member cache */
         if (this.#memberWithId.test(request.urlWithParams)) {
-          this.memberCache.setGetOne(request, response);
+          this.memberCache.setGet(request, response);
+        }
+        /* set summary cache */
+        if (this.#summaryWithId.test(request.urlWithParams)) {
+          this.summaryCache.setGet(request, response);
         }
         break;
       }
@@ -113,7 +160,21 @@ export class RequestCacheService {
         /* if this is an add member */
         if (request.urlWithParams === this.#member) {
           /* add a member to the members cache */
-          this.membersCache.setPostOne(response);
+          this.membersCache.setPost(response);
+        }
+        /* if this is a get or create scores table */
+        if (this.#scoresWithId.test(request.urlWithParams)) {
+          /* add a scores table  to the scores cache */
+          this.scoresCache.setGetOrPost(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
+        }
+        /* if this is a get or create sessions table */
+        if (this.#sessionsWithId.test(request.urlWithParams)) {
+          /* add a sessions table  to the sessions cache */
+          this.sessionsCache.setGetOrPost(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
         }
         break;
       }
@@ -124,6 +185,20 @@ export class RequestCacheService {
           /* update a member in the members cache and clear the member cache */
           this.membersCache.setPutOne(response);
           this.memberCache.clearCache(request);
+        }
+        /* if this is an update scores table */
+        if (this.#scoresWithId.test(request.urlWithParams)) {
+          /* add an updated table to the scores cache */
+          this.scoresCache.setPutOne(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
+        }
+        /* if this is an update sessions table */
+        if (this.#sessionsWithId.test(request.urlWithParams)) {
+          /* add an updated table to the sessions cache */
+          this.sessionsCache.setPutOne(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
         }
         break;
       }

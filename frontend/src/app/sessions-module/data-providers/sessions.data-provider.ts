@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { ISessions, ISessionsStripped } from '../models/sessions-models';
+import { IDate, ISessions, ISessionsStripped } from '../models/sessions-models';
 
 enum Days {
   Monday = 'Monday',
@@ -120,7 +120,7 @@ export class SessionsDataProvider {
     );
 
     /* create a body with a date object */
-    const dateBody = { date: date };
+    const dateBody: IDate = { date: date };
 
     return this.httpClient
       .post<ISessions>(

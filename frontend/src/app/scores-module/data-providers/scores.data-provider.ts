@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { tap, catchError } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { IScores } from '../models/scores-models';
+import { IDate, IScores } from '../models/scores-models';
 
 /**
  * This service handles all communication with the server. It implements all the function to create/get or update a weekly scores table on the server.
@@ -63,7 +63,7 @@ export class ScoresDataProvider {
     );
 
     /* create a body with a date object*/
-    const dateBody = { date: date };
+    const dateBody: IDate = { date: date };
 
     return this.httpClient
       .post<IScores>(
