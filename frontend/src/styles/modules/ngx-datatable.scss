@@ -28,8 +28,14 @@ datatable-body-row.datatable-body-row {
   height: calc(var(--base-font) *2) !important;
 }
 
+datatable-header-cell.datatable-header-cell {
+  text-align: center !important;;
+}
+
+
 datatable-body-cell.datatable-body-cell {
   font-size: calc(var(--base-font)) !important;
+  text-align: center !important;
   padding: 2px !important;
 }
 

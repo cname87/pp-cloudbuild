@@ -27,10 +27,24 @@
     let-value="value"
     let-row="row"
     let-column="column"
+
   >
-    <formly-field
-      [field]="getField(field, column, rowIndex)"
+    <div
+      *ngIf="setShowField(column.name, rowIndex)"
     >
-    </formly-field>
+      <div
+        *ngIf="!showField"
+        class='clickable'
+        (click)="onClick($event, field, column, rowIndex, value)"
+      >
+        {{ value }}
+      </div>
+
+      <formly-field
+        *ngIf="showField"
+        [field]="oneField"
+      >
+      </formly-field>
+    </div>
   </ng-template>
 </ngx-datatable>

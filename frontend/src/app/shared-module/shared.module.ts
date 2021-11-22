@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { MaterialModule } from './material-module/material.module';
 
 import { ActionButtonComponent } from './components/action-button/action-button.component';

@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ParamMap, ActivatedRoute, Data } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { NGXLogger } from 'ngx-logger';
@@ -24,6 +31,7 @@ import { RouteStateService } from '../../app-module/services/route-state-service
   templateUrl: './member-summary.component.html',
   styleUrls: ['./member-summary.component.scss'],
   providers: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemberSummaryComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -154,6 +162,7 @@ export class MemberSummaryComponent
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
+    private cdr: ChangeDetectorRef,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -165,7 +174,6 @@ export class MemberSummaryComponent
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
       .subscribe((data: Data) => {
         this.#data = data.summary;
-        this.dataSource = new MatTableDataSource<TSummary>(data.summary);
       });
 
     /* define the column names used by the table template */
@@ -217,7 +225,9 @@ export class MemberSummaryComponent
   }
 
   ngAfterViewInit(): void {
+    this.dataSource = new MatTableDataSource<any>(this.#data);
     this.#scrollToEnd();
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

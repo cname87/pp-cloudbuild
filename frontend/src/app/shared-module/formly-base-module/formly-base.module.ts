@@ -1,8 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { FormlyModule } from '@ngx-formly/core';
-
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { FormlyMatToggleModule } from '@ngx-formly/material/toggle';
@@ -11,16 +10,18 @@ import {
   MatFormFieldDefaultOptions,
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
 } from '@angular/material/form-field';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import { DatatableTypeComponent } from '../../scores-module/components/datatable.type';
+import { DatatableTypeComponent } from './components/datatable.type';
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline',
 };
 
 @NgModule({
-  declarations: [],
+  declarations: [DatatableTypeComponent],
   imports: [
+    CommonModule,
     FormsModule,
     FormlyModule.forRoot({
       extras: { lazyRender: true },
@@ -40,8 +41,8 @@ const appearance: MatFormFieldDefaultOptions = {
     FormlyMaterialModule,
     FormlyMatDatepickerModule,
     FormlyMatToggleModule,
-
     ReactiveFormsModule,
+    NgxDatatableModule,
   ],
   exports: [
     FormsModule,
