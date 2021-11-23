@@ -4,9 +4,6 @@ import {
   OnInit,
   TemplateRef,
   AfterViewInit,
-  // ChangeDetectionStrategy,
-  SimpleChanges,
-  OnChanges,
 } from '@angular/core';
 import { FormlyFieldConfig, FieldArrayType } from '@ngx-formly/core';
 import { SelectionType, TableColumn } from '@swimlane/ngx-datatable';
@@ -16,11 +13,10 @@ import { NGXLogger } from 'ngx-logger';
   selector: 'formly-field-datatable',
   styleUrls: ['./datatable.type.scss'],
   templateUrl: './datatable.type.html',
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatatableTypeComponent
   extends FieldArrayType
-  implements AfterViewInit, OnInit, OnChanges
+  implements AfterViewInit, OnInit
 {
   @ViewChild('defaultColumn', { static: true })
   defaultColumn!: TemplateRef<any>;
@@ -31,10 +27,11 @@ export class DatatableTypeComponent
   /* set table row height */
   rowHeight = 58;
 
-  cell = document.querySelector('.clickable');
-  showField = false;
-  oneField = '' as any;
-  showObject = { name: 'NAME', row: 1 };
+  /* the field passed back to the formly form */
+  formlyField: FormlyFieldConfig = {};
+
+  /* holds detail on a clicked cell */
+  clickedCell = { name: 'NAME', row: 1 };
 
   constructor(private logger: NGXLogger) {
     super();
@@ -43,6 +40,42 @@ export class DatatableTypeComponent
     );
     console.timeLog('scores');
   }
+
+  /* sets the cell that was clicked and the field to be passed to the formly form */
+  setCellAndField(
+    field: FormlyFieldConfig,
+    column: TableColumn & { propIndex: number },
+    rowIndex: number,
+  ) {
+    this.logger.trace(
+      `${DatatableTypeComponent.name}: Running setCellAndField`,
+    );
+    column.name = column.name ? column.name : '';
+    this.clickedCell = { name: column.name, row: rowIndex };
+    /* the input field parameter is the ngx-table containing an array of row fields, each of which is an array of fields */
+    this.formlyField = (
+      (field.fieldGroup as FormlyFieldConfig[])[rowIndex]
+        .fieldGroup as FormlyFieldConfig[]
+    )[column.propIndex];
+  }
+
+  /* checks if a supplied cell name and row index matches the stored clicked cell reference */
+  isCellShown(name: string, rowIndex: number): boolean {
+    return name === this.clickedCell.name && rowIndex === this.clickedCell.row;
+  }
+
+  /* clear any cell selections if enter or esc keys are pressed */
+  onEnterOrEsc = (event: any) => {
+    if (event.keyCode === 13 || event.keyCode === 27) {
+      this.logger.trace(`${DatatableTypeComponent.name}: Enterkey pressed`);
+      event.preventDefault();
+      /* clear clicked cell selection */
+      this.clickedCell = { name: 'NAME', row: 1 };
+      /* force datatable table update */
+      this.to.columns = [...this.to.columns];
+    }
+  };
+
   ngOnInit() {
     this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
     console.timeLog('scores');
@@ -60,8 +93,12 @@ export class DatatableTypeComponent
       this.logger.trace(
         `${DatatableTypeComponent.name}: Table model change reported`,
       );
+      /* clear clicked cell selection */
+      this.clickedCell = { name: 'NAME', row: 1 };
       /* force datatable table update */
       this.to.columns = [...this.to.columns];
+      /* detect enter or esc key presses */
+      document.addEventListener('keyup', this.onEnterOrEsc);
     });
   }
 
@@ -69,72 +106,6 @@ export class DatatableTypeComponent
     this.logger.trace(
       `${DatatableTypeComponent.name}: Starting ngAfterViewInit`,
     );
-    this.cell?.addEventListener('click', this.onClick);
-    document.addEventListener('keyup', this.onKey);
     console.timeLog('scores');
-  }
-
-  /* set up table fields */
-  getField(
-    field: FormlyFieldConfig,
-    column: TableColumn & { propIndex: number },
-    rowIndex: number,
-    _value: number,
-  ): FormlyFieldConfig {
-    // console.log(`rowIndex: ${rowIndex}`);
-    // console.log(`column.name: ${column.name}`);
-    // console.log(`field.key: ${field.key}`);
-    // console.log(`value: ${value}`);
-    // console.timeLog('scores');
-    // return '' as any;
-    return (
-      (field.fieldGroup as FormlyFieldConfig[])[rowIndex]
-        .fieldGroup as FormlyFieldConfig[]
-    )[column.propIndex];
-  }
-
-  /* set up table fields */
-  setField(
-    field: FormlyFieldConfig,
-    column: TableColumn & { propIndex: number },
-    rowIndex: number,
-  ): FormlyFieldConfig {
-    // console.log(`rowIndex: ${rowIndex}`);
-    // console.log(`column.name: ${column.name}`);
-    // console.log(`field.key: ${field.key}`);
-    // console.timeLog('scores');
-    return (
-      (field.fieldGroup as FormlyFieldConfig[])[rowIndex]
-        .fieldGroup as FormlyFieldConfig[]
-    )[column.propIndex];
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(`Changes: ${JSON.stringify(changes.value)}`);
-  }
-
-  onClick(event: any, ...rest: any[]) {
-    console.log(`Event: ${JSON.stringify(event)}`);
-    console.log(`Value: ${rest[3]}`);
-    this.oneField = this.setField(rest[0], rest[1], rest[2]);
-    this.showObject = { name: rest[1].name, row: rest[2] };
-  }
-
-  onKey(event: any) {
-    console.log('Test');
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed!!!!!');
-      this.showObject = { name: 'NAME', row: 1 };
-    }
-  }
-
-  setShowField(name: string, rowIndex: number): boolean {
-    // console.log(`Column.name: ${name}`);
-    // console.log(`RowIndex: ${rowIndex}`);
-    this.showField =
-      name === this.showObject.name && rowIndex === this.showObject.row;
-    // console.log(`Showfield: ${this.showField}`);
-    return true;
   }
 }

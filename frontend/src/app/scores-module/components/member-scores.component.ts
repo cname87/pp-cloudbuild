@@ -116,7 +116,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
   ];
   /* table select options */
   #dropdown = [
-    { value: 0, label: '' },
+    { value: 0, label: '0' },
     { value: 1, label: '1' },
     { value: 2, label: '2' },
     { value: 3, label: '3' },
@@ -125,9 +125,9 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
-  line2 = '- For example: High Stress is 1, and Low Stress is 5';
-  line3 = '';
+  line1 = '- Click on a cell to edit a value. (Press ECS to cancel)';
+  line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
+  line3 = '- For example: High Stress is 1, and Low Stress is 5';
   line4 = '';
   isGoBackVisible = false;
 

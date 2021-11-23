@@ -30,19 +30,18 @@
 
   >
     <div
-      *ngIf="setShowField(column.name, rowIndex)"
+      class='clickable'
+      (click)="setCellAndField(field, column, rowIndex)"
     >
       <div
-        *ngIf="!showField"
-        class='clickable'
-        (click)="onClick($event, field, column, rowIndex, value)"
+        *ngIf="!isCellShown(column.name, rowIndex)"
       >
         {{ value }}
       </div>
 
       <formly-field
-        *ngIf="showField"
-        [field]="oneField"
+        *ngIf="isCellShown(column.name, rowIndex)"
+        [field]="formlyField"
       >
       </formly-field>
     </div>
