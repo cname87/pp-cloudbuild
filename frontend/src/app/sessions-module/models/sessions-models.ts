@@ -3,9 +3,10 @@
  */
 
 export enum SessionType {
+  Blank = '-',
   Conditioning = 'CONDITIONING',
   Strength = 'STRENGTH',
-  Sport = 'Sport',
+  Sport = 'SPORT',
 }
 
 enum Days {

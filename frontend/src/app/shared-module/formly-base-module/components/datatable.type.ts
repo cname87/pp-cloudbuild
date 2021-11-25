@@ -1,10 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  OnInit,
-  TemplateRef,
-  AfterViewInit,
-} from '@angular/core';
+import { Component, ViewChild, OnInit, TemplateRef } from '@angular/core';
 import { FormlyFieldConfig, FieldArrayType } from '@ngx-formly/core';
 import { SelectionType, TableColumn } from '@swimlane/ngx-datatable';
 import { NGXLogger } from 'ngx-logger';
@@ -14,10 +8,7 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./datatable.type.scss'],
   templateUrl: './datatable.type.html',
 })
-export class DatatableTypeComponent
-  extends FieldArrayType
-  implements AfterViewInit, OnInit
-{
+export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   @ViewChild('defaultColumn', { static: true })
   defaultColumn!: TemplateRef<any>;
 
@@ -38,20 +29,27 @@ export class DatatableTypeComponent
     this.logger.trace(
       `${DatatableTypeComponent.name}: Starting DatatableTypeComponent`,
     );
-    console.timeLog('scores');
   }
 
   /* sets the cell that was clicked and the field to be passed to the formly form */
   setCellAndField(
     field: FormlyFieldConfig,
-    column: TableColumn & { propIndex: number },
+    column: TableColumn & { propIndex: number; clickable: boolean },
     rowIndex: number,
   ) {
     this.logger.trace(
       `${DatatableTypeComponent.name}: Running setCellAndField`,
     );
+
+    /* exit if the column is not a data entry column */
+    if (!column.clickable) {
+      return;
+    }
+
+    /* set the cell*/
     column.name = column.name ? column.name : '';
     this.clickedCell = { name: column.name, row: rowIndex };
+
     /* the input field parameter is the ngx-table containing an array of row fields, each of which is an array of fields */
     this.formlyField = (
       (field.fieldGroup as FormlyFieldConfig[])[rowIndex]
@@ -59,15 +57,17 @@ export class DatatableTypeComponent
     )[column.propIndex];
   }
 
-  /* checks if a supplied cell name and row index matches the stored clicked cell reference */
-  isCellShown(name: string, rowIndex: number): boolean {
+  /* checks if a supplied cell name and row index matches the stored clicked cell reference - this is used to show either a formly form cell or a value */
+  isCellForm(name: string, rowIndex: number): boolean {
     return name === this.clickedCell.name && rowIndex === this.clickedCell.row;
   }
 
   /* clear any cell selections if enter or esc keys are pressed */
   onEnterOrEsc = (event: any) => {
     if (event.keyCode === 13 || event.keyCode === 27) {
-      this.logger.trace(`${DatatableTypeComponent.name}: Enterkey pressed`);
+      this.logger.trace(
+        `${DatatableTypeComponent.name}: Escape or Enter key pressed`,
+      );
       event.preventDefault();
       /* clear clicked cell selection */
       this.clickedCell = { name: 'NAME', row: 1 };
@@ -78,7 +78,6 @@ export class DatatableTypeComponent
 
   ngOnInit() {
     this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
-    console.timeLog('scores');
 
     /* Note: 'this.to' refers to the templateOptions set in the MemberScoresComponent */
     /* assigns a reference to the formly template */
@@ -97,15 +96,8 @@ export class DatatableTypeComponent
       this.clickedCell = { name: 'NAME', row: 1 };
       /* force datatable table update */
       this.to.columns = [...this.to.columns];
-      /* detect enter or esc key presses */
-      document.addEventListener('keyup', this.onEnterOrEsc);
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.logger.trace(
-      `${DatatableTypeComponent.name}: Starting ngAfterViewInit`,
-    );
-    console.timeLog('scores');
+    /* detect enter or esc key presses */
+    document.addEventListener('keyup', this.onEnterOrEsc);
   }
 }

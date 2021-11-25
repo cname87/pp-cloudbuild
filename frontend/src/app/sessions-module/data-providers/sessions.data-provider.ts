@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
+import clonedeep from 'lodash.clonedeep';
 
 import { apiConfiguration } from '../../configuration/configuration';
 import { IDate, ISessions, ISessionsStripped } from '../models/sessions-models';
@@ -52,7 +53,7 @@ export class SessionsDataProvider {
   };
 
   #addFixedFields(table: ISessionsStripped): ISessions {
-    const tableFilled = table as ISessions;
+    const tableFilled = clonedeep(table) as ISessions;
     tableFilled.sessions[0].day = Days.Monday;
     tableFilled.sessions[0].ampm = AMPM.AM;
     tableFilled.sessions[1].day = Days.Monday;
@@ -85,7 +86,7 @@ export class SessionsDataProvider {
   }
 
   #stripFixedFields(table: ISessions): ISessionsStripped {
-    const tableStripped: ISessionsStripped = table;
+    const tableStripped: ISessionsStripped = clonedeep(table);
     tableStripped.sessions.map((element) => {
       delete element['day'];
       delete element['ampm'];
@@ -195,6 +196,10 @@ export class SessionsDataProvider {
         },
       )
       .pipe(
+        map((data: ISessions) => {
+          const sessionsFilled = this.#addFixedFields(data);
+          return sessionsFilled;
+        }),
         tap((data: ISessions) => {
           /* convert the incoming date property which is an ISO string to a Date object (so it works with the form datepicker) */
           data.date = new Date(data.date);

@@ -34,13 +34,13 @@
       (click)="setCellAndField(field, column, rowIndex)"
     >
       <div
-        *ngIf="!isCellShown(column.name, rowIndex)"
+        *ngIf="!isCellForm(column.name, rowIndex)"
       >
         {{ value }}
       </div>
 
       <formly-field
-        *ngIf="isCellShown(column.name, rowIndex)"
+        *ngIf="isCellForm(column.name, rowIndex)"
         [field]="formlyField"
       >
       </formly-field>

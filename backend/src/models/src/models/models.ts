@@ -65,7 +65,7 @@ export const sessionsModel = {
     {
       type: {
         type: String,
-        enum: ['', 'STRENGTH', 'CONDITIONING', 'SPORT'],
+        enum: ['-', 'STRENGTH', 'CONDITIONING', 'SPORT'],
       },
       rpe: {
         type: Number,

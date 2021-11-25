@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
@@ -20,7 +20,7 @@ import { ScoresService } from '../services/scores.service';
   styleUrls: ['./member-scores.component.scss'],
   templateUrl: './member-scores.component.html',
 })
-export class MemberScoresComponent implements AfterViewInit, OnDestroy {
+export class MemberScoresComponent implements OnDestroy {
   //
   /* used to report table change */
   #tableChange = new EventEmitter();
@@ -34,6 +34,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Item',
       prop: 'item',
       minWidth: this.#minWidth * 2,
+      clickable: false,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -46,6 +47,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Mon',
       prop: 'monday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -56,6 +58,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Tue',
       prop: 'tuesday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -66,6 +69,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Wed',
       prop: 'wednesday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -76,6 +80,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Thu',
       prop: 'thursday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -86,6 +91,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Fri',
       prop: 'friday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -96,6 +102,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Sat',
       prop: 'saturday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -106,6 +113,7 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       name: 'Sun',
       prop: 'sunday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -264,7 +272,6 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
     this.logger.trace(
       `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
     );
-    console.time('scores');
 
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
@@ -323,9 +330,11 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
     this.scoresService
       .updateScoresTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((_scores: IScores) => {
+      .subscribe((scores: IScores) => {
         this.logger.trace(
-          `${MemberScoresComponent.name}: Scores table updated`,
+          `${MemberScoresComponent.name}: Scores table updated ${JSON.stringify(
+            scores,
+          )}`,
         );
       });
     this.#tableChange.emit('modelChange');
@@ -358,10 +367,6 @@ export class MemberScoresComponent implements AfterViewInit, OnDestroy {
       this.#tableChange.emit('modelChange');
     }
   };
-
-  ngAfterViewInit(): void {
-    console.timeEnd('scores');
-  }
 
   ngOnDestroy(): void {
     this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);

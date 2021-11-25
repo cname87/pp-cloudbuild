@@ -35,6 +35,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Day',
       prop: 'day',
+      clickable: false,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -44,6 +45,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'AM/PM',
       prop: 'ampm',
+      clickable: false,
       minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
@@ -53,6 +55,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Type',
       prop: 'type',
+      clickable: true,
       minWidth: this.#minWidth * 3,
       resizeable: false,
       sortable: false,
@@ -62,6 +65,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'RPE',
       prop: 'rpe',
+      clickable: true,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -71,6 +75,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Duration',
       prop: 'duration',
+      clickable: true,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -80,6 +85,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Load',
       prop: 'load',
+      clickable: false,
       minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
@@ -89,9 +95,10 @@ export class MemberSessionsComponent implements OnDestroy {
   ];
   /* type select options */
   #type = [
+    { value: SessionType.Blank, label: '-' },
     { value: SessionType.Strength, label: 'Strength' },
     { value: SessionType.Conditioning, label: 'Conditioning' },
-    { value: SessionType.Conditioning, label: 'Sport' },
+    { value: SessionType.Sport, label: 'Sport' },
   ];
   /* rpe select options */
   #rpe = [
@@ -125,7 +132,6 @@ export class MemberSessionsComponent implements OnDestroy {
         {
           key: 'date',
           type: 'datepicker',
-          /* See comment under scores component. */
           parsers: [
             (date: Date) => {
               return new Date(
@@ -257,6 +263,7 @@ export class MemberSessionsComponent implements OnDestroy {
     this.logger.trace(
       `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
     );
+
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
@@ -305,11 +312,11 @@ export class MemberSessionsComponent implements OnDestroy {
     this.sessionsService
       .updateSessionsTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((scores: ISessions) => {
+      .subscribe((sessions: ISessions) => {
         this.logger.trace(
           `${
             MemberSessionsComponent.name
-          }: Sessions table updated: ${JSON.stringify(scores)}`,
+          }: Sessions table updated: ${JSON.stringify(sessions)}`,
         );
       });
     this.#tableChange.emit('modelChange');
