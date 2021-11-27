@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
@@ -213,28 +213,10 @@ export class MemberSessionsComponent implements OnDestroy {
             defaultValue: 0,
             templateOptions: {
               type: 'number',
+              required: true,
               min: 0,
               max: 999,
               change: () => this.#onTableChange(),
-            },
-            validators: {
-              duration: {
-                expression: (
-                  _control: AbstractControl,
-                  field: FormlyFieldConfig,
-                ): boolean => {
-                  const number = Number(field.formControl?.value);
-                  const ret = number >= 0 && number <= 999;
-                  console.log(ret);
-                  return ret;
-                },
-                message: (
-                  _control: AbstractControl,
-                  _field: FormlyFieldConfig,
-                ) => {
-                  return `You must enter the session duration from 1 to 999 minutes`;
-                },
-              },
             },
           },
           {
@@ -308,9 +290,22 @@ export class MemberSessionsComponent implements OnDestroy {
    * @param updatedModel Updated table model.
    */
   #onTableChange(updatedModel: ISessions = this.model): void {
-    this.logger.trace(
-      `${MemberSessionsComponent.name}: #onTableChange called}`,
-    );
+    this.logger.trace(`${MemberSessionsComponent.name}: #onTableChange called`);
+    if (!this.form.valid) {
+      this.logger.trace(
+        `${MemberSessionsComponent.name}: Form invalid, change not run`,
+      );
+      /* reset the form */
+      if (this.options?.resetModel) {
+        this.options.resetModel();
+      }
+      this.#tableChange.emit('modelChange');
+      return;
+    }
+    /* update initial value so we can reset if the form is invalid */
+    if (this.options?.updateInitialValue) {
+      this.options.updateInitialValue();
+    }
     this.sessionsService
       .updateSessionsTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
@@ -322,12 +317,6 @@ export class MemberSessionsComponent implements OnDestroy {
         );
       });
     this.#tableChange.emit('modelChange');
-    if (!this.form.valid) {
-      this.logger.trace(
-        `${MemberSessionsComponent.name}: Form invalid, change not run}`,
-      );
-      return;
-    }
   }
 
   /**
@@ -357,5 +346,9 @@ export class MemberSessionsComponent implements OnDestroy {
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
+  }
+
+  submit(): void {
+    alert(this.model);
   }
 }
