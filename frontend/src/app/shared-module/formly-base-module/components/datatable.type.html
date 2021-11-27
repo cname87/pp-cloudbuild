@@ -30,20 +30,22 @@
 
   >
     <div
-      class='clickable'
+      [class]="column.prop"
       (click)="setCellAndField(field, column, rowIndex)"
     >
-      <div
-        *ngIf="!isCellForm(column.name, rowIndex)"
-      >
-        {{ value }}
-      </div>
 
       <formly-field
-        *ngIf="isCellForm(column.name, rowIndex)"
-        [field]="formlyField"
-      >
+        #clickedField
+        *ngIf="isCellAField(column.name, rowIndex); else valueField"
+        [field]="formlyField">
       </formly-field>
+
+      <ng-template
+        #valueField
+      >
+        {{ value }}
+      </ng-template>
+
     </div>
   </ng-template>
 </ngx-datatable>

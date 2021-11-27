@@ -6,7 +6,12 @@ import { tap, catchError, map } from 'rxjs/operators';
 import clonedeep from 'lodash.clonedeep';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { IDate, ISessions, ISessionsStripped } from '../models/sessions-models';
+import {
+  IDate,
+  ISessions,
+  ISessionsStripped,
+  SessionType,
+} from '../models/sessions-models';
 
 enum Days {
   Monday = 'Monday',
@@ -94,6 +99,16 @@ export class SessionsDataProvider {
     return tableStripped;
   }
 
+  #replaceBlankType(table: ISessions): ISessions {
+    const tableReplaced = clonedeep(table);
+    tableReplaced.sessions.map((element) => {
+      if (!element.type) {
+        element.type = SessionType.Blank;
+      }
+    });
+    return tableReplaced;
+  }
+
   /**
    * Get a specific sessions table that has given member id and date properties, or causes a new sessions table to be created in the backend with the given memberId and date properties.
    * @param memberId The member id of the member to whom the table belongs.
@@ -170,7 +185,10 @@ export class SessionsDataProvider {
       );
     }
 
-    const sessionsStripped = this.#stripFixedFields(sessions);
+    /* TEMPORARY until all blank types gone */
+    const sessionsReplaced = this.#replaceBlankType(sessions);
+
+    const sessionsStripped = this.#stripFixedFields(sessionsReplaced);
 
     let headers = this.defaultHeaders;
     headers = headers.set('Content-Type', 'application/json');

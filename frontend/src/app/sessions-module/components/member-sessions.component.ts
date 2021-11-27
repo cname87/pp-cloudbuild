@@ -116,9 +116,9 @@ export class MemberSessionsComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- RPE is the Rate of Perceived Exertion of the session';
-  line2 = '- Select from 0, for no exertion, to 10, for extreme exertion';
-  line3 = '';
+  line1 = '- Click on a cell to edit a value. (Press ECS to cancel)';
+  line2 = '- RPE is the Rate of Perceived Exertion of the session';
+  line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
   line4 = '';
   isGoBackVisible = false;
 
@@ -224,13 +224,15 @@ export class MemberSessionsComponent implements OnDestroy {
                   field: FormlyFieldConfig,
                 ): boolean => {
                   const number = Number(field.formControl?.value);
-                  return number >= 0 && number <= 999;
+                  const ret = number >= 0 && number <= 999;
+                  console.log(ret);
+                  return ret;
                 },
                 message: (
                   _control: AbstractControl,
                   _field: FormlyFieldConfig,
                 ) => {
-                  return `You must rate the session duration from 1 to 999 minutes`;
+                  return `You must enter the session duration from 1 to 999 minutes`;
                 },
               },
             },

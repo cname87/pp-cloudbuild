@@ -45,72 +45,72 @@ export interface ISessionsStripped {
   date: Date;
   sessions: [
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
@@ -122,98 +122,98 @@ export interface ISessions extends ISessionsStripped {
     {
       day: Days.Monday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Monday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Tuesday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Tuesday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Wednesday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Wednesday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Thursday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Thursday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Friday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Friday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Saturday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Saturday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Sunday;
       ampm: AMPM.AM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
     {
       day: Days.Sunday;
       ampm: AMPM.PM;
-      type: '' | SessionType;
+      type: SessionType;
       rpe: rpeScore;
       duration: number;
     },
