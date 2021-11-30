@@ -24,7 +24,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   set clickedField(fieldToClickAgain: ElementRef) {
     setTimeout(() => {
       if (fieldToClickAgain) {
-        this.#secondClick(fieldToClickAgain);
+        this.#secondClickAndFocus(fieldToClickAgain);
       }
     }, 0);
   }
@@ -49,12 +49,20 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   }
 
   /* send a second click to a clicked data entry cell to drop the select dropdown (if there is one) */
-  #secondClick = (fieldToClick: ElementRef) => {
-    this.logger.trace(`${DatatableTypeComponent.name}: running #secondClick`);
+  #secondClickAndFocus = (fieldToClick: ElementRef) => {
+    this.logger.trace(
+      `${DatatableTypeComponent.name}: running #secondClickAnd Focus`,
+    );
     const selectDropdown =
       fieldToClick.nativeElement.getElementsByClassName('mat-select-value')[0];
     if (selectDropdown) {
       selectDropdown.click();
+    }
+    const input =
+      fieldToClick.nativeElement.getElementsByClassName('mat-input-element')[0];
+    console.log(input);
+    if (input) {
+      input.focus();
     }
   };
 
