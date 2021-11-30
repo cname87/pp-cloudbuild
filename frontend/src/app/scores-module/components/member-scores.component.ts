@@ -133,7 +133,7 @@ export class MemberScoresComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Click on a cell to edit a value. (Press ECS to cancel)';
+  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
   line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
   line3 = '- For example: High Stress is 1, and Low Stress is 5';
   line4 = '';
@@ -352,6 +352,7 @@ export class MemberScoresComponent implements OnDestroy {
    */
   #onDateChange = (updatedModel: IScores = this.model): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #onDateChange called`);
+
     if (this.form.valid) {
       this.isLoadingService.add(
         this.scoresService

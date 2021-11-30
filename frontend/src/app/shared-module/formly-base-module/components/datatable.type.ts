@@ -5,11 +5,7 @@ import {
   TemplateRef,
   ElementRef,
 } from '@angular/core';
-import {
-  FormlyFieldConfig,
-  FieldArrayType,
-  // FormlyField,
-} from '@ngx-formly/core';
+import { FormlyFieldConfig, FieldArrayType } from '@ngx-formly/core';
 import { SelectionType, TableColumn } from '@swimlane/ngx-datatable';
 import { NGXLogger } from 'ngx-logger';
 

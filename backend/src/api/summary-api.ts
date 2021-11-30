@@ -127,6 +127,7 @@ const fillValues = (
 ): Summary.TSummary => {
   debug(`${modulename}: #fillValues called`);
 
+  console.log(array2DInputSummaryItems);
   array2DInputSummaryItems.forEach((array1DSummaryItems, _itemIndex) => {
     /* The input summary item array is sorted ascending by date. Compare the output summary table date to the date in the input array and if there is a match store the values under the date in the output array, and increment inputIndex so the next comparison starts at the next date in the input summary item array. */
     let inputIndex = 0;

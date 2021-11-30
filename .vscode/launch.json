@@ -177,7 +177,7 @@
         "DEBUG": "PP*",
         // "NODE_ENV": "development",
         // "NODE_ENV": "staging",
-        "NODE_ENV": "production" // Caution!
+        "NODE_ENV": "production" // Caution - production database in use!
       },
       "outputCapture": "std",
       "console": "integratedTerminal",

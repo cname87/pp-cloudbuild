@@ -34,6 +34,7 @@ export class GetMemberCache {
     this.logger.trace(`${GetMemberCache.name}: running clearCache`);
     if (request) {
       this.#cache.delete(request.urlWithParams);
+      return;
     }
     this.#cache.clear();
   }
@@ -50,6 +51,7 @@ export class GetMemberCache {
         request.urlWithParams
       } with ${JSON.stringify(response.body)} into the cache`,
     );
+    /* Note: Deep clone of the response object is not necessary before caching as the response object is not changed outside the cache */
     this.#cache.set(request.urlWithParams, response);
   }
 }

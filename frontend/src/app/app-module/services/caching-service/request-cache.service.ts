@@ -126,18 +126,6 @@ export class RequestCacheService {
       return;
     }
 
-    /* exit if not in the cacheable url list */
-    if (
-      request.urlWithParams !== this.#members &&
-      request.urlWithParams !== this.#member &&
-      !this.#memberWithId.test(request.urlWithParams) &&
-      !this.#scoresWithId.test(request.urlWithParams) &&
-      !this.#sessionsWithId.test(request.urlWithParams) &&
-      !this.#summaryWithId.test(request.urlWithParams)
-    ) {
-      return;
-    }
-
     /* decide action based on the request method & url */
     switch (request.method) {
       case 'GET': {
@@ -166,15 +154,11 @@ export class RequestCacheService {
         if (this.#scoresWithId.test(request.urlWithParams)) {
           /* add a scores table  to the scores cache */
           this.scoresCache.setGetOrPost(request, response);
-          /* clear the summary cache for that member */
-          this.summaryCache.clearCache(request);
         }
         /* if this is a get or create sessions table */
         if (this.#sessionsWithId.test(request.urlWithParams)) {
           /* add a sessions table  to the sessions cache */
           this.sessionsCache.setGetOrPost(request, response);
-          /* clear the summary cache for that member */
-          this.summaryCache.clearCache(request);
         }
         break;
       }
@@ -221,7 +205,7 @@ export class RequestCacheService {
       /* all other request types - unexpected */
       default: {
         this.logger.trace(
-          `${RequestCacheService.name}: unexpected method => clearing all caches`,
+          `${RequestCacheService.name}: unexpected http method => clearing all caches`,
         );
         this.clearCache();
         break;

@@ -7,6 +7,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
+import { ToastrService } from 'ngx-toastr';
 
 import { ISessions } from '../models/sessions-models';
 import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
@@ -116,7 +117,7 @@ export class MemberSessionsComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Click on a cell to edit a value. (Press ECS to cancel)';
+  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
   line2 = '- RPE is the Rate of Perceived Exertion of the session';
   line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
   line4 = '';
@@ -243,6 +244,7 @@ export class MemberSessionsComponent implements OnDestroy {
     private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
+    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
@@ -295,6 +297,12 @@ export class MemberSessionsComponent implements OnDestroy {
       this.logger.trace(
         `${MemberSessionsComponent.name}: Form invalid, change not run`,
       );
+      /* error message displayed to the user */
+      const toastrMessage = 'Invalid Input - please try again';
+      this.logger.trace(
+        `${MemberSessionsComponent.name}: Displaying a toastr message`,
+      );
+      this.toastr.error('ERROR!', toastrMessage);
       /* reset the form */
       if (this.options?.resetModel) {
         this.options.resetModel();

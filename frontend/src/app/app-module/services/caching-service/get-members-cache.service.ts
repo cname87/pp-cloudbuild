@@ -7,6 +7,8 @@ import { IMember } from '../../models/models';
  * This service provides a cache holding the response to a get all members request that matches the content of the server.  The stored response is updated as responses to any requests that change the it's state are received.  This cache is triggered by a http interceptor so get all members requests are always served out of cache rather than incurring a server request.
  */
 
+/* Note: Deep clone of the response object is not necessary before caching as the response object is not changed outside the cache */
+
 @Injectable({ providedIn: 'root' })
 export class GetMembersCache {
   /* holds the cached response - starts undefined */

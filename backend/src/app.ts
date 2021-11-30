@@ -338,12 +338,13 @@ async function runApp(store: Perform.IAppLocals) {
     /* output key environment variables */
     debug(`${modulename}: Environment (NODE_ENV): ${process.env.NODE_ENV}`);
     debug(
-      `${modulename}: Database server is local (DB_IS_LOCAL): ${
+      `${modulename}: Local database server in use (DB_IS_LOCAL): ${
         process.env.DB_IS_LOCAL === 'true'
       }`,
     );
     debug(
-      `${modulename}: Production database in use (DB_MODE): ${
+      // eslint-disable-next-line max-len
+      `${modulename}: If the production database server is in use, is the production 'perform' database in use (DB_MODE): ${
         process.env.NODE_ENV === 'production' &&
         process.env.DB_MODE === 'production'
       }`,
