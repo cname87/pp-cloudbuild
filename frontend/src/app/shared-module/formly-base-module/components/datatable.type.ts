@@ -48,7 +48,8 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     );
   }
 
-  /* send a second click to a clicked data entry cell to drop the select dropdown (if there is one) */
+  /* sends a second click to a clicked data entry cell to drop the select dropdown (if there is a dropdown) */
+  /* moves the cursor to the input cell (if there is an input cell) */
   #secondClickAndFocus = (fieldToClick: ElementRef) => {
     this.logger.trace(
       `${DatatableTypeComponent.name}: running #secondClickAnd Focus`,
