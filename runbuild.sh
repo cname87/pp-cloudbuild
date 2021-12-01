@@ -34,27 +34,27 @@ echo -e "- The cloud run region is: ${CLOUD_RUN_REGION}\n"
 
 confirm
 
-# # Builds and pushes the backend image
-# cd ./backend || exit
-# # Builds on the local environment creating a dist directory */
-# npm run build
-# # Runs the Dockerfile which copies package.json, installs dependencies, copies local directories including the dist directory, and sets the start command to dist/app.js
-# docker build --no-cache --tag="${BACKEND_IMAGE}":latest .
-# # Pushes the image to the container registry
-# docker push "${BACKEND_IMAGE}":latest
-# cd ..
+# Builds and pushes the backend image
+cd ./backend || exit
+# Builds on the local environment creating a dist directory */
+npm run build
+# Runs the Dockerfile which copies package.json, installs dependencies, copies local directories including the dist directory, and sets the start command to dist/app.js
+docker build --no-cache --tag="${BACKEND_IMAGE}":latest .
+# Pushes the image to the container registry
+docker push "${BACKEND_IMAGE}":latest
+cd ..
 
 # Builds and pushes the frontend image
 cd ./frontend || exit
 # Builds on the local environment creating a dist directory */
-# npm run build:prod
+npm run build:prod
 # Runs the Dockerfile which installs nginx and copies the local dist directory, and sets the start command to run nginx
 docker build --no-cache --tag="${FRONTEND_IMAGE}":latest .
 docker push "${FRONTEND_IMAGE}":latest
 cd ..
 
-# gcloud run services update pp-backend --image="${BACKEND_IMAGE}":latest \
-# --region="${CLOUD_RUN_REGION}" --quiet
+gcloud run services update pp-backend --image="${BACKEND_IMAGE}":latest \
+--region="${CLOUD_RUN_REGION}" --quiet
 
 gcloud run services update pp-frontend --image="${FRONTEND_IMAGE}":latest \
 --region="${CLOUD_RUN_REGION}" --quiet

@@ -33,13 +33,17 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   selectionType = null as unknown as SelectionType;
 
   /* set table row height */
-  rowHeight = 58;
+  rowHeight = 55;
 
   /* the field passed back to the formly form */
   formlyField: FormlyFieldConfig = {};
 
   /* holds detail on a clicked cell */
   clickedCell = { name: 'NAME', row: 1 };
+
+  /* summary row */
+  enableSummary = true;
+  summaryPosition = 'bottom';
 
   constructor(private logger: NGXLogger) {
     super();

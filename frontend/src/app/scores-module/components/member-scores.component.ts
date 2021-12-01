@@ -118,7 +118,6 @@ export class MemberScoresComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 1,
-      cellClass: 'scoresColumnRight',
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
   ];
