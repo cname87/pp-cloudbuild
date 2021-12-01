@@ -3,9 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 import { tap, catchError, map } from 'rxjs/operators';
+import clonedeep from 'lodash.clonedeep';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { ISessions, ISessionsStripped } from '../models/sessions-models';
+import {
+  IDate,
+  ISessions,
+  ISessionsStripped,
+  SessionType,
+} from '../models/sessions-models';
 
 enum Days {
   Monday = 'Monday',
@@ -30,7 +36,7 @@ export class SessionsDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private sessionsPath = apiConfiguration.sessionsPath;
-  private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -52,7 +58,7 @@ export class SessionsDataProvider {
   };
 
   #addFixedFields(table: ISessionsStripped): ISessions {
-    const tableFilled = table as ISessions;
+    const tableFilled = clonedeep(table) as ISessions;
     tableFilled.sessions[0].day = Days.Monday;
     tableFilled.sessions[0].ampm = AMPM.AM;
     tableFilled.sessions[1].day = Days.Monday;
@@ -85,12 +91,22 @@ export class SessionsDataProvider {
   }
 
   #stripFixedFields(table: ISessions): ISessionsStripped {
-    const tableStripped: ISessionsStripped = table;
+    const tableStripped: ISessionsStripped = clonedeep(table);
     tableStripped.sessions.map((element) => {
       delete element['day'];
       delete element['ampm'];
     });
     return tableStripped;
+  }
+
+  #replaceBlankType(table: ISessions): ISessions {
+    const tableReplaced = clonedeep(table);
+    tableReplaced.sessions.map((element) => {
+      if (!element.type) {
+        element.type = SessionType.Blank;
+      }
+    });
+    return tableReplaced;
   }
 
   /**
@@ -116,15 +132,15 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.sessionsPath}/`,
+      `${SessionsDataProvider.name}: Sending POST request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.sessionsPath}/`,
     );
 
     /* create a body with a date object */
-    const dateBody = { date: date };
+    const dateBody: IDate = { date: date };
 
     return this.httpClient
       .post<ISessions>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
         dateBody,
@@ -169,7 +185,10 @@ export class SessionsDataProvider {
       );
     }
 
-    const sessionsStripped = this.#stripFixedFields(sessions);
+    /* TEMPORARY until all blank types gone */
+    const sessionsReplaced = this.#replaceBlankType(sessions);
+
+    const sessionsStripped = this.#stripFixedFields(sessionsReplaced);
 
     let headers = this.defaultHeaders;
     headers = headers.set('Content-Type', 'application/json');
@@ -180,12 +199,12 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}${this.sessionsPath}`,
+      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}${this.sessionsPath}`,
     );
 
     return this.httpClient
       .put<ISessions>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.sessionsPath
         }`,
         sessionsStripped,
@@ -195,6 +214,10 @@ export class SessionsDataProvider {
         },
       )
       .pipe(
+        map((data: ISessions) => {
+          const sessionsFilled = this.#addFixedFields(data);
+          return sessionsFilled;
+        }),
         tap((data: ISessions) => {
           /* convert the incoming date property which is an ISO string to a Date object (so it works with the form datepicker) */
           data.date = new Date(data.date);

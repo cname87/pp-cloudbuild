@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes, NoPreloading } from '@angular/router';
-
+import { NoPreloading, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { UserTypeGuard } from './guards/user-type.guard';
 import { MemberDetailComponent } from '../app-module/components/member-detail/member-detail.component';
@@ -84,7 +83,7 @@ const appRoutes: Routes = [
   imports: [
     RouterModule.forRoot(appRoutes, {
       enableTracing: false, // true for debugging purposes only
-      preloadingStrategy: NoPreloading, // reLoading seems to slow initial page load
+      preloadingStrategy: NoPreloading, // lazy loaded modules manually loaded after member detail screen has loaded
     }),
   ],
   exports: [RouterModule],

@@ -6,17 +6,38 @@ import { StatusCodes } from 'http-status-codes';
 import { apiConfiguration } from '../../../configuration/configuration';
 import { GetMembersCache } from './get-members-cache.service';
 import { GetMemberCache } from './get-member-cache.service';
+import { GetScoresCache } from './get-scores-cache.service';
+import { GetSessionsCache } from './get-sessions-cache.service';
+import { GetSummaryCache } from './get-summary-cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class RequestCacheService {
-  private _members = `${apiConfiguration.basePath}/${apiConfiguration.membersPath}`;
-  /* Note: must match 'members/1' but not 'members/1/sessions' */
-  private _memberRegex = new RegExp(this._members + `\/[1-9]\d*$`);
-  private _cacheServices = [this.membersCache, this.memberCache];
+  //
+  #members = `${apiConfiguration.basePath}/${apiConfiguration.membersPath}`;
+  #member = `${apiConfiguration.basePath}/${apiConfiguration.memberPath}`;
+  /* Note: must match 'member/1' but not 'member/1/sessions' */
+  #memberWithId = new RegExp(this.#member + `\/[1-9]\\d*$`);
+  #scores = `${apiConfiguration.scoresPath}`;
+  #scoresWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#scores}`);
+  #sessions = `${apiConfiguration.sessionsPath}`;
+  #sessionsWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#sessions}`);
+  #summary = `${apiConfiguration.summaryPath}`;
+  #summaryWithId = new RegExp(this.#member + `\/[1-9]\\d*\/${this.#summary}`);
+
+  #cacheServices = [
+    this.membersCache,
+    this.memberCache,
+    this.scoresCache,
+    this.sessionsCache,
+    this.summaryCache,
+  ];
 
   constructor(
     private membersCache: GetMembersCache,
     private memberCache: GetMemberCache,
+    private scoresCache: GetScoresCache,
+    private sessionsCache: GetSessionsCache,
+    private summaryCache: GetSummaryCache,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -25,42 +46,60 @@ export class RequestCacheService {
   }
 
   /**
-   * Called to clear a specific cache. If no cache service is passed in then all caches are cleared.
+   * Called to clear a specific cache fully. If no cache service is passed in then all caches are cleared.
    * @param cache A cache service with a clearCache function
    * @returns void
    */
-  public clearCache(cache?: GetMemberCache | GetMembersCache): void {
+  clearCache(cache?: GetMemberCache | GetMembersCache): void {
     this.logger.trace(`${RequestCacheService.name}: running clearCache`);
     if (!cache) {
-      this._cacheServices.forEach((cache) => cache.clearCache());
+      this.#cacheServices.forEach((cache) => cache.clearCache());
     } else {
       cache.clearCache();
     }
   }
 
   /**
-   * Called by a http interceptor asking for a cached http response to a http request. It will only match to a specific url which is 'api-v1/members'
+   * Called by a http interceptor asking for a cached http response to a http request. It will only match to a specific urls'
    * @param request: The http interceptor sends in the request for which a cached response is required.
    * @returns
    * - Returns a cached http response if it has one.
    * - Returns undefined if there is no cached response.
    */
-  public getCache(request: HttpRequest<any>): HttpResponse<any> | undefined {
+  getCache(request: HttpRequest<any>): HttpResponse<any> | undefined {
     this.logger.trace(`${RequestCacheService.name}: running getCache`);
+
     /* return cache for get all members */
-    if (request.method === 'GET' && request.urlWithParams === this._members) {
+    if (request.method === 'GET' && request.urlWithParams === this.#members) {
       return this.membersCache.response;
     }
     /* return cache for get one member */
     if (
       request.method === 'GET' &&
-      this._memberRegex.test(request.urlWithParams) &&
-      /**
-       * TODO Extend getMember cache so it stores individual members - currently it returns the same member even if you switch members on the list page. (So I am returning undefined i.e. a cache miss) now.
-       */
-      false
+      this.#memberWithId.test(request.urlWithParams)
     ) {
-      return this.memberCache.response;
+      return this.memberCache.getCache(request);
+    }
+    /* return cache for get or create a scores table */
+    if (
+      request.method === 'POST' &&
+      this.#scoresWithId.test(request.urlWithParams)
+    ) {
+      return this.scoresCache.getCache(request);
+    }
+    /* return cache for get or create a sessions table */
+    if (
+      request.method === 'POST' &&
+      this.#sessionsWithId.test(request.urlWithParams)
+    ) {
+      return this.sessionsCache.getCache(request);
+    }
+    /* return cache for get a summary table */
+    if (
+      request.method === 'GET' &&
+      this.#summaryWithId.test(request.urlWithParams)
+    ) {
+      return this.summaryCache.getCache(request);
     }
     /* otherwise return that the cache is empty */
     return undefined;
@@ -72,10 +111,7 @@ export class RequestCacheService {
    * @param response The response to the sent request.
    * @returns void
    */
-  public putCache(
-    request: HttpRequest<any>,
-    response: HttpResponse<any>,
-  ): void {
+  putCache(request: HttpRequest<any>, response: HttpResponse<any>): void {
     this.logger.trace(`${RequestCacheService.name}: running putCache`);
 
     /* clear all caches if anything other than a 200 or 201 response */
@@ -94,59 +130,82 @@ export class RequestCacheService {
     switch (request.method) {
       case 'GET': {
         /* set members cache */
-        if (request.urlWithParams === this._members) {
+        if (request.urlWithParams === this.#members) {
           this.membersCache.setGetAll(response);
         }
         /* set member cache */
-        if (this._memberRegex.test(request.urlWithParams)) {
-          this.memberCache.setGetOne(response);
+        if (this.#memberWithId.test(request.urlWithParams)) {
+          this.memberCache.setGet(request, response);
         }
-        /* don't set any cache for any other GET */
+        /* set summary cache */
+        if (this.#summaryWithId.test(request.urlWithParams)) {
+          this.summaryCache.setGet(request, response);
+        }
         break;
       }
 
       case 'POST': {
-        /* set members cache, i.e. add a member */
-        if (request.urlWithParams === this._members) {
-          this.membersCache.setPostOne(response);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
+        /* if this is an add member */
+        if (request.urlWithParams === this.#member) {
+          /* add a member to the members cache */
+          this.membersCache.setPost(response);
+        }
+        /* if this is a get or create scores table */
+        if (this.#scoresWithId.test(request.urlWithParams)) {
+          /* add a scores table  to the scores cache */
+          this.scoresCache.setGetOrPost(request, response);
+        }
+        /* if this is a get or create sessions table */
+        if (this.#sessionsWithId.test(request.urlWithParams)) {
+          /* add a sessions table  to the sessions cache */
+          this.sessionsCache.setGetOrPost(request, response);
         }
         break;
       }
 
       case 'PUT': {
-        /* set members cache, i.e. update a member */
-        if (request.urlWithParams === this._members) {
+        /* if this is a member update */
+        if (this.#memberWithId.test(request.urlWithParams)) {
+          /* update a member in the members cache and clear the member cache */
           this.membersCache.setPutOne(response);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
+          this.memberCache.clearCache(request);
+        }
+        /* if this is an update scores table */
+        if (this.#scoresWithId.test(request.urlWithParams)) {
+          /* add an updated table to the scores cache */
+          this.scoresCache.setPutOne(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
+        }
+        /* if this is an update sessions table */
+        if (this.#sessionsWithId.test(request.urlWithParams)) {
+          /* add an updated table to the sessions cache */
+          this.sessionsCache.setPutOne(request, response);
+          /* clear the summary cache for that member */
+          this.summaryCache.clearCache(request);
         }
         break;
       }
 
       case 'DELETE': {
-        /* set members cache i.e. delete a member */
-        const id = +request.urlWithParams.slice(this._members.length + 1);
+        /* if this is a delete member */
+        const id = +request.urlWithParams.slice(this.#member.length + 1);
         if (
+          this.#memberWithId.test(request.urlWithParams) &&
           id &&
-          !isNaN(id) &&
-          request.urlWithParams === this._members + `/${id}`
+          !isNaN(id)
         ) {
-          /* if id != 0 and is a number */
-          this.membersCache.setDeleteOne(request);
-        } else {
-          /* clear the membersCache */
-          this.clearCache(this.membersCache);
+          /* delete a member in the members cache and clear the member cache */
+          /* set members cache i.e. delete a member */
+          this.membersCache.setDeleteOne(id);
+          this.memberCache.clearCache(request);
         }
         break;
       }
-      /* all other request types */
+      /* all other request types - unexpected */
       default: {
         this.logger.trace(
-          `${RequestCacheService.name}: unexpected method => clearing all caches`,
+          `${RequestCacheService.name}: unexpected http method => clearing all caches`,
         );
         this.clearCache();
         break;

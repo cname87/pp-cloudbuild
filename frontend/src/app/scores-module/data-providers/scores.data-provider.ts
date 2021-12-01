@@ -5,7 +5,7 @@ import { NGXLogger } from 'ngx-logger';
 import { tap, catchError } from 'rxjs/operators';
 
 import { apiConfiguration } from '../../configuration/configuration';
-import { IScores } from '../models/scores-models';
+import { IDate, IScores } from '../models/scores-models';
 
 /**
  * This service handles all communication with the server. It implements all the function to create/get or update a weekly scores table on the server.
@@ -17,7 +17,7 @@ export class ScoresDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private scoresPath = apiConfiguration.scoresPath;
-  private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -59,15 +59,15 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}/`,
+      `${ScoresDataProvider.name}: Sending POST request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.scoresPath}/`,
     );
 
     /* create a body with a date object*/
-    const dateBody = { date: date };
+    const dateBody: IDate = { date: date };
 
     return this.httpClient
       .post<IScores>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
         dateBody,
@@ -115,12 +115,12 @@ export class ScoresDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}/${memberId}/${this.scoresPath}`,
+      `${ScoresDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.scoresPath}`,
     );
 
     return this.httpClient
       .put<IScores>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(memberId)}/${
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(memberId)}/${
           this.scoresPath
         }`,
         scores,

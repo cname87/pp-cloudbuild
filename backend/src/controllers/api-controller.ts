@@ -205,7 +205,7 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
       },
 
       notFound: async (
-        /* called if path not matched - needed or an exception thrown */
+        /* called if path not matched */
         _context,
         _request: Request,
         _response: Response,
@@ -213,8 +213,14 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
       ) => {
         debug(`${modulename}: api handler running notFound`);
 
-        /* let angular or error handler deal with not-founds */
-        nextFunction();
+        console.error(`${modulename}: API not found fail`);
+        const err: Perform.IErr = {
+          name: 'API_NOT_FOUND_FAIL',
+          message: 'API operation id not found',
+          statusCode: 404,
+          dumped: false,
+        };
+        nextFunction(err);
       },
     },
   });

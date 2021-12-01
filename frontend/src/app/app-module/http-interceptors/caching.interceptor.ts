@@ -25,7 +25,7 @@ export class CachingInterceptor implements HttpInterceptor {
   }
 
   /**
-   * Sends the request to the cache service and, if it receives a cached response then it returns that as the response. Otherwise it passes the request to sendRequest.
+   * Sends the request to the cache service and if it receives a cached response then it returns that as the response. Otherwise it passes the request to sendRequest.
    */
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     this.logger.trace(`${CachingInterceptor.name}: intercept called`);

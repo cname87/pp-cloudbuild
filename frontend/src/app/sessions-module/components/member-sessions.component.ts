@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
@@ -7,6 +7,7 @@ import { NGXLogger } from 'ngx-logger';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
+import { ToastrService } from 'ngx-toastr';
 
 import { ISessions } from '../models/sessions-models';
 import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
@@ -35,6 +36,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Day',
       prop: 'day',
+      clickable: false,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -44,6 +46,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'AM/PM',
       prop: 'ampm',
+      clickable: false,
       minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
@@ -53,6 +56,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Type',
       prop: 'type',
+      clickable: true,
       minWidth: this.#minWidth * 3,
       resizeable: false,
       sortable: false,
@@ -62,6 +66,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'RPE',
       prop: 'rpe',
+      clickable: true,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -71,6 +76,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Duration',
       prop: 'duration',
+      clickable: true,
       minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
@@ -80,6 +86,7 @@ export class MemberSessionsComponent implements OnDestroy {
     {
       name: 'Load',
       prop: 'load',
+      clickable: false,
       minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
@@ -89,9 +96,10 @@ export class MemberSessionsComponent implements OnDestroy {
   ];
   /* type select options */
   #type = [
+    { value: SessionType.Blank, label: '-' },
     { value: SessionType.Strength, label: 'Strength' },
     { value: SessionType.Conditioning, label: 'Conditioning' },
-    { value: SessionType.Conditioning, label: 'Sport' },
+    { value: SessionType.Sport, label: 'Sport' },
   ];
   /* rpe select options */
   #rpe = [
@@ -109,9 +117,9 @@ export class MemberSessionsComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- RPE is the Rate of Perceived Exertion of the session';
-  line2 = '- Select from 0, for no exertion, to 10, for extreme exertion';
-  line3 = '';
+  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
+  line2 = '- RPE is the Rate of Perceived Exertion of the session';
+  line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
   line4 = '';
   isGoBackVisible = false;
 
@@ -125,7 +133,6 @@ export class MemberSessionsComponent implements OnDestroy {
         {
           key: 'date',
           type: 'datepicker',
-          /* See comment under scores component. */
           parsers: [
             (date: Date) => {
               return new Date(
@@ -207,26 +214,10 @@ export class MemberSessionsComponent implements OnDestroy {
             defaultValue: 0,
             templateOptions: {
               type: 'number',
+              required: true,
               min: 0,
               max: 999,
               change: () => this.#onTableChange(),
-            },
-            validators: {
-              duration: {
-                expression: (
-                  _control: AbstractControl,
-                  field: FormlyFieldConfig,
-                ): boolean => {
-                  const number = Number(field.formControl?.value);
-                  return number >= 0 && number <= 999;
-                },
-                message: (
-                  _control: AbstractControl,
-                  _field: FormlyFieldConfig,
-                ) => {
-                  return `You must rate the session duration from 1 to 999 minutes`;
-                },
-              },
             },
           },
           {
@@ -253,10 +244,12 @@ export class MemberSessionsComponent implements OnDestroy {
     private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
+    private toastr: ToastrService,
   ) {
     this.logger.trace(
       `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
     );
+
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
@@ -299,26 +292,39 @@ export class MemberSessionsComponent implements OnDestroy {
    * @param updatedModel Updated table model.
    */
   #onTableChange(updatedModel: ISessions = this.model): void {
-    this.logger.trace(
-      `${MemberSessionsComponent.name}: #onTableChange called}`,
-    );
+    this.logger.trace(`${MemberSessionsComponent.name}: #onTableChange called`);
+    if (!this.form.valid) {
+      this.logger.trace(
+        `${MemberSessionsComponent.name}: Form invalid, change not run`,
+      );
+      /* error message displayed to the user */
+      const toastrMessage = 'Invalid Input - please try again';
+      this.logger.trace(
+        `${MemberSessionsComponent.name}: Displaying a toastr message`,
+      );
+      this.toastr.error('ERROR!', toastrMessage);
+      /* reset the form */
+      if (this.options?.resetModel) {
+        this.options.resetModel();
+      }
+      this.#tableChange.emit('modelChange');
+      return;
+    }
+    /* update initial value so we can reset if the form is invalid */
+    if (this.options?.updateInitialValue) {
+      this.options.updateInitialValue();
+    }
     this.sessionsService
       .updateSessionsTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((scores: ISessions) => {
+      .subscribe((sessions: ISessions) => {
         this.logger.trace(
           `${
             MemberSessionsComponent.name
-          }: Sessions table updated: ${JSON.stringify(scores)}`,
+          }: Sessions table updated: ${JSON.stringify(sessions)}`,
         );
       });
     this.#tableChange.emit('modelChange');
-    if (!this.form.valid) {
-      this.logger.trace(
-        `${MemberSessionsComponent.name}: Form invalid, change not run}`,
-      );
-      return;
-    }
   }
 
   /**
@@ -348,5 +354,9 @@ export class MemberSessionsComponent implements OnDestroy {
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
+  }
+
+  submit(): void {
+    alert(this.model);
   }
 }

@@ -169,7 +169,7 @@ const getSessionsSummary = (
         },
         /* average of the load of all non-zero duration sessions */
         average: {
-          /* return 0, and not null, if no non-zro sessions */
+          /* return 0, and not null, if no non-zero sessions */
           $ifNull: [
             {
               $round: [

@@ -27,10 +27,25 @@
     let-value="value"
     let-row="row"
     let-column="column"
+
   >
-    <formly-field
-      [field]="getField(field, column, rowIndex)"
+    <div
+      [class]="column.prop"
+      (click)="setCellAndField(field, column, rowIndex)"
     >
-    </formly-field>
+
+      <formly-field
+        #clickedField
+        *ngIf="isCellAField(column.name, rowIndex); else valueField"
+        [field]="formlyField">
+      </formly-field>
+
+      <ng-template
+        #valueField
+      >
+        {{ value }}
+      </ng-template>
+
+    </div>
   </ng-template>
 </ngx-datatable>

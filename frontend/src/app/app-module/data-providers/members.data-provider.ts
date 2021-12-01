@@ -16,7 +16,7 @@ import { ICount, IMember, IMemberWithoutId } from '../models/models';
 export { ICount, IMember, IMemberWithoutId };
 
 /**
- * This service handles all communication with the server. It implements all the function to create, get, update and delete members on the server.
+ * This service handles communication with the server. It implements all the function to create, get, update and delete members on the server.
  */
 @Injectable({
   providedIn: 'root',
@@ -25,6 +25,7 @@ export class MembersDataProvider {
   //
   private basePath = apiConfiguration.basePath;
   private membersPath = apiConfiguration.membersPath;
+  private memberPath = apiConfiguration.memberPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
@@ -44,43 +45,6 @@ export class MembersDataProvider {
     this.logger.trace(`${MembersDataProvider.name}: Throwing the error on`);
     throw err;
   };
-
-  /**
-   * Adds a supplied member.
-   * A member object without the id property must be supplied in the body.
-   * @param: memberWithoutId: Member object but with no id property.
-   * @returns An observable returning the member added.
-   */
-
-  public addMember(memberWithoutId: IMemberWithoutId): Observable<IMember> {
-    this.logger.trace(`${MembersDataProvider.name}: addMember called`);
-
-    if (!memberWithoutId) {
-      throw new Error('Required parameter was invalid.');
-    }
-
-    let headers = this.defaultHeaders;
-    headers = headers.set('Content-Type', 'application/json');
-    headers = headers.set('Accept', 'application/json');
-
-    this.logger.trace(
-      `${MembersDataProvider.name}: Sending POST request to: ${this.basePath}/${this.membersPath}`,
-    );
-
-    return this.httpClient
-      .post<IMember>(`${this.basePath}/${this.membersPath}`, memberWithoutId, {
-        headers,
-        observe: 'body',
-        responseType: 'json',
-        withCredentials: this.withCredentials,
-      })
-      .pipe(
-        tap((_) => {
-          this.logger.trace(`${MembersDataProvider.name}: Received response`);
-        }),
-        catchError(this.#catchError),
-      );
-  }
 
   /**
    * Gets all the members, or as determined by a query string.
@@ -141,19 +105,54 @@ export class MembersDataProvider {
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
-      `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.membersPath}/${id}`,
+      `${MembersDataProvider.name}: Sending GET request to: ${this.basePath}/${this.memberPath}/${id}`,
     );
 
     return this.httpClient
       .get<IMember>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(
-          String(id),
-        )}`,
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(String(id))}`,
         {
           withCredentials: this.withCredentials,
           headers,
         },
       )
+      .pipe(
+        tap((_) => {
+          this.logger.trace(`${MembersDataProvider.name}: Received response`);
+        }),
+        catchError(this.#catchError),
+      );
+  }
+
+  /**
+   * Adds a supplied member.
+   * A member object without the id property must be supplied in the body.
+   * @param: memberWithoutId: Member object but with no id property.
+   * @returns An observable returning the member added.
+   */
+
+  public addMember(memberWithoutId: IMemberWithoutId): Observable<IMember> {
+    this.logger.trace(`${MembersDataProvider.name}: addMember called`);
+
+    if (!memberWithoutId) {
+      throw new Error('Required parameter was invalid.');
+    }
+
+    let headers = this.defaultHeaders;
+    headers = headers.set('Content-Type', 'application/json');
+    headers = headers.set('Accept', 'application/json');
+
+    this.logger.trace(
+      `${MembersDataProvider.name}: Sending POST request to: ${this.basePath}/${this.memberPath}`,
+    );
+
+    return this.httpClient
+      .post<IMember>(`${this.basePath}/${this.memberPath}`, memberWithoutId, {
+        headers,
+        observe: 'body',
+        responseType: 'json',
+        withCredentials: this.withCredentials,
+      })
       .pipe(
         tap((_) => {
           this.logger.trace(`${MembersDataProvider.name}: Received response`);
@@ -172,25 +171,30 @@ export class MembersDataProvider {
   public updateMember(member: IMember): Observable<IMember> {
     this.logger.trace(`${MembersDataProvider.name}: updateMember called`);
 
-    if (member === null || member === undefined) {
+    if (!member?.id) {
       throw new Error(
-        'Required parameter member was null or undefined when calling updateMember.',
+        'Required parameter member was invalid when calling updateMember.',
       );
     }
+    const id = member.id;
 
     let headers = this.defaultHeaders;
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
-      `${MembersDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.membersPath}`,
+      `${MembersDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${id}`,
     );
 
     return this.httpClient
-      .put<IMember>(`${this.basePath}/${this.membersPath}`, member, {
-        withCredentials: this.withCredentials,
-        headers,
-      })
+      .put<IMember>(
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(String(id))}`,
+        member,
+        {
+          withCredentials: this.withCredentials,
+          headers,
+        },
+      )
       .pipe(
         tap((_) => {
           this.logger.trace(`${MembersDataProvider.name}: Received response`);
@@ -207,9 +211,9 @@ export class MembersDataProvider {
   public deleteMember(id: number): Observable<ICount> {
     this.logger.trace(`${MembersDataProvider.name}: deleteMember called`);
 
-    if (id === null || id === undefined) {
+    if (!id) {
       throw new Error(
-        'Required parameter id was null or undefined when calling deleteMember.',
+        'Required parameter id was invalid when calling deleteMember.',
       );
     }
 
@@ -218,47 +222,17 @@ export class MembersDataProvider {
     headers = headers.set('Accept', 'application/json');
 
     this.logger.trace(
-      `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}/${id}`,
+      `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.memberPath}/${id}`,
     );
 
     return this.httpClient
       .delete<ICount>(
-        `${this.basePath}/${this.membersPath}/${encodeURIComponent(
-          String(id),
-        )}`,
+        `${this.basePath}/${this.memberPath}/${encodeURIComponent(String(id))}`,
         {
           withCredentials: this.withCredentials,
           headers,
         },
       )
-      .pipe(
-        tap((_) => {
-          this.logger.trace(`${MembersDataProvider.name}: Received response`);
-        }),
-        catchError(this.#catchError),
-      );
-  }
-
-  /**
-   * Deletes all members.
-   * @returns An observable returning a count of the members deleted.
-   */
-  public deleteMembers(): Observable<ICount> {
-    this.logger.trace(`${MembersDataProvider.name}: deleteMembers called`);
-
-    let headers = this.defaultHeaders;
-    headers = headers.set('Content-Type', 'application/json');
-    headers = headers.set('Accept', 'application/json');
-
-    this.logger.trace(
-      `${MembersDataProvider.name}: Sending DELETE request to: ${this.basePath}/${this.membersPath}`,
-    );
-
-    return this.httpClient
-      .delete<ICount>(`${this.basePath}/${this.membersPath}`, {
-        withCredentials: this.withCredentials,
-        headers,
-      })
       .pipe(
         tap((_) => {
           this.logger.trace(`${MembersDataProvider.name}: Received response`);

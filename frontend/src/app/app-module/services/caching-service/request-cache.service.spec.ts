@@ -15,7 +15,7 @@ interface INgxLoggerSpy {
 interface IGetMemberStore {
   response: jasmine.Spy;
   setGetAll: jasmine.Spy;
-  setPostOne: jasmine.Spy;
+  setPost: jasmine.Spy;
   setPutOne: jasmine.Spy;
   setDeleteOne: jasmine.Spy;
   setDeleteAll: jasmine.Spy;
@@ -30,7 +30,7 @@ describe('RequestCacheService', () => {
     const getMembersStoreSpy = jasmine.createSpyObj('cache', [
       'response',
       'setGetAll',
-      'setPostOne',
+      'setPost',
       'setPutOne',
       'setDeleteOne',
       'setDeleteAll',
@@ -82,7 +82,7 @@ describe('RequestCacheService', () => {
 
     const getResponseSpy = getMemberStoreSpy.response.and.stub();
     const setGetAllSpy = getMemberStoreSpy.setGetAll.and.stub();
-    const setPostOneSpy = getMemberStoreSpy.setPostOne.and.stub();
+    const setPostSpy = getMemberStoreSpy.setPost.and.stub();
     const setPutOneSpy = getMemberStoreSpy.setPutOne.and.stub();
     const setDeleteOneSpy = getMemberStoreSpy.setDeleteOne.and.stub();
     const setDeleteAllSpy = getMemberStoreSpy.setDeleteAll.and.stub();
@@ -91,7 +91,7 @@ describe('RequestCacheService', () => {
       traceLoggerSpy,
       getResponseSpy,
       setGetAllSpy,
-      setPostOneSpy,
+      setPostSpy,
       setPutOneSpy,
       setDeleteOneSpy,
       setDeleteAllSpy,
@@ -257,8 +257,8 @@ describe('RequestCacheService', () => {
       expect(clearCacheSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('that calls setPostOne', async () => {
-      const { requestCache, clearCacheSpy, setPostOneSpy } = await setup();
+    it('that calls setPost', async () => {
+      const { requestCache, clearCacheSpy, setPostSpy } = await setup();
       const request = {
         method: 'POST',
         urlWithParams: requestCache.baseUrl,
@@ -267,13 +267,13 @@ describe('RequestCacheService', () => {
         status: 201, // test 201
       };
       requestCache.putCache(request, response);
-      expect(setPostOneSpy).toHaveBeenCalledTimes(1);
-      expect(setPostOneSpy).toHaveBeenCalledWith(response);
+      expect(setPostSpy).toHaveBeenCalledTimes(1);
+      expect(setPostSpy).toHaveBeenCalledWith(response);
       expect(clearCacheSpy).toHaveBeenCalledTimes(0);
     });
 
-    it('that fails to call setPostOne', async () => {
-      const { requestCache, clearCacheSpy, setPostOneSpy } = await setup();
+    it('that fails to call setPost', async () => {
+      const { requestCache, clearCacheSpy, setPostSpy } = await setup();
       const request = {
         method: 'POST',
         urlWithParams: 'dummy', // will fail
@@ -282,7 +282,7 @@ describe('RequestCacheService', () => {
         status: 200, // test 200
       };
       requestCache.putCache(request, response);
-      expect(setPostOneSpy).toHaveBeenCalledTimes(0);
+      expect(setPostSpy).toHaveBeenCalledTimes(0);
       expect(clearCacheSpy).toHaveBeenCalledTimes(1);
     });
 

@@ -50,6 +50,7 @@ export function initApp(appLoadService: AppLoadService) {
     LoggerModule.forRoot({
       level: environment.logLevel,
       disableConsoleLogging: false,
+      timestampFormat: 'mediumTime',
     }),
     ToastrModule.forRoot({
       timeOut: 3000,

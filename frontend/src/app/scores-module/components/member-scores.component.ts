@@ -34,6 +34,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Item',
       prop: 'item',
       minWidth: this.#minWidth * 2,
+      clickable: false,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -46,6 +47,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Mon',
       prop: 'monday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -56,6 +58,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Tue',
       prop: 'tuesday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -66,6 +69,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Wed',
       prop: 'wednesday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -76,6 +80,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Thu',
       prop: 'thursday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -86,6 +91,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Fri',
       prop: 'friday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -96,6 +102,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Sat',
       prop: 'saturday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -106,6 +113,7 @@ export class MemberScoresComponent implements OnDestroy {
       name: 'Sun',
       prop: 'sunday',
       minWidth: this.#minWidth,
+      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
@@ -116,7 +124,7 @@ export class MemberScoresComponent implements OnDestroy {
   ];
   /* table select options */
   #dropdown = [
-    { value: 0, label: '' },
+    { value: 0, label: '0' },
     { value: 1, label: '1' },
     { value: 2, label: '2' },
     { value: 3, label: '3' },
@@ -125,9 +133,9 @@ export class MemberScoresComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
-  line2 = '- For example: High Stress is 1, and Low Stress is 5';
-  line3 = '';
+  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
+  line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
+  line3 = '- For example: High Stress is 1, and Low Stress is 5';
   line4 = '';
   isGoBackVisible = false;
 
@@ -322,9 +330,11 @@ export class MemberScoresComponent implements OnDestroy {
     this.scoresService
       .updateScoresTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((_scores: IScores) => {
+      .subscribe((scores: IScores) => {
         this.logger.trace(
-          `${MemberScoresComponent.name}: Scores table updated`,
+          `${MemberScoresComponent.name}: Scores table updated ${JSON.stringify(
+            scores,
+          )}`,
         );
       });
     this.#tableChange.emit('modelChange');
@@ -342,6 +352,7 @@ export class MemberScoresComponent implements OnDestroy {
    */
   #onDateChange = (updatedModel: IScores = this.model): void => {
     this.logger.trace(`${MemberScoresComponent.name}: #onDateChange called`);
+
     if (this.form.valid) {
       this.isLoadingService.add(
         this.scoresService

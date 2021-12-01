@@ -42,7 +42,7 @@ export class MemberDetailResolverService implements Resolve<IMember> {
           `${MemberDetailResolverService.name}: catchError called`,
         );
         this.logger.trace(
-          `${MemberDetailResolverService.name}: not proceeding and throwing the error to the error handler`,
+          `${MemberDetailResolverService.name}: Not proceeding and throwing the error to the error handler`,
         );
         throw err;
       }),

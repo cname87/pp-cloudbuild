@@ -112,7 +112,7 @@ describe('RequestCacheService', () => {
     });
   });
 
-  describe('setPostOne()', () => {
+  describe('setPost()', () => {
     /* setup function run by each sub test function */
     async function setup() {
       await mainSetup();
@@ -128,7 +128,7 @@ describe('RequestCacheService', () => {
         body: '', // falsy value
       };
       /* run test */
-      getMembersCache.setPostOne(dummyParameter);
+      getMembersCache.setPost(dummyParameter);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(undefined);
 
@@ -138,7 +138,7 @@ describe('RequestCacheService', () => {
       };
       dummyParameter.body = 'dummy';
       /* run test */
-      getMembersCache.setPostOne(dummyParameter);
+      getMembersCache.setPost(dummyParameter);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(undefined);
     });
@@ -161,8 +161,8 @@ describe('RequestCacheService', () => {
         url: 'dummyUrlCache',
       });
 
-      /* run setPostOne */
-      getMembersCache.setPostOne(dummyAddMemberResponse);
+      /* run setPost */
+      getMembersCache.setPost(dummyAddMemberResponse);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
     });
@@ -224,7 +224,7 @@ describe('RequestCacheService', () => {
         url: 'dummyUrlCache',
       });
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setPutOne(dummyUpdateMemberResponse);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
@@ -249,7 +249,7 @@ describe('RequestCacheService', () => {
       });
       const expectedCache = undefined;
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setPutOne(dummyUpdateMemberResponse);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
@@ -301,7 +301,7 @@ describe('RequestCacheService', () => {
         url: 'dummyUrlCache',
       });
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setDeleteOne(dummyDeleteRequest);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
@@ -326,7 +326,7 @@ describe('RequestCacheService', () => {
       );
       const expectedCache = undefined;
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setDeleteOne(dummyDeleteRequest);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
@@ -351,7 +351,7 @@ describe('RequestCacheService', () => {
       );
       const expectedCache = undefined;
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setDeleteOne(dummyDeleteRequest);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);
@@ -373,7 +373,7 @@ describe('RequestCacheService', () => {
       const dummyDeleteRequest = new HttpRequest('DELETE', 'dummyUrl/4');
       const expectedCache = undefined;
 
-      /* run setPostOne */
+      /* run setPost */
       getMembersCache.setDeleteOne(dummyDeleteRequest);
       /* test cache equals undefined */
       expect(getMembersCache.response).toEqual(expectedCache);

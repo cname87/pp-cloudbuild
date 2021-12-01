@@ -106,5 +106,10 @@ export interface IScores {
   ];
 }
 
+/* used in request body */
+export interface IDate {
+  date: Date;
+}
+
 /* cannot enter dates early than this */
 export const EARLIEST_DATE = new Date('June 27, 2021');

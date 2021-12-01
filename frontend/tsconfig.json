@@ -40,6 +40,8 @@
     /* All other compiler options */
     "allowJs": true,
     "alwaysStrict": true,
+    /* added to allow use of lodash */
+    "allowSyntheticDefaultImports": true,
     // "declaration": true, // generates declaration .d.ts files
     // "declarationMap": true, // generates map files for declaration files
     // "diagnostics": true,

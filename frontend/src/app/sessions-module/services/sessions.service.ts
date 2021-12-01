@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { SessionsDataProvider } from '../data-providers/sessions.data-provider';
 import { ISessions } from '../models/sessions-models';
+import { UtilsService } from '../../app-module/services/utils-service/utils.service';
 
 /**
  * This service provides functions to call all the api functions providing appropriate responses, messaging and errorhandling.
@@ -16,6 +17,7 @@ export class SessionsService {
     private sessionsDataProvider: SessionsDataProvider,
     private logger: NGXLogger,
     private toastr: ToastrService,
+    private utils: UtilsService,
   ) {
     this.logger.trace(`${SessionsService.name}: starting SessionsService`);
   }
@@ -41,7 +43,10 @@ export class SessionsService {
    * @returns An observable containing a sessions table object.
    * @throws See #catchError.
    */
-  getOrCreateSessions(memberId: number, date: Date): Observable<ISessions> {
+  getOrCreateSessions(
+    memberId: number,
+    date = this.utils.getLastSunday(),
+  ): Observable<ISessions> {
     this.logger.trace(`${SessionsService.name}: getOrCreateSessions called`);
 
     return this.sessionsDataProvider.getOrCreateSessions(memberId, date).pipe(

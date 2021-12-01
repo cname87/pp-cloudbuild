@@ -1,7 +1,7 @@
 # Create an image wth nginx to act as a reverse proxy and serve static files.
 
 # Use latest stable nginx image from Docker hub
-FROM nginx:1
+FROM nginx:latest
 
 
 WORKDIR /
