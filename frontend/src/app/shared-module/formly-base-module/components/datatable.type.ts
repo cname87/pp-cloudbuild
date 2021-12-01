@@ -65,7 +65,6 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     }
     const input =
       fieldToClick.nativeElement.getElementsByClassName('mat-input-element')[0];
-    console.log(input);
     if (input) {
       input.focus();
     }
