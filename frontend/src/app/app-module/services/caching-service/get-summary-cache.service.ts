@@ -34,7 +34,6 @@ export class GetSummaryCache {
 
     /* create a request key that includes the member id, which is in the request url */
     const idString = request.urlWithParams.charAt(this.#prefixLength);
-    console.log(idString);
     if (!idString) {
       throw new Error(
         `${GetSummaryCache.name}: url invalid in summary request`,

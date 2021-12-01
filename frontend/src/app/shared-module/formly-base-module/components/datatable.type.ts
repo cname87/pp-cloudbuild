@@ -33,13 +33,17 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   selectionType = null as unknown as SelectionType;
 
   /* set table row height */
-  rowHeight = 58;
+  rowHeight = 55;
 
   /* the field passed back to the formly form */
   formlyField: FormlyFieldConfig = {};
 
   /* holds detail on a clicked cell */
   clickedCell = { name: 'NAME', row: 1 };
+
+  /* summary row */
+  enableSummary = true;
+  summaryPosition = 'bottom';
 
   constructor(private logger: NGXLogger) {
     super();
@@ -61,7 +65,6 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     }
     const input =
       fieldToClick.nativeElement.getElementsByClassName('mat-input-element')[0];
-    console.log(input);
     if (input) {
       input.focus();
     }

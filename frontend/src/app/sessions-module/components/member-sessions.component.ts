@@ -42,6 +42,9 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 3,
+      summaryFunc: () => {
+        return `TOTALS:`;
+      },
     },
     {
       name: 'AM/PM',
@@ -62,6 +65,10 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 4,
+      summaryFunc: (cells: string[]) => {
+        const filteredCells = cells.filter((cell) => cell !== '-');
+        return filteredCells.length;
+      },
     },
     {
       name: 'RPE',
@@ -72,6 +79,7 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 2,
+      summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Duration',
@@ -82,6 +90,7 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 2,
+      summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Load',
@@ -92,6 +101,7 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 2,
+      summaryFunc: (cells: number[]) => this.#sum(cells),
     },
   ];
   /* type select options */
@@ -285,6 +295,17 @@ export class MemberSessionsComponent implements OnDestroy {
     this.logger.trace(`${MemberSessionsComponent.name}: #catchError called`);
     this.logger.trace(`${MemberSessionsComponent.name}: Throwing the error on`);
     throw err;
+  };
+
+  /**
+   * Sums the numbers in an input array.
+   * @param cells Array with numbers.
+   * @returns Sum of the numbers in the array.
+   */
+  #sum = (cells: number[]): number => {
+    this.logger.trace(`${MemberSessionsComponent.name}: #sum called`);
+    const filteredCells = cells.filter((cell) => !!cell);
+    return filteredCells.reduce((sum, cell) => (sum += cell), 0);
   };
 
   /**
