@@ -1,0 +1,155 @@
+<app-member-banner [member$]="member$"></app-member-banner>
+
+<mat-form-field class="fill-width" appearance="fill">
+  <mat-label>Filter by session type</mat-label>
+  <mat-select (selectionChange)="applyFilter($event.value)" #input>
+    <mat-option>
+      ALL
+    </mat-option>
+    <mat-option
+      *ngFor="let type of types"
+      [value]="type"
+    >
+      {{ type }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<div class="fill-width container mat-elevation-z8">
+  <mat-table
+    [dataSource]="dataSource"
+    matSort
+    matSortActive="date"
+    matSortDirection="desc"
+    matSortDisableClear
+    recycleRows
+  >
+
+    <ng-container [matColumnDef]="displayedColumns[0]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        DATE
+      </mat-header-cell>
+        <mat-cell
+          *matCellDef="let row">
+            {{row.date | date : 'd-MMM-yy' }}
+        </mat-cell>
+      <mat-footer-cell *matFooterCellDef> AVERAGE </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[1]">
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        TYPE
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[2]">
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        SCORE
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.score}} </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+          {{ getAverage(displayedColumns[2]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[3]">
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        TIME
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+          {{ getAverage(displayedColumns[3]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[4]">
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        METRIC
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.metric}} </mat-cell>
+        <mat-footer-cell
+          *matFooterCellDef
+        >
+          {{ getAverage(displayedColumns[4]) | number: "1.2-2" }}
+        </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[5]">
+      <mat-header-cell
+        *matHeaderCellDef
+      >
+        COMMENT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.comment}} </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[6]">
+      <mat-header-cell
+        *matHeaderCellDef
+
+      >
+        EDIT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <button
+          mat-raised-button
+          class="button"
+          (click)="getSession(row.memberId, row.id)"
+          >
+          <mat-icon class="edit">edit</mat-icon>
+        </button>
+      </mat-cell>
+      <mat-footer-cell
+        *matFooterCellDef
+      >
+        </mat-footer-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
+    <mat-row
+      *matRowDef="let row;
+      columns: displayedColumns;"
+      (click)="getSession(row.memberId, row.id)"
+    >
+    </mat-row>
+    <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td
+        class="mat-cell"
+        colspan="4"
+      >
+          No sessions to display"
+      </td>
+    </tr>
+  </mat-table>
+
+  <mat-paginator
+    class="mat-paginator-sticky"
+    [length]="100"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    [showFirstLastButtons]
+  >
+  </mat-paginator>
+
+</div>

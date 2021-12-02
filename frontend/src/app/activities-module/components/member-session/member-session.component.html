@@ -1,0 +1,47 @@
+<app-member-banner [member$]="change.member$"></app-member-banner>
+
+<div class="fill-width">
+
+  <mat-divider></mat-divider>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()"
+  >
+
+    <formly-form
+      [form]="form"
+      [fields]="fields"
+      [model]="model"
+      [options]="options"
+    >
+    </formly-form>
+
+  </form>
+
+  <mat-divider></mat-divider>
+
+  <div
+    class="buttons"
+  >
+    <button
+      mat-raised-button
+      class="button"
+      (click)="onSubmit()"
+      [disabled]="!form.valid"
+    >
+      <mat-icon>update</mat-icon>
+      {{ buttonLabel }}
+    </button>
+    <button
+      mat-raised-button
+      class="button warn-button"
+      (click)="delete()"
+      *ngIf="buttonLabel===updateLabel"
+      >
+      <mat-icon>delete</mat-icon>
+        DELETE SESSION
+    </button>
+  </div>
+
+</div>
