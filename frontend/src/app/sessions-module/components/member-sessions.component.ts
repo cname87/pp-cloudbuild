@@ -55,6 +55,7 @@ export class MemberSessionsComponent implements OnDestroy {
       sortable: false,
       draggable: false,
       flexGrow: 2,
+      summaryFunc: null,
     },
     {
       name: 'Type',
@@ -102,6 +103,17 @@ export class MemberSessionsComponent implements OnDestroy {
       draggable: false,
       flexGrow: 2,
       summaryFunc: (cells: number[]) => this.#sum(cells),
+    },
+    {
+      name: 'Comment',
+      prop: 'comment',
+      clickable: true,
+      minWidth: this.#minWidth,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      flexGrow: 2,
+      summaryFunc: null,
     },
   ];
   /* type select options */
@@ -241,6 +253,16 @@ export class MemberSessionsComponent implements OnDestroy {
               'model.load': (model) => {
                 return (model?.rpe ?? 0) * (model?.duration ?? 0);
               },
+            },
+          },
+          {
+            key: 'comment',
+            type: 'input',
+            defaultValue: '',
+            templateOptions: {
+              type: 'text',
+              required: false,
+              change: () => this.#onTableChange(),
             },
           },
         ],
