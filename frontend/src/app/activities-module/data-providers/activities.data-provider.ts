@@ -5,13 +5,18 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 
 import { catchError, tap } from 'rxjs/operators';
 import { apiConfiguration } from '../../configuration/configuration';
-import { CustomHttpUrlEncodingCodec } from './encoder';
-import { ICount, ISession, ISessionWithoutId } from './models/models';
+import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
+import {
+  ICount,
+  ISession,
+  ISessionWithoutId,
+  SessionType,
+} from '../models/activity-models';
 
 export { ICount, ISession, ISessionWithoutId };
 
@@ -21,17 +26,34 @@ export { ICount, ISession, ISessionWithoutId };
 @Injectable({
   providedIn: 'root',
 })
-export class SessionsDataProvider {
-  /* local variables */
+export class ActivitiesDataProvider {
+  //
   private basePath = apiConfiguration.basePath;
   private membersPath = apiConfiguration.membersPath;
   private sessionsPath = apiConfiguration.sessionsPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
 
+  httpClient1 = {
+    get: (_test1: any, _test2: any) => {
+      return of([
+        {
+          id: 1,
+          date: new Date().toISOString(),
+          memberId: 3,
+          type: SessionType.Strength,
+          score: 5,
+          duration: 50,
+          metric: 250,
+          comment: 'Test comment',
+        },
+      ]);
+    },
+  };
+
   constructor(private httpClient: HttpClient, private logger: NGXLogger) {
     this.logger.trace(
-      `${SessionsDataProvider.name}: Starting SessionsDataProvider`,
+      `${ActivitiesDataProvider.name}: Starting ActivitiesDataProvider`,
     );
   }
 
@@ -43,7 +65,7 @@ export class SessionsDataProvider {
    * @returns An observable returning the session added.
    */
   public addSession(sessionWithoutId: ISessionWithoutId): Observable<ISession> {
-    this.logger.trace(`${SessionsDataProvider.name}: addSession called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: addSession called`);
 
     if (sessionWithoutId === null || sessionWithoutId === undefined) {
       throw new Error(
@@ -59,7 +81,7 @@ export class SessionsDataProvider {
 
     const path = `${this.basePath}/${this.sessionsPath}`;
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending POST request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending POST request to: ${path}`,
     );
 
     return this.httpClient
@@ -69,13 +91,17 @@ export class SessionsDataProvider {
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),
@@ -89,7 +115,7 @@ export class SessionsDataProvider {
    * @returns An observable returning an array of the sessions retrieved.
    */
   public getAllSessions(matchString?: string): Observable<ISession[]> {
-    this.logger.trace(`${SessionsDataProvider.name}: getAllSessions called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: getAllSessions called`);
 
     /* set up query parameter */
     let queryParameters = new HttpParams();
@@ -108,24 +134,29 @@ export class SessionsDataProvider {
     const path = `${this.basePath}/${this.sessionsPath}`;
 
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending GET request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
-    return this.httpClient
-      .get<ISession[]>(`${path}`, {
+    // .get<ISession[]>(`${path}`, {
+    return this.httpClient1
+      .get(`${path}`, {
         params: queryParameters,
         withCredentials: this.withCredentials,
         headers,
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),
@@ -145,7 +176,7 @@ export class SessionsDataProvider {
     memberId: number,
     matchString?: string,
   ): Observable<ISession[]> {
-    this.logger.trace(`${SessionsDataProvider.name}: getSessions called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: getSessions called`);
 
     /* set up query parameter */
     let queryParameters = new HttpParams();
@@ -165,7 +196,7 @@ export class SessionsDataProvider {
     const path = `${this.basePath}/${this.membersPath}/${memberIdString}/${this.sessionsPath}`;
 
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending GET request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
     return this.httpClient
@@ -176,13 +207,17 @@ export class SessionsDataProvider {
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),
@@ -195,7 +230,7 @@ export class SessionsDataProvider {
    * @returns An observable returning the sessions retrieved.
    */
   public getSession(sessionId: number): Observable<ISession> {
-    this.logger.trace(`${SessionsDataProvider.name}: getSession called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: getSession called`);
 
     if (sessionId === null || sessionId === undefined) {
       throw new Error(
@@ -211,7 +246,7 @@ export class SessionsDataProvider {
     const path = `${this.basePath}/${this.sessionsPath}/${sessionIdString}`;
 
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending GET request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
     return this.httpClient
@@ -221,13 +256,17 @@ export class SessionsDataProvider {
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),
@@ -241,7 +280,7 @@ export class SessionsDataProvider {
    * @returns An observable returning the updated session.
    */
   public updateSession(session: ISession | ISession): Observable<ISession> {
-    this.logger.trace(`${SessionsDataProvider.name}: updateSession called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: updateSession called`);
 
     if (session === null || session === undefined) {
       throw new Error(
@@ -258,7 +297,7 @@ export class SessionsDataProvider {
     const path = `${this.basePath}/${this.sessionsPath}`;
 
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending PUT request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending PUT request to: ${path}`,
     );
 
     return this.httpClient
@@ -268,13 +307,17 @@ export class SessionsDataProvider {
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),
@@ -287,7 +330,7 @@ export class SessionsDataProvider {
    * @returns An observable returning a count of the sessions deleted, (which should always be 1).
    */
   public deleteSession(sessionId: number): Observable<ICount> {
-    this.logger.trace(`${SessionsDataProvider.name}: deleteSession called`);
+    this.logger.trace(`${ActivitiesDataProvider.name}: deleteSession called`);
 
     if (sessionId === null || sessionId === undefined) {
       throw new Error(
@@ -303,7 +346,7 @@ export class SessionsDataProvider {
     const path = `${this.basePath}/${this.sessionsPath}/${sessionIdString}`;
 
     this.logger.trace(
-      `${SessionsDataProvider.name}: Sending DELETE request to: ${path}`,
+      `${ActivitiesDataProvider.name}: Sending DELETE request to: ${path}`,
     );
 
     return this.httpClient
@@ -313,13 +356,17 @@ export class SessionsDataProvider {
       })
       .pipe(
         tap((_) => {
-          this.logger.trace(`${SessionsDataProvider.name}: Received response`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: Received response`,
+          );
         }),
         catchError((errReport) => {
-          this.logger.trace(`${SessionsDataProvider.name}: catchError called`);
+          this.logger.trace(
+            `${ActivitiesDataProvider.name}: catchError called`,
+          );
           /* rethrow all errors */
           this.logger.trace(
-            `${SessionsDataProvider.name}: Throwing the error on`,
+            `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
           return throwError(errReport);
         }),

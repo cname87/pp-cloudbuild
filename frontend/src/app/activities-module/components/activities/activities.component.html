@@ -1,5 +1,3 @@
-<app-member-banner [member$]="member$"></app-member-banner>
-
 <mat-form-field class="fill-width" appearance="fill">
   <mat-label>Filter by session type</mat-label>
   <mat-select (selectionChange)="applyFilter($event.value)" #input>
@@ -112,7 +110,7 @@
         <button
           mat-raised-button
           class="button"
-          (click)="getSession(row.memberId, row.id)"
+          (click)="getSession(row.id)"
           >
           <mat-icon class="edit">edit</mat-icon>
         </button>
@@ -127,7 +125,7 @@
     <mat-row
       *matRowDef="let row;
       columns: displayedColumns;"
-      (click)="getSession(row.memberId, row.id)"
+      (click)="getSession(row.id)"
     >
     </mat-row>
     <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row>

@@ -16,7 +16,7 @@ import {
   IMember,
   ISession,
   SessionTypeNames,
-} from '../../data-providers/models/models';
+} from '../../models/activity-models';
 import { RouteStateService } from '../../../app-module/services/route-state-service/router-state.service';
 import { IErrReport, routes } from '../../../configuration/configuration';
 
@@ -24,12 +24,12 @@ import { IErrReport, routes } from '../../../configuration/configuration';
  * @title This component shows a table detailing all the sessions linked to a member.
  */
 @Component({
-  selector: 'app-sessions',
-  templateUrl: './member-sessions.component.html',
-  styleUrls: ['./member-sessions.component.scss'],
+  selector: 'app-activities',
+  templateUrl: './activities.component.html',
+  styleUrls: ['./activities.component.scss'],
   providers: [],
 })
-export class MemberSessionsComponent implements AfterViewInit {
+export class ActivitiesComponent implements AfterViewInit {
   //
   private destroy = new Subject<void>();
   private toastrMessage = 'A member access error has occurred';
@@ -61,7 +61,7 @@ export class MemberSessionsComponent implements AfterViewInit {
     private toastr: ToastrService,
   ) {
     this.logger.trace(
-      `${MemberSessionsComponent.name}: Starting MemberSessionsComponent`,
+      `${ActivitiesComponent.name}: Starting ActivitiesComponent`,
     );
     /* get the data as supplied from the route resolver */
     this.route.data.pipe(takeUntil(this.destroy)).subscribe((data: Data) => {
@@ -75,7 +75,7 @@ export class MemberSessionsComponent implements AfterViewInit {
           takeUntil(this.destroy),
           map((sessions) => {
             this.logger.trace(
-              `${MemberSessionsComponent.name}: Sessions retrieved`,
+              `${ActivitiesComponent.name}: Sessions retrieved`,
             );
             return new MatTableDataSource(sessions);
           }),
@@ -107,16 +107,14 @@ export class MemberSessionsComponent implements AfterViewInit {
         }),
         takeUntil(this.destroy),
         catchError((err: IErrReport) => {
-          this.logger.trace(
-            `${MemberSessionsComponent.name}: catchError called`,
-          );
+          this.logger.trace(`${ActivitiesComponent.name}: catchError called`);
 
           /* inform user and mark as handled */
           this.toastr.error('ERROR!', this.toastrMessage);
           err.isHandled = true;
 
           this.logger.trace(
-            `${MemberSessionsComponent.name}: Throwing the error on`,
+            `${ActivitiesComponent.name}: Throwing the error on`,
           );
           return throwError(err);
         }),
@@ -129,13 +127,8 @@ export class MemberSessionsComponent implements AfterViewInit {
     this.destroy.complete();
   }
 
-  getSession(mid: string, sid: string): void {
-    this.router.navigate([
-      routes.session.path1,
-      mid,
-      routes.session.path2,
-      sid,
-    ]);
+  getSession(sid: string): void {
+    this.router.navigate([routes.activities.path, sid]);
   }
 
   goBack(): void {

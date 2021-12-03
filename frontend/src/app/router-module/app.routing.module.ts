@@ -48,6 +48,14 @@ const appRoutes: Routes = [
     },
   },
   {
+    /* shows a member's activity log */
+    path: `${routes.activities.path}/:id`,
+    loadChildren: () =>
+      import('../activities-module/activities.module').then(
+        (m) => m.ActivitiesModule,
+      ),
+  },
+  {
     /* shows a member's weekly questionaire scores */
     path: `${routes.scores.path}/:id`,
     loadChildren: () =>

@@ -1,16 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { NGXLogger } from 'ngx-logger';
 import { StatusCodes } from 'http-status-codes';
 import { ToastrService } from 'ngx-toastr';
 
-import { SessionsDataProvider } from '../data-providers/sessions.data-provider';
-import {
-  ICount,
-  ISession,
-  ISessionWithoutId,
-} from '../../data-providers/models/models';
+import { ActivitiesDataProvider } from '../data-providers/activities.data-provider';
+import { ICount, ISession, ISessionWithoutId } from '../models/activity-models';
 import {
   IErrReport,
   errorSearchTerm,
@@ -21,15 +17,14 @@ import {
  * This service provides functions to call all the functions that call the backend according to the defined api providing appropriate responses, messaging and errorhandling.
  */
 @Injectable({ providedIn: 'root' })
-export class SessionsService {
+export class ActivitiesService {
   constructor(
     @Inject(E2E_TESTING) private isTesting: boolean,
-    private messageService: MessageService,
-    private sessionsDataProvider: SessionsDataProvider,
+    private sessionsDataProvider: ActivitiesDataProvider,
     private logger: NGXLogger,
     private toastr: ToastrService,
   ) {
-    this.logger.trace(`${SessionsService.name}: starting SessionsService`);
+    this.logger.trace(`${ActivitiesService.name}: starting ActivitiesService`);
   }
 
   /* common toastr message */
@@ -45,32 +40,32 @@ export class SessionsService {
    * - Throws an observable with an error if any response other than a successful response, or a Not Found/404, is received from the server.
    */
   getAllSessions(matchString?: string): Observable<ISession[]> {
-    this.logger.trace(`${SessionsService.name}: getAllSessions called`);
+    this.logger.trace(`${ActivitiesService.name}: getAllSessions called`);
 
     /* e2e error test - only if e2e test and match to a specific term */
     if (this.isTesting && matchString === errorSearchTerm) {
       this.logger.trace(
-        `${SessionsService.name}: e2e testing - throwing an error`,
+        `${ActivitiesService.name}: e2e testing - throwing an error`,
       );
       throw new Error('Test application error');
     }
 
     if (typeof matchString === 'string' && matchString.trim() === '') {
       this.logger.trace(
-        `${SessionsService.name}: Search term exists but is blank - returning empty sessions array`,
+        `${ActivitiesService.name}: Search term exists but is blank - returning empty sessions array`,
       );
       return of([]);
     }
 
     return this.sessionsDataProvider.getAllSessions(matchString).pipe(
       catchError((err: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user and mark as handled */
         this.toastr.error('ERROR!', this.toastrMessage);
         err.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(err);
       }),
     );
@@ -87,32 +82,32 @@ export class SessionsService {
    * - Throws an observable with an error if any response other than a successful response, or a Not Found/404, is received from the server.
    */
   getSessions(memberId: number, matchString?: string): Observable<ISession[]> {
-    this.logger.trace(`${SessionsService.name}: getSessions called`);
+    this.logger.trace(`${ActivitiesService.name}: getSessions called`);
 
     /* e2e error test - only if e2e test and match to a specific term */
     if (this.isTesting && matchString === errorSearchTerm) {
       this.logger.trace(
-        `${SessionsService.name}: e2e testing - throwing an error`,
+        `${ActivitiesService.name}: e2e testing - throwing an error`,
       );
       throw new Error('Test application error');
     }
 
     if (typeof matchString === 'string' && matchString.trim() === '') {
       this.logger.trace(
-        `${SessionsService.name}: Search term exists but is blank - returning empty sessions array`,
+        `${ActivitiesService.name}: Search term exists but is blank - returning empty sessions array`,
       );
       return of([]);
     }
 
     return this.sessionsDataProvider.getSessions(memberId, matchString).pipe(
       catchError((err: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user and mark as handled */
         this.toastr.error('ERROR!', this.toastrMessage);
         err.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(err);
       }),
     );
@@ -125,11 +120,11 @@ export class SessionsService {
    * @throws: Throws an observable with an error if any response other than a successful response is received from the server.
    */
   getSession(SessionId: number): Observable<ISession> {
-    this.logger.trace(`${SessionsService.name}: getSession called`);
+    this.logger.trace(`${ActivitiesService.name}: getSession called`);
 
     return this.sessionsDataProvider.getSession(SessionId).pipe(
       catchError((errReport: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user */
         if (
@@ -144,7 +139,7 @@ export class SessionsService {
         /* mark as handled */
         errReport.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(errReport);
       }),
     );
@@ -157,17 +152,17 @@ export class SessionsService {
    * @throws: Throws an observable with an error if any response other than a successful response is received from the server.
    */
   addSession(session: ISessionWithoutId): Observable<ISession> {
-    this.logger.trace(`${SessionsService.name}: addSession called`);
+    this.logger.trace(`${ActivitiesService.name}: addSession called`);
 
     return this.sessionsDataProvider.addSession(session).pipe(
       catchError((err: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user and mark as handled */
         this.toastr.error('ERROR!', this.toastrMessage);
         err.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(err);
       }),
     );
@@ -180,14 +175,14 @@ export class SessionsService {
    * @throws: Throws an observable with an error if any response other than a successful response is received from the server.
    */
   deleteSession(sessionOrId: ISession | number): Observable<ICount> {
-    this.logger.trace(`${SessionsService.name}: deleteSession called`);
+    this.logger.trace(`${ActivitiesService.name}: deleteSession called`);
 
     const sessionId =
       typeof sessionOrId === 'number' ? sessionOrId : sessionOrId.id;
 
     return this.sessionsDataProvider.deleteSession(sessionId).pipe(
       catchError((errReport: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user */
         if (
@@ -202,7 +197,7 @@ export class SessionsService {
         /* mark as handled */
         errReport.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(errReport);
       }),
     );
@@ -215,11 +210,11 @@ export class SessionsService {
    * @throws: Throws an observable with an error if any response other than a successful response is received from the server.
    */
   updateSession(session: ISession): Observable<ISession> {
-    this.logger.trace(`${SessionsService.name}: updateSession called`);
+    this.logger.trace(`${ActivitiesService.name}: updateSession called`);
 
     return this.sessionsDataProvider.updateSession(session).pipe(
       catchError((errReport: IErrReport) => {
-        this.logger.trace(`${SessionsService.name}: catchError called`);
+        this.logger.trace(`${ActivitiesService.name}: catchError called`);
 
         /* inform user */
         if (
@@ -234,7 +229,7 @@ export class SessionsService {
         /* mark as handled */
         errReport.isHandled = true;
 
-        this.logger.trace(`${SessionsService.name}: Throwing the error on`);
+        this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
         return throwError(errReport);
       }),
     );

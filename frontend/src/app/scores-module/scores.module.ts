@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared-module/shared.module';
 import { AuthGuard } from '../router-module/guards/auth.guard';
 
-import { MemberScoresResolverService } from './resolvers/member-scores-resolver.service';
+import { MemberScoresResolverService } from './resolvers/scores-resolver.service';
 import { MemberScoresComponent } from './components/member-scores.component';
 
 const routes: Routes = [

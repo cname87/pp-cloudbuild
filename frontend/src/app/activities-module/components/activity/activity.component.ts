@@ -7,14 +7,14 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { IsLoadingService } from '@service-work/is-loading';
 
-import { SessionsService } from '../../services/sessions.service';
+import { ActivitiesService } from '../../services/activities.service';
 import {
   ISessionWithoutId,
   ISession,
   SessionTypeNames,
   ISessionChange,
   SESSION_MODE,
-} from '../../data-providers/models/models';
+} from '../../models/activity-models';
 import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { IErrReport } from '../../../configuration/configuration';
 import { ToastrService } from 'ngx-toastr';
@@ -28,12 +28,12 @@ interface routeData extends Data {
  * @title This component shows a form allowing detail on a training session to be entered.
  */
 @Component({
-  selector: 'app-session',
-  templateUrl: './member-session.component.html',
-  styleUrls: ['./member-session.component.scss'],
+  selector: 'app-activity',
+  templateUrl: './activity.component.html',
+  styleUrls: ['./activity.component.scss'],
   providers: [],
 })
-export class MemberSessionComponent {
+export class ActivityComponent {
   //
   private destroy = new Subject<void>();
   private toastrMessage = 'A member access error has occurred';
@@ -177,16 +177,14 @@ export class MemberSessionComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private sessionsService: SessionsService,
+    private activitiesService: ActivitiesService,
     private location: Location,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
     private routeStateService: RouteStateService,
     private toastr: ToastrService,
   ) {
-    this.logger.trace(
-      `${MemberSessionComponent.name}: Starting MemberSessionComponent`,
-    );
+    this.logger.trace(`${ActivityComponent.name}: Starting ActivityComponent`);
   }
 
   ngOnInit() {
@@ -223,17 +221,13 @@ export class MemberSessionComponent {
         }),
         takeUntil(this.destroy),
         catchError((err: IErrReport) => {
-          this.logger.trace(
-            `${MemberSessionComponent.name}: catchError called`,
-          );
+          this.logger.trace(`${ActivityComponent.name}: catchError called`);
 
           /* inform user and mark as handled */
           this.toastr.error('ERROR!', this.toastrMessage);
           err.isHandled = true;
 
-          this.logger.trace(
-            `${MemberSessionComponent.name}: Throwing the error on`,
-          );
+          this.logger.trace(`${ActivityComponent.name}: Throwing the error on`);
           return throwError(err);
         }),
       )
@@ -250,8 +244,8 @@ export class MemberSessionComponent {
         .pipe(
           switchMap((mode) => {
             return mode === SESSION_MODE.ADD
-              ? this.sessionsService.addSession(this.model)
-              : this.sessionsService.updateSession(this.model as ISession);
+              ? this.activitiesService.addSession(this.model)
+              : this.activitiesService.updateSession(this.model as ISession);
           }),
           takeUntil(this.destroy),
         )
@@ -259,7 +253,7 @@ export class MemberSessionComponent {
           const verb =
             this.change.mode === SESSION_MODE.ADD ? 'added' : 'updated';
           this.logger.trace(
-            `${MemberSessionComponent.name}: Session ${verb}: ${JSON.stringify(
+            `${ActivityComponent.name}: Session ${verb}: ${JSON.stringify(
               session,
             )}`,
           );
@@ -294,13 +288,13 @@ export class MemberSessionComponent {
       of({})
         .pipe(
           switchMap(() => {
-            return this.sessionsService.deleteSession(this.model as ISession);
+            return this.activitiesService.deleteSession(this.model as ISession);
           }),
           takeUntil(this.destroy),
         )
         .subscribe((count) => {
           this.logger.trace(
-            `${MemberSessionComponent.name}: ${JSON.stringify(
+            `${ActivityComponent.name}: ${JSON.stringify(
               count,
             )} session deleted: ${JSON.stringify(this.model)}`,
           );

@@ -25,6 +25,7 @@ interface ILink {
 export class NavComponent implements OnInit {
   #membersList = routes.membersList;
   #detail = routes.member;
+  #activities = routes.activities;
   #scores = routes.scores;
   #sessions = routes.sessions;
   #summary = routes.summary;
@@ -54,6 +55,12 @@ export class NavComponent implements OnInit {
         {
           path: `/${this.#detail.path}/${id}`,
           display: this.#detail.displayName,
+          disabled: disabled,
+          hidden: false,
+        },
+        {
+          path: `/${this.#activities.path}/${id}`,
+          display: this.#activities.displayName,
           disabled: disabled,
           hidden: false,
         },

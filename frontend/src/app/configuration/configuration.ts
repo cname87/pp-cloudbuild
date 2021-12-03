@@ -28,6 +28,10 @@ const member = {
   path: 'member',
   displayName: 'MY DETAIL',
 };
+const activities = {
+  path: 'activities',
+  displayName: 'ACTIVITIES',
+};
 const scores = {
   path: 'scores',
   displayName: 'SCORES',
@@ -54,6 +58,7 @@ const callback = {
 export const routes = {
   membersList,
   member,
+  activities,
   scores,
   sessions,
   summary,

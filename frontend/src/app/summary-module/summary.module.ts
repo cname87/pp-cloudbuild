@@ -5,7 +5,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { SharedModule } from '../shared-module/shared.module';
 import { AuthGuard } from '../router-module/guards/auth.guard';
-import { MemberSummaryResolverService } from './resolvers/member-summary-resolver.service';
+import { MemberSummaryResolverService } from './resolvers/summary-resolver.service';
 import { MemberSummaryComponent } from './components/member-summary.component';
 import { SummaryChartComponent } from './components/summary-chart/summary-chart.component';
 
