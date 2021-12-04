@@ -14,7 +14,7 @@ const routes: Routes = [
     component: ActivitiesComponent,
     canActivate: [AuthGuard],
     resolve: {
-      sessions: ActivitiesResolverService,
+      activities: ActivitiesResolverService,
     },
   },
 ];

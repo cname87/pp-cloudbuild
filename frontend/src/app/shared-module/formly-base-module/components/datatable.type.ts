@@ -124,7 +124,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   ngOnInit() {
     this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
 
-    /* Note: 'this.to' refers to the templateOptions set in the MemberScoresComponent */
+    /* Note: 'this.to' refers to the templateOptions set in the ScoresComponent */
     /* assigns a reference to the formly template */
     this.to.columns.forEach((column: any) => {
       column.cellTemplate = this.defaultColumn;

@@ -199,16 +199,19 @@ export class ActivitiesDataProvider {
       `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
-    return this.httpClient
-      .get<ISession[]>(`${path}`, {
+    // .get<ISession[]>(`${path}`, {
+    return this.httpClient1
+      .get(`${path}`, {
         params: queryParameters,
         withCredentials: this.withCredentials,
         headers,
       })
       .pipe(
-        tap((_) => {
+        tap((activities: ISession[]) => {
           this.logger.trace(
-            `${ActivitiesDataProvider.name}: Received response`,
+            `${ActivitiesDataProvider.name}: Received response ${JSON.stringify(
+              activities,
+            )}`,
           );
         }),
         catchError((errReport) => {

@@ -4,144 +4,150 @@ import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
+import { ToastrService } from 'ngx-toastr';
 
-import { IScores, EARLIEST_DATE } from '../models/scores-models';
+import { ISessions } from '../models/sessions-models';
+import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
-import { ScoresService } from '../services/scores.service';
+import { SessionsService } from '../services/sessions.service';
+import { SessionType } from '../models/sessions-models';
 
 /**
- * @title This component shows a form table allowing weekly score results for a member to be viewed and entered or edited.
+ * @title This component shows a form table allowing weekly session results for a member to be viewed and entered or edited.
  */
 @Component({
-  selector: 'app-scores',
-  styleUrls: ['./member-scores.component.scss'],
-  templateUrl: './member-scores.component.html',
+  selector: 'app-sessions',
+  styleUrls: ['./sessions.component.scss'],
+  templateUrl: './sessions.component.html',
 })
-export class MemberScoresComponent implements OnDestroy {
+export class SessionsComponent implements OnDestroy {
   //
   /* used to report table change */
   #tableChange = new EventEmitter();
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
   /* min width used in the datatable */
-  #minWidth = 54;
+  #minWidth = 42;
   /* ngx-datatable columns */
   #columns = [
     {
-      name: 'Item',
-      prop: 'item',
-      minWidth: this.#minWidth * 2,
+      name: 'Day',
+      prop: 'day',
       clickable: false,
+      minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 3,
       summaryFunc: () => {
         return `TOTALS:`;
       },
     },
     {
-      name: 'Mon',
-      prop: 'monday',
+      name: 'AM/PM',
+      prop: 'ampm',
+      clickable: false,
       minWidth: this.#minWidth,
-      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
+      summaryFunc: null,
+    },
+    {
+      name: 'Type',
+      prop: 'type',
+      clickable: true,
+      minWidth: this.#minWidth * 3,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      flexGrow: 4,
+      summaryFunc: (cells: string[]) => {
+        const filteredCells = cells.filter((cell) => cell !== '-');
+        return filteredCells.length;
+      },
+    },
+    {
+      name: 'RPE',
+      prop: 'rpe',
+      clickable: true,
+      minWidth: this.#minWidth * 2,
+      resizeable: false,
+      sortable: false,
+      draggable: false,
+      flexGrow: 2,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
-      name: 'Tue',
-      prop: 'tuesday',
-      minWidth: this.#minWidth,
+      name: 'Duration',
+      prop: 'duration',
       clickable: true,
+      minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
-      name: 'Wed',
-      prop: 'wednesday',
+      name: 'Load',
+      prop: 'load',
+      clickable: false,
       minWidth: this.#minWidth,
-      clickable: true,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 2,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
-      name: 'Thu',
-      prop: 'thursday',
-      minWidth: this.#minWidth,
+      name: 'Comment',
+      prop: 'comment',
       clickable: true,
+      minWidth: this.#minWidth,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
-      summaryFunc: (cells: number[]) => this.#sum(cells),
-    },
-    {
-      name: 'Fri',
-      prop: 'friday',
-      minWidth: this.#minWidth,
-      clickable: true,
-      resizeable: false,
-      sortable: false,
-      draggable: false,
-      flexGrow: 1,
-      summaryFunc: (cells: number[]) => this.#sum(cells),
-    },
-    {
-      name: 'Sat',
-      prop: 'saturday',
-      minWidth: this.#minWidth,
-      clickable: true,
-      resizeable: false,
-      sortable: false,
-      draggable: false,
-      flexGrow: 1,
-      summaryFunc: (cells: number[]) => this.#sum(cells),
-    },
-    {
-      name: 'Sun',
-      prop: 'sunday',
-      minWidth: this.#minWidth,
-      clickable: true,
-      resizeable: false,
-      sortable: false,
-      draggable: false,
-      flexGrow: 1,
-      summaryFunc: (cells: number[]) => this.#sum(cells),
+      flexGrow: 2,
+      summaryFunc: null,
     },
   ];
-  /* table select options */
-  #dropdown = [
+  /* type select options */
+  #type = [
+    { value: SessionType.Blank, label: '-' },
+    { value: SessionType.Strength, label: 'Strength' },
+    { value: SessionType.Conditioning, label: 'Conditioning' },
+    { value: SessionType.Sport, label: 'Sport' },
+  ];
+  /* rpe select options */
+  #rpe = [
     { value: 0, label: '0' },
     { value: 1, label: '1' },
     { value: 2, label: '2' },
     { value: 3, label: '3' },
     { value: 4, label: '4' },
     { value: 5, label: '5' },
+    { value: 6, label: '6' },
+    { value: 7, label: '7' },
+    { value: 8, label: '8' },
+    { value: 9, label: '9' },
+    { value: 10, label: '10' },
   ];
 
   /* define the text info card */
   line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
-  line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
-  line3 = '- For example: High Stress is 1, and Low Stress is 5';
+  line2 = '- RPE is the Rate of Perceived Exertion of the session';
+  line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
   line4 = '';
   isGoBackVisible = false;
 
   form = new FormGroup({});
-  scores!: IScores;
-  /* form model */
-  model!: IScores;
+  model$!: Observable<ISessions>;
+  model!: ISessions;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
@@ -149,9 +155,8 @@ export class MemberScoresComponent implements OnDestroy {
         {
           key: 'date',
           type: 'datepicker',
-          /* see dates.md in the docs folder */
           parsers: [
-            (date) => {
+            (date: Date) => {
               return new Date(
                 date.getTime() - date.getTimezoneOffset() * 60 * 1000,
               );
@@ -183,7 +188,7 @@ export class MemberScoresComponent implements OnDestroy {
     },
     {
       /* define the ngx-datatable */
-      key: 'scores',
+      key: 'sessions',
       type: 'datatable',
       templateOptions: {
         columns: this.#columns,
@@ -193,7 +198,7 @@ export class MemberScoresComponent implements OnDestroy {
       fieldArray: {
         fieldGroup: [
           {
-            key: 'item',
+            key: 'day',
             type: 'input',
             templateOptions: {
               type: 'text',
@@ -201,58 +206,62 @@ export class MemberScoresComponent implements OnDestroy {
             },
           },
           {
-            key: 'monday',
+            key: 'ampm',
+            type: 'input',
+            templateOptions: {
+              type: 'text',
+              disabled: true,
+            },
+          },
+          {
+            key: 'type',
             type: 'select',
             templateOptions: {
-              options: this.#dropdown,
+              options: this.#type,
               change: () => this.#onTableChange(),
             },
           },
           {
-            key: 'tuesday',
+            key: 'rpe',
             type: 'select',
+            defaultValue: 0,
             templateOptions: {
-              options: this.#dropdown,
+              options: this.#rpe,
               change: () => this.#onTableChange(),
             },
           },
           {
-            key: 'wednesday',
-            type: 'select',
+            key: 'duration',
+            type: 'input',
+            defaultValue: 0,
             templateOptions: {
-              options: this.#dropdown,
+              type: 'number',
+              required: true,
+              min: 0,
+              max: 999,
               change: () => this.#onTableChange(),
             },
           },
           {
-            key: 'thursday',
-            type: 'select',
+            key: 'load',
+            type: 'input',
             templateOptions: {
-              options: this.#dropdown,
-              change: () => this.#onTableChange(),
+              type: 'text',
+              disabled: true,
+            },
+            expressionProperties: {
+              'model.load': (model) => {
+                return (model?.rpe ?? 0) * (model?.duration ?? 0);
+              },
             },
           },
           {
-            key: 'friday',
-            type: 'select',
+            key: 'comment',
+            type: 'input',
+            defaultValue: '',
             templateOptions: {
-              options: this.#dropdown,
-              change: () => this.#onTableChange(),
-            },
-          },
-          {
-            key: 'saturday',
-            type: 'select',
-            templateOptions: {
-              options: this.#dropdown,
-              change: () => this.#onTableChange(),
-            },
-          },
-          {
-            key: 'sunday',
-            type: 'select',
-            templateOptions: {
-              options: this.#dropdown,
+              type: 'text',
+              required: false,
               change: () => this.#onTableChange(),
             },
           },
@@ -264,20 +273,19 @@ export class MemberScoresComponent implements OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private routeStateService: RouteStateService,
-    private scoresService: ScoresService,
+    private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
+    private toastr: ToastrService,
   ) {
-    this.logger.trace(
-      `${MemberScoresComponent.name}: Starting MemberScoresComponent`,
-    );
+    this.logger.trace(`${SessionsComponent.name}: Starting SessionsComponent`);
 
     /* get data from route resolver and load the model which fills and renders the table */
     /* Note: loading in constructor to avoid angular change after checked error */
     this.route.data
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
       .subscribe((data: Data) => {
-        this.model = data.scores;
+        this.model = data.sessions;
       });
 
     /* update route state service with routed member id */
@@ -299,13 +307,13 @@ export class MemberScoresComponent implements OnDestroy {
   }
 
   /**
-   * Picks up any upstream errors, displays a toaster message and throws on the error.
+   * Picks up any upstream errors and throws on the error.
    * @param err An error object
    * @throws Throws the received error object
    */
   #catchError = (err: any): never => {
-    this.logger.trace(`${MemberScoresComponent.name}: #catchError called`);
-    this.logger.trace(`${MemberScoresComponent.name}: Throwing the error on`);
+    this.logger.trace(`${SessionsComponent.name}: #catchError called`);
+    this.logger.trace(`${SessionsComponent.name}: Throwing the error on`);
     throw err;
   };
 
@@ -315,52 +323,66 @@ export class MemberScoresComponent implements OnDestroy {
    * @returns Sum of the numbers in the array.
    */
   #sum = (cells: number[]): number => {
-    this.logger.trace(`${MemberScoresComponent.name}: #sum called`);
+    this.logger.trace(`${SessionsComponent.name}: #sum called`);
     const filteredCells = cells.filter((cell) => !!cell);
     return filteredCells.reduce((sum, cell) => (sum += cell), 0);
   };
 
   /**
-   * Runs after every table data change, (i.e. excluding the date). The data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
+   * Runs after every table data change, (i.e. excluding the date), the data is sent to the database and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
-  #onTableChange = (updatedModel: IScores = this.model): void => {
-    this.logger.trace(`${MemberScoresComponent.name}: #onTableChange called}`);
-    this.scoresService
-      .updateScoresTable(updatedModel)
+  #onTableChange(updatedModel: ISessions = this.model): void {
+    this.logger.trace(`${SessionsComponent.name}: #onTableChange called`);
+    if (!this.form.valid) {
+      this.logger.trace(
+        `${SessionsComponent.name}: Form invalid, change not run`,
+      );
+      /* error message displayed to the user */
+      const toastrMessage = 'Invalid Input - please try again';
+      this.logger.trace(
+        `${SessionsComponent.name}: Displaying a toastr message`,
+      );
+      this.toastr.error('ERROR!', toastrMessage);
+      /* reset the form */
+      if (this.options?.resetModel) {
+        this.options.resetModel();
+      }
+      this.#tableChange.emit('modelChange');
+      return;
+    }
+    /* update initial value so we can reset if the form is invalid */
+    if (this.options?.updateInitialValue) {
+      this.options.updateInitialValue();
+    }
+    this.sessionsService
+      .updateSessionsTable(updatedModel)
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((scores: IScores) => {
+      .subscribe((sessions: ISessions) => {
         this.logger.trace(
-          `${MemberScoresComponent.name}: Scores table updated ${JSON.stringify(
-            scores,
+          `${SessionsComponent.name}: Sessions table updated: ${JSON.stringify(
+            sessions,
           )}`,
         );
       });
     this.#tableChange.emit('modelChange');
-    if (!this.form.valid) {
-      this.logger.trace(
-        `${MemberScoresComponent.name}: Form invalid, change not run}`,
-      );
-      return;
-    }
-  };
+  }
 
   /**
    * After every date change a new table is requested from the database, loaded into the model, and an event is emitted to the datatable type, (which redraws the table).
    * @param updatedModel Updated table model.
    */
-  #onDateChange = (updatedModel: IScores = this.model): void => {
-    this.logger.trace(`${MemberScoresComponent.name}: #onDateChange called`);
-
+  #onDateChange = (updatedModel: ISessions = this.model): void => {
+    this.logger.trace(`${SessionsComponent.name}: #onDateChange called`);
     if (this.form.valid) {
       this.isLoadingService.add(
-        this.scoresService
-          .getOrCreateScores(updatedModel.memberId, updatedModel.date)
+        this.sessionsService
+          .getOrCreateSessions(updatedModel.memberId, updatedModel.date)
           .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-          .subscribe((scores) => {
-            this.model = scores;
+          .subscribe((sessions) => {
+            this.model = sessions;
             this.logger.trace(
-              `${MemberScoresComponent.name}: Scores table created or retrieved`,
+              `${SessionsComponent.name}: Sessions table created or retrieved`,
             );
           }),
       );
@@ -369,9 +391,13 @@ export class MemberScoresComponent implements OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.logger.trace(`${MemberScoresComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${SessionsComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
+  }
+
+  submit(): void {
+    alert(this.model);
   }
 }

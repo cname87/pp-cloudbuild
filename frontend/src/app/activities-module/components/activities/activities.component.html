@@ -1,3 +1,13 @@
+<app-text-info
+  [line1]='line1'
+  [line2]='line2'
+  [line3]='line3'
+  [line4]='line4'
+  [isGoBackVisible]='isGoBackVisible'
+>
+</app-text-info>
+
+
 <mat-form-field class="fill-width" appearance="fill">
   <mat-label>Filter by session type</mat-label>
   <mat-select (selectionChange)="applyFilter($event.value)" #input>
@@ -54,11 +64,6 @@
         SCORE
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.score}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[2]) | number: "1.2-2" }}
-        </mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[3]">
@@ -68,11 +73,6 @@
         TIME
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-          {{ getAverage(displayedColumns[3]) | number: "1.2-2" }}
-        </mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[4]">
@@ -82,11 +82,6 @@
         METRIC
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.metric}} </mat-cell>
-        <mat-footer-cell
-          *matFooterCellDef
-        >
-          {{ getAverage(displayedColumns[4]) | number: "1.2-2" }}
-        </mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[5]">
@@ -96,7 +91,6 @@
         COMMENT
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.comment}} </mat-cell>
-      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[6]">
@@ -115,10 +109,6 @@
           <mat-icon class="edit">edit</mat-icon>
         </button>
       </mat-cell>
-      <mat-footer-cell
-        *matFooterCellDef
-      >
-        </mat-footer-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
@@ -128,7 +118,7 @@
       (click)="getSession(row.id)"
     >
     </mat-row>
-    <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row>
+
 
     <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>
