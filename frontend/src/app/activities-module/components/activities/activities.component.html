@@ -7,10 +7,14 @@
 >
 </app-text-info>
 
+<router-outlet></router-outlet>
 
 <mat-form-field class="fill-width" appearance="fill">
-  <mat-label>Filter by session type</mat-label>
-  <mat-select (selectionChange)="applyFilter($event.value)" #input>
+  <mat-label>Filter by activity type</mat-label>
+  <mat-select
+    #input
+    (selectionChange)="applyFilter($event.value)"
+  >
     <mat-option>
       ALL
     </mat-option>
@@ -61,30 +65,12 @@
       <mat-header-cell
         *matHeaderCellDef
       >
-        SCORE
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.score}} </mat-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[3]">
-      <mat-header-cell
-        *matHeaderCellDef
-      >
-        TIME
+        DURATION
       </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
     </ng-container>
 
-    <ng-container [matColumnDef]="displayedColumns[4]">
-      <mat-header-cell
-        *matHeaderCellDef
-      >
-        METRIC
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.metric}} </mat-cell>
-    </ng-container>
-
-    <ng-container [matColumnDef]="displayedColumns[5]">
+    <ng-container [matColumnDef]="displayedColumns[3]">
       <mat-header-cell
         *matHeaderCellDef
       >
@@ -93,7 +79,7 @@
       <mat-cell *matCellDef="let row"> {{row.comment}} </mat-cell>
     </ng-container>
 
-    <ng-container [matColumnDef]="displayedColumns[6]">
+    <ng-container [matColumnDef]="displayedColumns[4]">
       <mat-header-cell
         *matHeaderCellDef
 
@@ -115,7 +101,7 @@
     <mat-row
       *matRowDef="let row;
       columns: displayedColumns;"
-      (click)="getSession(row.id)"
+      (click)="getSession(row)"
     >
     </mat-row>
 

@@ -12,7 +12,7 @@ import { routes } from '../configuration/configuration';
 
 const appRoutes: Routes = [
   {
-    /* default path if no route supplied */
+    /* path if no additional route supplied */
     path: '',
     canActivate: [UserTypeGuard],
     /* dummy - needed with canActivate as otherwise error thrown */

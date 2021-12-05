@@ -13,7 +13,7 @@ import { ISessions } from '../models/sessions-models';
 import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
-import { SessionType } from '../models/sessions-models';
+import { ESessionType } from '../models/sessions-models';
 
 /**
  * @title This component shows a form table allowing weekly session results for a member to be viewed and entered or edited.
@@ -25,10 +25,6 @@ import { SessionType } from '../models/sessions-models';
 })
 export class SessionsComponent implements OnDestroy {
   //
-  /* used to report table change */
-  #tableChange = new EventEmitter();
-  /* used to unsubscribe */
-  #destroy$ = new Subject<void>();
   /* min width used in the datatable */
   #minWidth = 42;
   /* ngx-datatable columns */
@@ -116,14 +112,31 @@ export class SessionsComponent implements OnDestroy {
       summaryFunc: null,
     },
   ];
-  /* type select options */
+  /* used to report table change */
+  #tableChange = new EventEmitter();
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
+  /* utility */
+  #capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  /* type dropdown select options */
   #type = [
-    { value: SessionType.Blank, label: '-' },
-    { value: SessionType.Strength, label: 'Strength' },
-    { value: SessionType.Conditioning, label: 'Conditioning' },
-    { value: SessionType.Sport, label: 'Sport' },
+    { value: ESessionType.Blank, label: '-' },
+    {
+      value: ESessionType.Strength,
+      label: this.#capitalizeFirstLetter(ESessionType.Strength),
+    },
+    {
+      value: ESessionType.Conditioning,
+      label: this.#capitalizeFirstLetter(ESessionType.Conditioning),
+    },
+    {
+      value: ESessionType.Sport,
+      label: this.#capitalizeFirstLetter(ESessionType.Sport),
+    },
   ];
-  /* rpe select options */
+  /* rpe dropdown select options */
   #rpe = [
     { value: 0, label: '0' },
     { value: 1, label: '1' },

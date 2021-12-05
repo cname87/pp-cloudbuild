@@ -1,48 +1,41 @@
-import { Observable } from 'rxjs';
-import { IMember } from '../../app-module/models/member';
-export { ICount } from '../../app-module/models/count';
-
-export enum SessionType {
-  Conditioning = 'CONDITIONING',
-  Strength = 'STRENGTH',
+export enum EActivityType {
+  Boxing = 'BOXING',
+  Floor = 'FLOOR',
+  Run = 'RUN',
+  Walk = 'WALK',
 }
 
-export interface ISessionWithoutId {
-  date: string;
-  type: SessionType | '';
-  score: number | '';
-  duration: number | '';
-  metric: number;
+export interface IActivityWithoutId {
   memberId: number;
+  date: string;
+  type: EActivityType | '';
+  duration: number | '';
   comment: string;
 }
 
-export interface ISession extends ISessionWithoutId {
+export interface IActivity extends IActivityWithoutId {
   id: number;
 }
 
-export const SessionTypeNames: SessionType[] = Object.keys(SessionType)
+export const displayedColumns: string[] = [
+  'date',
+  'type',
+  'duration',
+  'comment',
+  'edit',
+];
+export const activityTypeNames: EActivityType[] = Object.keys(EActivityType)
   .map((key) => {
     if (new RegExp(/[a-z]/g).test(key)) {
-      return SessionType[key];
+      return EActivityType[key];
     }
   })
   .filter((key) => key !== undefined);
-
-export const enum SESSION_MODE {
+export const enum EMode {
   'ADD',
   'EDIT',
 }
 
-export interface ISessionsTable {
-  member: Observable<IMember>;
-  sessions: Observable<ISession[]>;
+export interface ICount {
+  count: number;
 }
-
-export interface ISessionChange {
-  mode: SESSION_MODE;
-  member$: Observable<IMember>;
-  session$: Observable<ISession> | Observable<ISessionWithoutId>;
-}
-
-export { IMember };

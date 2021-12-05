@@ -1,26 +1,12 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared-module/shared.module';
-import { AuthGuard } from '../router-module/guards/auth.guard';
-
-// import { ActivityResolverService } from './resolvers/activity-resolver.service';
-import { ActivitiesResolverService } from './resolvers/activities-resolver.service';
+import { ActivityLogComponent } from './components/activity-log.component';
 import { ActivityComponent } from './components/activity/activity.component';
 import { ActivitiesComponent } from './components/activities/activities.component';
-
-const routes: Routes = [
-  {
-    path: ``,
-    component: ActivitiesComponent,
-    canActivate: [AuthGuard],
-    resolve: {
-      activities: ActivitiesResolverService,
-    },
-  },
-];
+import { SummaryRoutingModule } from './activities.routing.module';
 
 @NgModule({
-  declarations: [ActivityComponent, ActivitiesComponent],
-  imports: [SharedModule, RouterModule.forChild(routes)],
+  declarations: [ActivityLogComponent, ActivityComponent, ActivitiesComponent],
+  imports: [SharedModule, SummaryRoutingModule],
 })
 export class ActivitiesModule {}

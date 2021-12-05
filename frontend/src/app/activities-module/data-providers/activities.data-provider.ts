@@ -1,8 +1,3 @@
-/**
- * Project Perform API V2.0.0
- * See https://app.swaggerhub.com/apis/cname87/Project-Perform/2.0.0
- */
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
@@ -13,12 +8,12 @@ import { apiConfiguration } from '../../configuration/configuration';
 import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
 import {
   ICount,
-  ISession,
-  ISessionWithoutId,
-  SessionType,
+  IActivity,
+  IActivityWithoutId,
+  EActivityType,
 } from '../models/activity-models';
 
-export { ICount, ISession, ISessionWithoutId };
+export { ICount, IActivity, IActivityWithoutId };
 
 /**
  * This service handles all communication with the server according to the defined api. It implements all the function to create, get, update and delete sessions on the server.
@@ -41,10 +36,8 @@ export class ActivitiesDataProvider {
           id: 1,
           date: new Date().toISOString(),
           memberId: 3,
-          type: SessionType.Strength,
-          score: 5,
+          type: EActivityType.Run,
           duration: 50,
-          metric: 250,
           comment: 'Test comment',
         },
       ]);
@@ -64,7 +57,9 @@ export class ActivitiesDataProvider {
    * @param sessionWithoutId: Session object but with no id property.
    * @returns An observable returning the session added.
    */
-  public addSession(sessionWithoutId: ISessionWithoutId): Observable<ISession> {
+  public addSession(
+    sessionWithoutId: IActivityWithoutId,
+  ): Observable<IActivity> {
     this.logger.trace(`${ActivitiesDataProvider.name}: addSession called`);
 
     if (sessionWithoutId === null || sessionWithoutId === undefined) {
@@ -85,62 +80,7 @@ export class ActivitiesDataProvider {
     );
 
     return this.httpClient
-      .post<ISession>(`${path}`, sessionWithoutId, {
-        withCredentials: this.withCredentials,
-        headers,
-      })
-      .pipe(
-        tap((_) => {
-          this.logger.trace(
-            `${ActivitiesDataProvider.name}: Received response`,
-          );
-        }),
-        catchError((errReport) => {
-          this.logger.trace(
-            `${ActivitiesDataProvider.name}: catchError called`,
-          );
-          /* rethrow all errors */
-          this.logger.trace(
-            `${ActivitiesDataProvider.name}: Throwing the error on`,
-          );
-          return throwError(errReport);
-        }),
-      );
-  }
-
-  /**
-   * Gets all the sessions for all members, filtered by a query string.
-   * @param matchString: An optional search string to limit the returned list.
-   * All sessions with the 'type' property starting with 'name' will be returned.
-   * @returns An observable returning an array of the sessions retrieved.
-   */
-  public getAllSessions(matchString?: string): Observable<ISession[]> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: getAllSessions called`);
-
-    /* set up query parameter */
-    let queryParameters = new HttpParams();
-    if (matchString !== undefined && matchString !== null) {
-      /* custom encoder handles '+' properly */
-      const encoder = new CustomHttpUrlEncodingCodec();
-      matchString = encoder.encodeValue(matchString);
-      queryParameters = queryParameters.set('type', matchString);
-    }
-
-    let headers = this.defaultHeaders;
-
-    /* set Accept header - what content we will accept back */
-    headers = headers.set('Accept', 'application/json');
-
-    const path = `${this.basePath}/${this.sessionsPath}`;
-
-    this.logger.trace(
-      `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
-    );
-
-    // .get<ISession[]>(`${path}`, {
-    return this.httpClient1
-      .get(`${path}`, {
-        params: queryParameters,
+      .post<IActivity>(`${path}`, sessionWithoutId, {
         withCredentials: this.withCredentials,
         headers,
       })
@@ -175,7 +115,7 @@ export class ActivitiesDataProvider {
   public getSessions(
     memberId: number,
     matchString?: string,
-  ): Observable<ISession[]> {
+  ): Observable<IActivity[]> {
     this.logger.trace(`${ActivitiesDataProvider.name}: getSessions called`);
 
     /* set up query parameter */
@@ -199,7 +139,7 @@ export class ActivitiesDataProvider {
       `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
-    // .get<ISession[]>(`${path}`, {
+    // .get<IActivity[]>(`${path}`, {
     return this.httpClient1
       .get(`${path}`, {
         params: queryParameters,
@@ -207,7 +147,7 @@ export class ActivitiesDataProvider {
         headers,
       })
       .pipe(
-        tap((activities: ISession[]) => {
+        tap((activities: IActivity[]) => {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Received response ${JSON.stringify(
               activities,
@@ -232,7 +172,7 @@ export class ActivitiesDataProvider {
    * @param sessionId: The value of the id property of the session.
    * @returns An observable returning the sessions retrieved.
    */
-  public getSession(sessionId: number): Observable<ISession> {
+  public getSession(sessionId: number): Observable<IActivity> {
     this.logger.trace(`${ActivitiesDataProvider.name}: getSession called`);
 
     if (sessionId === null || sessionId === undefined) {
@@ -253,7 +193,7 @@ export class ActivitiesDataProvider {
     );
 
     return this.httpClient
-      .get<ISession>(`${path}`, {
+      .get<IActivity>(`${path}`, {
         withCredentials: this.withCredentials,
         headers,
       })
@@ -282,7 +222,7 @@ export class ActivitiesDataProvider {
    * @param session: Team session to be updated detail
    * @returns An observable returning the updated session.
    */
-  public updateSession(session: ISession | ISession): Observable<ISession> {
+  public updateSession(session: IActivity | IActivity): Observable<IActivity> {
     this.logger.trace(`${ActivitiesDataProvider.name}: updateSession called`);
 
     if (session === null || session === undefined) {
@@ -304,7 +244,7 @@ export class ActivitiesDataProvider {
     );
 
     return this.httpClient
-      .put<ISession>(`${path}`, session, {
+      .put<IActivity>(`${path}`, session, {
         withCredentials: this.withCredentials,
         headers,
       })

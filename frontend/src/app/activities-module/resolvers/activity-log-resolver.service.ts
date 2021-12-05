@@ -9,26 +9,26 @@ import { Observable } from 'rxjs';
 import { catchError, shareReplay } from 'rxjs/operators';
 
 import { ActivitiesService } from '../services/activities.service';
-import { ISession } from '../models/activity-models';
+import { IActivity } from '../models/activity-models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ActivitiesResolverService implements Resolve<any> {
+export class ActivityLogResolverService implements Resolve<IActivity[]> {
   constructor(
     private activitiesService: ActivitiesService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
-      `${ActivitiesResolverService.name}: Starting ActivitiesResolverService`,
+      `${ActivityLogResolverService.name}: Starting ActivityLogResolverService`,
     );
   }
 
   resolve(
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
-  ): Observable<ISession[]> {
-    this.logger.trace(`${ActivitiesResolverService.name}: Calling resolve`);
+  ): Observable<IActivity[]> {
+    this.logger.trace(`${ActivityLogResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
@@ -37,10 +37,10 @@ export class ActivitiesResolverService implements Resolve<any> {
       shareReplay(1),
       catchError((err: any) => {
         this.logger.trace(
-          `${ActivitiesResolverService.name}: catchError called`,
+          `${ActivityLogResolverService.name}: catchError called`,
         );
         this.logger.trace(
-          `${ActivitiesResolverService.name}: not proceeding and throwing the error to the error handler`,
+          `${ActivityLogResolverService.name}: not proceeding and throwing the error to the error handler`,
         );
         throw err;
       }),

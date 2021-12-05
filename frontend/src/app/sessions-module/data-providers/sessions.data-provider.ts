@@ -10,22 +10,11 @@ import {
   IDate,
   ISessions,
   ISessionsStripped,
-  SessionType,
+  EAmPm,
+  EDays,
+  ESessionType,
 } from '../models/sessions-models';
 
-enum Days {
-  Monday = 'Monday',
-  Tuesday = 'Tuesday',
-  Wednesday = 'Wednesday',
-  Thursday = 'Thursday',
-  Friday = 'Friday',
-  Saturday = 'Saturday',
-  Sunday = 'Sunday',
-}
-enum AMPM {
-  AM = 'AM',
-  PM = 'PM',
-}
 /**
  * This service handles all communication with the server. It implements all the function to create/get or update a weekly sessions table on the backend.
  */
@@ -59,34 +48,34 @@ export class SessionsDataProvider {
 
   #addFixedFields(table: ISessionsStripped): ISessions {
     const tableFilled = clonedeep(table) as ISessions;
-    tableFilled.sessions[0].day = Days.Monday;
-    tableFilled.sessions[0].ampm = AMPM.AM;
-    tableFilled.sessions[1].day = Days.Monday;
-    tableFilled.sessions[1].ampm = AMPM.PM;
-    tableFilled.sessions[2].day = Days.Tuesday;
-    tableFilled.sessions[2].ampm = AMPM.AM;
-    tableFilled.sessions[3].day = Days.Tuesday;
-    tableFilled.sessions[3].ampm = AMPM.PM;
-    tableFilled.sessions[4].day = Days.Wednesday;
-    tableFilled.sessions[4].ampm = AMPM.AM;
-    tableFilled.sessions[5].day = Days.Wednesday;
-    tableFilled.sessions[5].ampm = AMPM.PM;
-    tableFilled.sessions[6].day = Days.Thursday;
-    tableFilled.sessions[6].ampm = AMPM.AM;
-    tableFilled.sessions[7].day = Days.Thursday;
-    tableFilled.sessions[7].ampm = AMPM.PM;
-    tableFilled.sessions[8].day = Days.Friday;
-    tableFilled.sessions[8].ampm = AMPM.AM;
-    tableFilled.sessions[9].day = Days.Friday;
-    tableFilled.sessions[9].ampm = AMPM.PM;
-    tableFilled.sessions[10].day = Days.Saturday;
-    tableFilled.sessions[10].ampm = AMPM.AM;
-    tableFilled.sessions[11].day = Days.Saturday;
-    tableFilled.sessions[11].ampm = AMPM.PM;
-    tableFilled.sessions[12].day = Days.Sunday;
-    tableFilled.sessions[12].ampm = AMPM.AM;
-    tableFilled.sessions[13].day = Days.Sunday;
-    tableFilled.sessions[13].ampm = AMPM.PM;
+    tableFilled.sessions[0].day = EDays.Monday;
+    tableFilled.sessions[0].ampm = EAmPm.AM;
+    tableFilled.sessions[1].day = EDays.Monday;
+    tableFilled.sessions[1].ampm = EAmPm.PM;
+    tableFilled.sessions[2].day = EDays.Tuesday;
+    tableFilled.sessions[2].ampm = EAmPm.AM;
+    tableFilled.sessions[3].day = EDays.Tuesday;
+    tableFilled.sessions[3].ampm = EAmPm.PM;
+    tableFilled.sessions[4].day = EDays.Wednesday;
+    tableFilled.sessions[4].ampm = EAmPm.AM;
+    tableFilled.sessions[5].day = EDays.Wednesday;
+    tableFilled.sessions[5].ampm = EAmPm.PM;
+    tableFilled.sessions[6].day = EDays.Thursday;
+    tableFilled.sessions[6].ampm = EAmPm.AM;
+    tableFilled.sessions[7].day = EDays.Thursday;
+    tableFilled.sessions[7].ampm = EAmPm.PM;
+    tableFilled.sessions[8].day = EDays.Friday;
+    tableFilled.sessions[8].ampm = EAmPm.AM;
+    tableFilled.sessions[9].day = EDays.Friday;
+    tableFilled.sessions[9].ampm = EAmPm.PM;
+    tableFilled.sessions[10].day = EDays.Saturday;
+    tableFilled.sessions[10].ampm = EAmPm.AM;
+    tableFilled.sessions[11].day = EDays.Saturday;
+    tableFilled.sessions[11].ampm = EAmPm.PM;
+    tableFilled.sessions[12].day = EDays.Sunday;
+    tableFilled.sessions[12].ampm = EAmPm.AM;
+    tableFilled.sessions[13].day = EDays.Sunday;
+    tableFilled.sessions[13].ampm = EAmPm.PM;
     return tableFilled;
   }
 
@@ -103,7 +92,7 @@ export class SessionsDataProvider {
     const tableReplaced = clonedeep(table);
     tableReplaced.sessions.map((element) => {
       if (!element.type) {
-        element.type = SessionType.Blank;
+        element.type = ESessionType.Blank;
       }
     });
     return tableReplaced;

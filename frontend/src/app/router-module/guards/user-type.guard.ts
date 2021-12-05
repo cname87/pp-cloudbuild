@@ -14,7 +14,7 @@ import { AuthService } from '../../app-module/services/auth-service/auth.service
 import { roles } from '../../configuration/configuration';
 
 /**
- * This guard routes the default route based on whether the user is a Manager r a Member.
+ * This guard routes the default route based on whether the user is a Manager or a Member.
  */
 @Injectable({
   providedIn: 'root',

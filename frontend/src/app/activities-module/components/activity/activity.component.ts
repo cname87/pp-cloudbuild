@@ -1,28 +1,19 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Data, ParamMap } from '@angular/router';
-import { Location } from '@angular/common';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
-import { of, Subject, throwError } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { IsLoadingService } from '@service-work/is-loading';
 
 import { ActivitiesService } from '../../services/activities.service';
 import {
-  ISessionWithoutId,
-  ISession,
-  SessionTypeNames,
-  ISessionChange,
-  SESSION_MODE,
+  IActivityWithoutId,
+  IActivity,
+  activityTypeNames,
+  EMode,
 } from '../../models/activity-models';
-import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
-import { IErrReport } from '../../../configuration/configuration';
-import { ToastrService } from 'ngx-toastr';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { RouteStateService } from '../../../app-module/services/route-state-service/router-state.service';
-
-interface routeData extends Data {
-  memberAndSession: ISessionChange;
-}
 
 /**
  * @title This component shows a form allowing detail on a training session to be entered.
@@ -33,23 +24,23 @@ interface routeData extends Data {
   styleUrls: ['./activity.component.scss'],
   providers: [],
 })
-export class ActivityComponent {
+export class ActivityComponent implements OnInit {
   //
-  private destroy = new Subject<void>();
-  private toastrMessage = 'A member access error has occurred';
-  change: ISessionChange = {
-    mode: SESSION_MODE.ADD,
-    member$: of({}) as any,
-    session$: of({}) as any,
-  };
-  addLabel = 'ADD SESSION';
-  updateLabel = 'UPDATE SESSION';
+  /* activity to be retrieved */
+  @Input() activity!: IActivity;
+  @Output() doneEvent = new EventEmitter<EMode>();
+
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
+  mode!: EMode;
+  addLabel = 'ADD ACTIVITY';
+  updateLabel = 'UPDATE ACTIVITY';
   /* default button label */
-  buttonLabel = 'ADD SESSION';
+  buttonLabel = 'ADD ACTIVITY';
 
   /* form definition */
   form = new FormGroup({});
-  model!: ISession | ISessionWithoutId;
+  model!: IActivity | IActivityWithoutId;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
@@ -58,7 +49,9 @@ export class ActivityComponent {
       type: 'datepicker',
       templateOptions: {
         type: 'datepicker',
-        label: 'Enter the date of the session',
+        required: true,
+        readonly: true,
+        label: 'Enter the date of the activity',
       },
       validators: {
         date: {
@@ -80,7 +73,7 @@ export class ActivityComponent {
       templateOptions: {
         type: 'select',
         label: 'Select the type of the session from the dropdown',
-        options: SessionTypeNames.map((value) => {
+        options: activityTypeNames.map((value) => {
           return {
             value: value,
             label: value,
@@ -94,31 +87,7 @@ export class ActivityComponent {
             field: FormlyFieldConfig,
           ): boolean => !!field.formControl?.value,
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must select a session type`;
-          },
-        },
-      },
-    },
-    {
-      key: 'score',
-      type: 'input',
-      templateOptions: {
-        type: 'number',
-        label: 'Select a score from 1 to 10',
-      },
-      validators: {
-        score: {
-          expression: (
-            _control: AbstractControl,
-            field: FormlyFieldConfig,
-          ): boolean => {
-            const number = isNaN(Number(field.formControl?.value))
-              ? 0
-              : Number(field.formControl?.value);
-            return number > 0 && number <= 10;
-          },
-          message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must select a score from 1 to 10`;
+            return `You must select an activity type`;
           },
         },
       },
@@ -128,7 +97,7 @@ export class ActivityComponent {
       type: 'input',
       templateOptions: {
         type: 'number',
-        label: 'Enter the session time in minutes',
+        label: 'Enter the activity time in minutes',
       },
       validators: {
         time: {
@@ -148,23 +117,6 @@ export class ActivityComponent {
       },
     },
     {
-      key: 'metric',
-      type: 'input',
-      templateOptions: {
-        type: 'number',
-        label: 'This is the calculated score x time',
-        readonly: true,
-        disabled: true,
-      },
-      expressionProperties: {
-        'model.metric': (model: ISession | ISessionWithoutId): number => {
-          return isNaN(Number(model.score) * Number(model.duration))
-            ? 0
-            : Number(model.score) * Number(model.duration);
-        },
-      },
-    },
-    {
       key: 'comment',
       type: 'textarea',
       templateOptions: {
@@ -176,62 +128,33 @@ export class ActivityComponent {
   ];
 
   constructor(
-    private route: ActivatedRoute,
     private activitiesService: ActivitiesService,
-    private location: Location,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
     private routeStateService: RouteStateService,
-    private toastr: ToastrService,
   ) {
     this.logger.trace(`${ActivityComponent.name}: Starting ActivityComponent`);
   }
 
-  ngOnInit() {
-    /* get the data as supplied from the route resolver */
-    this.route.data
-      .pipe(
-        switchMap((data: Data) => {
-          const routeData = data as routeData;
-          this.change = {
-            mode: routeData.memberAndSession.mode,
-            member$: routeData.memberAndSession.member$,
-            session$: routeData.memberAndSession.session$,
-          };
-          this.buttonLabel =
-            this.change.mode === SESSION_MODE.ADD
-              ? this.addLabel
-              : this.updateLabel;
-          return this.change.session$;
-        }),
-        takeUntil(this.destroy),
-      )
-      .subscribe((session) => {
-        this.model = session;
-      });
-    /* update service with routed member id */
-    this.route.paramMap
-      .pipe(
-        map((paramMap: ParamMap) => {
-          const id = paramMap.get('id');
-          if (!id) {
-            throw new Error('id path parameter was null');
-          }
-          return id;
-        }),
-        takeUntil(this.destroy),
-        catchError((err: IErrReport) => {
-          this.logger.trace(`${ActivityComponent.name}: catchError called`);
+  ngOnInit(): void {
+    this.logger.trace(`${ActivityComponent.name}: Starting ngOnInit`);
+    this.model = this.activity;
+    this.mode = !!this.activity.id ? EMode.EDIT : EMode.ADD;
+    this.buttonLabel = !!this.activity.id ? this.updateLabel : this.addLabel;
+  }
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${ActivityComponent.name}: #catchError called`);
+    this.logger.trace(`${ActivityComponent.name}: Throwing the error on`);
+    throw err;
+  };
 
-          /* inform user and mark as handled */
-          this.toastr.error('ERROR!', this.toastrMessage);
-          err.isHandled = true;
-
-          this.logger.trace(`${ActivityComponent.name}: Throwing the error on`);
-          return throwError(err);
-        }),
-      )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+  goBack(action: EMode): void {
+    this.doneEvent.emit(action);
   }
 
   onSubmit(): void {
@@ -240,21 +163,21 @@ export class ActivityComponent {
 
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
-      of(this.change.mode)
+      of(this.mode)
         .pipe(
           switchMap((mode) => {
-            return mode === SESSION_MODE.ADD
+            return mode === EMode.ADD
               ? this.activitiesService.addSession(this.model)
-              : this.activitiesService.updateSession(this.model as ISession);
+              : this.activitiesService.updateSession(this.model as IActivity);
           }),
-          takeUntil(this.destroy),
+          takeUntil(this.#destroy$),
+          catchError(this.#catchError),
         )
-        .subscribe((session) => {
-          const verb =
-            this.change.mode === SESSION_MODE.ADD ? 'added' : 'updated';
+        .subscribe((activity) => {
+          const verb = this.mode === EMode.ADD ? 'added' : 'updated';
           this.logger.trace(
-            `${ActivityComponent.name}: Session ${verb}: ${JSON.stringify(
-              session,
+            `${ActivityComponent.name}: Activity ${verb}: ${JSON.stringify(
+              activity,
             )}`,
           );
           /* clear the form */
@@ -265,21 +188,9 @@ export class ActivityComponent {
           this.form.enable();
           /* allow errors go to errorHandler */
 
-          if (this.change.mode === SESSION_MODE.EDIT) {
-            this.goBack();
-          }
+          this.goBack(this.mode);
         }),
     );
-  }
-
-  ngOnDestroy(): void {
-    this.destroy.next();
-    this.destroy.complete();
-    this.routeStateService.updateIdState('');
-  }
-
-  goBack(): void {
-    this.location.back();
   }
 
   delete(): void {
@@ -288,9 +199,12 @@ export class ActivityComponent {
       of({})
         .pipe(
           switchMap(() => {
-            return this.activitiesService.deleteSession(this.model as ISession);
+            return this.activitiesService.deleteSession(
+              this.model as IActivity,
+            );
           }),
-          takeUntil(this.destroy),
+          takeUntil(this.#destroy$),
+          catchError(this.#catchError),
         )
         .subscribe((count) => {
           this.logger.trace(
@@ -298,8 +212,15 @@ export class ActivityComponent {
               count,
             )} session deleted: ${JSON.stringify(this.model)}`,
           );
-          this.goBack();
+          this.goBack(this.mode);
         }),
     );
+  }
+
+  ngOnDestroy(): void {
+    this.logger.trace(`${ActivityComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
+    this.routeStateService.updateIdState('');
   }
 }
