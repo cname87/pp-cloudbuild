@@ -1,4 +1,5 @@
 export enum EActivityType {
+  Blank = '',
   Boxing = 'BOXING',
   Floor = 'FLOOR',
   Run = 'RUN',
@@ -8,10 +9,19 @@ export enum EActivityType {
 export interface IActivityWithoutId {
   memberId: number;
   date: string;
-  type: EActivityType | '';
+  type: EActivityType;
   duration: number | '';
   comment: string;
 }
+
+export const blankActivity: IActivity = {
+  id: 0,
+  memberId: 0,
+  date: new Date().toISOString(),
+  type: EActivityType.Blank,
+  duration: '',
+  comment: '',
+};
 
 export interface IActivity extends IActivityWithoutId {
   id: number;
@@ -34,6 +44,7 @@ export const activityTypeNames: EActivityType[] = Object.keys(EActivityType)
 export const enum EMode {
   'ADD',
   'EDIT',
+  'DELETE',
 }
 
 export interface ICount {

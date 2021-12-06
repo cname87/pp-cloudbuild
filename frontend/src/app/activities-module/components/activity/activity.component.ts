@@ -7,7 +7,6 @@ import { IsLoadingService } from '@service-work/is-loading';
 
 import { ActivitiesService } from '../../services/activities.service';
 import {
-  IActivityWithoutId,
   IActivity,
   activityTypeNames,
   EMode,
@@ -40,7 +39,7 @@ export class ActivityComponent implements OnInit {
 
   /* form definition */
   form = new FormGroup({});
-  model!: IActivity | IActivityWithoutId;
+  model!: IActivity;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {

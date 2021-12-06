@@ -13,6 +13,7 @@ import { NGXLogger } from 'ngx-logger';
 
 import {
   activityTypeNames,
+  blankActivity,
   displayedColumns,
   IActivity,
 } from '../../models/activity-models';
@@ -69,6 +70,10 @@ export class ActivitiesComponent implements OnInit {
 
   getSession(activity: IActivity): void {
     this.activityEvent.emit(activity);
+  }
+
+  addSession(): void {
+    this.activityEvent.emit(blankActivity);
   }
 
   applyFilter(value: string) {
