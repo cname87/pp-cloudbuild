@@ -14,7 +14,7 @@ const { modulename, debug } = setupDebug(__filename);
 const router = Router();
 
 /* Initialize the openapi-backend middleware */
-/* This takes a long time to run => run once only for performance - called during first-time server startup => a warm-up request is a good idea. */
+/* This takes a long time to run => run once only for performance - called during first-time server startup => a warm-up request is a good idea if supported on the production server */
 let api: OpenAPIBackend;
 export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
   debug(`${modulename}: running initOpenApi`);
@@ -49,18 +49,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           result,
         );
       },
-      getMember: (
-        context,
-        request: Request,
-        response: Response,
-        nextFunction: NextFunction,
-      ) =>
-        appLocals.handlers.membersApi.getMember(
-          context,
-          request,
-          response,
-          nextFunction,
-        ),
       getMembers: (
         context,
         request: Request,
@@ -68,6 +56,18 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         nextFunction: NextFunction,
       ) =>
         appLocals.handlers.membersApi.getMembers(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getMember: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.membersApi.getMember(
           context,
           request,
           response,
@@ -104,6 +104,54 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         nextFunction: NextFunction,
       ) =>
         appLocals.handlers.membersApi.updateMember(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      getActivity: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.activityApi.getActivity(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      addActivity: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.activityApi.addActivity(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      deleteActivity: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.activityApi.deleteActivity(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
+      updateActivity: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.activityApi.updateActivity(
           context,
           request,
           response,

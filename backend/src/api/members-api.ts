@@ -1,6 +1,6 @@
 /**
  * Handles http calls routed through the openapi handler as defined in the openapi.json file.
- * Handles calls to <api-prefix>/members
+ * Handles calls to <api-prefix>/members, <api-prefix>/member/ and <api-prefix>/member/{mid}
  */
 
 import { Request, Response, NextFunction } from 'express';

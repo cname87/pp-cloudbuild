@@ -102,6 +102,7 @@ const writeJson = (
     | Perform.IMember
     | Perform.IMember[]
     | { count: number }
+    | Perform.IActivity
     | Perform.IScores
     | Perform.ISessions
     | Summary.TSummary

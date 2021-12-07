@@ -286,7 +286,7 @@
             }
           },
           "404": {
-            "description": "A member with the supplied member ID was not found.",
+            "description": "A requested item was not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -356,7 +356,326 @@
             }
           },
           "404": {
-            "description": "A member with the supplied member ID was not found.",
+            "description": "A requested item was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/{mid}/activity": {
+      "post": {
+        "summary": "Adds an activity record.",
+        "description": "Adds a supplied activity record for a member.\nAn activity record object without an id property must be supplied in the body.\n",
+        "operationId": "addActivity",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Activity record (without id field).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivityWithoutId"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Activity record created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/member/{mid}/activity/{aid}": {
+      "get": {
+        "summary": "Returns a specific activity record for a specific member",
+        "description": "Get the member defined by the supplied id.\n",
+        "operationId": "getActivity",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          },
+          {
+            "name": "aid",
+            "in": "path",
+            "description": "The value of the id property of an activity record.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity record returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an activity record.",
+        "description": "Updates an activity record. An activity record is supplied which must have an id property.\nThe activity record with that id is updated.\n",
+        "operationId": "updateActivity",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          },
+          {
+            "name": "aid",
+            "in": "path",
+            "description": "The value of the id property of an activity record.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Activity record object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Activity"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Activity record updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A requested item was not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an activity record.",
+        "description": "Deletes an activity record defined by the supplied id.\n",
+        "operationId": "deleteActivity",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          },
+          {
+            "name": "aid",
+            "in": "path",
+            "description": "The value of the id property of an activity record.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity record deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Count"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "A requested item was not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -439,7 +758,7 @@
             }
           },
           "404": {
-            "description": "The scores table to update was not found.",
+            "description": "A requested item was not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -593,7 +912,7 @@
             }
           },
           "404": {
-            "description": "The sessions table to update was not found.",
+            "description": "A requested item was not found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -813,22 +1132,6 @@
         "type": "object",
         "description": "Represents pre-serialized date objects sent from the backend"
       },
-      "Member": {
-        "required": [
-          "id",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/PositiveInteger"
-          },
-          "name": {
-            "$ref": "#/components/schemas/Name"
-          }
-        },
-        "description": "Member information"
-      },
       "MemberWithoutId": {
         "required": [
           "name"
@@ -841,11 +1144,85 @@
         },
         "description": "Member information without id field"
       },
+      "Member": {
+        "description": "Member information",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/MemberWithoutId"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/PositiveInteger"
+              }
+            }
+          }
+        ]
+      },
       "Members": {
         "type": "array",
         "items": {
           "$ref": "#/components/schemas/Member"
         }
+      },
+      "ActivityWithoutId": {
+        "required": [
+          "date",
+          "duration",
+          "memberId",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "memberId": {
+            "$ref": "#/components/schemas/PositiveInteger"
+          },
+          "date": {
+            "description": "Can be sent from backend or from frontend",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateString"
+              },
+              {
+                "$ref": "#/components/schemas/Object"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "format": "binary"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "description": "Activity record without aid field"
+      },
+      "Activity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ActivityWithoutId"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/PositiveInteger"
+              }
+            }
+          }
+        ]
       },
       "Scores-row": {
         "type": "object",
@@ -1026,6 +1403,16 @@
     "responses": {
       "400": {
         "description": "The request is not a valid.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "A requested item was not found.",
         "content": {
           "application/json": {
             "schema": {
