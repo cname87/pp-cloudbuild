@@ -130,6 +130,7 @@ interface IConfigurationParameters {
   basePath: string;
   membersPath: string;
   memberPath: string;
+  activityPath: string;
   scoresPath: string;
   sessionsPath: string;
   summaryPath: string;
@@ -141,6 +142,7 @@ class Configuration {
   basePath: string;
   membersPath: string;
   memberPath: string;
+  activityPath: string;
   scoresPath: string;
   sessionsPath: string;
   summaryPath: string;
@@ -152,8 +154,9 @@ class Configuration {
     this.basePath = configurationParameters.basePath;
     this.membersPath = configurationParameters.membersPath;
     this.memberPath = configurationParameters.memberPath;
-    this.sessionsPath = configurationParameters.sessionsPath;
+    this.activityPath = configurationParameters.activityPath;
     this.scoresPath = configurationParameters.scoresPath;
+    this.sessionsPath = configurationParameters.sessionsPath;
     this.sessionsPath = configurationParameters.sessionsPath;
     this.summaryPath = configurationParameters.summaryPath;
     this.defaultHeaders = configurationParameters.defaultHeaders;
@@ -171,6 +174,7 @@ export const apiConfiguration = new Configuration({
   basePath: 'api-v1',
   membersPath: 'members',
   memberPath: 'member',
+  activityPath: 'activity',
   scoresPath: 'scores',
   sessionsPath: 'sessions',
   summaryPath: 'summary',

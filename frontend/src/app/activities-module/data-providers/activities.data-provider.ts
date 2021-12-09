@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { NGXLogger } from 'ngx-logger';
 
 import { catchError, tap } from 'rxjs/operators';
 import { apiConfiguration } from '../../configuration/configuration';
-import { CustomHttpUrlEncodingCodec } from '../../app-module/data-providers/encoder';
 import {
   ICount,
   IActivity,
   IActivityWithoutId,
-  EActivityType,
 } from '../models/activity-models';
 
 export { ICount, IActivity, IActivityWithoutId };
 
 /**
- * This service handles all communication with the server according to the defined api. It implements all the function to create, get, update and delete sessions on the server.
+ * This service handles all communication with the server according to the defined api. It implements all the function to create, get, update and delete activity records on the server.
  */
 @Injectable({
   providedIn: 'root',
@@ -24,25 +22,10 @@ export { ICount, IActivity, IActivityWithoutId };
 export class ActivitiesDataProvider {
   //
   private basePath = apiConfiguration.basePath;
-  private membersPath = apiConfiguration.membersPath;
-  private sessionsPath = apiConfiguration.sessionsPath;
+  private memberPath = apiConfiguration.memberPath;
+  private activityPath = apiConfiguration.activityPath;
   private defaultHeaders = apiConfiguration.defaultHeaders;
   private withCredentials = apiConfiguration.withCredentials;
-
-  httpClient1 = {
-    get: (_test1: any, _test2: any) => {
-      return of([
-        {
-          id: 1,
-          date: new Date().toISOString(),
-          memberId: 3,
-          type: EActivityType.Run,
-          duration: 50,
-          comment: 'Test comment',
-        },
-      ]);
-    },
-  };
 
   constructor(private httpClient: HttpClient, private logger: NGXLogger) {
     this.logger.trace(
@@ -51,36 +34,41 @@ export class ActivitiesDataProvider {
   }
 
   /**
-   * Adds a supplied session to the defined member
-   * A session object without the id property must be supplied in the body.
-   * @param memberId: The member to whom the session is being added.
-   * @param sessionWithoutId: Session object but with no id property.
-   * @returns An observable returning the session added.
+   * Adds a supplied activity record for the defined member.
+   * A activity object without the id property must be supplied in the body.
+   * @param activityWithoutId: Activity object but with no id property.
+   * @returns An observable returning the activity added.
    */
-  public addSession(
-    sessionWithoutId: IActivityWithoutId,
-  ): Observable<IActivity> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: addSession called`);
+  addActivity(activityWithoutId: IActivityWithoutId): Observable<IActivity> {
+    this.logger.trace(`${ActivitiesDataProvider.name}: addActivity called`);
 
-    if (sessionWithoutId === null || sessionWithoutId === undefined) {
+    if (
+      !activityWithoutId ||
+      (activityWithoutId as IActivity).id ||
+      !activityWithoutId.memberId
+    ) {
       throw new Error(
-        'Required parameter sessionWithoutId was null or undefined when calling addSession.',
+        'Required parameter was invalid when calling addActivity.',
       );
     }
 
+    /* get memberId from supplied activity record */
+    const memberId = activityWithoutId.memberId;
+
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
     headers = headers.set('Content-Type', 'application/json');
 
-    const path = `${this.basePath}/${this.sessionsPath}`;
+    const memberIdString = encodeURIComponent(String(memberId));
+    console.log(memberId);
+    console.log(memberIdString);
+    const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}`;
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending POST request to: ${path}`,
     );
 
     return this.httpClient
-      .post<IActivity>(`${path}`, sessionWithoutId, {
+      .post<IActivity>(`${path}`, activityWithoutId, {
         withCredentials: this.withCredentials,
         headers,
       })
@@ -104,45 +92,25 @@ export class ActivitiesDataProvider {
   }
 
   /**
-   * Gets all the sessions for a particular member, filtered by a query string.
-   * @param matchString: An optional search string to limit the returned list.
-   *  All sessions with the 'type' property starting with the matchstring will be returned.
-   * @param memberId:
-   * - If 0, then all sessions from every member are returned.
-   * - If not 0 then the sessions belonging to a specific team member is returned.
-   * @returns An observable returning an array of the sessions retrieved.
+   * Gets all the activities for a particular member.
+   * @param memberId The memberId whose activities are returned.
+   * @returns An observable returning an array of the activities retrieved.
    */
-  public getSessions(
-    memberId: number,
-    matchString?: string,
-  ): Observable<IActivity[]> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: getSessions called`);
-
-    /* set up query parameter */
-    let queryParameters = new HttpParams();
-    if (matchString !== undefined && matchString !== null) {
-      /* custom encoder handles '+' properly */
-      const encoder = new CustomHttpUrlEncodingCodec();
-      matchString = encoder.encodeValue(matchString);
-      queryParameters = queryParameters.set('type', matchString);
-    }
+  getActivities(memberId: number): Observable<IActivity[]> {
+    this.logger.trace(`${ActivitiesDataProvider.name}: getActivities called`);
 
     let headers = this.defaultHeaders;
-
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 
     const memberIdString = encodeURIComponent(String(memberId));
-    const path = `${this.basePath}/${this.membersPath}/${memberIdString}/${this.sessionsPath}`;
+    const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}`;
 
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
     );
 
-    // .get<IActivity[]>(`${path}`, {
-    return this.httpClient1
-      .get(`${path}`, {
-        params: queryParameters,
+    return this.httpClient
+      .get<IActivity[]>(`${path}`, {
         withCredentials: this.withCredentials,
         headers,
       })
@@ -168,25 +136,26 @@ export class ActivitiesDataProvider {
   }
 
   /**
-   * Gets a specific session.
-   * @param sessionId: The value of the id property of the session.
-   * @returns An observable returning the sessions retrieved.
+   * Gets a specific activity record for a specific member.
+   * @param memberId The memberId whose activity is returned.
+   * @param activityId: The value of the id property of the activity.
+   * @returns An observable returning the activities retrieved.
    */
-  public getSession(sessionId: number): Observable<IActivity> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: getSession called`);
+  getActivity(memberId: number, activityId: number): Observable<IActivity> {
+    this.logger.trace(`${ActivitiesDataProvider.name}: getActivity called`);
 
-    if (sessionId === null || sessionId === undefined) {
+    if (!memberId || !activityId) {
       throw new Error(
-        'Required parameter id was null or undefined when calling getSession.',
+        'Required parameter was invalid when calling getActivity.',
       );
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 
-    const sessionIdString = encodeURIComponent(String(sessionId));
-    const path = `${this.basePath}/${this.sessionsPath}/${sessionIdString}`;
+    const memberIdString = encodeURIComponent(String(memberId));
+    const activityIdString = encodeURIComponent(String(activityId));
+    const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}/${activityIdString}`;
 
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending GET request to: ${path}`,
@@ -217,34 +186,34 @@ export class ActivitiesDataProvider {
   }
 
   /**
-   * Updates a session.
-   * A session object is supplied which must have an id property.
-   * @param session: Team session to be updated detail
-   * @returns An observable returning the updated session.
+   * Updates a specific activity record.
+   * A full activity record object is supplied which must have id and member id properties.
+   * @param activity: An activity record to be updated.
+   * @returns An observable returning the updated activity.
    */
-  public updateSession(session: IActivity | IActivity): Observable<IActivity> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: updateSession called`);
+  updateActivity(activity: IActivity): Observable<IActivity> {
+    this.logger.trace(`${ActivitiesDataProvider.name}: updateActivity called`);
 
-    if (session === null || session === undefined) {
-      throw new Error(
-        'Required parameter session was null or undefined when calling updateSession.',
-      );
+    if (!activity?.id || !activity?.memberId) {
+      throw new Error('Required parameter was invalid calling updateActivity.');
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
-    /* set Content-Type header - what content is being sent */
     headers = headers.set('Content-Type', 'application/json');
 
-    const path = `${this.basePath}/${this.sessionsPath}`;
+    const memberId = activity.memberId;
+    const activityId = activity.id;
+    const memberIdString = encodeURIComponent(String(memberId));
+    const activityIdString = encodeURIComponent(String(activityId));
+    const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}/${activityIdString}`;
 
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending PUT request to: ${path}`,
     );
 
     return this.httpClient
-      .put<IActivity>(`${path}`, session, {
+      .put<IActivity>(`${path}`, activity, {
         withCredentials: this.withCredentials,
         headers,
       })
@@ -268,25 +237,26 @@ export class ActivitiesDataProvider {
   }
 
   /**
-   * Deletes a session.
-   * @param sessionId The id property of the session to delete.
-   * @returns An observable returning a count of the sessions deleted, (which should always be 1).
+   * Deletes a specific activity record.
+   * A full activity record object is supplied which must have id and member id properties.
+   * @param activity: An activity record to be deleted.
+   * @returns An observable returning the number of records deleted, (which is always 1).
    */
-  public deleteSession(sessionId: number): Observable<ICount> {
-    this.logger.trace(`${ActivitiesDataProvider.name}: deleteSession called`);
+  deleteActivity(activity: IActivity): Observable<ICount> {
+    this.logger.trace(`${ActivitiesDataProvider.name}: deleteActivity called`);
 
-    if (sessionId === null || sessionId === undefined) {
-      throw new Error(
-        'Required parameter id was null or undefined when calling deleteSession.',
-      );
+    if (!activity?.id || !activity?.memberId) {
+      throw new Error('Required parameter was invalid calling deleteActivity.');
     }
 
     let headers = this.defaultHeaders;
-    /* set Accept header - what content we will accept back */
     headers = headers.set('Accept', 'application/json');
 
-    const sessionIdString = encodeURIComponent(String(sessionId));
-    const path = `${this.basePath}/${this.sessionsPath}/${sessionIdString}`;
+    const memberId = activity.memberId;
+    const activityId = activity.id;
+    const memberIdString = encodeURIComponent(String(memberId));
+    const activityIdString = encodeURIComponent(String(activityId));
+    const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}/${activityIdString}`;
 
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending DELETE request to: ${path}`,

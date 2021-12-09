@@ -12,7 +12,7 @@ const { modulename, debug } = setupDebug(__filename);
 
 /**
  * @summary
- * Creates a Activities schema and returns a Mongoose model.
+ * Creates an Activities schema and returns a Mongoose model.
  * @params
  * - database - a connection to a mongoDB database.
  * - ModelName - the name for the created model.

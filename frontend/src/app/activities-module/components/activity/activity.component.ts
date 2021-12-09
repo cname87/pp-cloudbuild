@@ -10,12 +10,18 @@ import {
   IActivity,
   activityTypeNames,
   EMode,
+  IActivityWithoutId,
 } from '../../models/activity-models';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
-import { RouteStateService } from '../../../app-module/services/route-state-service/router-state.service';
 
 /**
  * @title This component shows a form allowing detail on a training session to be entered.
+ *
+ * This component is enabled when an activity record is input from the parent component. The activity array is displayed in a table.
+ *
+ * If the supplied activity has an id property then an update and delete  button is shown. The activity properties can be edited and submitted, or the activity record can be deleted.
+ *
+ * If the supplied activity does not have an id property then a blank table is shown.  Values can be entered and saved.
  */
 @Component({
   selector: 'app-activity',
@@ -26,7 +32,7 @@ import { RouteStateService } from '../../../app-module/services/route-state-serv
 export class ActivityComponent implements OnInit {
   //
   /* activity to be retrieved */
-  @Input() activity!: IActivity;
+  @Input() activity!: IActivity | IActivityWithoutId;
   @Output() doneEvent = new EventEmitter<EMode>();
 
   /* used to unsubscribe */
@@ -39,7 +45,7 @@ export class ActivityComponent implements OnInit {
 
   /* form definition */
   form = new FormGroup({});
-  model!: IActivity;
+  model!: IActivity | IActivityWithoutId;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
@@ -130,7 +136,6 @@ export class ActivityComponent implements OnInit {
     private activitiesService: ActivitiesService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
-    private routeStateService: RouteStateService,
   ) {
     this.logger.trace(`${ActivityComponent.name}: Starting ActivityComponent`);
   }
@@ -138,8 +143,10 @@ export class ActivityComponent implements OnInit {
   ngOnInit(): void {
     this.logger.trace(`${ActivityComponent.name}: Starting ngOnInit`);
     this.model = this.activity;
-    this.mode = !!this.activity.id ? EMode.EDIT : EMode.ADD;
-    this.buttonLabel = !!this.activity.id ? this.updateLabel : this.addLabel;
+    this.mode = !!(this.activity as IActivity).id ? EMode.EDIT : EMode.ADD;
+    this.buttonLabel = !!(this.activity as IActivity).id
+      ? this.updateLabel
+      : this.addLabel;
   }
   /**
    * Picks up any upstream errors and throws on the error.
@@ -152,8 +159,8 @@ export class ActivityComponent implements OnInit {
     throw err;
   };
 
-  goBack(action: EMode): void {
-    this.doneEvent.emit(action);
+  goBack(): void {
+    this.doneEvent.emit();
   }
 
   onSubmit(): void {
@@ -166,8 +173,8 @@ export class ActivityComponent implements OnInit {
         .pipe(
           switchMap((mode) => {
             return mode === EMode.ADD
-              ? this.activitiesService.addSession(this.model)
-              : this.activitiesService.updateSession(this.model as IActivity);
+              ? this.activitiesService.addActivity(this.model)
+              : this.activitiesService.updateActivity(this.model as IActivity);
           }),
           takeUntil(this.#destroy$),
           catchError(this.#catchError),
@@ -187,7 +194,7 @@ export class ActivityComponent implements OnInit {
           this.form.enable();
           /* allow errors go to errorHandler */
 
-          this.goBack(this.mode);
+          this.goBack();
         }),
     );
   }
@@ -198,7 +205,7 @@ export class ActivityComponent implements OnInit {
       of({})
         .pipe(
           switchMap(() => {
-            return this.activitiesService.deleteSession(
+            return this.activitiesService.deleteActivity(
               this.model as IActivity,
             );
           }),
@@ -211,7 +218,7 @@ export class ActivityComponent implements OnInit {
               count,
             )} session deleted: ${JSON.stringify(this.model)}`,
           );
-          this.goBack(this.mode);
+          this.goBack();
         }),
     );
   }
@@ -220,6 +227,5 @@ export class ActivityComponent implements OnInit {
     this.logger.trace(`${ActivityComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

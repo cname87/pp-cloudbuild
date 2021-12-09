@@ -16,28 +16,27 @@ type bodyWithId = Perform.IActivity;
 /* there is no query parameter on activity urls, but a value is needed for the setup calls */
 const filter = '';
 
-export const getActivity = (
+export const getActivities = (
   context: Context | undefined,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  debug(`${modulename}: running getActivity`);
+  debug(`${modulename}: running getActivities`);
 
   const {
-    mid,
     activityHandlers,
     miscHandlers,
     dumpError,
   } = setup(context, filter, req, next)!;
 
   activityHandlers
-    .getActivity(req, mid)
-    .then((payload: Perform.IActivity) => {
+    .getActivities(req)
+    .then((payload: Perform.IActivity[]) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })
-    .catch((err: any) => {
-      console.error(`${modulename}: handler getActivity returned error`);
+    .catch((err) => {
+      console.error(`${modulename}: handler getActivities returned error`);
       dumpError(err);
       next(err);
     });
@@ -65,6 +64,33 @@ export const addActivity = (
     })
     .catch((err: any) => {
      console.error(`${modulename}: handler addActivity returned error`);
+      dumpError(err);
+      next(err);
+    });
+};
+
+export const getActivity = (
+  context: Context | undefined,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  debug(`${modulename}: running getActivity`);
+
+  const {
+    mid,
+    activityHandlers,
+    miscHandlers,
+    dumpError,
+  } = setup(context, filter, req, next)!;
+
+  activityHandlers
+    .getActivity(req, mid)
+    .then((payload: Perform.IActivity) => {
+      miscHandlers.writeJson(context, req, res, next, 200, payload);
+    })
+    .catch((err: any) => {
+      console.error(`${modulename}: handler getActivity returned error`);
       dumpError(err);
       next(err);
     });
@@ -126,8 +152,9 @@ export const deleteActivity = (
 };
 
 export const activityApi = {
-  getActivity,
+  getActivities,
   addActivity,
+  getActivity,
   deleteActivity,
   updateActivity,
 };

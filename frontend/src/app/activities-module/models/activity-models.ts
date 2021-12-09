@@ -14,9 +14,8 @@ export interface IActivityWithoutId {
   comment: string;
 }
 
-export const blankActivity: IActivity = {
-  id: 0,
-  memberId: 0,
+export const blankActivityWithoutId: IActivityWithoutId = {
+  memberId: 0, // must be set
   date: new Date().toISOString(),
   type: EActivityType.Blank,
   duration: '',

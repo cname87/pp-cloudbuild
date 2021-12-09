@@ -17,7 +17,7 @@ const { modulename, debug } = setupDebug(__filename);
  * @returns Promise that resolves to an array of activity objects.
  */
 const getActivities = (req: Request): Promise<Perform.IActivity[]> => {
-  debug(`${modulename}: running getActivity`);
+  debug(`${modulename}: running getActivities`);
 
   const modelActivity = req.app.appLocals.models.activity;
 
@@ -34,6 +34,48 @@ const getActivities = (req: Request): Promise<Perform.IActivity[]> => {
       .catch((err: any) => {
         /* report a general database unavailable error */
         const functionName = 'getActivities';
+        databaseUnavailable(err, functionName, req.app.appLocals, reject);
+      });
+  });
+};
+
+/**
+ * Adds a supplied activity object to the database.
+ *
+ * @param req The http request being actioned (used to retrieve the data model).
+ * @param activityNoId Activity to add. Must not have an id property.
+ * @rejects Resolves to a reported error.
+ * @returns Promise that resolves to the activity object added.
+ */
+const addActivity = (
+  req: Request,
+  activityNoId: Perform.IActivityNoId,
+): Promise<Perform.IActivity> => {
+  const modelActivity = req.app.appLocals.models.activity;
+
+  /* test that the supplied activity does not already have an id */
+  if ((activityNoId as any).id) {
+    const err: Perform.IErr = {
+      name: 'UNEXPECTED_FAIL',
+      message: 'activity id exists before document creation',
+      statusCode: 500,
+      dumped: false,
+    };
+    req.app.appLocals.dumpError(err);
+    throw new Error('activity id exists before document creation');
+  }
+
+  const addedActivity = new modelActivity(activityNoId);
+  return new Promise((resolve, reject) => {
+    addedActivity
+      .save()
+      .then((savedActivity: Document) => {
+        /* return the added activity as a JSON object */
+        return resolve(savedActivity.toObject() as Perform.IActivity);
+      })
+      .catch((err: any) => {
+        /* report a general database unavailable error */
+        const functionName = 'addActivity';
         databaseUnavailable(err, functionName, req.app.appLocals, reject);
       });
   });
@@ -79,48 +121,6 @@ const getActivity = (
       .catch((err: any) => {
         /* report a general database unavailable error */
         const functionName = 'getActivity';
-        databaseUnavailable(err, functionName, req.app.appLocals, reject);
-      });
-  });
-};
-
-/**
- * Adds a supplied activity object to the database.
- *
- * @param req The http request being actioned (used to retrieve the data model).
- * @param activityNoId Activity to add. Must not have an id property.
- * @rejects Resolves to a reported error.
- * @returns Promise that resolves to the activity object added.
- */
-const addActivity = (
-  req: Request,
-  activityNoId: Perform.IActivityNoId,
-): Promise<Perform.IActivity> => {
-  const modelActivity = req.app.appLocals.models.activity;
-
-  /* test that the supplied activity does not already have an id */
-  if ((activityNoId as any).id) {
-    const err: Perform.IErr = {
-      name: 'UNEXPECTED_FAIL',
-      message: 'activity id exists before document creation',
-      statusCode: 500,
-      dumped: false,
-    };
-    req.app.appLocals.dumpError(err);
-    throw new Error('activity id exists before document creation');
-  }
-
-  const addedActivity = new modelActivity(activityNoId);
-  return new Promise((resolve, reject) => {
-    addedActivity
-      .save()
-      .then((savedActivity: Document) => {
-        /* return the added activity as a JSON object */
-        return resolve(savedActivity.toObject() as Perform.IActivity);
-      })
-      .catch((err: any) => {
-        /* report a general database unavailable error */
-        const functionName = 'addActivity';
         databaseUnavailable(err, functionName, req.app.appLocals, reject);
       });
   });

@@ -389,6 +389,66 @@
       }
     },
     "/member/{mid}/activity": {
+      "get": {
+        "summary": "Returns all the activity records for a member.",
+        "description": "Returns all the activity records for a specific member.\n",
+        "operationId": "getActivities",
+        "parameters": [
+          {
+            "name": "mid",
+            "in": "path",
+            "description": "The value of the id property of the member.",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/PositiveInteger"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activity records returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activities"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request is not a valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The database service is not available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Adds an activity record.",
         "description": "Adds a supplied activity record for a member.\nAn activity record object without an id property must be supplied in the body.\n",
@@ -1223,6 +1283,12 @@
             }
           }
         ]
+      },
+      "Activities": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Activity"
+        }
       },
       "Scores-row": {
         "type": "object",

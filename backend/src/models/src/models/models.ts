@@ -18,6 +18,7 @@ export const activityModel = {
     required: true,
   },
   type: {
+    type: String,
     enum: ['', 'BOXING', 'FLOOR', 'RUN', 'WALK'],
     required: true,
   },

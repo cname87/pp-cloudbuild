@@ -109,6 +109,18 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
           response,
           nextFunction,
         ),
+      getActivities: (
+        context,
+        request: Request,
+        response: Response,
+        nextFunction: NextFunction,
+      ) =>
+        appLocals.handlers.activityApi.getActivities(
+          context,
+          request,
+          response,
+          nextFunction,
+        ),
       getActivity: (
         context,
         request: Request,
@@ -251,7 +263,6 @@ export const initOpenApi = (appLocals: Perform.IAppLocals): void => {
         err.message = 'API validation fail';
         return nextFunction(err);
       },
-
       notFound: async (
         /* called if path not matched */
         _context,
@@ -325,6 +336,11 @@ const createDbCollectionConnection = (
       appLocals.database,
       `${process.env.DB_COLLECTION}_Member`,
       `${process.env.DB_COLLECTION}_members`,
+    );
+    appLocals.models.activity = appLocals.createModelActivities(
+      appLocals.database,
+      `${process.env.DB_COLLECTION}_Activity`,
+      `${process.env.DB_COLLECTION}_activities`,
     );
     appLocals.models.scores = appLocals.createModelScores(
       appLocals.database,

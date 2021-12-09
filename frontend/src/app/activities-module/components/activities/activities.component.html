@@ -1,9 +1,9 @@
 <button
   mat-raised-button
   class="button warn-button"
-  (click)="addSession()"
+  (click)="addActivity()"
 >
-  <mat-icon>delete</mat-icon>
+  <mat-icon>add</mat-icon>
   ADD ACTIVITY
 </button>
 
@@ -99,18 +99,20 @@
         <button
           mat-raised-button
           class="button"
-          (click)="getSession(row.id)"
+          (click)="editActivity(row)"
           >
           <mat-icon class="edit">edit</mat-icon>
         </button>
       </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
+    </mat-header-row>
+
     <mat-row
       *matRowDef="let row;
       columns: displayedColumns;"
-      (click)="getSession(row)"
+      (click)="editActivity(row)"
     >
     </mat-row>
 

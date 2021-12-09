@@ -33,7 +33,7 @@ export class ActivityLogResolverService implements Resolve<IActivity[]> {
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
 
-    return this.activitiesService.getSessions(memberId).pipe(
+    return this.activitiesService.getActivities(memberId).pipe(
       shareReplay(1),
       catchError((err: any) => {
         this.logger.trace(

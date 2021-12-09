@@ -2,13 +2,14 @@
 <app-activity
   *ngIf="activity"
   [activity]="activity"
-  (doneEvent)="doneActivity($event)"
+  (doneEvent)="doneActivity()"
 >
 </app-activity>
 
 <app-activities
-  *ngIf="activities"
-  [activities]="activities"
-  (activityEvent)="callActivity($event)"
+  *ngIf="activities$ | async"
+  [activities]="activities$ | async"
+  (editActivityEvent)="editActivity($event)"
+  (addActivityEvent)="addActivity()"
 >
 </app-activities>
