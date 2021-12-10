@@ -132,14 +132,14 @@ export const deleteActivity = (
   debug(`${modulename}: running deleteActivity`);
 
   const {
-    mid,
+    aid,
     activityHandlers,
     miscHandlers,
     dumpError,
   } = setup(context, filter, req, next)!;
 
   activityHandlers
-    .deleteActivity(req, mid)
+    .deleteActivity(req, aid)
     .then((number: number) => {
       const payload = { count: number };
       miscHandlers.writeJson(context, req, res, next, 200, payload);

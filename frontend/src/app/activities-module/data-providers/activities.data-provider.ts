@@ -60,8 +60,6 @@ export class ActivitiesDataProvider {
     headers = headers.set('Content-Type', 'application/json');
 
     const memberIdString = encodeURIComponent(String(memberId));
-    console.log(memberId);
-    console.log(memberIdString);
     const path = `${this.basePath}/${this.memberPath}/${memberIdString}/${this.activityPath}`;
     this.logger.trace(
       `${ActivitiesDataProvider.name}: Sending POST request to: ${path}`,
