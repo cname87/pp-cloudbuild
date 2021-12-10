@@ -3,7 +3,7 @@
  * Called by functions in activity-api.ts.
  */
 
-import { Document } from 'mongoose';
+import { Document, LeanDocument } from 'mongoose';
 import { Request } from 'express';
 import { databaseUnavailable } from './utilities';
 import { setupDebug } from '../utils/src/debugOutput';
@@ -27,9 +27,9 @@ const getActivities = (req: Request): Promise<Perform.IActivity[]> => {
       .lean(true) // return json object
       .select({ _id: 0, __v: 0 }) // exclude _id and __v fields
       .exec()
-      .then((docs) => {
+      .then((docs: LeanDocument<any>) => {
         /* return activity objects array */
-        return resolve(docs as unknown as [Perform.IActivity]);
+        return resolve(docs as Perform.IActivity[]);
       })
       .catch((err: any) => {
         /* report a general database unavailable error */
@@ -100,7 +100,7 @@ const getActivity = (
     modelActivity
       .findOne({ id: activityId })
       .exec()
-      .then((doc) => {
+      .then((doc: Document) => {
         /* return error if no activity found */
         if (!doc) {
           console.error(
@@ -151,7 +151,7 @@ const updateActivity = (
         runValidators: true,
       })
       .exec()
-      .then((doc) => {
+      .then((doc: Document) => {
         /* return error if no activity found */
         if (!doc) {
           console.error(
@@ -194,7 +194,7 @@ const deleteActivity = (req: Request, activityId: number): Promise<number> => {
     modelActivity
       .deleteOne({ id: activityId })
       .exec()
-      .then((doc) => {
+      .then((doc: any) => {
         /* return error if no activity deleted */
         if (doc.deletedCount === 0) {
           console.error(

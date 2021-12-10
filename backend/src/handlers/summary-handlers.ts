@@ -6,6 +6,7 @@
 import { Request } from 'express';
 import { databaseUnavailable } from './utilities';
 import { setupDebug } from '../utils/src/debugOutput';
+import { PipelineStage } from 'mongoose';
 
 const { modulename, debug } = setupDebug(__filename);
 
@@ -38,7 +39,7 @@ const getScoresSummary = (
     new Date().setDate(new Date().getDate() - 7 * weeks),
   );
 
-  const aggregation = [
+  const aggregation: PipelineStage[] = [
     /* select the specific member */
     { $match: { memberId: memberId } },
     /* select all tables in the last requested number of weeks */
@@ -81,7 +82,7 @@ const getScoresSummary = (
     //
     modelScores
       .aggregate(aggregation)
-      .then((summary) => {
+      .then((summary: Summary.TScoresSummaryItems) => {
         /* return error if no summary returned found */
         if (!summary) {
           console.error(`${modulename}: getScoresSummary returned no summary`);
@@ -95,7 +96,7 @@ const getScoresSummary = (
         }
 
         /* return summary object */
-        return resolve(summary as Summary.TScoresSummaryItems);
+        return resolve(summary);
       })
       .catch((err: any) => {
         errFunction(err, req, reject);
@@ -122,7 +123,7 @@ const getSessionsSummary = (
     new Date().setDate(new Date().getDate() - 7 * weeks),
   );
 
-  const aggregation = [
+  const aggregation: PipelineStage[] = [
     /* select the specific member */
     { $match: { memberId: memberId } },
     /* select all tables in the last requested number of weeks */
@@ -246,7 +247,7 @@ const getSessionsSummary = (
     //
     modelSessions
       .aggregate(aggregation)
-      .then((summary) => {
+      .then((summary: Summary.TSessionsSummaryItems) => {
         /* return error if no summary returned found */
         if (!summary) {
           console.error(
@@ -262,7 +263,7 @@ const getSessionsSummary = (
         }
 
         /* return summary object */
-        return resolve(summary as Summary.TSessionsSummaryItems);
+        return resolve(summary);
       })
       .catch((err: any) => {
         errFunction(err, req, reject);

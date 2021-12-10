@@ -139,12 +139,12 @@ const getOrCreateScores = async (
     modelScores
       .findOne({ memberId: mid, date: date })
       .exec()
-      .then((doc) => {
+      .then((doc: Document<Perform.IScores>) => {
         if (!doc) {
           debug(`${modulename}: no scores object found`);
         }
         /* convert Mongoose document to object */
-        const docObject = doc?.toObject() as unknown as Perform.IScores;
+        const docObject = doc?.toObject() as Perform.IScores;
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -212,7 +212,7 @@ const updateScores = (
         },
       )
       .exec()
-      .then((doc) => {
+      .then((doc: Document<Perform.IScores>) => {
         /* return error if no scores found */
         if (!doc) {
           console.error(`${modulename}: updateScores found no matching scores`);
@@ -225,7 +225,7 @@ const updateScores = (
           return reject(errNotFound);
         }
         /* convert document to object */
-        const docObject = doc?.toObject() as unknown as Perform.IScores;
+        const docObject = doc?.toObject() as Perform.IScores;
         return resolve(docObject);
       })
       .catch((err: any) => {

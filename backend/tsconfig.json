@@ -64,6 +64,10 @@
     "plugins": [
 
     ]
-
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   }
 }

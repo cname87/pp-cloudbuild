@@ -44,7 +44,7 @@ const addMember = (
         /* return the added member as a JSON object */
         return resolve(savedMember.toObject() as Perform.IMember);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         /* report a general database unavailable error */
         const functionName = 'addMember';
         databaseUnavailable(err, functionName, req.app.appLocals, reject);

@@ -2,7 +2,7 @@
  * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages member details.  It defines the model schema for the members and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
-import { Document, Schema } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
 import { memberModel } from './models/models';
@@ -23,7 +23,7 @@ function createModelMembers(
   database: Perform.TDatabase,
   ModelName: string,
   collection: string,
-): Perform.IModelExtended {
+): Model<any> {
   debug(`${modulename}: running createModelMembers`);
 
   /* Set up a member schema */
@@ -42,7 +42,7 @@ function createModelMembers(
     ModelName,
     memberSchema,
     collection,
-  ) as Perform.IModelExtended;
+  );
 
   /* Set toObject option so _id, and __v deleted following query*/
   ModelMembers.schema.set('toObject', {

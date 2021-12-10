@@ -40,10 +40,8 @@ declare namespace Perform {
   /* the user object */
   export type TUser = import('../users/user').User;
   /* mongoose model */
-  export type TModel = import('mongoose').Model<
-    import('mongoose').Document,
-    Record<string, unknown>
-  >;
+  export type TModel = import('mongoose').Model<any>;
+
   /* extend Model to include autoinc resetCounter() */
   export interface IModelExtended extends TModel {
     resetCount: () => void;
@@ -60,11 +58,10 @@ declare namespace Perform {
   }
   /* models interface */
   interface IModels {
-    members: IModelExtended;
-    activity: IModelExtended;
-    sessions: IModelExtended;
-    scores: IModelExtended;
-    sessions: IModelExtended;
+    members: TModel;
+    activity: TModel;
+    scores: TModel;
+    sessions: TModel;
   }
   /* misc functions */
   export type TSigint = (signal?: string) => Promise<void>;
