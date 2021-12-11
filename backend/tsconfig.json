@@ -66,6 +66,9 @@
     ]
   },
   "ts-node": {
+    "moduleTypes": {
+      "./node_modules/find-up/index.js": "esm"
+    },
     "compilerOptions": {
       "module": "CommonJS"
     }

@@ -76,6 +76,7 @@
     "plugins": [
     ]
   },
+
   "angularCompilerOptions": {
     "strictTemplates": true,
     "enableIvy": true,

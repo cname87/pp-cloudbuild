@@ -35,7 +35,9 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "zone.js/dist/zone-error"
+              "zone.js/dist/zone-error",
+              /* avoids build warning from ngx-charts */
+              "clone-deep"
             ],
             "buildOptimizer": false,
             "commonChunk": false, // NOTE: common chunk not created to prevent a common chunk being loaded initially (but results in some code duplication)

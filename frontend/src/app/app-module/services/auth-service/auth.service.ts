@@ -2,6 +2,7 @@ import { Injectable, InjectionToken, Inject } from '@angular/core';
 import originalCreateAuth0Client, {
   User,
   GetUserOptions,
+  GetTokenSilentlyVerboseResponse,
 } from '@auth0/auth0-spa-js';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import {
@@ -271,7 +272,9 @@ export class AuthService {
    * @param options: Optional parameter to be supplied to the Auth0 function - see documentation.
    * Note: Called by auth.interceptor to add a token to the request.
    */
-  public getTokenSilently$ = (options?: any): Observable<string> =>
+  public getTokenSilently$ = (
+    options?: any,
+  ): Observable<GetTokenSilentlyVerboseResponse> =>
     this.auth0Client$.pipe(
       concatMap((client: Auth0Client) =>
         from(client.getTokenSilently(options)),
