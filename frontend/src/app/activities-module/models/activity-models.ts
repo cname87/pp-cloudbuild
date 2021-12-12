@@ -14,14 +14,6 @@ export interface IActivityWithoutId {
   comment: string;
 }
 
-export const blankActivityWithoutId: IActivityWithoutId = {
-  memberId: 0, // must be set
-  date: new Date().toISOString(),
-  type: EActivityType.Blank,
-  duration: '',
-  comment: '',
-};
-
 export interface IActivity extends IActivityWithoutId {
   id: number;
 }
@@ -39,7 +31,8 @@ export const activityTypeNames: EActivityType[] = Object.keys(EActivityType)
       return EActivityType[key];
     }
   })
-  .filter((key) => key !== undefined);
+  .filter((key) => !!key); // no blank
+
 export const enum EMode {
   'ADD',
   'EDIT',
@@ -49,3 +42,6 @@ export const enum EMode {
 export interface ICount {
   count: number;
 }
+
+/* cannot enter dates early than this */
+export const EARLIEST_DATE = new Date('June 27, 2021');

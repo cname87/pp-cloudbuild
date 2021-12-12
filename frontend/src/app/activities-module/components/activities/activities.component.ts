@@ -5,11 +5,13 @@ import {
   OnInit,
   Output,
   EventEmitter,
+  AfterViewInit,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NGXLogger } from 'ngx-logger';
+import { catchError, Observable, shareReplay, Subject, takeUntil } from 'rxjs';
 
 import {
   activityTypeNames,
@@ -33,15 +35,18 @@ import {
   styleUrls: ['./activities.component.scss'],
   providers: [],
 })
-export class ActivitiesComponent implements OnInit {
+export class ActivitiesComponent implements OnInit, AfterViewInit {
   //
   /* activity list */
-  @Input() activities!: IActivity[] | null;
+  @Input() activities$!: Observable<IActivity[]> | undefined;
 
   /* clicked table row */
   @Output() editActivityEvent = new EventEmitter<IActivity>();
   /* clicked add activity button */
   @Output() addActivityEvent = new EventEmitter<void>();
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   /* columns to display */
   displayedColumns = displayedColumns;
@@ -49,15 +54,15 @@ export class ActivitiesComponent implements OnInit {
   dataSource!: MatTableDataSource<IActivity>;
   /* define the text info card */
   line1 = '- This is a log of miscellaneous activities ';
-  line2 = '- Click the add button to enter a new activity record';
-  line3 = '- Click an edit button to edit a previously entered activity';
+  line2 = '- Click the ADD ACTIVITY button to enter a new activity record';
+  line3 =
+    '- Click on a row, or on an edit button, to edit a previously entered activity';
   line4 = '';
   isGoBackVisible = false;
   /* activity types for template */
   types = activityTypeNames;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
 
   constructor(private logger: NGXLogger) {
     this.logger.trace(
@@ -65,33 +70,78 @@ export class ActivitiesComponent implements OnInit {
     );
   }
 
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${ActivitiesComponent.name}: #catchError called`);
+    this.logger.trace(`${ActivitiesComponent.name}: Throwing the error on`);
+    throw err;
+  };
+
   ngOnInit(): void {
     this.logger.trace(`${ActivitiesComponent.name}: Starting ngOnInit`);
-    if (this.activities) {
-      this.dataSource = new MatTableDataSource(this.activities);
-    } else {
-      throw new Error('Required activities array was invalid');
-    }
-    /* set up paginator, sort and filter */
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.dataSource.filterPredicate = (session: IActivity, filter: string) => {
-      return !filter || session.type === filter;
-    };
+    (this.activities$ as Observable<IActivity[]>)
+      .pipe(
+        takeUntil(this.#destroy$),
+        shareReplay(1),
+        catchError(this.#catchError),
+      )
+      .subscribe((activities: IActivity[]) => {
+        this.logger.trace(
+          `${ActivitiesComponent.name}: Received activities: ${JSON.stringify(
+            activities,
+          )}`,
+        );
+        this.dataSource = new MatTableDataSource(activities);
+        /* set up filter */
+        this.dataSource.filterPredicate = (
+          activity: IActivity,
+          filter: string,
+        ) => {
+          return !filter || activity.type === filter;
+        };
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.logger.trace(`${ActivitiesComponent.name}: Starting ngAfterViewInit`);
+    /* setTimeout necessary to avoid change detection errors */
+    setTimeout(() => {
+      if (this.dataSource && this.paginator && this.sort) {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      } else {
+        throw new Error(
+          `${ActivitiesComponent.name}: Paginator or Sort not enabled`,
+        );
+      }
+    }, 0);
   }
 
   editActivity(activity: IActivity): void {
+    this.logger.trace(`${ActivitiesComponent.name}: Starting editActivity`);
     this.editActivityEvent.emit(activity);
   }
 
   addActivity(): void {
+    this.logger.trace(`${ActivitiesComponent.name}: Starting addActivity`);
     this.addActivityEvent.emit();
   }
 
   applyFilter(value: string) {
+    this.logger.trace(`${ActivitiesComponent.name}: Starting applyFilter`);
     this.dataSource.filter = value;
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.logger.trace(`${ActivitiesComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
   }
 }

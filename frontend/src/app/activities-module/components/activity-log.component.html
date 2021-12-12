@@ -8,7 +8,7 @@
 
 <app-activities
   *ngIf="activities$ | async"
-  [activities]="activities$ | async"
+  [activities$]="activities$"
   (editActivityEvent)="editActivity($event)"
   (addActivityEvent)="addActivity()"
 >

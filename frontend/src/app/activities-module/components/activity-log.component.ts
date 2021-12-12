@@ -7,7 +7,7 @@ import { Observable, Subject } from 'rxjs';
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { ActivitiesService } from '../services/activities.service';
 import {
-  blankActivityWithoutId,
+  EActivityType,
   IActivity,
   IActivityWithoutId,
 } from '../models/activity-models';
@@ -23,12 +23,11 @@ import {
 })
 export class ActivityLogComponent implements OnInit, OnDestroy {
   //
+  /* activities list observable passed to, and enabling, activities component */
+  activities$!: Observable<IActivity[]> | undefined;
   /* member id passed to activities component */
   memberId!: number;
-  /* list of activities retrieved from the backend */
-  activities!: IActivity[];
-  activities$!: Observable<IActivity[]> | undefined;
-  /* clicked activity passed to activity component */
+  /* clicked activity passed to, and enabling, activity component */
   activity: IActivity | IActivityWithoutId | undefined = undefined;
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
@@ -55,20 +54,36 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
     throw err;
   };
 
-  #getActivities(): Observable<IActivity[]> {
-    return this.activitiesService.getActivities(this.memberId).pipe(
-      shareReplay(1),
-      catchError((err: any) => {
-        this.logger.trace(`${ActivityLogComponent.name}: catchError called`);
-        this.logger.trace(
-          `${ActivityLogComponent.name}: not proceeding and throwing the error to the error handler`,
-        );
-        throw err;
-      }),
+  #getBlankActivity(): IActivityWithoutId {
+    this.logger.trace(
+      `${ActivityLogComponent.name}: Starting #getBlankActivity`,
     );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    today.setUTCHours(0, 0, 0, 0);
+    const todayMidnight = new Date(today).toISOString();
+    return {
+      memberId: this.memberId,
+      date: todayMidnight,
+      type: EActivityType.Blank,
+      duration: '',
+      comment: '',
+    };
+  }
+
+  #getActivities$(): Observable<IActivity[]> {
+    this.logger.trace(`${ActivityLogComponent.name}: Starting #getActivities$`);
+    return this.activitiesService
+      .getActivities(this.memberId)
+      .pipe(
+        takeUntil(this.#destroy$),
+        shareReplay(1),
+        catchError(this.#catchError),
+      );
   }
 
   ngOnInit(): void {
+    this.logger.trace(`${ActivityLogComponent.name}: Starting ngOnInit`);
     /* get the data as supplied from the route resolver */
     this.activities$ = this.route.data.pipe(
       takeUntil(this.#destroy$),
@@ -95,22 +110,21 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
   }
 
   editActivity(clickedActivity: IActivity): void {
+    this.logger.trace(`${ActivityLogComponent.name}: Starting editActivity`);
     this.activities$ = undefined;
     this.activity = clickedActivity;
   }
 
   addActivity(): void {
+    this.logger.trace(`${ActivityLogComponent.name}: Starting addActivity`);
     this.activities$ = undefined;
-    blankActivityWithoutId.memberId = this.memberId;
-    this.activity = blankActivityWithoutId;
+    this.activity = this.#getBlankActivity();
   }
 
   doneActivity(): void {
-    this.logger.trace(
-      `${ActivityLogComponent.name}: Activity added, edited or deleted`,
-    );
-    this.activities$ = this.#getActivities();
+    this.logger.trace(`${ActivityLogComponent.name}: Starting doneActivity`);
     this.activity = undefined;
+    this.activities$ = this.#getActivities$();
   }
 
   ngOnDestroy(): void {

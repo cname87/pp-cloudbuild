@@ -9,20 +9,24 @@ import { ActivitiesService } from '../../services/activities.service';
 import {
   IActivity,
   activityTypeNames,
+  EARLIEST_DATE,
   EMode,
   IActivityWithoutId,
 } from '../../models/activity-models';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 
 /**
- * @title This component shows a form allowing detail on a training session to be entered.
+ * @title This component shows a form allowing detail on an activity be entered.
  *
- * This component is enabled when an activity record is input from the parent component. The activity array is displayed in a table.
+ * This component is enabled when an activity record is input from the parent activities component. The activity record is displayed in a table.
  *
  * If the supplied activity has an id property then an update and delete  button is shown. The activity properties can be edited and submitted, or the activity record can be deleted.
  *
- * If the supplied activity does not have an id property then a blank table is shown.  Values can be entered and saved.
+ * If the supplied activity does not have an id property then a blank table is shown.  Values can be entered and the activity record can be saved.
+ *
+ * An event is emitted when the action is completed. This is picked up by the activity-log component which redisplays the activities component.
  */
+
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
@@ -42,6 +46,14 @@ export class ActivityComponent implements OnInit {
   updateLabel = 'UPDATE ACTIVITY';
   /* default button label */
   buttonLabel = 'ADD ACTIVITY';
+  /* define the text info card */
+  line1 =
+    '- If entering a new record, enter data in each field and click the ADD ACTIVITY button';
+  line2 =
+    '- If editing a record, edit the required field and click the UPDATE ACTIVITY field';
+  line3 = '- If deleting a record, click on the DELETE ACTIVITY button';
+  line4 = '';
+  isGoBackVisible = false;
 
   /* form definition */
   form = new FormGroup({});
@@ -49,28 +61,31 @@ export class ActivityComponent implements OnInit {
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
-      /* Customizing Datepicker is complex - see https://material.angular.io/components/datepicker/overview#setting-the-locale-code */
-      key: 'date',
-      type: 'datepicker',
-      templateOptions: {
-        type: 'datepicker',
-        required: true,
-        readonly: true,
-        label: 'Enter the date of the activity',
-      },
-      validators: {
-        date: {
-          expression: (
-            _control: AbstractControl,
-            field: FormlyFieldConfig,
-          ): boolean => {
-            return !!field.formControl?.value;
-          },
-          message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must select a date`;
+      fieldGroup: [
+        {
+          key: 'date',
+          type: 'datepicker',
+          /* see dates.md in the docs folder */
+          parsers: [
+            (inputDate) => {
+              const date = new Date(inputDate);
+              return new Date(
+                date.getTime() - date.getTimezoneOffset() * 60 * 1000,
+              );
+            },
+          ],
+          templateOptions: {
+            required: true,
+            readonly: true,
+            label: 'Select the date',
+            datepickerOptions: {
+              /* allow only a certain period of dates be shown */
+              max: new Date(),
+              min: EARLIEST_DATE,
+            },
           },
         },
-      },
+      ],
     },
     {
       key: 'type',
@@ -159,11 +174,14 @@ export class ActivityComponent implements OnInit {
     throw err;
   };
 
-  goBack(): void {
+  #emitDone(): void {
     this.doneEvent.emit();
   }
 
-  onSubmit(): void {
+  cancel(): void {
+    this.#emitDone();
+  }
+  update(): void {
     /* disable to avoid multiple submissions */
     this.form.disable();
 
@@ -186,20 +204,22 @@ export class ActivityComponent implements OnInit {
               activity,
             )}`,
           );
-          /* clear the form */
-          if (this.options.resetModel) {
-            this.options.resetModel();
-          }
-          /* renable the form */
-          this.form.enable();
-          /* allow errors go to errorHandler */
+          // /* clear the form */
+          // if (this.options.resetModel) {
+          //   this.options.resetModel();
+          // }
+          // /* renable the form */
+          // this.form.enable();
 
-          this.goBack();
+          this.#emitDone();
         }),
     );
   }
 
   delete(): void {
+    /* disable to avoid multiple submissions */
+    this.form.disable();
+
     /* Set an isLoadingService indicator (that loads a progress bar) and clears it when the returned observable emits. */
     this.isLoadingService.add(
       of({})
@@ -218,7 +238,7 @@ export class ActivityComponent implements OnInit {
               count,
             )} session deleted: ${JSON.stringify(this.model)}`,
           );
-          this.goBack();
+          this.#emitDone();
         }),
     );
   }
