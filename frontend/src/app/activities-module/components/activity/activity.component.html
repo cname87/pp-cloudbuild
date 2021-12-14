@@ -24,35 +24,35 @@
 
   </form>
 
-  <mat-divider></mat-divider>
-
   <div
     class="buttons"
   >
-      <button mat-raised-button
-        class="button"
-        (click)="cancel()">
-        <mat-icon>cancel</mat-icon>
-        CANCEL
-      </button>
-    <button
+    <app-button mat-raised-button
+      class="button cancel-button"
+      [icon]="'cancel'"
+      (click)="cancel()"
+    >
+      CANCEL
+    </app-button>
+    <app-button
       mat-raised-button
-      class="button"
+      class="button edit-button"
+      [icon]="'edit'"
       (click)="update()"
       [disabled]="!form.valid"
     >
-      <mat-icon>edit</mat-icon>
       {{ buttonLabel }}
-    </button>
-    <button
+    </app-button>
+    <app-button
       mat-raised-button
-      class="button warn-button"
+      class="button delete-button"
       (click)="delete()"
+      [icon]="'delete'"
+      [isWarn]="true"
       *ngIf="buttonLabel===updateLabel"
       >
-      <mat-icon>delete</mat-icon>
         DELETE ACTIVITY
-    </button>
+    </app-button>
   </div>
 
 </div>

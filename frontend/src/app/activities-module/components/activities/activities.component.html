@@ -7,30 +7,44 @@
 >
 </app-text-info>
 
-<button mat-raised-button class="button warn-button" (click)="addActivity()">
-  <mat-icon>add</mat-icon>
-  ADD ACTIVITY
-</button>
 
-<!-- <mat-divider></mat-divider> -->
-
-<mat-form-field class="fill-width" appearance="fill">
-  <mat-label>Filter by activity type</mat-label>
-  <mat-select
-    #input
-    (selectionChange)="applyFilter($event.value)"
+<div
+  class="fill-width"
+  fxLayout="row"
+  fxLayoutAlign="space-between"
+>
+  <mat-form-field
+    fxFlexAlign="start"
+    mat-raised-
+    class="filter"
+    appearance="fill"
   >
-    <mat-option>
-      ALL
-    </mat-option>
-    <mat-option
-      *ngFor="let type of types"
-      [value]="type"
+    <mat-label>Filter by activity type</mat-label>
+    <mat-select
+      #input
+      (selectionChange)="applyFilter($event.value)"
     >
-      {{ type }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+      <mat-option>
+        ALL
+      </mat-option>
+      <mat-option
+        *ngFor="let type of types"
+        [value]="type"
+      >
+        {{ type }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-button
+    mat-raised-button
+    class="add-button"
+    [icon]="'add'"
+    (click)="addActivity()"
+  >
+    ADD ACTIVITY
+  </app-button>
+</div>
 
 <div class="fill-width container mat-elevation-z8">
   <mat-table
@@ -63,7 +77,11 @@
       >
         TYPE
       </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.type}} </mat-cell>
+      <mat-cell
+        *matCellDef="let row"
+      >
+        {{ row.type }}
+      </mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
@@ -96,13 +114,11 @@
         EDIT
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <button
-          mat-raised-button
-          class="button"
+        <app-button
           (click)="editActivity(row)"
+          [icon]="'edit'"
           >
-          <mat-icon class="edit">edit</mat-icon>
-        </button>
+        </app-button>
       </mat-cell>
     </ng-container>
 

@@ -53,10 +53,10 @@ export class ActivitiesComponent implements OnInit, AfterViewInit {
   /* table data source */
   dataSource!: MatTableDataSource<IActivity>;
   /* define the text info card */
-  line1 = '- This is a log of miscellaneous activities ';
-  line2 = '- Click the ADD ACTIVITY button to enter a new activity record';
-  line3 =
-    '- Click on a row, or on an edit button, to edit a previously entered activity';
+  line1 = '- Click the ADD ACTIVITY button to enter a new activity record';
+  line2 =
+    '- Click on a row, or on an EDIT button, to edit a previously entered activity';
+  line3 = '';
   line4 = '';
   isGoBackVisible = false;
   /* activity types for template */

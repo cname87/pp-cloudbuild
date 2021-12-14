@@ -21,16 +21,16 @@
   --screen-px-or-min: calc(max(var(--sm-screen-px), var(--screen-px-or-max)));
   --excess-px-above-min: calc(var(--screen-px-or-min) - var(--sm-screen-px));
   /* (actual-screen - sm-screen) / sm-screen */
-  /* 0 to (720 - 360)/360 ie 1 */
+  /* 0 to (720 - 360)/360 i.e. 0 to 1 */
   --ratio-px: calc(var(--excess-px-above-min) / var(--sm-screen));
   --default-gap-diff-px: calc(var(--ratio-px) * var(--default-gap-diff));
 
-  /* calculate default-gap-px */
+  /* calculate default-gap-px = 8px to 16px */
   --default-gap-px: calc(var(--default-gap-min-px)
     + var(--default-gap-diff-px));
 
-  /* base-font variable size = 1rem */
-  --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maximum screen
+  /* base-font variable size = 1rem = 12px to 16px*/
+  --base-font: calc(12px + var(--ratio-px) * 4);  // 16px for maxmum screen
 
   /* member list row heights - 24 to 40 px*/
   --list-height-px: calc((1.5px + var(--ratio-px)) * var(--base));

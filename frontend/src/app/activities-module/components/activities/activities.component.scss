@@ -1,14 +1,24 @@
-div.container {
+/* filter label */
+mat-label {
+  color: var(--primary-color-darker);
+}
+
+.add-button {
   margin-left: var(--default-gap-px);
+}
+
+.fill-width {
+  margin-left: var(--default-gap-px);
+  margin-right: var(--default-gap-px);
+}
+
+div.container {
   height: calc(65vh);
   overflow: auto;
 }
-button.button {
-  margin: 0px;
-  padding-left: var(--default-gap-px);
-  padding-right: var(--default-gap-px);
-  padding-top: var(--list-spacing);
-  padding-bottom: var(--list-spacing);
+
+mat-header-cell {
+  color: var(--primary-color-darker);
 }
 
 mat-icon.edit {
@@ -43,9 +53,7 @@ mat-icon.edit {
 @include mat-table-columns((
     date: (pc-flex: 15%),
     type: (pc-flex: 25%),
-    score: (pc-flex: 10%),
-    time: (pc-flex: 10%),
-    metric: (pc-flex: 10%),
-    comment: (pc-flex: 20%),
+    duration: (pc-flex: 15%),
+    comment: (pc-flex: 35%),
     edit: (pc-flex: 10%),
 ));

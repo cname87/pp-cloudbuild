@@ -5,68 +5,84 @@
 @import '~@swimlane/ngx-datatable/themes/material.scss';
 @import '~@swimlane/ngx-datatable/assets/icons.css';
 
-/* format help header in ngx-datatable embedded html */
-div.table-help {
-  background-color: var(--content-color-lighter);
-  margin-bottom: var(--default-gap-px);
-  padding: 2px;
-  text-align: center;
+
+/* restrict these to scores and sessions components */
+app-scores, app-sessions {
+
+  /* format help header in ngx-datatable embedded html */
+  div.table-help {
+    background-color: var(--content-color-lighter);
+    margin-bottom: var(--default-gap-px);
+    padding: 2px;
+    text-align: center;
+  }
+
+  /* the header row */
+  .ngx-datatable.material .datatable-header .datatable-header-cell {
+    color: var(--primary-color-darker);
+    text-align: center !important;
+  }
+
+  datatable-body {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  datatable-body-row.datatable-body-row {
+    padding: 2px !important;
+    height: calc(var(--base-font) *2) !important;
+  }
+
+  datatable-body-cell.datatable-body-cell {
+    font-size: calc(var(--base-font)) !important;
+    text-align: center !important;
+    padding: 2px !important;
+  }
+
+  .mat-form-field-flex {
+    line-height: 1 !important;
+  }
+
+  .mat-form-field-outline {
+    top: 0px !important;
+  }
+
+  /* the box around each cell */
+  .mat-form-field-infix {
+    border: 0px !important;
+    line-height: 1 !important;
+    padding-top: 6px !important;
+    padding-bottom: 4px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important ;
+  }
+
+  /* set the height of a drop down option */
+  mat-option.mat-option {
+    height: calc(var(--base-font) *2) !important;
+  }
+
+  div.mat-select-panel {
+    max-height: unset;
+  }
+
+  /* padding right of the rows */
+  div.datatable-row-center {
+    padding-right: 4px;
+  }
+  /* color of the summary row */
+  .ngx-datatable.material .datatable-summary-row .datatable-body-row .datatable-body-cell {
+    color: var(--primary-color-darker);
+  }
+
 }
 
-/* the header row */
-.ngx-datatable.material .datatable-header .datatable-header-cell {
-  color: var(--primary-color-darker);
-  text-align: center !important;
-}
-
-datatable-body {
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-}
-
-datatable-body-row.datatable-body-row {
-  padding: 2px !important;
-  height: calc(var(--base-font) *2) !important;
-}
-
-datatable-body-cell.datatable-body-cell {
-  font-size: calc(var(--base-font)) !important;
-  text-align: center !important;
-  padding: 2px !important;
-}
-
-.mat-form-field-flex {
-  line-height: 1 !important;
-}
-
-.mat-form-field-outline {
-  top: 0px !important;
-}
-
-/* the box around each cell */
-.mat-form-field-infix {
+/* the box around each cell - app-activity */
+app-activity .mat-form-field-infix {
   border: 0px !important;
-  line-height: 1 !important;
+  line-height: 2 !important;
   padding-top: 6px !important;
   padding-bottom: 4px !important;
   padding-left: 0px !important;
   padding-right: 0px !important ;
-}
-
-/* set the height of a drop down option */
-mat-option.mat-option {
-  height: calc(var(--base-font) *2) !important;
-}
-
-div.mat-select-panel {
-  max-height: unset;
-}
-
-/* padding right of the rows */
-div.datatable-row-center {
-  padding-right: 4px;
-}
-/* color of the summary row */
-.ngx-datatable.material .datatable-summary-row .datatable-body-row .datatable-body-cell {
-  color: var(--primary-color-darker);
 }

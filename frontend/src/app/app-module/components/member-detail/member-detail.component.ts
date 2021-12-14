@@ -43,10 +43,10 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /* define the text info card */
-  line1 = '- Click on SCORES to enter your weekly assessment scores';
-  line2 = '- Click on SESSIONS to enter your weekly training sessions';
-  line3 = '- Click on SUMMARY to see your data over the last 12 months';
-  line4 = '';
+  line1 = `- Click on ACTIVITIES to enter miscellaneous training activities`;
+  line2 = '- Click on SCORES to enter your weekly assessment scores';
+  line3 = '- Click on SESSIONS to enter your weekly training sessions';
+  line4 = '- Click on SUMMARY to see your data over the last 12 months';
   isGoBackVisible = false;
 
   /**
