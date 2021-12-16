@@ -167,7 +167,7 @@ export class SessionsDataProvider {
     this.logger.trace(
       `${SessionsDataProvider.name}: updateSessionsTable called`,
     );
-
+    console.log(sessions);
     if (!sessions) {
       throw new Error(
         'A required parameter was invalid when calling updateSessionsTable.',
@@ -188,7 +188,7 @@ export class SessionsDataProvider {
 
     this.logger.trace(
       // eslint-disable-next-line max-len
-      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}${this.sessionsPath}`,
+      `${SessionsDataProvider.name}: Sending PUT request to: ${this.basePath}/${this.memberPath}/${memberId}/${this.sessionsPath}`,
     );
 
     return this.httpClient

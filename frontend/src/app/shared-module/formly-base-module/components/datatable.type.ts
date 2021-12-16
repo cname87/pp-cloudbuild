@@ -16,18 +16,32 @@ import { NGXLogger } from 'ngx-logger';
 })
 export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   //
-  /* get the cell template to apply as the column template*/
+  /* get the cell template to apply as the column template */
   @ViewChild('defaultColumn', { static: true })
   defaultColumn!: TemplateRef<any>;
-  /* get a clicked field to send a second click to open the select dropdown */
-  @ViewChild('clickedField', { read: ElementRef, static: false })
-  set clickedField(fieldToClickAgain: ElementRef) {
+  /* when clicked cell appear, initiate follow-on actions */
+  @ViewChild('clickedField', { read: ElementRef })
+  set clickedField(ref: ElementRef) {
     setTimeout(() => {
-      if (fieldToClickAgain) {
-        this.#secondClickAndFocus(fieldToClickAgain);
+      if (!!ref) {
+        this.#afterClickActions(ref);
       }
     }, 0);
   }
+  /* set the focus on the textarea as soon as it is available */
+  @ViewChild('popup', { static: false }) set popup(ref: ElementRef) {
+    setTimeout(() => {
+      if (!!ref) {
+        ref.nativeElement.focus();
+      }
+    }, 0);
+  }
+
+  clickedElement: any = {};
+  showField = true;
+
+  /* holds detail on a clicked cell - used to identify which cell was clicked */
+  clickedCell = { name: 'NAME', row: 1 };
 
   /* set to null to avoid cell colors when cells are selected on the table */
   selectionType = null as unknown as SelectionType;
@@ -38,12 +52,14 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   /* the field passed back to the formly form */
   formlyField: FormlyFieldConfig = {};
 
-  /* holds detail on a clicked cell */
-  clickedCell = { name: 'NAME', row: 1 };
-
   /* summary row */
   enableSummary = true;
   summaryPosition = 'bottom';
+
+  /* show comment text entry box */
+  showComment = false;
+  /* comment text entry box content */
+  popupComment = '';
 
   constructor(private logger: NGXLogger) {
     super();
@@ -52,27 +68,44 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     );
   }
 
-  /* sends a second click to a clicked data entry cell to drop the select dropdown (if there is a dropdown) */
-  /* moves the cursor to the input cell (if there is an input cell) */
-  #secondClickAndFocus = (fieldToClick: ElementRef) => {
+  /**
+   * Carries out additional actions after a cell is clicked.
+   * (i) If there is a dropdown, it sends a second click to a clicked data entry cell to drop the select dropdown.
+   * (ii) If there is an input cell, it moves the cursor into the input cell.
+   */
+  #afterClickActions = (clickedField: ElementRef) => {
     this.logger.trace(
-      `${DatatableTypeComponent.name}: running #secondClickAnd Focus`,
+      `${DatatableTypeComponent.name}: running #secondClickAndFocus`,
     );
+    /* if a dropdown is clicked */
     const selectDropdown =
-      fieldToClick.nativeElement.getElementsByClassName('mat-select-value')[0];
+      clickedField.nativeElement.getElementsByClassName('mat-select-value')[0];
     if (selectDropdown) {
       selectDropdown.click();
+      return;
     }
+    /* if the comment field is clicked */
+    const comment =
+      clickedField.nativeElement.getElementsByTagName('textarea')[0];
+    if (comment) {
+      this.clickedElement = comment;
+      comment.blur();
+      this.showComment = true;
+      this.popupComment = comment.value;
+      return;
+    }
+    /* if an input field is clicked (other than the textarea comment field) */
     const input =
-      fieldToClick.nativeElement.getElementsByClassName('mat-input-element')[0];
+      clickedField.nativeElement.getElementsByClassName('mat-input-element')[0];
     if (input) {
       input.focus();
+      return;
     }
   };
 
   /* clear any cell selections if enter or esc keys are pressed */
   #onEnterOrEsc = (event: any) => {
-    const codeEnter = 13;
+    const codeEnter = 13000;
     const codeEsc = 27;
     if (event.keyCode === codeEnter || event.keyCode === codeEsc) {
       this.logger.trace(
@@ -116,16 +149,27 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   }
 
   /**
-   * A scan is run of every cell.  For each cell this checks if the cell name and row index matches the stored clicked cell reference - this is used to show either a formly form cell or a value */
+   * A scan is run of every cell. For each cell this checks if the cell name and row index matches the stored clicked cell reference.
+   * @returns If true then template will show a formly field entry cell, if false the template will show a value.
+   */
   isCellAField(name: string, rowIndex: number): boolean {
     return name === this.clickedCell.name && rowIndex === this.clickedCell.row;
+  }
+
+  onBlurComment(comment: string) {
+    this.clickedElement.value = comment;
+    this.showComment = false;
+    /* clear clicked cell selection */
+    // this.clickedCell = { name: 'NAME', row: 1 };
+    /* force datatable table update */
+    this.to.columns = [...this.to.columns];
   }
 
   ngOnInit() {
     this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
 
     /* Note: 'this.to' refers to the templateOptions set in the ScoresComponent */
-    /* assigns a reference to the formly template */
+    /* assigns a reference to the formly field template */
     this.to.columns.forEach((column: any) => {
       column.cellTemplate = this.defaultColumn;
       column.propIndex = this.field.fieldArray?.fieldGroup?.findIndex(

@@ -37,7 +37,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 3,
+      flexGrow: 2,
       summaryFunc: () => {
         return `TOTALS:`;
       },
@@ -61,7 +61,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 4,
+      flexGrow: 2,
       summaryFunc: (cells: string[]) => {
         const filteredCells = cells.filter((cell) => cell !== '-');
         return filteredCells.length;
@@ -75,7 +75,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
@@ -86,7 +86,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
@@ -200,7 +200,7 @@ export class SessionsComponent implements OnDestroy {
       ],
     },
     {
-      /* define the ngx-datatable */
+      /* define the ngx-datatable - see the shared datatabel component */
       key: 'sessions',
       type: 'datatable',
       templateOptions: {
@@ -270,10 +270,9 @@ export class SessionsComponent implements OnDestroy {
           },
           {
             key: 'comment',
-            type: 'input',
-            defaultValue: '',
+            type: 'textarea',
+            defaultValue: 'c',
             templateOptions: {
-              type: 'text',
               required: false,
               change: () => this.#onTableChange(),
             },
@@ -408,9 +407,5 @@ export class SessionsComponent implements OnDestroy {
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
-  }
-
-  submit(): void {
-    alert(this.model);
   }
 }
