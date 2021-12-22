@@ -167,7 +167,6 @@ export class SessionsDataProvider {
     this.logger.trace(
       `${SessionsDataProvider.name}: updateSessionsTable called`,
     );
-    console.log(sessions);
     if (!sessions) {
       throw new Error(
         'A required parameter was invalid when calling updateSessionsTable.',

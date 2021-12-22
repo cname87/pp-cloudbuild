@@ -2,13 +2,23 @@
   color: var(--primary-color-darker),
 }
 
-.popup .popuptext {
+.popup .popupText {
+  border: none;
   width: var(--element-width);
   background-color: var(--content-color-lighter);
   border-radius: calc(var(--default-gap-px) / 2);
-  padding: var(--default-gap-px);
+  padding: calc(var(--default-gap-px) / 2);
 }
 
 textarea {
   resize: none;
+}
+
+app-button {
+  margin-right: var(--default-gap-px);
+
+}
+
+div.popup {
+  margin-bottom: calc(var(--default-gap-px) / 2);
 }

@@ -1,4 +1,4 @@
-@use '../../../../styles/modules/mixins.scss' as mixins;
+@use '../../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
   @include mixins.mat-card-info(var(--content-color-lighter));
