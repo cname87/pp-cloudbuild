@@ -135,7 +135,7 @@ export class ScoresComponent implements OnDestroy {
   line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
   line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
   line3 = '- For example: High Stress is 1, and Low Stress is 5';
-  line4 = '';
+  line4 = '- You can review and edit previous weeks via the date selector';
   isGoBackVisible = false;
 
   form = new FormGroup({});

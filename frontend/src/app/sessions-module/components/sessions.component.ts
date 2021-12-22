@@ -158,7 +158,7 @@ export class SessionsComponent implements OnDestroy {
   line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
   line2 = '- RPE is the Rate of Perceived Exertion of the session';
   line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
-  line4 = '';
+  line4 = '- Click on a comment cell to add or edit a comment';
   isGoBackVisible = false;
 
   form = new FormGroup({});
