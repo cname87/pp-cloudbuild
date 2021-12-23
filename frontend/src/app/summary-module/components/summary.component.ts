@@ -47,7 +47,9 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   /* define the summary table text info card */
   summaryLine1 =
     '- This shows weekly data on your wellness scores and training sessions';
-  summaryLine2 = '- Click on a row to see a bar chart of that item';
+  summaryLine2 = `- You can scroll left to see up to 52 weeks of data`;
+  summaryLine3 = '- Click on a row to see a bar chart of that item';
+  summaryLine4 = '';
   isSummaryBackVisible = false;
 
   /* define the chart table text info card */

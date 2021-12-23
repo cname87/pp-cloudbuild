@@ -1,3 +1,24 @@
 .day, .ampm, .load, .item {
-    color: var(--primary-color-darker),
+  color: var(--primary-color-normal),
+}
+
+.popup .popupText {
+  border: none;
+  width: var(--element-width);
+  background-color: var(--accent-color-lighter);
+  border-radius: calc(var(--default-gap-px) / 2);
+  padding: calc(var(--default-gap-px) / 2);
+}
+
+textarea {
+  resize: none;
+}
+
+app-button {
+  margin-right: var(--default-gap-px);
+
+}
+
+div.popup {
+  margin-bottom: calc(var(--default-gap-px) / 2);
 }

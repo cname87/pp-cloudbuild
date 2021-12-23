@@ -26,18 +26,21 @@ import { ESessionType } from '../models/sessions-models';
 export class SessionsComponent implements OnDestroy {
   //
   /* min width used in the datatable */
-  #minWidth = 42;
+  #minWidth =
+    (+getComputedStyle(document.documentElement).getPropertyValue(
+      '--big-screen',
+    ) || 0) / 20;
   /* ngx-datatable columns */
   #columns = [
     {
       name: 'Day',
       prop: 'day',
       clickable: false,
-      minWidth: this.#minWidth * 2,
+      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 3,
+      flexGrow: 1,
       summaryFunc: () => {
         return `TOTALS:`;
       },
@@ -46,22 +49,22 @@ export class SessionsComponent implements OnDestroy {
       name: 'AM/PM',
       prop: 'ampm',
       clickable: false,
-      minWidth: this.#minWidth,
+      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: null,
     },
     {
       name: 'Type',
       prop: 'type',
       clickable: true,
-      minWidth: this.#minWidth * 3,
+      minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 4,
+      flexGrow: 2,
       summaryFunc: (cells: string[]) => {
         const filteredCells = cells.filter((cell) => cell !== '-');
         return filteredCells.length;
@@ -71,44 +74,44 @@ export class SessionsComponent implements OnDestroy {
       name: 'RPE',
       prop: 'rpe',
       clickable: true,
-      minWidth: this.#minWidth * 2,
+      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Duration',
       prop: 'duration',
       clickable: true,
-      minWidth: this.#minWidth * 2,
+      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Load',
       prop: 'load',
       clickable: false,
-      minWidth: this.#minWidth,
+      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Comment',
       prop: 'comment',
       clickable: true,
-      minWidth: this.#minWidth,
+      minWidth: this.#minWidth * 3,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 1,
       summaryFunc: null,
     },
   ];
@@ -155,7 +158,7 @@ export class SessionsComponent implements OnDestroy {
   line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
   line2 = '- RPE is the Rate of Perceived Exertion of the session';
   line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
-  line4 = '';
+  line4 = '- Click on a comment cell to add or edit a comment';
   isGoBackVisible = false;
 
   form = new FormGroup({});
@@ -166,7 +169,7 @@ export class SessionsComponent implements OnDestroy {
     {
       fieldGroup: [
         {
-          key: 'date',
+          key: 'date', // matches model property
           type: 'datepicker',
           parsers: [
             (date: Date) => {
@@ -200,7 +203,7 @@ export class SessionsComponent implements OnDestroy {
       ],
     },
     {
-      /* define the ngx-datatable */
+      /* define the ngx-datatable - see the shared datatabel component */
       key: 'sessions',
       type: 'datatable',
       templateOptions: {
@@ -270,10 +273,9 @@ export class SessionsComponent implements OnDestroy {
           },
           {
             key: 'comment',
-            type: 'input',
-            defaultValue: '',
+            type: 'textarea',
+            defaultValue: '-',
             templateOptions: {
-              type: 'text',
               required: false,
               change: () => this.#onTableChange(),
             },
@@ -408,9 +410,5 @@ export class SessionsComponent implements OnDestroy {
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');
-  }
-
-  submit(): void {
-    alert(this.model);
   }
 }

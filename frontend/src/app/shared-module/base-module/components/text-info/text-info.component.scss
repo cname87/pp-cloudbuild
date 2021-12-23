@@ -1,12 +1,16 @@
-@use '../../../../styles/modules/mixins.scss' as mixins;
+@use '../../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
-  @include mixins.mat-card-info(var(--content-color-lighter));
+  @include mixins.mat-card-info(var(--accent-color-lighter));
   @include mixins.fill-width;
   padding-top: var(--default-gap-px);
   padding-bottom: var(--default-gap-px);
-  margin-top: var(--default-gap-px);
-  margin-bottom: var(--default-gap-px);
+  margin-top: calc(var(--default-gap-px)/2);
+  margin-bottom: calc(var(--default-gap-px)/2);
+}
+
+mat-card {
+  padding-bottom: 0px;
 }
 
 mat-card-content {
@@ -15,7 +19,7 @@ mat-card-content {
 }
 
 div > p {
-  color: var(--primary-color-darker);
+  color: var(--primary-color-normal);
   margin: 0px;
   padding-left: var(--default-gap-px);
 }

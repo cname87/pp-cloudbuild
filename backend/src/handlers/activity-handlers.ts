@@ -16,14 +16,17 @@ const { modulename, debug } = setupDebug(__filename);
  * @rejects Resolves to a reported error.
  * @returns Promise that resolves to an array of activity objects.
  */
-const getActivities = (req: Request): Promise<Perform.IActivity[]> => {
+const getActivities = (
+  req: Request,
+  mid: number,
+): Promise<Perform.IActivity[]> => {
   debug(`${modulename}: running getActivities`);
 
   const modelActivity = req.app.appLocals.models.activity;
 
   return new Promise((resolve, reject) => {
     modelActivity
-      .find()
+      .find({ memberId: mid })
       .lean(true) // return json object
       .select({ _id: 0, __v: 0 }) // exclude _id and __v fields
       .exec()

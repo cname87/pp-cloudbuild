@@ -9,11 +9,76 @@
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
+$primary-palette: (
+    50 : #fdede5,
+    100 : #fad2bf,
+    200 : #f7b495,
+    300 : #f4966a,
+    400 : #f1804a,
+    500 : #ef692a,
+    600 : #ed6125,
+    700 : #eb561f,
+    800 : #e84c19,
+    900 : #e43b0f,
+    A100 : #ffffff,
+    A200 : #ffe3dd,
+    A400 : #ffb8aa,
+    A700 : #ffa390,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$accent-palette: (
+    50 : #e7e7e7,
+    100 : #c3c4c4,
+    200 : #9c9c9d,
+    300 : #747475,
+    400 : #565758,
+    500 : #38393a,
+    600 : #323334,
+    700 : #2b2c2c,
+    800 : #242425,
+    900 : #171718,
+    A100 : #6e6ef2,
+    A200 : #3f3fee,
+    A400 : #0000fb,
+    A700 : #0000e1,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #ffffff,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss (imported above). For each palette, you can optionally specify a default, lighter, and darker hue. Available color palettes: https://material.io/design/color/
-$primary: mat.define-palette(mat.$deep-purple-palette, 200, 100, 300);
-$accent: mat.define-palette(mat.$amber-palette, 200, 100, 300);
-$warn: mat.define-palette(mat.$red-palette, A200, A100, A400);
-$content: mat.define-palette(mat.$blue-grey-palette, 100, 50, 200);
+$primary: mat.define-palette($primary-palette, 500, 200, 700);
+$accent: mat.define-palette($accent-palette, 500, 50, 700);
+$warn: mat.define-palette(mat.$red-palette, 300, 100, 700);
 
 /* colors for component styling */
 $primary-darker: mat.get-color-from-palette($primary, 'darker');
@@ -25,9 +90,6 @@ $accent-lighter: mat.get-color-from-palette($accent, 'lighter');
 $warn-darker: mat.get-color-from-palette($warn, 'darker');
 $warn-normal: mat.get-color-from-palette($warn);
 $warn-lighter: mat.get-color-from-palette($warn, 'lighter');
-$content-darker: mat.get-color-from-palette($content, 'darker');
-$content-normal:  mat.get-color-from-palette($content);
-$content-lighter: mat.get-color-from-palette($content, 'lighter');
 
 /* Define a custom typography config with the default typography levels but referenced to rem with the ratio 16px = 1rem, i.e. if you increase 1rem from 16px default these will scale accordingly */
 /* aiming to scale for a min screen size of 360px wide */

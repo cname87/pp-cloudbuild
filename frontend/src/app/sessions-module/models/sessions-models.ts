@@ -46,71 +46,85 @@ export interface ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
   ];
 }
@@ -123,6 +137,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Monday;
@@ -130,6 +145,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Tuesday;
@@ -137,6 +153,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Tuesday;
@@ -144,6 +161,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Wednesday;
@@ -151,6 +169,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Wednesday;
@@ -158,6 +177,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Thursday;
@@ -165,6 +185,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Thursday;
@@ -172,6 +193,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Friday;
@@ -179,6 +201,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Friday;
@@ -186,6 +209,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Saturday;
@@ -193,6 +217,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Saturday;
@@ -200,6 +225,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Sunday;
@@ -207,6 +233,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
     {
       day: EDays.Sunday;
@@ -214,6 +241,7 @@ export interface ISessions extends ISessionsStripped {
       type: ESessionType;
       rpe: ERpeScore;
       duration: number;
+      comment: string;
     },
   ];
 }

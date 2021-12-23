@@ -30,7 +30,7 @@ div.container {
 
 .mat-header-cell {
   border-bottom: 0.25px solid black;
-  color: var(--primary-color-darker);
+  color: var(--primary-color-normal);
 }
 
 @mixin mat-table-columns($columns) {
@@ -63,7 +63,7 @@ div.container {
 @include mat-table-columns((item:
   ( pc-flex: 15%,
     padding: calc(var(--base-font) / 4),
-    color: var(--primary-color-darker),
+    color: var(--primary-color-normal),
   )));
 /* set the number of columns to a maximum possible value - it will work with smaller numbers of columns so no need to edit here if you reduce */
 $numberSummaryColumns: 104;
@@ -74,7 +74,7 @@ $numberSummaryColumns: 104;
 /* style the first column */
 @include mat-table-columns(
   (wk0: (
-    color: var(--primary-color-darker),
+    color: var(--primary-color-normal),
   ))
 );
 

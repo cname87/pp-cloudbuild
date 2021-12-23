@@ -1,7 +1,7 @@
 @use '../../../../styles/modules/mixins.scss' as mixins;
 
 .fill-width {
-  @include mixins.mat-card-info(var(--content-color-lighter));
+  @include mixins.mat-card-info(var(--accent-color-lighter));
   @include mixins.fill-width;
   padding-top: var(--default-gap-px);
   padding-bottom: var(--default-gap-px);
@@ -22,5 +22,5 @@ mat-list-item.mat-list-item {
 }
 
 .field-name {
-  color: var(--primary-color-darker);
+  color: var(--primary-color-normal);
 }

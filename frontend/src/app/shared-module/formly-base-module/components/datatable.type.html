@@ -1,4 +1,26 @@
-<ngx-datatable
+<div
+  class="popup"
+  *ngIf="showCommentArea"
+>
+  <textarea
+    #popup
+    class="popupText"
+    placeholder="Enter your comment here"
+  >{{popupComment}}</textarea>
+  <app-button
+    icon="add"
+    (click)="addComment(popup.value)">
+    ADD COMMENT
+  </app-button>
+    <app-button
+      icon="cancel"
+      (click)="cancelComment()"
+    >
+      CANCEL
+    </app-button>
+</div>
+
+  <ngx-datatable
   #table
   class="material"
   [rows]="model"
@@ -20,6 +42,7 @@
   [summaryPosition]="summaryPosition"
   [summaryHeight]="rowHeight"
 >
+
   <ng-template
     #defaultColumn
     ngx-datatable-cell-template

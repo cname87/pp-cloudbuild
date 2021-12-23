@@ -1,10 +1,11 @@
 /* filter label */
 mat-label {
-  color: var(--primary-color-darker);
+  color: var(--primary-color-normal);
 }
 
 .add-button {
   margin-left: var(--default-gap-px);
+  margin-bottom: calc(var(--default-gap-px)/2);
 }
 
 .fill-width {
@@ -18,7 +19,7 @@ div.container {
 }
 
 mat-header-cell {
-  color: var(--primary-color-darker);
+  color: var(--primary-color-normal);
 }
 
 mat-icon.edit {

@@ -50,7 +50,7 @@ export class ActivityComponent implements OnInit {
   line1 =
     '- If entering a new record, enter data in each field and click the ADD ACTIVITY button';
   line2 =
-    '- If editing a record, edit the required field and click the UPDATE ACTIVITY field';
+    '- If editing a record, edit the required fields and click the UPDATE ACTIVITY field';
   line3 = '- If deleting a record, click on the DELETE ACTIVITY button';
   line4 = '';
   isGoBackVisible = false;

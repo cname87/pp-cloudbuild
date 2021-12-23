@@ -1366,6 +1366,10 @@
           },
           "duration": {
             "$ref": "#/components/schemas/ZeroUpInteger"
+          },
+          "comment": {
+            "type": "string",
+            "format": "binary"
           }
         }
       },

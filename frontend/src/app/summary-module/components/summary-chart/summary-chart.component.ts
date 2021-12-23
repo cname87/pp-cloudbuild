@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 
 import { NGXLogger } from 'ngx-logger';
 import { SingleSeries } from '@swimlane/ngx-charts/lib/models/chart-data.model';
+import { Color } from '@swimlane/ngx-charts';
 
 /**
  * @title Summary chart data
@@ -25,12 +26,11 @@ export class SummaryChartComponent implements AfterViewInit {
     this.elementHeight as number,
   ];
   barColor = getComputedStyle(document.documentElement).getPropertyValue(
-    '--primary-color-lighter',
+    '--primary-color-normal',
   );
-  colorScheme = this.barColor;
-  // colorScheme = {
-  //   domain: [this.barColor],
-  // };
+  colorScheme = {
+    domain: [this.barColor],
+  } as Color;
   showXAxis = true;
   showYAxis = true;
   showXAxisLabel = false;

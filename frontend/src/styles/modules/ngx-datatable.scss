@@ -11,7 +11,7 @@ app-scores, app-sessions {
 
   /* format help header in ngx-datatable embedded html */
   div.table-help {
-    background-color: var(--content-color-lighter);
+    background-color: var(--accent-color-lighter);
     margin-bottom: var(--default-gap-px);
     padding: 2px;
     text-align: center;
@@ -19,7 +19,7 @@ app-scores, app-sessions {
 
   /* the header row */
   .ngx-datatable.material .datatable-header .datatable-header-cell {
-    color: var(--primary-color-darker);
+    color: var(--primary-color-normal);
     text-align: center !important;
   }
 
@@ -30,7 +30,7 @@ app-scores, app-sessions {
 
   datatable-body-row.datatable-body-row {
     padding: 2px !important;
-    height: calc(var(--base-font) *2) !important;
+    height: calc(var(--base-font) * 2) !important;
   }
 
   datatable-body-cell.datatable-body-cell {
@@ -59,7 +59,7 @@ app-scores, app-sessions {
 
   /* set the height of a drop down option */
   mat-option.mat-option {
-    height: calc(var(--base-font) *2) !important;
+    height: calc(var(--base-font) * 2) !important;
   }
 
   div.mat-select-panel {
@@ -72,7 +72,7 @@ app-scores, app-sessions {
   }
   /* color of the summary row */
   .ngx-datatable.material .datatable-summary-row .datatable-body-row .datatable-body-cell {
-    color: var(--primary-color-darker);
+    color: var(--primary-color-normal);
   }
 
 }

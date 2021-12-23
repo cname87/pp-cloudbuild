@@ -13,7 +13,7 @@ const { modulename, debug } = setupDebug(__filename);
 /* types of body in request */
 type bodyNoId = Perform.IActivityNoId;
 type bodyWithId = Perform.IActivity;
-/* there is no query parameter on activity urls, but a value is needed for the setup calls */
+/* there is no query parameter on activity urls, but a dummy value is needed for the setup calls */
 const filter = '';
 
 export const getActivities = (
@@ -25,13 +25,16 @@ export const getActivities = (
   debug(`${modulename}: running getActivities`);
 
   const {
+    mid,
     activityHandlers,
     miscHandlers,
     dumpError,
   } = setup(context, filter, req, next)!;
 
+  console.log(`mod: ${mid}`);
+
   activityHandlers
-    .getActivities(req)
+    .getActivities(req, mid)
     .then((payload: Perform.IActivity[]) => {
       miscHandlers.writeJson(context, req, res, next, 200, payload);
     })

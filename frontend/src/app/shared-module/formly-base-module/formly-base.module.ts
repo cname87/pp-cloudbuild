@@ -13,6 +13,7 @@ import {
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { DatatableTypeComponent } from './components/datatable.type';
+import { BaseModule } from '../base-module/base.module';
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline',
@@ -21,6 +22,7 @@ const appearance: MatFormFieldDefaultOptions = {
 @NgModule({
   declarations: [DatatableTypeComponent],
   imports: [
+    BaseModule,
     CommonModule,
     FormsModule,
     FormlyModule.forRoot({
