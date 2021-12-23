@@ -46,7 +46,8 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   line1 = `- Click on ACTIVITIES to enter miscellaneous training activities`;
   line2 = '- Click on SCORES to enter your weekly self-assessment scores';
   line3 = '- Click on SESSIONS to enter your weekly training sessions';
-  line4 = '- Click on SUMMARY to see your training data over the last 12 months';
+  line4 =
+    '- Click on SUMMARY to see your training data over the last 12 months';
   isGoBackVisible = false;
 
   /**
