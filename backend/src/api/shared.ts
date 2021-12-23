@@ -31,21 +31,22 @@ export const setup = (
   }
   /* the uri may contain the member id */
   const mid = Number.parseInt(context.request.params.mid as string, 10);
-  /* the uri may contain the session id */
-  const sid = Number.parseInt(context.request.params.sid as string, 10);
+  /* the uri may contain the activity id */
+  const aid = Number.parseInt(context.request.params.aid as string, 10);
   /* gets the named query parameter  */
   let queryString = context?.request.query[queryParameter] ? context?.request.query[queryParameter] as string : '';
   queryString = decodeQueryParam(queryString);
   /* the body may contain an element to be added or updated */
   const body = context.request.body;
-  const { membersHandlers, scoresHandlers, sessionsHandlers, summaryHandlers, miscHandlers } = req.app.appLocals.handlers;
+  const { membersHandlers, activityHandlers, scoresHandlers, sessionsHandlers, summaryHandlers, miscHandlers } = req.app.appLocals.handlers;
   const { dumpError } = req.app.appLocals;
   return {
     mid,
-    sid,
+    aid,
     queryString,
     body,
     membersHandlers,
+    activityHandlers,
     scoresHandlers,
     sessionsHandlers,
     summaryHandlers,

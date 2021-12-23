@@ -2,6 +2,7 @@
   mat-raised-button
   class="action-button"
   [ngClass]="isWarn ? 'warn' : ''"
+  [disabled]="disabled"
 >
   <mat-icon
     *ngIf="icon"

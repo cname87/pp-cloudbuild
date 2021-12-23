@@ -1,0 +1,59 @@
+/* filter label */
+mat-label {
+  color: var(--primary-color-darker);
+}
+
+.add-button {
+  margin-left: var(--default-gap-px);
+}
+
+.fill-width {
+  margin-left: var(--default-gap-px);
+  margin-right: var(--default-gap-px);
+}
+
+div.container {
+  height: calc(65vh);
+  overflow: auto;
+}
+
+mat-header-cell {
+  color: var(--primary-color-darker);
+}
+
+mat-icon.edit {
+  padding: 0px;
+  float: center;
+}
+
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}
+
+@mixin mat-table-columns($columns) {
+  .mat-column- {
+    @each $colName, $props in $columns {
+      $pc-flex: map-get($props, 'pc-flex');
+      &#{$colName} {
+        word-break: break-all;
+        justify-content: center;
+        text-align: center;
+        padding: 0px;
+        flex: 0 1 $pc-flex;
+        @if map-has-key($props, 'color') {
+          color: map-get($props, 'color');
+        }
+      }
+    }
+  }
+}
+
+@include mat-table-columns((
+    date: (pc-flex: 15%),
+    type: (pc-flex: 25%),
+    duration: (pc-flex: 15%),
+    comment: (pc-flex: 35%),
+    edit: (pc-flex: 10%),
+));

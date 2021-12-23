@@ -1,0 +1,15 @@
+
+<app-activity
+  *ngIf="activity"
+  [activity]="activity"
+  (doneEvent)="doneActivity()"
+>
+</app-activity>
+
+<app-activities
+  *ngIf="activities$ | async"
+  [activities$]="activities$"
+  (editActivityEvent)="editActivity($event)"
+  (addActivityEvent)="addActivity()"
+>
+</app-activities>

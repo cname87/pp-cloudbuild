@@ -119,12 +119,12 @@ const getOrCreateSessions = async (
     modelSessions
       .findOne({ memberId: mid, date: date })
       .exec()
-      .then((doc) => {
+      .then((doc: Document<Perform.ISessions>) => {
         if (!doc) {
           debug(`${modulename}: no sessions object found or created`);
         }
         /* convert Mongoose document to object */
-        const docObject = doc?.toObject() as unknown as Perform.ISessions;
+        const docObject = doc?.toObject() as Perform.ISessions;
         return resolve(docObject);
       })
       .catch((err: any) => {
@@ -192,7 +192,7 @@ const updateSessions = (
         },
       )
       .exec()
-      .then((doc) => {
+      .then((doc: Document<Perform.ISessions>) => {
         /* return error if no scores found */
         if (!doc) {
           console.error(
@@ -207,7 +207,7 @@ const updateSessions = (
           return reject(errNotFound);
         }
         /* convert document to object */
-        const docObject = doc?.toObject() as unknown as Perform.ISessions;
+        const docObject = doc?.toObject() as Perform.ISessions;
         return resolve(docObject);
       })
       .catch((err: any) => {

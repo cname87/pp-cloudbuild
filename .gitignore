@@ -2,6 +2,8 @@
 certs/gcpStorage/gcpStorageKey.json
 # Ignore yaml secrets files
 **/*secret.yaml
+# Ignore angular build cache
+**/.angular
 
 # If files are not being ignored then they may have been previously added
 # try git rm --cached <filename>, or git rm -r --cached <dirname> to get git

@@ -10,6 +10,7 @@ export class ActionButtonComponent {
   //
   @Input() icon = '';
   @Input() isWarn = false;
+  @Input() disabled = false;
 
   constructor(private logger: NGXLogger) {
     this.logger.trace(

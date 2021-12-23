@@ -9,6 +9,26 @@ export const memberModel = {
   name: { type: String },
 };
 
+export const activityModel = {
+  id: { type: Number, unique: true, index: true, min: 0 },
+  memberId: { type: Number, index: true, min: 1 },
+  date: {
+    type: Date,
+    index: true,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ['', 'BOXING', 'FLOOR', 'RUN', 'WALK'],
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  comment: { type: String },
+};
+
 const dateIsSunday = (value: number): boolean => {
   const enum DayOfTheWeek {
     'Sunday' = 0,

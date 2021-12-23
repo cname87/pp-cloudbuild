@@ -2,7 +2,7 @@
  * This module creates or returns an existing Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages sessions details.  It defines the model schema for a sessions table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
-import { Document, Schema } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
 import { sessionsModel } from './models/models';
@@ -23,7 +23,7 @@ function createModelSessions(
   database: Perform.TDatabase,
   ModelName: string,
   collection: string,
-): Perform.IModelExtended {
+): Model<any> {
   debug(`${modulename}: running createModelSessions`);
 
   /* Set up a schema for the sessions */
@@ -42,7 +42,7 @@ function createModelSessions(
     ModelName,
     sessionsSchema,
     collection,
-  ) as Perform.IModelExtended;
+  );
 
   /* Set toObject option so _id, and __v deleted after query */
   ModelSessions.schema.set('toObject', {

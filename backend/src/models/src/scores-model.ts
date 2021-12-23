@@ -2,7 +2,7 @@
  * This module creates a, or returns an existing, Mongoose database model (which is an object that allows access to a named mongoDB collection) which manages scores details.  It defines the model schema for a scores table and then returns a pre-existing model, or creates a new model, based on supplied parameters.
  */
 
-import { Document, Schema } from 'mongoose';
+import { Document, Model, Schema } from 'mongoose';
 import { autoIncrement } from 'mongoose-plugin-autoinc';
 import { setupDebug } from '../../utils/src/debugOutput';
 import { scoresModel } from './models/models';
@@ -22,7 +22,7 @@ function createModelScores(
   database: Perform.TDatabase,
   ModelName: string,
   collection: string,
-): Perform.IModelExtended {
+): Model<any> {
   debug(`${modulename}: running createModelScores`);
 
   /* Set up a schema for member scores */
@@ -36,11 +36,7 @@ function createModelScores(
   });
 
   /* Create the model - extended above by autoinc plugin */
-  const ModelScores = database.createModel(
-    ModelName,
-    scoresSchema,
-    collection,
-  ) as Perform.IModelExtended;
+  const ModelScores = database.createModel(ModelName, scoresSchema, collection);
 
   /* Set toObject option so _id, and __v deleted after query */
   ModelScores.schema.set('toObject', {

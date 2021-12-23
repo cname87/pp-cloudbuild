@@ -27,6 +27,7 @@ import { startServer } from './server/startserver';
 import { runServer } from './server/runServer';
 /* models */
 import { createModelMembers } from './models/src/members-model';
+import { createModelActivities } from './models/src/activity-model';
 import { createModelScores } from './models/src/scores-model';
 import { createModelSessions } from './models/src/sessions-model';
 /* controllers */
@@ -42,11 +43,13 @@ import { memberAuthorizeHandler } from './handlers/authorize-handlers';
 import { errorHandlers } from './handlers/error-handlers';
 /* handlers for apis */
 import { membersApi } from './api/members-api';
+import { activityApi } from './api/activity-api';
 import { scoresApi } from './api/scores-api';
 import { sessionsApi } from './api/sessions-api';
 import { summaryApi } from './api/summary-api';
 /* 2nd level handlers */
 import { membersHandlers } from './handlers/members-handlers';
+import { activityHandlers } from './handlers/activity-handlers';
 import { scoresHandlers } from './handlers/scores-handlers';
 import { sessionsHandlers } from './handlers/sessions-handlers';
 import { summaryHandlers } from './handlers/summary-handlers';
@@ -84,11 +87,13 @@ const createStore = (): Perform.IAppLocals => {
       memberAuthorizeHandler,
       errorHandlers,
       membersHandlers,
+      activityHandlers,
       scoresHandlers,
       sessionsHandlers,
       summaryHandlers,
       miscHandlers,
       membersApi,
+      activityApi,
       scoresApi,
       sessionsApi,
       summaryApi,
@@ -97,6 +102,7 @@ const createStore = (): Perform.IAppLocals => {
     membersApi,
     /* creates the mongoose models */
     createModelMembers,
+    createModelActivities,
     createModelScores,
     createModelSessions,
     /* event emitter to signal server is up, etc */
@@ -108,8 +114,9 @@ const createStore = (): Perform.IAppLocals => {
     models: {
       /* filled during a call in api-controller */
       members: {} as any as Perform.IModelExtended,
-      sessions: {} as any as Perform.IModelExtended,
+      activity: {} as any as Perform.IModelExtended,
       scores: {} as any as Perform.IModelExtended,
+      sessions: {} as any as Perform.IModelExtended,
     },
     /* database - filled during database startup */
     database: {} as any as Perform.TDatabase,
@@ -204,6 +211,9 @@ const storeDatabase = async (store: {
     /* Clear the models in case this is a reconnect, so that models are created based on the new connection */
     if (store.models?.members) {
       store.models.members = {} as any as Perform.IModelExtended;
+    }
+    if (store.models?.activity) {
+      store.models.activity = {} as any as Perform.IModelExtended;
     }
     if (store.models?.scores) {
       store.models.scores = {} as any as Perform.IModelExtended;

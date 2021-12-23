@@ -40,10 +40,8 @@ declare namespace Perform {
   /* the user object */
   export type TUser = import('../users/user').User;
   /* mongoose model */
-  export type TModel = import('mongoose').Model<
-    import('mongoose').Document,
-    Record<string, unknown>
-  >;
+  export type TModel = import('mongoose').Model<any>;
+
   /* extend Model to include autoinc resetCounter() */
   export interface IModelExtended extends TModel {
     resetCount: () => void;
@@ -60,10 +58,10 @@ declare namespace Perform {
   }
   /* models interface */
   interface IModels {
-    members: IModelExtended;
-    sessions: IModelExtended;
-    scores: IModelExtended;
-    sessions: IModelExtended;
+    members: TModel;
+    activity: TModel;
+    scores: TModel;
+    sessions: TModel;
   }
   /* misc functions */
   export type TSigint = (signal?: string) => Promise<void>;
@@ -79,6 +77,7 @@ declare namespace Perform {
   /* handlers object */
   export interface IHandlers {
     membersHandlers: typeof import('../handlers/members-handlers').membersHandlers;
+    activityHandlers: typeof import('../handlers/activity-handlers').activityHandlers;
     scoresHandlers: typeof import('../handlers/scores-handlers').scoresHandlers;
     sessionsHandlers: typeof import('../handlers/sessions-handlers').sessionsHandlers;
     summaryHandlers: typeof import('../handlers/summary-handlers').summaryHandlers;
@@ -89,6 +88,7 @@ declare namespace Perform {
     managerAuthorizeHandler: typeof import('../handlers/authorize-handlers').managerAuthorizeHandler;
     memberAuthorizeHandler: typeof import('../handlers/authorize-handlers').memberAuthorizeHandler;
     membersApi: typeof import('../api/members-api').membersApi;
+    activityApi: typeof import('../api/activity-api').activityApi;
     scoresApi: typeof import('../api/scores-api').scoresApi;
     sessionsApi: typeof import('../api/sessions-api').sessionsApi;
     summaryApi: typeof import('../api/summary-api').summaryApi;
@@ -103,6 +103,7 @@ declare namespace Perform {
     handlers: IHandlers;
     models: IModels;
     createModelMembers: typeof import('../models/src/members-model').createModelMembers;
+    createModelActivities: typeof import('../models/src/activity-model').createModelActivities;
     createModelScores: typeof import('../models/src/scores-model').createModelScores;
     createModelSessions: typeof import('../models/src/sessions-model').createModelSessions;
     /* database instance */
@@ -130,6 +131,20 @@ declare namespace Perform {
     name: string;
   }
   export interface IMember extends IMemberNoId {
+    id: number;
+  }
+
+  type TActivityType = '' | 'BOXING' | 'FLOOR' | 'RUN' | 'WALK';
+
+  export interface IActivityNoId {
+    memberId: number;
+    date: Date | string; // using string to send to frontend
+    type: TActivityType;
+    duration: number;
+    comment: string;
+  }
+
+  export interface IActivity extends IActivityNoId {
     id: number;
   }
 

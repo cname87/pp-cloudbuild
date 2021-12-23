@@ -1,0 +1,15 @@
+@use '../../../styles/modules/mixins.scss' as mixins;
+
+.fill-width {
+  @include mixins.fill-width;
+}
+
+/* the box around each cell */
+.mat-form-field-infix {
+  border: 0px;
+  line-height: 1;
+  padding-top: 6px;
+  padding-bottom: 4px;
+  padding-left: 0px;
+  padding-right: 0px;
+}

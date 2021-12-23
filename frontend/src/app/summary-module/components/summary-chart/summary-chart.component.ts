@@ -27,9 +27,10 @@ export class SummaryChartComponent implements AfterViewInit {
   barColor = getComputedStyle(document.documentElement).getPropertyValue(
     '--primary-color-lighter',
   );
-  colorScheme = {
-    domain: [this.barColor],
-  };
+  colorScheme = this.barColor;
+  // colorScheme = {
+  //   domain: [this.barColor],
+  // };
   showXAxis = true;
   showYAxis = true;
   showXAxisLabel = false;

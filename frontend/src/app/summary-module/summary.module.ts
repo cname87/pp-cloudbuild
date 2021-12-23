@@ -5,14 +5,14 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { SharedModule } from '../shared-module/shared.module';
 import { AuthGuard } from '../router-module/guards/auth.guard';
-import { MemberSummaryResolverService } from './resolvers/member-summary-resolver.service';
-import { MemberSummaryComponent } from './components/member-summary.component';
+import { MemberSummaryResolverService } from './resolvers/summary-resolver.service';
+import { SummaryComponent } from './components/summary.component';
 import { SummaryChartComponent } from './components/summary-chart/summary-chart.component';
 
 const routes: Routes = [
   {
     path: ``,
-    component: MemberSummaryComponent,
+    component: SummaryComponent,
     canActivate: [AuthGuard],
     resolve: {
       summary: MemberSummaryResolverService,
@@ -21,7 +21,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MemberSummaryComponent, SummaryChartComponent],
+  declarations: [SummaryComponent, SummaryChartComponent],
   imports: [NgxChartsModule, RouterModule.forChild(routes), SharedModule],
 })
 export class SummaryModule {}

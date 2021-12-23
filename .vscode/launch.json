@@ -175,9 +175,9 @@
       "env": {
         /* If debug needed in production mode */
         "DEBUG": "PP*",
-        // "NODE_ENV": "development",
+        "NODE_ENV": "development",
         // "NODE_ENV": "staging",
-        "NODE_ENV": "production" // Caution - production database in use!
+        // "NODE_ENV": "production" // Caution - production database in use!
       },
       "outputCapture": "std",
       "console": "integratedTerminal",

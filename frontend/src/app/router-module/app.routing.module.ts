@@ -12,7 +12,7 @@ import { routes } from '../configuration/configuration';
 
 const appRoutes: Routes = [
   {
-    /* default path if no route supplied */
+    /* path if no additional route supplied */
     path: '',
     canActivate: [UserTypeGuard],
     /* dummy - needed with canActivate as otherwise error thrown */
@@ -46,6 +46,14 @@ const appRoutes: Routes = [
     resolve: {
       member: MemberDetailResolverService,
     },
+  },
+  {
+    /* shows a member's activity log */
+    path: `${routes.activities.path}/:id`,
+    loadChildren: () =>
+      import('../activities-module/activities.module').then(
+        (m) => m.ActivitiesModule,
+      ),
   },
   {
     /* shows a member's weekly questionaire scores */

@@ -28,14 +28,12 @@ import { RouteStateService } from '../../app-module/services/route-state-service
  */
 @Component({
   selector: 'app-summary',
-  templateUrl: './member-summary.component.html',
-  styleUrls: ['./member-summary.component.scss'],
+  templateUrl: './summary.component.html',
+  styleUrls: ['./summary.component.scss'],
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MemberSummaryComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   //
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
@@ -107,14 +105,14 @@ export class MemberSummaryComponent
    * @throws Throws the received error object
    */
   #catchError = (err: any): never => {
-    this.logger.trace(`${MemberSummaryComponent.name}: #catchError called`);
-    this.logger.trace(`${MemberSummaryComponent.name}: Throwing the error on`);
+    this.logger.trace(`${SummaryComponent.name}: #catchError called`);
+    this.logger.trace(`${SummaryComponent.name}: Throwing the error on`);
     throw err;
   };
 
   /* scrolls the summary table to the end */
   #scrollToEnd = () => {
-    this.logger.trace(`${MemberSummaryComponent.name}: #scrollToEnd called`);
+    this.logger.trace(`${SummaryComponent.name}: #scrollToEnd called`);
     let cycles = 0;
     const checkExist = setInterval(() => {
       cycles++;
@@ -125,7 +123,7 @@ export class MemberSummaryComponent
       }
       if (cycles === 10) {
         this.logger.error(
-          `${MemberSummaryComponent.name}: Chart scroll to end NOT implemented`,
+          `${SummaryComponent.name}: Chart scroll to end NOT implemented`,
         );
         clearInterval(checkExist);
       }
@@ -165,9 +163,7 @@ export class MemberSummaryComponent
     private cdr: ChangeDetectorRef,
     private logger: NGXLogger,
   ) {
-    this.logger.trace(
-      `${MemberSummaryComponent.name}: Starting MemberSummaryComponent`,
-    );
+    this.logger.trace(`${SummaryComponent.name}: Starting SummaryComponent`);
 
     /* get summary data from route resolver and load the model which fills and renders the table */
     this.route.data
@@ -231,7 +227,7 @@ export class MemberSummaryComponent
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${MemberSummaryComponent.name}: ngDestroy called`);
+    this.logger.trace(`${SummaryComponent.name}: ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');

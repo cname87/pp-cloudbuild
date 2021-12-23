@@ -3,13 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { SharedModule } from '../shared-module/shared.module';
 import { AuthGuard } from '../router-module/guards/auth.guard';
 
-import { MemberSessionsResolverService } from './resolvers/member-sessions-resolver.service';
-import { MemberSessionsComponent } from './components/member-sessions.component';
+import { MemberSessionsResolverService } from './resolvers/sessions-resolver.service';
+import { SessionsComponent } from './components/sessions.component';
 
 const routes: Routes = [
   {
     path: ``,
-    component: MemberSessionsComponent,
+    component: SessionsComponent,
     canActivate: [AuthGuard],
     resolve: {
       sessions: MemberSessionsResolverService,
@@ -18,7 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MemberSessionsComponent],
+  declarations: [SessionsComponent],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })
 export class SessionsModule {}

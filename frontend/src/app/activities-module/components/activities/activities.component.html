@@ -1,0 +1,156 @@
+<app-text-info
+  [line1]='line1'
+  [line2]='line2'
+  [line3]='line3'
+  [line4]='line4'
+  [isGoBackVisible]='isGoBackVisible'
+>
+</app-text-info>
+
+
+<div
+  class="fill-width"
+  fxLayout="row"
+  fxLayoutAlign="space-between"
+>
+  <mat-form-field
+    fxFlexAlign="start"
+    mat-raised-
+    class="filter"
+    appearance="fill"
+  >
+    <mat-label>Filter by activity type</mat-label>
+    <mat-select
+      #input
+      (selectionChange)="applyFilter($event.value)"
+    >
+      <mat-option>
+        ALL
+      </mat-option>
+      <mat-option
+        *ngFor="let type of types"
+        [value]="type"
+      >
+        {{ type }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <app-button
+    mat-raised-button
+    class="add-button"
+    [icon]="'add'"
+    (click)="addActivity()"
+  >
+    ADD ACTIVITY
+  </app-button>
+</div>
+
+<div class="fill-width container mat-elevation-z8">
+  <mat-table
+    [dataSource]="dataSource"
+    matSort
+    matSortActive="date"
+    matSortDirection="desc"
+    matSortDisableClear
+    recycleRows
+  >
+
+    <ng-container [matColumnDef]="displayedColumns[0]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        DATE
+      </mat-header-cell>
+        <mat-cell
+          *matCellDef="let row">
+            {{row.date | date : 'd-MMM-yy' }}
+        </mat-cell>
+      <mat-footer-cell *matFooterCellDef> AVERAGE </mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[1]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        TYPE
+      </mat-header-cell>
+      <mat-cell
+        *matCellDef="let row"
+      >
+        {{ row.type }}
+      </mat-cell>
+      <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[2]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        DURATION
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[3]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+      >
+        COMMENT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.comment}} </mat-cell>
+    </ng-container>
+
+    <ng-container [matColumnDef]="displayedColumns[4]">
+      <mat-header-cell
+        *matHeaderCellDef
+        mat-sort-header
+
+      >
+        EDIT
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <app-button
+          (click)="editActivity(row)"
+          [icon]="'edit'"
+          >
+        </app-button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
+    </mat-header-row>
+
+    <mat-row
+      *matRowDef="let row;
+      columns: displayedColumns;"
+      (click)="editActivity(row)"
+    >
+    </mat-row>
+
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+      <td
+        class="mat-cell"
+        colspan="4"
+      >
+          No activity records to display"
+      </td>
+    </tr>
+  </mat-table>
+
+  <mat-paginator
+    class="mat-paginator-sticky"
+    [length]="100"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100]"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+
+</div>
