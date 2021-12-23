@@ -15,10 +15,10 @@ mat-nav-list div, app-button {
 }
 
 a {
-  background-color: var(--primary-color-lighter);
+  background-color: var(--primary-color-normal);
   margin-right: calc(var(--default-gap-px) / 2);
 }
 
 a:hover {
-  background-color: var(--primary-color-darker);
+  background-color: var(--primary-color-normal);
 }

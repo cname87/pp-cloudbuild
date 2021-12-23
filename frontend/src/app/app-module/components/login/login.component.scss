@@ -1,11 +1,12 @@
 .full-width {
-  background-color: var(--accent-color-lighter);
+  background-color: var(--accent-color-normal);
   min-height: calc(var(--list-height-px)* 2);
   padding-left: var(--default-gap-px);
   padding-right: var(--default-gap-px);
 }
 
 .header {
+  color: white;
   font-size: 1.25rem;
 }
 

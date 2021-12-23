@@ -26,7 +26,7 @@ export class SummaryChartComponent implements AfterViewInit {
     this.elementHeight as number,
   ];
   barColor = getComputedStyle(document.documentElement).getPropertyValue(
-    '--primary-color-lighter',
+    '--primary-color-normal',
   );
   colorScheme = {
     domain: [this.barColor],
