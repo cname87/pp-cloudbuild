@@ -42,16 +42,16 @@ export class ActivityComponent implements OnInit {
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
   mode!: EMode;
-  addLabel = 'ADD ACTIVITY';
-  updateLabel = 'UPDATE ACTIVITY';
+  addLabel = 'ADD';
+  updateLabel = 'UPDATE';
   /* default button label */
-  buttonLabel = 'ADD ACTIVITY';
+  buttonLabel = 'ADD';
   /* define the text info card */
   line1 =
-    '- If entering a new record, enter data in each field and click the ADD ACTIVITY button';
+    '- If entering a new record, enter data in each field and click the ADD button';
   line2 =
-    '- If editing a record, edit the required fields and click the UPDATE ACTIVITY field';
-  line3 = '- If deleting a record, click on the DELETE ACTIVITY button';
+    '- If editing a record, edit the required fields and click the UPDATE field';
+  line3 = '- If deleting a record, click on the DELETE button';
   line4 = '';
   isGoBackVisible = false;
 
@@ -142,7 +142,7 @@ export class ActivityComponent implements OnInit {
       templateOptions: {
         type: 'textarea',
         label: 'Enter comments here',
-        rows: 5,
+        rows: 2,
       },
     },
   ];

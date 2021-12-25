@@ -132,10 +132,11 @@ export class ScoresComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
-  line2 = '- Select 1 to 5, where 1 is the WORST and 5 is the BEST';
-  line3 = '- For example: High Stress is 1, and Low Stress is 5';
-  line4 = '- You can review and edit previous weeks via the date selector';
+  line1 = '- Click on a CELL to edit a value';
+  line2 =
+    '- Select 1 to 5, where 1 is the WORST and 5 is the BEST, e.g. High Stress is 1, and Low Stress is 5';
+  line3 = '- Click on the calendar ICON to review and edit previous weeks data';
+  line4 = '';
   isGoBackVisible = false;
 
   form = new FormGroup({});

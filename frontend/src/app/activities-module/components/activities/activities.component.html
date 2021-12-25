@@ -40,9 +40,9 @@
     mat-raised-button
     class="add-button"
     [icon]="'add'"
+    [text]="'ADD'"
     (click)="addActivity()"
   >
-    ADD ACTIVITY
   </app-button>
 </div>
 
@@ -60,28 +60,21 @@
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-      >
-        DATE
-      </mat-header-cell>
+      >DATE</mat-header-cell>
         <mat-cell
-          *matCellDef="let row">
-            {{row.date | date : 'd-MMM-yy' }}
-        </mat-cell>
-      <mat-footer-cell *matFooterCellDef> AVERAGE </mat-footer-cell>
+          *matCellDef="let row"
+        >{{row.date | date : 'd-MMM-yy' }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef>AVERAGE</mat-footer-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[1]">
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-      >
-        TYPE
-      </mat-header-cell>
+      >TYPE</mat-header-cell>
       <mat-cell
         *matCellDef="let row"
-      >
-        {{ row.type }}
-      </mat-cell>
+      >{{ row.type }}</mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
@@ -89,36 +82,28 @@
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-      >
-        DURATION
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.duration}} </mat-cell>
+      >DURATION</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.duration}}</mat-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[3]">
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-      >
-        COMMENT
-      </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.comment}} </mat-cell>
+      >COMMENT</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.comment}}</mat-cell>
     </ng-container>
 
     <ng-container [matColumnDef]="displayedColumns[4]">
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-
-      >
-        EDIT
-      </mat-header-cell>
+      >EDIT</mat-header-cell>
       <mat-cell *matCellDef="let row">
         <app-button
           (click)="editActivity(row)"
           [icon]="'edit'"
-          >
-        </app-button>
+          ></app-button>
       </mat-cell>
     </ng-container>
 
@@ -147,7 +132,7 @@
   <mat-paginator
     class="mat-paginator-sticky"
     [length]="100"
-    [pageSize]="10"
+    [pageSize]="5"
     [pageSizeOptions]="[5, 10, 25, 100]"
     showFirstLastButtons
   >

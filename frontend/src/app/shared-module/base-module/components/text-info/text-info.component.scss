@@ -5,8 +5,8 @@
   @include mixins.fill-width;
   padding-top: var(--default-gap-px);
   padding-bottom: var(--default-gap-px);
-  margin-top: calc(var(--default-gap-px)/2);
-  margin-bottom: calc(var(--default-gap-px)/2);
+  margin-top: var(--default-gap-px);
+  margin-bottom: var(--default-gap-px);
 }
 
 mat-card {
@@ -22,6 +22,7 @@ div > p {
   color: var(--primary-color-normal);
   margin: 0px;
   padding-left: var(--default-gap-px);
+  padding-right: var(--default-gap-px);
 }
 
 mat-card-actions.mat-card-actions {

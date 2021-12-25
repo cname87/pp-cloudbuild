@@ -23,7 +23,11 @@
     *ngIf="!isLoggedIn"
     (click)="login()"
   >
-    <app-button>LOG IN</app-button>
+    <app-button
+      [icon]="'login'"
+      [text]="'LOG IN'"
+    >
+  </app-button>
   </span>
 
     <span
@@ -32,7 +36,11 @@
       *ngIf="isLoggedIn"
       (click)="logout()"
     >
-      <app-button>LOG OUT</app-button>
+      <app-button
+        [icon]="'logout'"
+        [text]="'LOG OUT'"
+      >
+    </app-button>
     </span>
 
 </mat-toolbar>

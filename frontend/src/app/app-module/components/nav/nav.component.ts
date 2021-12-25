@@ -59,12 +59,6 @@ export class NavComponent implements OnInit {
           hidden: false,
         },
         {
-          path: `/${this.#activities.path}/${id}`,
-          display: this.#activities.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-        {
           path: `/${this.#scores.path}/${id}`,
           display: this.#scores.displayName,
           disabled: disabled,
@@ -79,6 +73,12 @@ export class NavComponent implements OnInit {
         {
           path: `/${this.#summary.path}/${id}`,
           display: this.#summary.displayName,
+          disabled: disabled,
+          hidden: false,
+        },
+        {
+          path: `/${this.#activities.path}/${id}`,
+          display: this.#activities.displayName,
           disabled: disabled,
           hidden: false,
         },

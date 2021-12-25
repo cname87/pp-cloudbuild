@@ -36,35 +36,32 @@ export class SessionsComponent implements OnDestroy {
       name: 'Day',
       prop: 'day',
       clickable: false,
-      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 20,
       summaryFunc: () => {
         return `TOTALS:`;
       },
     },
     {
-      name: 'AM/PM',
+      name: 'am/pm',
       prop: 'ampm',
       clickable: false,
-      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 10,
       summaryFunc: null,
     },
     {
       name: 'Type',
       prop: 'type',
       clickable: true,
-      minWidth: this.#minWidth * 2,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 2,
+      flexGrow: 25,
       summaryFunc: (cells: string[]) => {
         const filteredCells = cells.filter((cell) => cell !== '-');
         return filteredCells.length;
@@ -74,44 +71,41 @@ export class SessionsComponent implements OnDestroy {
       name: 'RPE',
       prop: 'rpe',
       clickable: true,
-      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 10,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
-      name: 'Duration',
+      name: 'Time',
       prop: 'duration',
       clickable: true,
       minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 10,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Load',
       prop: 'load',
       clickable: false,
-      minWidth: this.#minWidth * 1,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 10,
       summaryFunc: (cells: number[]) => this.#sum(cells),
     },
     {
       name: 'Comment',
       prop: 'comment',
       clickable: true,
-      minWidth: this.#minWidth * 3,
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 1,
+      flexGrow: 20,
       summaryFunc: null,
     },
   ];
@@ -155,10 +149,12 @@ export class SessionsComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Click on a cell to edit a value. (Press ESC to cancel)';
-  line2 = '- RPE is the Rate of Perceived Exertion of the session';
-  line3 = '- Select from 0, for no exertion, to 10, for extreme exertion';
-  line4 = '- Click on a comment cell to add or edit a comment';
+  line1 = '- Click on a CELL to edit a value';
+  line2 =
+    // eslint-disable-next-line max-len
+    '- RPE is the Rate of Perceived Exertion of the session. Select 0 for no exertion, to 10 for extreme exertion';
+  line3 = '- Click on the calendar ICON for previous weeks';
+  line4 = '';
   isGoBackVisible = false;
 
   form = new FormGroup({});

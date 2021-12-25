@@ -21,4 +21,9 @@
 /* match the icon height to its actual height so there is no excess space on the bottom of the icon that would cause it to be non-centered */
 mat-icon.mat-icon {
   height: calc(18px + var(--ratio-px) * 6);
+  vertical-align: middle;
+}
+
+span.content {
+  padding-left: calc(var(--default-gap-px) / 2);
 }

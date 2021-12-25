@@ -11,8 +11,10 @@ mat-progress-bar.mat-progress-bar {
   z-index: 5000;
 }
 
-mat-icon.mat-icon {
-  vertical-align: middle;
+/* table row heights */
+mat-row.mat-row {
+  min-height: calc(var(--default-gap-px) * 4);
+  height: calc(var(--default-gap-px) * 4);
 }
 
 /* class provided to render downloaded material icons */

@@ -6,8 +6,10 @@
 >
   <mat-icon
     *ngIf="icon"
-    >
-    {{ icon }}
-  </mat-icon>
-  <ng-content></ng-content>
+  >{{ icon }}</mat-icon>
+  <span
+    *ngIf="text"
+    class="content"
+  >{{ text }}
+  </span>
 </button>
