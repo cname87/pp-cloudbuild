@@ -2,6 +2,9 @@
 certs/gcpStorage/gcpStorageKey.json
 # Ignore yaml secrets files
 **/*secret.yaml
+
+### Other ignores
+
 # Ignore angular build cache
 **/.angular
 

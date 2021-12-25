@@ -14,8 +14,9 @@ export FRONTEND_DIRECTORY="pp-frontend-cb"
 export DEVELOPMENT="development"
 export PRODUCTION="production"
 
-export BACKEND_IMAGE="gcr.io/${PROJECT}/${BACKEND_DIRECTORY}/${DEVELOPMENT}"
-export FRONTEND_IMAGE="gcr.io/${PROJECT}/${FRONTEND_DIRECTORY}/${DEVELOPMENT}"
+# Note that we're pushing to the production directory
+export BACKEND_IMAGE="gcr.io/${PROJECT}/${BACKEND_DIRECTORY}/${PRODUCTION}"
+export FRONTEND_IMAGE="gcr.io/${PROJECT}/${FRONTEND_DIRECTORY}/${PRODUCTION}"
 
 # Set the gcloud run region
 export CLOUD_RUN_REGION="europe-west1"

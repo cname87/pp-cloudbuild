@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Run to try avoid low memory which prevents git running in cloudbuild
-# Eventually will need to repartition
+# Utility to recover disk memory.  Run every so often to avoid low memory which prevents git running in Cloudbuild
 
 # Check free space on /dev/sda7
  df -Th

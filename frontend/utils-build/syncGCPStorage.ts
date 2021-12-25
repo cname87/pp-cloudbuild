@@ -2,7 +2,6 @@
  * Utility that creates an object holding paths to secrets and other files that either need to be downloaded from GCP Storage (as they are not stored in GitHub) when setting up from a clone of the GitHub repo, or else uploaded to GCP Storage to ensure that GCP Storage has the latest versions.
  *
  * This utility is imported by the utility that does the actual uploading and downloading - see syncGCPStorageUtil.ts.
- *
  */
 
 /* Define a set of upload jobs */
@@ -14,3 +13,6 @@ const envFrontendE2e = {
 };
 
 export const loadJobs = [envFrontendE2e];
+
+/* The root directory to store the files on the gsutil bucket */
+export const rootDir = 'frontend/';

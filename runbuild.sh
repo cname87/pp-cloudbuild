@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 
-# Runs a cloud build - see echoed detail below
+# Builds and deploys
+
+# * Build & Deployment Process
+
+# 1. Run this script. It...
+# (i) Builds backend and frontend docker images and pushes them to the GCP registry.  Note the echoed information below.
+# (ii) Deploys the pushed images to Cloud Build
+# (iii) Manually test the production deployment by browsing to project-perform.com and testing the functionality.
+# Note:
+# To see logs from the production server, click 'Edit and Deploy a New Revision' on Cloud Run and edit the secrets to deploy the backend with environment variables DEBUG = PP* and DB_LOGS = log.
+# To get frontend logs on the production server, you must build the frontend locally with npm run:dev, which produces an image with logs enabled, and then manually push and deploy this.
 
 
 # Exit when any command fails
@@ -58,7 +68,3 @@ gcloud run services update pp-backend --image="${BACKEND_IMAGE}":latest \
 
 gcloud run services update pp-frontend --image="${FRONTEND_IMAGE}":latest \
 --region="${CLOUD_RUN_REGION}" --quiet
-
-# Test the production deployment by browsing to project-perform.com
-# You can deploy the backend with environment variable DEBUG = PP* and DB_LOGS = log to see logs from the production server.
-# To get frontend logs, uou must build the frontend locally with npm run:dev, which produces an image with logs enabled, and then deploy this.

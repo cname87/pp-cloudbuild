@@ -1,9 +1,9 @@
 /**
- * Utility to download or upload secrets files from/to GCP Cloud Storage.
+ * Utility to sync secret files in the local repo with GCP Cloud Storage in the project-perform project by uploading all secrets files to GCP Cloud Storage, unless a file is absent, in which case the file is downloaded from GCP Local Storage.
  *
  * The GitHub repo does not store secrets files - these are stored in Cloud Storage.
  *
- * When you clone from the Git repo you need to create some directories and download these files.  When GCP triggers a build from Github it copies in the GitHub repo but also needs to copy the secrets files from Cloud Storage.  Therefore the files on the GCP Local Storage environment must be kept up to date.
+ * Therefor, when you clone from the Git repo you need to create some directories and download these files.  When GCP triggers a build from Github it copies in the GitHub repo but also needs to copy the secrets files from Cloud Storage.  Therefore the files on the GCP Local Storage environment must be kept up to date.
  *
  * When the files are downloaded they are saved in a directory matching the Cloud Storage file path.  To make this give the expected result a directory on the Cloud Storage bucket is created that matches the name of the rootpath (i.e. the directory containing package.json) and a deltaPath is configured to each file from the root path and the local and Cloud Storage filepaths are constructed from that delta path.
  *
@@ -11,7 +11,12 @@
  *
  * The utility is run from an npm script: 'npm run loadSecretsFiles'
  *
- * This utility imports a module that passes in an object that contains paths to the secrets files.
+ * The utility imports a module that passes in an object that contains paths to the secrets files.
+ *
+ * The utility requires that the project-perform GCP project have billing enabled.
+ *
+ * The utility uploads all secrets files.  If it cannot find a file to upload it will download that file from GCP.
+ *
  */
 
 import path from 'path';
@@ -19,6 +24,7 @@ import fs from 'fs';
 import findup from 'find-up';
 import { Storage } from '@google-cloud/storage';
 import { loadJobs } from './syncGCPStorage';
+import { rootDir } from './syncGCPStorage';
 
 console.log('Loading secrets files with GCP Cloud Storage');
 const storage = new Storage();
@@ -29,10 +35,8 @@ export const rootPath = path.dirname(
   findup.sync('package.json', { cwd: __dirname })!,
 );
 
-/* The root directory to store the files on the gsutil bucket */
-const rootDir = 'frontend/';
-
 /* Set the path to the GCP Storage credentials here (as well as in the .env files) as this may be called when no .env file is loaded */
+/* Note: This is the key associated with the storage-access@project-perform.iam.gserviceaccount.com service account */
 process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
   rootPath,
   '..',
@@ -69,6 +73,12 @@ const downloadFile = async (srcFilename: string, destFilename: string) => {
     console.log(`Downloading ${srcFilename} to ${destFilename}.`);
     await storage.bucket(bucketName).file(srcFilename).download(options);
   } catch (err) {
+    /* If a file was created then delete it */
+    try {
+      fs.unlinkSync(destFilename);
+    } catch (err) {
+      /* No file was created => ignore this error */
+    }
     console.error(
       `Error downloading ${srcFilename} from gs://${bucketName}/${destFilename}.`,
     );
@@ -140,7 +150,9 @@ export const setFilePathsAndCallUpload = async (
       await downloadFile(gsFilePath, localFilePath);
       /* Test that the file was downloaded */
       if (!fs.existsSync(localFilePath)) {
-        console.error('Error downloading from GCP Storage');
+        console.error(
+          'Error downloading from GCP Storage - downloaded file not found',
+        );
         throw new Error('Error downloading from GCP Storage');
       }
     }
