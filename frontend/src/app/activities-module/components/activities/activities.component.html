@@ -82,7 +82,7 @@
       <mat-header-cell
         *matHeaderCellDef
         mat-sort-header
-      >DURATION</mat-header-cell>
+      >TIME</mat-header-cell>
       <mat-cell *matCellDef="let row">{{row.duration}}</mat-cell>
     </ng-container>
 
@@ -97,8 +97,7 @@
     <ng-container [matColumnDef]="displayedColumns[4]">
       <mat-header-cell
         *matHeaderCellDef
-        mat-sort-header
-      >EDIT</mat-header-cell>
+      ></mat-header-cell>
       <mat-cell *matCellDef="let row">
         <app-button
           (click)="editActivity(row)"

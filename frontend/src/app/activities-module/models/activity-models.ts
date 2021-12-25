@@ -4,6 +4,7 @@ export enum EActivityType {
   Floor = 'FLOOR',
   Run = 'RUN',
   Walk = 'WALK',
+  Other = 'OTHER',
 }
 
 export interface IActivityWithoutId {

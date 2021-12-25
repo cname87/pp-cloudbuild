@@ -45,7 +45,7 @@ export class SessionsComponent implements OnDestroy {
       },
     },
     {
-      name: 'am/pm',
+      name: '',
       prop: 'ampm',
       clickable: false,
       resizeable: false,
@@ -61,7 +61,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 25,
+      flexGrow: 27,
       summaryFunc: (cells: string[]) => {
         const filteredCells = cells.filter((cell) => cell !== '-');
         return filteredCells.length;
@@ -105,7 +105,7 @@ export class SessionsComponent implements OnDestroy {
       resizeable: false,
       sortable: false,
       draggable: false,
-      flexGrow: 20,
+      flexGrow: 18,
       summaryFunc: null,
     },
   ];

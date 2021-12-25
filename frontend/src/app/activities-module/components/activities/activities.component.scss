@@ -18,13 +18,9 @@ div.container {
   overflow: auto;
 }
 
-mat-header-cell {
+mat-header-cell div.mat-sort-header-content {
   color: var(--primary-color-normal);
-}
-
-mat-icon.edit {
-  padding: 0px;
-  float: center;
+  text-align: center;
 }
 
 .mat-paginator-sticky {
@@ -37,11 +33,12 @@ mat-icon.edit {
   .mat-column- {
     @each $colName, $props in $columns {
       $pc-flex: map-get($props, 'pc-flex');
+      $align: map-get($props, 'align');
       &#{$colName} {
-        word-break: break-all;
-        justify-content: center;
-        text-align: center;
-        padding: 0px;
+        white-space: nowrap;
+        justify-content: $align;
+        text-align: $align;
+        padding: 2px;
         flex: 0 1 $pc-flex;
         @if map-has-key($props, 'color') {
           color: map-get($props, 'color');
@@ -52,9 +49,9 @@ mat-icon.edit {
 }
 
 @include mat-table-columns((
-    date: (pc-flex: 15%),
-    type: (pc-flex: 25%),
-    duration: (pc-flex: 15%),
-    comment: (pc-flex: 35%),
-    edit: (pc-flex: 10%),
+    date: (pc-flex: 15%, align: center),
+    type: (pc-flex: 25%, align: center),
+    duration: (pc-flex: 15%, align: center),
+    comment: (pc-flex: 35%, align: left),
+    edit: (pc-flex: 10%, align: center),
 ));
