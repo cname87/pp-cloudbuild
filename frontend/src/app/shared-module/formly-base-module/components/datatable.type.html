@@ -8,16 +8,17 @@
     placeholder="Enter your comment here"
   >{{popupComment}}</textarea>
   <app-button
-    icon="add"
-    (click)="addComment(popup.value)">
-    ADD COMMENT
+    [icon]="'add'"
+    [text]="'ADD'"
+    (click)="addComment(popup.value)"
+  >
   </app-button>
-    <app-button
-      icon="cancel"
-      (click)="cancelComment()"
-    >
-      CANCEL
-    </app-button>
+  <app-button
+    [icon]="'cancel'"
+    [text]="'CANCEL'"
+    (click)="cancelComment()"
+  >
+  </app-button>
 </div>
 
   <ngx-datatable

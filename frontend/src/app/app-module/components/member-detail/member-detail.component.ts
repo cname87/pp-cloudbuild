@@ -10,9 +10,11 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import { ScoresService } from '../../../scores-module/services/scores.service';
 import { SessionsService } from '../../../sessions-module/services/sessions.service';
 import { SummaryService } from '../../../summary-module/services/summary.service';
+import { ActivitiesService } from '../../../activities-module/services/activities.service';
 
 /**
  * @title This member shows detail on a member whose id is passed in via the url id parameter.
+ * It also loads all lazy loaded modules after startup and makes calls to other data to preload the cache to speed up subsequent pages loads.
  */
 @Component({
   selector: 'app-member-detail',
@@ -34,6 +36,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     private summary: SummaryService,
     private scores: ScoresService,
     private sessions: SessionsService,
+    private activities: ActivitiesService,
     private logger: NGXLogger,
     private routeStateService: RouteStateService,
   ) {
@@ -43,11 +46,11 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /* define the text info card */
-  line1 = `- Click on ACTIVITIES to enter miscellaneous training activities`;
-  line2 = '- Click on SCORES to enter your weekly self-assessment scores';
-  line3 = '- Click on SESSIONS to enter your weekly training sessions';
-  line4 =
+  line1 = '- Click on SCORES to enter your weekly self-assessment scores';
+  line2 = '- Click on SESSIONS to enter your weekly training sessions';
+  line3 =
     '- Click on SUMMARY to see your training data over the last 12 months';
+  line4 = `- Click on ACTIVITIES to enter miscellaneous training activities`;
   isGoBackVisible = false;
 
   /**
@@ -95,20 +98,26 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     import('../../../scores-module/components/scores.component');
     import('../../../sessions-module/components/sessions.component');
     import('../../../summary-module/components/summary.component');
+    import('../../../activities-module/components/activity-log.component');
     /* calls to load caches */
     this.scores.getOrCreateScores(this.#id).subscribe(() => {
       this.logger.trace(
-        `${MemberDetailComponent.name}: GetOrCreateScores called to load cache`,
+        `${MemberDetailComponent.name}: getOrCreateScores called to load cache`,
       );
     });
     this.sessions.getOrCreateSessions(this.#id).subscribe(() => {
       this.logger.trace(
-        `${MemberDetailComponent.name}: GetOrCreateSessions called to load cache`,
+        `${MemberDetailComponent.name}: getOrCreateSessions called to load cache`,
       );
     });
     this.summary.getSummaryData(this.#id).subscribe(() => {
       this.logger.trace(
-        `${MemberDetailComponent.name}: GetSummary called to load cache`,
+        `${MemberDetailComponent.name}: getSummaryData called to load cache`,
+      );
+    });
+    this.activities.getActivities(this.#id).subscribe(() => {
+      this.logger.trace(
+        `${MemberDetailComponent.name}: getActivities called to load cache`,
       );
     });
   }

@@ -47,7 +47,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   /* define the summary table text info card */
   summaryLine1 =
     '- This shows weekly data on your wellness scores and training sessions';
-  summaryLine2 = `- You can scroll left to see up to 52 weeks of data`;
+  summaryLine2 = `- Scroll left to see up to 52 weeks of data`;
   summaryLine3 = '- Click on a row to see a bar chart of that item';
   summaryLine4 = '';
   isSummaryBackVisible = false;
@@ -55,7 +55,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   /* define the chart table text info card */
   chartLine1 = '- This is a bar chart of the row you clicked';
   chartLine2 = '- Scroll left to see previous weeks';
-  chartLine3 = '- Click Back to return to the Summary Table';
+  chartLine3 = '- Click BACK to return to the Summary Table';
   isChartBackVisible = true;
   onChartBackClicked = () => {
     this.#clearChart();

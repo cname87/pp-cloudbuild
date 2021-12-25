@@ -30,28 +30,28 @@
     <app-button mat-raised-button
       class="button cancel-button"
       [icon]="'cancel'"
+      [text]="'CANCEL'"
       (click)="cancel()"
     >
-      CANCEL
     </app-button>
     <app-button
       mat-raised-button
       class="button edit-button"
       [icon]="'edit'"
+      [text]="buttonLabel"
       (click)="update()"
       [disabled]="!form.valid"
     >
-      {{ buttonLabel }}
     </app-button>
     <app-button
       mat-raised-button
-      class="button delete-button"
-      (click)="delete()"
-      [icon]="'delete'"
-      [isWarn]="true"
       *ngIf="buttonLabel===updateLabel"
+      class="button delete-button"
+      [icon]="'delete'"
+      [text]="'DELETE'"
+      [isWarn]="true"
+      (click)="delete()"
       >
-        DELETE ACTIVITY
     </app-button>
   </div>
 

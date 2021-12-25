@@ -9,13 +9,13 @@
 /* restrict these to scores and sessions components */
 app-scores, app-sessions {
 
-  /* format help header in ngx-datatable embedded html */
-  div.table-help {
-    background-color: var(--accent-color-lighter);
-    margin-bottom: var(--default-gap-px);
-    padding: 2px;
-    text-align: center;
-  }
+  // /* format help header in ngx-datatable embedded html */
+  // div.table-help {
+  //   background-color: var(--accent-color-lighter);
+  //   margin-bottom: var(--default-gap-px);
+  //   padding: 2px;
+  //   text-align: center;
+  // }
 
   /* the header row */
   .ngx-datatable.material .datatable-header .datatable-header-cell {
@@ -24,19 +24,28 @@ app-scores, app-sessions {
   }
 
   datatable-body {
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
     overflow-y: hidden !important;
   }
 
   datatable-body-row.datatable-body-row {
-    padding: 2px !important;
     height: calc(var(--base-font) * 2) !important;
   }
 
+
   datatable-body-cell.datatable-body-cell {
-    font-size: calc(var(--base-font)) !important;
+    font-size: var(--base-font) !important;
+    padding: 0px !important;
     text-align: center !important;
-    padding: 2px !important;
+  }
+    datatable-body-cell.datatable-body-cell div.comment {
+      overflow: hidden;
+      margin-right: calc(var(--default-gap-px) / 2);
+    }
+
+  datatable-header-cell.datatable-header-cell {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
   }
 
   .mat-form-field-flex {
