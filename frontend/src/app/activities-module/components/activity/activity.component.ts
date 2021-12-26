@@ -82,6 +82,9 @@ export class ActivityComponent implements OnInit {
               /* allow only a certain period of dates be shown */
               max: new Date(),
               min: EARLIEST_DATE,
+              dateChange: () => {
+                /* dummy required */
+              },
             },
           },
         },
@@ -128,10 +131,10 @@ export class ActivityComponent implements OnInit {
             const number = isNaN(Number(field.formControl?.value))
               ? 0
               : Number(field.formControl?.value);
-            return number > 0 && number <= 180;
+            return number > 0 && number <= 999;
           },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must enter a time from 1 to 180 minutes`;
+            return `You must enter a time from 1 to 999 minutes`;
           },
         },
       },

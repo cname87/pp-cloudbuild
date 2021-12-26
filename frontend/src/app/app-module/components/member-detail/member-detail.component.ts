@@ -46,7 +46,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /* define the text info card */
-  line1 = '- Click on SCORES to enter your weekly self-assessment scores';
+  line1 = '- Click on SCORES to enter your weekly Wellness Questionaire';
   line2 = '- Click on SESSIONS to enter your weekly training sessions';
   line3 =
     '- Click on SUMMARY to see your training data over the last 12 months';

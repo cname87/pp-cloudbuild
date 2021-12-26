@@ -11,8 +11,8 @@ import { NGXLogger } from 'ngx-logger';
 
 @Component({
   selector: 'formly-field-datatable',
-  styleUrls: ['./datatable.type.scss'],
-  templateUrl: './datatable.type.html',
+  styleUrls: ['./datatable-type.component.scss'],
+  templateUrl: './datatable-type.component.html',
 })
 export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   //
