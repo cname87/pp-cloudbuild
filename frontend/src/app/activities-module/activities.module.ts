@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared-module/shared.module';
-import { ActivityLogComponent } from './components/activity-log.component';
+import { ActivitiesParentComponent } from './components/activities-parent.component';
 import { ActivityComponent } from './components/activity/activity.component';
 import { ActivitiesComponent } from './components/activities/activities.component';
-import { SummaryRoutingModule } from './activities.routing.module';
+import { ActivitiesRoutingModule } from './activities.routing.module';
 
 @NgModule({
-  declarations: [ActivityLogComponent, ActivityComponent, ActivitiesComponent],
-  imports: [SharedModule, SummaryRoutingModule],
+  declarations: [ActivitiesParentComponent, ActivityComponent, ActivitiesComponent],
+  imports: [SharedModule, ActivitiesRoutingModule],
 })
 export class ActivitiesModule {}

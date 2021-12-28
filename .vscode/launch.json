@@ -4,35 +4,6 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-      /* Runs skaffold dev to build and watch */
-      /* See https://cloud.google.com/code/docs/vscode/running-an-application for settings */
-      /* Can run with (f5) or without debug  (Ctrl+F5) */
-      {
-        "name": "Run Skaffold on Kubernetes",
-        "type": "cloudcode.kubernetes",
-        "request": "launch",
-        "skaffoldConfig": "${workspaceFolder}/skaffold.yaml",
-        "watch": true,
-        "cleanUp": true,
-        /* Service ports still forwarded via skaffold.yaml. This prevents other ports being forwarded */
-        "portForward": false,
-        "imageRegistry": "gcr.io/project-perform",
-    },
-    /* Attach to backend pods for debug */
-    /* Edit the backend Dockerfile to allow port 9229 be accessed. Launch 'Run Skaffold on Kubernetes' with no debug (Ctrl+F5) and then launch this and it attaches. */
-    {
-      "name": "Debug Backend on Kubernetes",
-      "type": "cloudcode.kubernetes",
-      "request": "attach",
-      "podSelector": {
-          "app": "pp",
-          "tier": "backend"
-      },
-      "language": "Node",
-      "debugPort": 9229,
-      "localRoot": "${workspaceFolder}/backend",
-      "remoteRoot": "/backend"
-    },
     /* Serve frontend with backend - use for frontend debug with watch */
     {
       /*
@@ -420,16 +391,6 @@
         "TS_NODE_PROJECT": "tsconfig.json",
       },
     },
-
-    /* Test */
-    {
-        "type": "pwa-msedge",
-        "request": "launch",
-        "name": "Launch Edge",
-        "url": "http://localhost:4200",
-        // "webRoot": "${workspaceFolder}"
-    }
-
   ],
   "compounds": [
     /* Run backend server and browse to root */

@@ -15,14 +15,14 @@ import { ISessions } from '../models/sessions-models';
 @Injectable({
   providedIn: 'root',
 })
-export class MemberSessionsResolverService implements Resolve<any> {
+export class SessionsResolverService implements Resolve<any> {
   constructor(
     private sessionsService: SessionsService,
     private utils: UtilsService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
-      `${MemberSessionsResolverService.name}: Starting MemberSessionsResolverService`,
+      `${SessionsResolverService.name}: Starting SessionsResolverService`,
     );
   }
 
@@ -30,7 +30,7 @@ export class MemberSessionsResolverService implements Resolve<any> {
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
   ): Observable<ISessions> {
-    this.logger.trace(`${MemberSessionsResolverService.name}: Calling resolve`);
+    this.logger.trace(`${SessionsResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
@@ -41,10 +41,10 @@ export class MemberSessionsResolverService implements Resolve<any> {
         shareReplay(1),
         catchError((err: any) => {
           this.logger.trace(
-            `${MemberSessionsResolverService.name}: catchError called`,
+            `${SessionsResolverService.name}: catchError called`,
           );
           this.logger.trace(
-            `${MemberSessionsResolverService.name}: not proceeding and throwing the error to the error handler`,
+            `${SessionsResolverService.name}: not proceeding and throwing the error to the error handler`,
           );
           throw err;
         }),

@@ -4,7 +4,7 @@ As at 17th November 2021...
 
 ## Roles
 
-When a user is added in the OAuth database you set it's role to either Admin or Member.  ONly an Admin user can access the members list and see other member's data.  A member can only see their own data.
+When a user is added in the OAuth database you set it's role to either Admin or Member.  Only an Admin user can access the members list and see other member's data.  A member can only see their own data.
 
 ## Adding a user
 

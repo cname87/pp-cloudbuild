@@ -4,6 +4,13 @@ export enum ESessionType {
   Strength = 'STRENGTH',
   Sport = 'SPORT',
 }
+export const sessionTypeNames: ESessionType[] = Object.keys(ESessionType)
+  .map((key) => {
+    if (new RegExp(/[a-z]/g).test(key)) {
+      return ESessionType[key];
+    }
+  })
+  .filter((key) => !!key); // no blank
 
 export enum EDays {
   Monday = 'Monday',
@@ -20,7 +27,7 @@ export enum EAmPm {
   PM = 'PM',
 }
 
-enum ERpeScore {
+export enum ERpeScore {
   zero = 0,
   one = 1,
   two = 2,
@@ -33,6 +40,30 @@ enum ERpeScore {
   nine = 9,
   ten = 10,
 }
+
+export const rpeNames: ERpeScore[] = Object.keys(ERpeScore)
+  .map((key) => {
+    if (new RegExp(/[a-z]/g).test(key)) {
+      return ERpeScore[key];
+    }
+  })
+  .filter((key) => !!key); // no blank
+
+/* defines the updateable data for one training session */
+export interface ISession {
+  type: ESessionType;
+  rpe: ERpeScore;
+  duration: number;
+  comment: string;
+}
+
+/* an empty session */
+export const blankSession = {
+  type: ESessionType.Blank,
+  rpe: ERpeScore.zero,
+  duration: 0,
+  comment: '',
+};
 
 /* the mutable data associated with a session */
 export interface ISessionsStripped {
@@ -244,6 +275,13 @@ export interface ISessions extends ISessionsStripped {
       comment: string;
     },
   ];
+}
+
+/* used to pass required data back to sessions parent */
+export interface ISessionsData {
+  sessions: ISessions;
+  session: ISession;
+  rowIndex: number;
 }
 
 /* used in request body */

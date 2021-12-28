@@ -96,9 +96,9 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     /* load all lazy loaded modules to shorten their eventual load times */
     import('../../../scores-module/components/scores.component');
-    import('../../../sessions-module/components/sessions.component');
+    import('../../../sessions-module/components/sessions-parent.component');
     import('../../../summary-module/components/summary.component');
-    import('../../../activities-module/components/activity-log.component');
+    import('../../../activities-module/components/activities-parent.component');
     /* calls to load caches */
     this.scores.getOrCreateScores(this.#id).subscribe(() => {
       this.logger.trace(

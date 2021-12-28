@@ -1,22 +1,36 @@
-import { Component, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter as AngularEventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, map, catchError } from 'rxjs/operators';
-import { EventEmitter } from 'events';
+import { takeUntil, catchError, shareReplay } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { EventEmitter } from 'events';
 
-import { ISessions } from '../models/sessions-models';
-import { EARLIEST_DATE } from '../../scores-module/models/scores-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
-import { SessionsService } from '../services/sessions.service';
-import { ESessionType } from '../models/sessions-models';
+import { EARLIEST_DATE } from '../../../scores-module/models/scores-models';
+import { RouteStateService } from '../../../app-module/services/route-state-service/router-state.service';
+import { SessionsService } from '../../services/sessions.service';
+import {
+  ESessionType,
+  ISessions,
+  ISessionsData,
+} from '../../models/sessions-models';
 
 /**
- * @title This component shows a form table allowing weekly session results for a member to be viewed and entered or edited.
+ * @title Training sessions table.
+ *
+ * This component is enabled by the parent component which passes in a sessions object. This component then displays a table allowing training sessions for a specific week for a specific member be viewed. The user can review previous weeks' data by selecting a date from a datepicker.
+ *
+ * If the user clicks on a row in the table then an event is emitted to the parent component. The parent then displays a component to allow the details of a specific training session be edited.  It then updates the backend database and reopens this component by passing in the updated sessions object.
+ *
+ * Note: This component uses an ngx-datatable component as a custom ngx-formly type to display the data table. This component is part of the formly-base module.
  */
 @Component({
   selector: 'app-sessions',
@@ -25,12 +39,19 @@ import { ESessionType } from '../models/sessions-models';
 })
 export class SessionsComponent implements OnDestroy {
   //
+  /* sessions object passed in from parent */
+  @Input() sessions$!: Observable<ISessions> | undefined;
+  /* event to pass data  to parent to allow updating */
+  @Output() editSession = new AngularEventEmitter<ISessionsData>();
+
+  /* used to report table click from the datatable subcomponent to this component */
+  #tableClick = new AngularEventEmitter();
   /* min width used in the datatable */
   #minWidth =
     (+getComputedStyle(document.documentElement).getPropertyValue(
       '--big-screen',
     ) || 0) / 20;
-  /* ngx-datatable columns */
+  /* datatable columns */
   #columns = [
     {
       name: 'Day',
@@ -109,8 +130,9 @@ export class SessionsComponent implements OnDestroy {
       summaryFunc: null,
     },
   ];
-  /* used to report table change */
+  /* used to report a table change to the table */
   #tableChange = new EventEmitter();
+
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
   /* utility */
@@ -149,11 +171,11 @@ export class SessionsComponent implements OnDestroy {
   ];
 
   /* define the text info card */
-  line1 = '- Click on a CELL to edit a value';
+  line1 = '- Click on a row to update a training session';
   line2 =
     // eslint-disable-next-line max-len
     '- RPE is the Rate of Perceived Exertion of the session. Select 0 for no exertion, to 10 for extreme exertion';
-  line3 = '- Click on the calendar ICON for previous weeks';
+  line3 = '- Click on the calendar to review previous weeks';
   line4 = '';
   isGoBackVisible = false;
 
@@ -206,6 +228,7 @@ export class SessionsComponent implements OnDestroy {
         columns: this.#columns,
         /* passes an event emitter that is used to signal model changes to the datatable (which causes the datatable to be redrawn) */
         tableChange: this.#tableChange,
+        tableClick: this.#tableClick,
       },
       fieldArray: {
         fieldGroup: [
@@ -282,7 +305,6 @@ export class SessionsComponent implements OnDestroy {
   ];
 
   constructor(
-    private route: ActivatedRoute,
     private routeStateService: RouteStateService,
     private sessionsService: SessionsService,
     private isLoadingService: IsLoadingService,
@@ -290,31 +312,6 @@ export class SessionsComponent implements OnDestroy {
     private toastr: ToastrService,
   ) {
     this.logger.trace(`${SessionsComponent.name}: Starting SessionsComponent`);
-
-    /* get data from route resolver and load the model which fills and renders the table */
-    /* Note: loading in constructor to avoid angular change after checked error */
-    this.route.data
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((data: Data) => {
-        this.model = data.sessions;
-      });
-
-    /* update route state service with routed member id */
-    this.route.paramMap
-      .pipe(
-        map((paramMap: ParamMap) => {
-          const id = paramMap.get('id');
-          if (!id) {
-            throw new Error('id path parameter was null');
-          }
-          return id;
-        }),
-        takeUntil(this.#destroy$),
-        catchError(this.#catchError),
-      )
-      .subscribe((id) => {
-        this.routeStateService.updateIdState(id);
-      });
   }
 
   /**
@@ -400,6 +397,40 @@ export class SessionsComponent implements OnDestroy {
       this.#tableChange.emit('modelChange');
     }
   };
+
+  ngOnInit(): void {
+    this.logger.trace(`${SessionsComponent.name}: Starting ngOnInit`);
+    (this.sessions$ as Observable<ISessions>)
+      .pipe(
+        takeUntil(this.#destroy$),
+        shareReplay(1),
+        catchError(this.#catchError),
+      )
+      .subscribe((sessions: ISessions) => {
+        this.logger.trace(
+          `${SessionsComponent.name}: Received sessions: ${JSON.stringify(
+            sessions,
+          )}`,
+        );
+        this.model = sessions;
+        this.#onTableChange(sessions);
+      });
+
+    /* when the user clicks on the datatable it causes data to be passed to the parent component */
+    this.#tableClick.subscribe((rowIndex: number) => {
+      const sessionDetail = {
+        type: this.model.sessions[rowIndex].type,
+        rpe: this.model.sessions[rowIndex].rpe,
+        duration: this.model.sessions[rowIndex].duration,
+        comment: this.model.sessions[rowIndex].comment,
+      };
+      this.editSession.emit({
+        sessions: this.model,
+        session: sessionDetail,
+        rowIndex: rowIndex,
+      });
+    });
+  }
 
   ngOnDestroy(): void {
     this.logger.trace(`${SessionsComponent.name}: #ngDestroy called`);

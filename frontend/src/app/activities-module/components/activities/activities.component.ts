@@ -22,7 +22,7 @@ import {
 /**
  * @title This component shows a table allowing records for miscellaneous activities for a member be viewed. A separate component can be called to enter new activity records or edit existing ones.
  *
- * This component is enabled when an activities array is input from the parent component.  This activities array is displayed in the table.
+ * This component is enabled when an activities array is input from the parent component. This activities array is displayed in a table.
  *
  * If the user clicks on a row then an event is emitted to the parent component, (which displays a component to allow the activity record be edited or deleted).
  * If the user clicks on the Add button then an event is emitted to the parent component, (which displays a component to allow a new activity record be entered).
@@ -33,16 +33,15 @@ import {
   selector: 'app-activities',
   templateUrl: './activities.component.html',
   styleUrls: ['./activities.component.scss'],
-  providers: [],
 })
 export class ActivitiesComponent implements OnInit, AfterViewInit {
   //
-  /* activity list */
+  /* activities list passed in from parent */
   @Input() activities$!: Observable<IActivity[]> | undefined;
 
-  /* clicked table row */
+  /* event to pass clicked table row */
   @Output() editActivityEvent = new EventEmitter<IActivity>();
-  /* clicked add activity button */
+  /* event to pass on clicked add activity button */
   @Output() addActivityEvent = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
