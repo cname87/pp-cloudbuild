@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 const material = [
   MatToolbarModule,
@@ -39,6 +40,7 @@ const material = [
   MatPaginatorModule,
   MatSortModule,
   MatGridListModule,
+  MatSidenavModule,
 ];
 
 @NgModule({

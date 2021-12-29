@@ -1,22 +1,35 @@
 <main>
 
-  <app-login
-    class='temp'
-    [attr.data-isE2eTesting]=isE2eTesting
-    [attr.data-production]=production
-    [attr.data-logLevel]=logLevel
-  >
-  </app-login>
+  <mat-sidenav-container>
 
-  <mat-progress-bar
-    *ngIf="isLoading$ | async"
-    mode="indeterminate"
-    color="warn"
-  >
-  </mat-progress-bar>
+    <mat-sidenav-content fxLayout="column">
 
-  <app-nav></app-nav>
+      <app-login
+        [attr.data-isE2eTesting]=isE2eTesting
+        [attr.data-production]=production
+        [attr.data-logLevel]=logLevel
+      >
+      </app-login>
 
-  <router-outlet></router-outlet>
+      <mat-progress-bar
+        *ngIf="isLoading$ | async"
+        mode="indeterminate"
+        color="warn"
+      >
+      </mat-progress-bar>
+
+      <app-nav></app-nav>
+
+      <router-outlet></router-outlet>
+
+      <footer fxFlexOffset="auto">
+
+        <a href="https://efficient-performance.com">efficient-performance.com</a>
+
+      </footer>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
 
 </main>
