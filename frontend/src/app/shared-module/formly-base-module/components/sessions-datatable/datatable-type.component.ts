@@ -14,7 +14,10 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./datatable-type.component.scss'],
   templateUrl: './datatable-type.component.html',
 })
-export class DatatableTypeComponent extends FieldArrayType implements OnInit {
+export class SessionsDatatableTypeComponent
+  extends FieldArrayType
+  implements OnInit
+{
   //
   /* get the cell template to apply as the column template */
   @ViewChild('defaultColumn', { static: true })
@@ -39,7 +42,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   constructor(private logger: NGXLogger) {
     super();
     this.logger.trace(
-      `${DatatableTypeComponent.name}: Starting DatatableTypeComponent`,
+      `${SessionsDatatableTypeComponent.name}: Starting SessionsDatatableTypeComponent`,
     );
   }
 
@@ -48,14 +51,16 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
    */
   callUpdateSession(rowIndex: number) {
     this.logger.trace(
-      `${DatatableTypeComponent.name}: Running setCellAndField`,
+      `${SessionsDatatableTypeComponent.name}: Running setCellAndField`,
     );
     /* send row index to parent */
     (this.to.tableClick as EventEmitter<number>).emit(rowIndex);
   }
 
   ngOnInit() {
-    this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
+    this.logger.trace(
+      `${SessionsDatatableTypeComponent.name}: Starting ngOnInit`,
+    );
 
     /* Note: 'this.to' refers to the templateOptions set in the ScoresComponent */
     /* assigns a reference to the formly field template */
@@ -69,7 +74,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     /* register table model changes */
     this.to.tableChange.on('modelChange', () => {
       this.logger.trace(
-        `${DatatableTypeComponent.name}: Table model change reported`,
+        `${SessionsDatatableTypeComponent.name}: Table model change reported`,
       );
       /* force datatable table update */
       this.to.columns = [...this.to.columns];

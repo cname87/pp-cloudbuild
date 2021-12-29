@@ -93,7 +93,7 @@ const errFunction = (
   reject: (reason?: any) => void,
 ) => {
   /* report a general database unavailable error */
-  const functionName = 'getOrCreateScores';
+  const functionName = 'Sessions function';
   return databaseUnavailable(err, functionName, req.app.appLocals, reject);
 };
 
@@ -134,7 +134,7 @@ const getOrCreateSessions = async (
 
   /* if a document is returned then return it */
   if (foundDoc) {
-    debug(`${modulename}: scores object found`);
+    debug(`${modulename}: sessions object found`);
     return foundDoc;
   }
 
@@ -193,10 +193,10 @@ const updateSessions = (
       )
       .exec()
       .then((doc: Document<Perform.ISessions>) => {
-        /* return error if no scores found */
+        /* return error if no sessions found */
         if (!doc) {
           console.error(
-            `${modulename}: updateSessions found no matching scores`,
+            `${modulename}: updateSessions found no matching sessions`,
           );
           const errNotFound: Perform.IErr = {
             name: 'DATABASE_NOT_FOUND',

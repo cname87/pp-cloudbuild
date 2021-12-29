@@ -232,7 +232,7 @@ export class SessionsComponent {
     {
       /* define the datatable - see the ngx-datatable component in the formly base module */
       key: 'sessions',
-      type: 'datatable',
+      type: 'sessions-datatable',
       templateOptions: {
         columns: this.#columns,
         /* passes an event emitter that is used to signal model changes to the datatable (which causes the datatable to be redrawn) */

@@ -185,7 +185,7 @@ export class ScoresComponent implements OnDestroy {
     {
       /* define the ngx-datatable */
       key: 'scores',
-      type: 'datatable',
+      type: 'scores-datatable',
       templateOptions: {
         columns: this.#columns,
         /* passes an event emitter that is used to signal model changes to the datatable (which causes the datatable to be redrawn) */

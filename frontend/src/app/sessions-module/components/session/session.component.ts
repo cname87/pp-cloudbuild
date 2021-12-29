@@ -73,7 +73,13 @@ export class SessionComponent implements OnInit {
           expression: (
             _control: AbstractControl,
             field: FormlyFieldConfig,
-          ): boolean => !!field.formControl?.value,
+          ): boolean => {
+            /* must have a value & exclude the blank value */
+            return (
+              !!field.formControl?.value &&
+              field.formControl?.value !== ESessionType.Blank
+            );
+          },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
             return `You must select an session type`;
           },
