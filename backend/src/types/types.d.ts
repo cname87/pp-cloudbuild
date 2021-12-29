@@ -171,16 +171,17 @@ declare namespace Perform {
   export interface IScores extends IScoresWithoutId {
     id: number;
   }
-  interface ISessionsColumn {
+  interface ISessionsRow {
     type: '' | ESessionType;
     rpe: TRpe;
     duration: number;
+    comment: string;
   }
 
   export interface ISessionsWithoutId {
     memberId: number;
     date: Date | string; // using string to send to frontend
-    sessions: ISessionsColumn[];
+    sessions: ISessionsRow[];
   }
 
   export interface ISessions extends ISessionsWithoutId {
