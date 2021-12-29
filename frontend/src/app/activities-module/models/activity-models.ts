@@ -24,7 +24,6 @@ export const displayedColumns: string[] = [
   'type',
   'duration',
   'comment',
-  'edit',
 ];
 export const activityTypeNames: EActivityType[] = Object.keys(EActivityType)
   .map((key) => {

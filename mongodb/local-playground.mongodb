@@ -11,8 +11,6 @@ const weeks = 52;
 const retrieveDays = new Date(
   new Date().setDate(new Date().getDate() - 7 * weeks),
 );
-
-
 const aggregation = [
   /* select the specific member */
   { $match: { memberId: memberId } },
@@ -129,111 +127,6 @@ const aggregation = [
     },
   },
 ];
-
-  // const aggregation = [
-  //   /* select the specific member */
-  //   { $match: { memberId: memberId } },
-  //   /* select all tables in the last requested number of weeks */
-  //   { $match: { date: { $gt: retrieveDays } } },
-  //   /* sort by date ascending */
-  //   { $sort: { date: 1 } },
-  //   /* add extra fields to each document */
-  //   {
-  //     $project: {
-  //       _id: 0,
-  //       date: 1,
-  //       /* sum of the product of rpe and duration (load) for all sessions */
-  //       total: {
-  //         $sum: {
-  //           $map: {
-  //             input: '$sessions',
-  //             as: 'session',
-  //             in: {
-  //               $multiply: [
-  //                 { $ifNull: ['$$session.rpe', 0] },
-  //                 { $ifNull: ['$$session.duration', 0] },
-  //               ],
-  //             },
-  //           },
-  //         },
-  //       },
-  //       /* count of the number of non-zero sessions */
-  //       count: {
-  //         $sum: {
-  //           $map: {
-  //             input: '$sessions',
-  //             as: 'session',
-  //             in: {
-  //               $cond: {
-  //                 if: {
-  //                   $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
-  //                 },
-  //                 then: 1,
-  //                 else: 0,
-  //               },
-  //             },
-  //           },
-  //         },
-  //       },
-  //       /* standard deviation of the load of all non-zero sessions */
-  //       average: {
-  //         $round: [
-  //           {
-  //             $avg: {
-  //               $map: {
-  //                 input: '$sessions',
-  //                 as: 'session',
-  //                 in: {
-  //                   $cond: {
-  //                     if: {
-  //                       $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
-  //                     },
-  //                     then: {
-  //                       $multiply: [
-  //                         { $ifNull: ['$$session.rpe', 0] },
-  //                         { $ifNull: ['$$session.duration', 0] },
-  //                       ],
-  //                     },
-  //                     else: null,
-  //                   },
-  //                 },
-  //               },
-  //             },
-  //           },
-  //           0,
-  //         ],
-  //       },
-  //       /* standard deviation of the load of all non-zero sessions */
-  //       stdDev: {
-  //         $round: [
-  //           {
-  //             $stdDevPop: {
-  //               $map: {
-  //                 input: '$sessions',
-  //                 as: 'session',
-  //                 in: {
-  //                   $cond: {
-  //                     if: {
-  //                       $gt: [{ $ifNull: ['$$session.duration', 0] }, 0],
-  //                     },
-  //                     then: {
-  //                       $multiply: [
-  //                         { $ifNull: ['$$session.rpe', 0] },
-  //                         { $ifNull: ['$$session.duration', 0] },
-  //                       ],
-  //                     },
-  //                     else: null,
-  //                   },
-  //                 },
-  //               },
-  //             },
-  //           },
-  //           0,
-  //         ],
-  //       },
-  //     },
-  //   },
-  // ];
 
   // const aggregation = [
   //   /* select the specific member */

@@ -24,3 +24,10 @@ mat-list-item.mat-list-item {
 .field-name {
   color: var(--primary-color-normal);
 }
+
+.fit-picture {
+  display: block;
+  padding-left: var(--default-gap-px);
+  padding-top: var(--default-gap-px);
+  width: 25%;
+}

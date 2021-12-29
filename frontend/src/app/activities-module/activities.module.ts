@@ -6,7 +6,11 @@ import { ActivitiesComponent } from './components/activities/activities.componen
 import { ActivitiesRoutingModule } from './activities.routing.module';
 
 @NgModule({
-  declarations: [ActivitiesParentComponent, ActivityComponent, ActivitiesComponent],
+  declarations: [
+    ActivitiesParentComponent,
+    ActivityComponent,
+    ActivitiesComponent,
+  ],
   imports: [SharedModule, ActivitiesRoutingModule],
 })
 export class ActivitiesModule {}
