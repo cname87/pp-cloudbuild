@@ -84,7 +84,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   isChartShown = false;
 
   /**
-   * Returns data fro the chart from a supplied summary table row.
+   * Returns data for the chart from a supplied summary table row.
    * @param rowData A row of the summary data table.
    * @returns An array containing a column of data to display in the chart.
    */

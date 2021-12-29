@@ -113,7 +113,7 @@ const errFunction = (
   reject: (reason?: any) => void,
 ) => {
   /* report a general database unavailable error */
-  const functionName = 'getOrCreateScores';
+  const functionName = 'Scores function';
   return databaseUnavailable(err, functionName, req.app.appLocals, reject);
 };
 

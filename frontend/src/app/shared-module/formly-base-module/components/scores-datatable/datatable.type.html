@@ -1,27 +1,5 @@
-<div
-  class="popup"
-  *ngIf="showCommentArea"
->
-  <textarea
-    #popup
-    class="popupText"
-    placeholder="Enter your comment here"
-  >{{popupComment}}</textarea>
-  <app-button
-    [icon]="'add'"
-    [text]="'ADD'"
-    (click)="addComment(popup.value)"
-  >
-  </app-button>
-  <app-button
-    [icon]="'cancel'"
-    [text]="'CANCEL'"
-    (click)="cancelComment()"
-  >
-  </app-button>
-</div>
 
-  <ngx-datatable
+<ngx-datatable
   #table
   class="material"
   [rows]="model"

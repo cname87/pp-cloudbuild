@@ -14,7 +14,10 @@ import { NGXLogger } from 'ngx-logger';
   styleUrls: ['./datatable.type.scss'],
   templateUrl: './datatable.type.html',
 })
-export class DatatableTypeComponent extends FieldArrayType implements OnInit {
+export class ScoresDatatableTypeComponent
+  extends FieldArrayType
+  implements OnInit
+{
   //
   /* get the cell template to apply as the column template */
   @ViewChild('defaultColumn', { static: true })
@@ -25,24 +28,6 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     setTimeout(() => {
       if (!!ref) {
         this.#afterClickActions(ref);
-      }
-    }, 0);
-  }
-  /* the clicked comment cell (that initiates a popup comment box) */
-  clickedCommentCell!: HTMLTextAreaElement;
-  /* show comment text entry box */
-  showCommentArea = false;
-  /* comment text entry box content */
-  popupComment = '';
-  /* set only when the comment text entry becomes visible */
-  visibleCommentArea!: ElementRef;
-  /* set the focus on the textarea as soon as it is available */
-  @ViewChild('popup', { static: false })
-  set popup(ref: ElementRef) {
-    setTimeout(() => {
-      if (!!ref) {
-        ref.nativeElement.focus();
-        this.visibleCommentArea = ref;
       }
     }, 0);
   }
@@ -69,7 +54,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
   constructor(private logger: NGXLogger) {
     super();
     this.logger.trace(
-      `${DatatableTypeComponent.name}: Starting DatatableTypeComponent`,
+      `${ScoresDatatableTypeComponent.name}: Starting ScoresDatatableTypeComponent`,
     );
   }
 
@@ -78,47 +63,20 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
    */
   #afterClickActions = (clickedField: ElementRef) => {
     this.logger.trace(
-      `${DatatableTypeComponent.name}: running #afterClickActions`,
+      `${ScoresDatatableTypeComponent.name}: running #afterClickActions`,
     );
 
     /* if there is a dropdown, it sends a second click to a clicked data entry cell to drop the select dropdown */
     const selectDropdown: HTMLSelectElement =
       clickedField.nativeElement.getElementsByClassName('mat-select-value')[0];
     if (selectDropdown) {
-      /* clear any comment field */
-      this.popupComment = '';
-      this.showCommentArea = false;
       selectDropdown.click();
-      return;
-    }
-    /* if its a comment field it opens a comment text area */
-    const comment: HTMLTextAreaElement =
-      clickedField.nativeElement.getElementsByTagName('textarea')[0];
-    if (comment) {
-      this.clickedCommentCell = comment;
-      /* disable the comment cell that was clicked */
-      comment.disabled = true;
-      /* show comment area */
-      this.showCommentArea = true;
-      /* if the comment area is open you must set the area value */
-      if (this.visibleCommentArea) {
-        this.visibleCommentArea.nativeElement.value =
-          /* trim and remove '-' if its the only content */
-          comment.value.trim() === '-' ? '' : comment.value.trim();
-      }
-      /* set the comment area content in the html */
-      this.popupComment =
-        /* trim and remove '-' if its the only content */
-        comment.value.trim() === '-' ? '' : comment.value.trim();
       return;
     }
     /* if an input field is clicked (other than the textarea comment field) it moves the cursor into the input cell */
     const input: HTMLInputElement =
       clickedField.nativeElement.getElementsByClassName('mat-input-element')[0];
     if (input) {
-      /* clear any comment field */
-      this.popupComment = '';
-      this.showCommentArea = false;
       input.focus();
       return;
     }
@@ -130,7 +88,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     const codeEsc = 27;
     if (event.keyCode === codeEnter || event.keyCode === codeEsc) {
       this.logger.trace(
-        `${DatatableTypeComponent.name}: Escape or Enter key pressed`,
+        `${ScoresDatatableTypeComponent.name}: Escape or Enter key pressed`,
       );
       /* stop any follow-on default action */
       event.preventDefault();
@@ -150,13 +108,13 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     rowIndex: number,
   ) {
     this.logger.trace(
-      `${DatatableTypeComponent.name}: Running setCellAndField`,
+      `${ScoresDatatableTypeComponent.name}: Running setCellAndField`,
     );
 
     /* exit if the column is not a data entry column */
     if (!column.clickable) {
       this.logger.trace(
-        `${DatatableTypeComponent.name}: Non-clickable column clicked`,
+        `${ScoresDatatableTypeComponent.name}: Non-clickable column clicked`,
       );
       return;
     }
@@ -181,40 +139,10 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     return name === this.clickedCell.name && rowIndex === this.clickedCell.row;
   }
 
-  /**
-   * Adds a comment from the text entry comment area back to the comment cell.
-   * @param text The comment to be added.
-   */
-  addComment(text: string): void {
-    this.logger.trace(`${DatatableTypeComponent.name}: running addComment`);
-    if (!text) {
-      text = '-';
-    }
-    /* set the value of the text area */
-    this.formlyField.formControl?.setValue(text.trim());
-    /* hide comment area */
-    this.showCommentArea = false;
-    /* send a change event to cause the comment cell text area to load the text */
-    const changeEvent = new Event('change');
-    this.clickedCommentCell.dispatchEvent(changeEvent);
-    /* clear clicked cell selection */
-    this.clickedCell = { name: 'NAME', row: 1 };
-    /* force datatable table update */
-    this.to.columns = [...this.to.columns];
-  }
-  /**
-   * Cancels comment entry, i.e. after a pop up comment text area is opened.
-   */
-  cancelComment(): void {
-    this.logger.trace(`${DatatableTypeComponent.name}: running cancelComment`);
-    this.popupComment = '';
-    this.showCommentArea = false;
-    /* clear clicked cell selection */
-    this.clickedCell = { name: 'NAME', row: 1 };
-  }
-
   ngOnInit() {
-    this.logger.trace(`${DatatableTypeComponent.name}: Starting ngOnInit`);
+    this.logger.trace(
+      `${ScoresDatatableTypeComponent.name}: Starting ngOnInit`,
+    );
 
     /* Note: 'this.to' refers to the templateOptions set in the ScoresComponent */
     /* assigns a reference to the formly field template */
@@ -228,7 +156,7 @@ export class DatatableTypeComponent extends FieldArrayType implements OnInit {
     /* register table model changes */
     this.to.tableChange.on('modelChange', () => {
       this.logger.trace(
-        `${DatatableTypeComponent.name}: Table model change reported`,
+        `${ScoresDatatableTypeComponent.name}: Table model change reported`,
       );
       /* clear clicked cell selection */
       this.clickedCell = { name: 'NAME', row: 1 };

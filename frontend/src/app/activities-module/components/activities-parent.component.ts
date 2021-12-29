@@ -13,15 +13,17 @@ import {
 } from '../models/activity-models';
 
 /**
- * @title This component shows a form table allowing activities for a member to be viewed and entered or edited.
+ * @title This is the parent component of both the activities table and the individual activity editing table. See the notes in each component.
+ *
+ * On startup it receives a activities object from the route resolver and sets the activities$ variable which causes the sessions table component to be shown. The activity variable is undefined on startup which causes the activity edit table not to be shown.
  */
 @Component({
-  selector: 'app-activity-log',
-  templateUrl: './activity-log.component.html',
-  styleUrls: ['./activity-log.component.scss'],
+  selector: 'app-activities-parent',
+  templateUrl: './activities-parent.component.html',
+  styleUrls: ['./activities-parent.component.scss'],
   providers: [],
 })
-export class ActivityLogComponent implements OnInit, OnDestroy {
+export class ActivitiesParentComponent implements OnInit, OnDestroy {
   //
   /* activities list observable passed to, and enabling, activities component */
   activities$!: Observable<IActivity[]> | undefined;
@@ -39,7 +41,7 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
     private logger: NGXLogger,
   ) {
     this.logger.trace(
-      `${ActivityLogComponent.name}: Starting ActivityLogComponent`,
+      `${ActivitiesParentComponent.name}: Starting ActivitiesParentComponent`,
     );
   }
 
@@ -49,14 +51,16 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
    * @throws Throws the received error object
    */
   #catchError = (err: any): never => {
-    this.logger.trace(`${ActivityLogComponent.name}: #catchError called`);
-    this.logger.trace(`${ActivityLogComponent.name}: Throwing the error on`);
+    this.logger.trace(`${ActivitiesParentComponent.name}: #catchError called`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: Throwing the error on`,
+    );
     throw err;
   };
 
   #getBlankActivity(): IActivityWithoutId {
     this.logger.trace(
-      `${ActivityLogComponent.name}: Starting #getBlankActivity`,
+      `${ActivitiesParentComponent.name}: Starting #getBlankActivity`,
     );
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -72,7 +76,9 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
   }
 
   #getActivities$(): Observable<IActivity[]> {
-    this.logger.trace(`${ActivityLogComponent.name}: Starting #getActivities$`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: Starting #getActivities$`,
+    );
     return this.activitiesService
       .getActivities(this.memberId)
       .pipe(
@@ -83,7 +89,7 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.logger.trace(`${ActivityLogComponent.name}: Starting ngOnInit`);
+    this.logger.trace(`${ActivitiesParentComponent.name}: Starting ngOnInit`);
     /* get the data as supplied from the route resolver */
     this.activities$ = this.route.data.pipe(
       takeUntil(this.#destroy$),
@@ -109,26 +115,38 @@ export class ActivityLogComponent implements OnInit, OnDestroy {
       .subscribe((id) => this.routeStateService.updateIdState(id));
   }
 
+  /**
+   * Called when an activity is passed from the activities component. Causes the activity edit page to be shown.
+   */
   editActivity(clickedActivity: IActivity): void {
-    this.logger.trace(`${ActivityLogComponent.name}: Starting editActivity`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: Starting editActivity`,
+    );
     this.activities$ = undefined;
     this.activity = clickedActivity;
   }
 
   addActivity(): void {
-    this.logger.trace(`${ActivityLogComponent.name}: Starting addActivity`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: Starting addActivity`,
+    );
     this.activities$ = undefined;
     this.activity = this.#getBlankActivity();
   }
 
+  /**
+   * Called when an updated activity is passed from the activity edit component. Causes an updated activities table to be shown.
+   */
   doneActivity(): void {
-    this.logger.trace(`${ActivityLogComponent.name}: Starting doneActivity`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: Starting doneActivity`,
+    );
     this.activity = undefined;
     this.activities$ = this.#getActivities$();
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${ActivityLogComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${ActivitiesParentComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
     this.routeStateService.updateIdState('');

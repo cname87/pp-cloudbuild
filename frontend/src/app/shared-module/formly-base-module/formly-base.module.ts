@@ -12,7 +12,9 @@ import {
 } from '@angular/material/form-field';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
-import { DatatableTypeComponent } from './components/datatable.type';
+import { SessionsDatatableTypeComponent } from './components/sessions-datatable/datatable-type.component';
+import { ScoresDatatableTypeComponent } from './components/scores-datatable/datatable.type';
+import { DatepickerTypeComponent } from './components/datepicker/datepicker-type.component';
 import { BaseModule } from '../base-module/base.module';
 
 const appearance: MatFormFieldDefaultOptions = {
@@ -20,7 +22,11 @@ const appearance: MatFormFieldDefaultOptions = {
 };
 
 @NgModule({
-  declarations: [DatatableTypeComponent],
+  declarations: [
+    ScoresDatatableTypeComponent,
+    SessionsDatatableTypeComponent,
+    DatepickerTypeComponent,
+  ],
   imports: [
     BaseModule,
     CommonModule,
@@ -32,10 +38,27 @@ const appearance: MatFormFieldDefaultOptions = {
       ],
       types: [
         {
-          name: 'datatable',
-          component: DatatableTypeComponent,
+          name: 'sessions-datatable',
+          component: SessionsDatatableTypeComponent,
           defaultOptions: {
             templateOptions: {},
+          },
+        },
+        {
+          name: 'scores-datatable',
+          component: ScoresDatatableTypeComponent,
+          defaultOptions: {
+            templateOptions: {},
+          },
+        },
+        {
+          name: 'datepicker',
+          component: DatepickerTypeComponent,
+          wrappers: ['form-field'],
+          defaultOptions: {
+            templateOptions: {
+              datepickerOptions: {},
+            },
           },
         },
       ],

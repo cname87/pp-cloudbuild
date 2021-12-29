@@ -16,7 +16,7 @@
     <formly-form
       [form]="form"
       [fields]="fields"
-      [model]="model"
+      [model]="sessions$ | async"
       [options]="options"
     >
     </formly-form>

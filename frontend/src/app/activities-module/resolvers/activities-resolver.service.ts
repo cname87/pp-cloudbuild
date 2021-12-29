@@ -14,13 +14,13 @@ import { IActivity } from '../models/activity-models';
 @Injectable({
   providedIn: 'root',
 })
-export class ActivityLogResolverService implements Resolve<IActivity[]> {
+export class ActivitiesResolverService implements Resolve<IActivity[]> {
   constructor(
     private activitiesService: ActivitiesService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
-      `${ActivityLogResolverService.name}: Starting ActivityLogResolverService`,
+      `${ActivitiesResolverService.name}: Starting ActivitiesResolverService`,
     );
   }
 
@@ -28,7 +28,7 @@ export class ActivityLogResolverService implements Resolve<IActivity[]> {
     route: ActivatedRouteSnapshot,
     _state: RouterStateSnapshot,
   ): Observable<IActivity[]> {
-    this.logger.trace(`${ActivityLogResolverService.name}: Calling resolve`);
+    this.logger.trace(`${ActivitiesResolverService.name}: Calling resolve`);
 
     /* get id of member from the route */
     const memberId = +(route.paramMap.get('id') || '0');
@@ -37,10 +37,10 @@ export class ActivityLogResolverService implements Resolve<IActivity[]> {
       shareReplay(1),
       catchError((err: any) => {
         this.logger.trace(
-          `${ActivityLogResolverService.name}: catchError called`,
+          `${ActivitiesResolverService.name}: catchError called`,
         );
         this.logger.trace(
-          `${ActivityLogResolverService.name}: not proceeding and throwing the error to the error handler`,
+          `${ActivitiesResolverService.name}: not proceeding and throwing the error to the error handler`,
         );
         throw err;
       }),

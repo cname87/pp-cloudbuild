@@ -34,11 +34,13 @@ mat-header-cell div.mat-sort-header-content {
     @each $colName, $props in $columns {
       $pc-flex: map-get($props, 'pc-flex');
       $align: map-get($props, 'align');
+      $margin-right: map-get($props, 'margin-right');
       &#{$colName} {
         white-space: nowrap;
         justify-content: $align;
         text-align: $align;
-        padding: 2px;
+        padding: 0px;
+        margin-right: $margin-right;
         flex: 0 1 $pc-flex;
         @if map-has-key($props, 'color') {
           color: map-get($props, 'color');
@@ -49,9 +51,9 @@ mat-header-cell div.mat-sort-header-content {
 }
 
 @include mat-table-columns((
-    date: (pc-flex: 15%, align: center),
-    type: (pc-flex: 25%, align: center),
-    duration: (pc-flex: 15%, align: center),
-    comment: (pc-flex: 35%, align: left),
-    edit: (pc-flex: 10%, align: center),
+    date: (pc-flex: 15%, align: center, margin-right: 0px),
+    type: (pc-flex: 25%, align: center, margin-right: 0px),
+    duration: (pc-flex: 15%, align: center, margin-right: 0px),
+    comment: (pc-flex: 35%, align: left, margin-right: calc(var(--default-gap-px) / 2 )),
+    edit: (pc-flex: 10%, align: center, margin-right: 0px),
 ));

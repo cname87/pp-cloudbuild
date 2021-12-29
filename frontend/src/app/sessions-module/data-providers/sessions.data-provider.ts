@@ -12,7 +12,6 @@ import {
   ISessionsStripped,
   EAmPm,
   EDays,
-  ESessionType,
 } from '../models/sessions-models';
 
 /**
@@ -88,16 +87,6 @@ export class SessionsDataProvider {
     return tableStripped;
   }
 
-  #replaceBlankType(table: ISessions): ISessions {
-    const tableReplaced = clonedeep(table);
-    tableReplaced.sessions.map((element) => {
-      if (!element.type) {
-        element.type = ESessionType.Blank;
-      }
-    });
-    return tableReplaced;
-  }
-
   /**
    * Get a specific sessions table that has given member id and date properties, or causes a new sessions table to be created in the backend with the given memberId and date properties.
    * @param memberId The member id of the member to whom the table belongs.
@@ -163,7 +152,7 @@ export class SessionsDataProvider {
    * @param sessions Sessions table containing detail to be updated.
    * @returns An observable returning the updated sessions table.
    */
-  public updateSessionsTable(sessions: ISessions): Observable<ISessions> {
+  updateSessionsTable(sessions: ISessions): Observable<ISessions> {
     this.logger.trace(
       `${SessionsDataProvider.name}: updateSessionsTable called`,
     );
@@ -173,10 +162,7 @@ export class SessionsDataProvider {
       );
     }
 
-    /* TEMPORARY until all blank types gone */
-    const sessionsReplaced = this.#replaceBlankType(sessions);
-
-    const sessionsStripped = this.#stripFixedFields(sessionsReplaced);
+    const sessionsStripped = this.#stripFixedFields(sessions);
 
     let headers = this.defaultHeaders;
     headers = headers.set('Content-Type', 'application/json');

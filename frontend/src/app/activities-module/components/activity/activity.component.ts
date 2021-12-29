@@ -18,13 +18,13 @@ import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 /**
  * @title This component shows a form allowing detail on an activity be entered.
  *
- * This component is enabled when an activity record is input from the parent activities component. The activity record is displayed in a table.
+ * This component is enabled when an activity record is input from the parent activities component. The activity record is displayed in a form.
  *
  * If the supplied activity has an id property then an update and delete  button is shown. The activity properties can be edited and submitted, or the activity record can be deleted.
  *
  * If the supplied activity does not have an id property then a blank table is shown.  Values can be entered and the activity record can be saved.
  *
- * An event is emitted when the action is completed. This is picked up by the activity-log component which redisplays the activities component.
+ * An event is emitted when the action is completed. This is picked up by the activities-parent component which redisplays an updated activities component.
  */
 
 @Component({
@@ -82,6 +82,9 @@ export class ActivityComponent implements OnInit {
               /* allow only a certain period of dates be shown */
               max: new Date(),
               min: EARLIEST_DATE,
+              dateChange: () => {
+                /* dummy required */
+              },
             },
           },
         },
@@ -128,10 +131,10 @@ export class ActivityComponent implements OnInit {
             const number = isNaN(Number(field.formControl?.value))
               ? 0
               : Number(field.formControl?.value);
-            return number > 0 && number <= 180;
+            return number > 0 && number <= 999;
           },
           message: (_control: AbstractControl, _field: FormlyFieldConfig) => {
-            return `You must enter a time from 1 to 180 minutes`;
+            return `You must enter a time from 1 to 999 minutes`;
           },
         },
       },
@@ -163,6 +166,7 @@ export class ActivityComponent implements OnInit {
       ? this.updateLabel
       : this.addLabel;
   }
+
   /**
    * Picks up any upstream errors and throws on the error.
    * @param err An error object
@@ -204,13 +208,6 @@ export class ActivityComponent implements OnInit {
               activity,
             )}`,
           );
-          // /* clear the form */
-          // if (this.options.resetModel) {
-          //   this.options.resetModel();
-          // }
-          // /* renable the form */
-          // this.form.enable();
-
           this.#emitDone();
         }),
     );

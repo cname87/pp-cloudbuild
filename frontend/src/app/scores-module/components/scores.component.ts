@@ -135,7 +135,7 @@ export class ScoresComponent implements OnDestroy {
   line1 = '- Click on a CELL to edit a value';
   line2 =
     '- Select 1 to 5, where 1 is the WORST and 5 is the BEST, e.g. High Stress is 1, and Low Stress is 5';
-  line3 = '- Click on the calendar ICON to review and edit previous weeks data';
+  line3 = '- Click on the calendar to review previous weeks';
   line4 = '';
   isGoBackVisible = false;
 
@@ -185,7 +185,7 @@ export class ScoresComponent implements OnDestroy {
     {
       /* define the ngx-datatable */
       key: 'scores',
-      type: 'datatable',
+      type: 'scores-datatable',
       templateOptions: {
         columns: this.#columns,
         /* passes an event emitter that is used to signal model changes to the datatable (which causes the datatable to be redrawn) */

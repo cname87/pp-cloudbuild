@@ -29,7 +29,7 @@ The scores or sessions object is sent with the date field set to a Date object. 
 
 ## Sending a Scores or Sessions object that has a date field, from the backend, in a Response body
 
-The date field is represented as a Date object in the Scores or Sessions object.  It is checked before serialization in res.json() (and I do not convert it), and therefore it is represented as an 'object' in the OpenApi specification. The date is serializzed to a date string by res.json().  It is converted to a Date object on reception in the front end.
+The date field is represented as a Date object in the Scores or Sessions object.  It is checked before serialization in res.json() (and I do not convert it), and therefore it is represented as an 'object' in the OpenApi specification. The date is serialized to a date string by res.json().  It is converted to a Date object on reception in the front end.
 
 ## Sending a summary table which is an array of objects with date fields in a Response field
 
