@@ -13,4 +13,4 @@ When a user is added in the OAuth database you set it's role to either Admin or 
 3. Note the id automatically assigned to the member
 4. Log in to the 0Auth website and add a user filling in their name, email and a password.
 5. NB: Add { member id } to the app metadata under the user - look at another user to see exactly what is required.  This is needed so when a user login in they are routed to their data.
-6. Log in with the new n=user email and password and check operation.
+6. Log in with the new user email and password and check operation.

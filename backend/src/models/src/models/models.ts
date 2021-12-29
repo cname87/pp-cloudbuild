@@ -73,8 +73,8 @@ export const scoresModel = {
 };
 
 export const sessionsModel = {
-  id: { type: Number, unique: true, min: 0 },
-  memberId: { type: Number, min: 1 },
+  id: { type: Number, unique: true, index: true, min: 0 },
+  memberId: { type: Number, index: true, min: 1 },
   date: {
     type: Date,
     index: true,
@@ -86,12 +86,18 @@ export const sessionsModel = {
       type: {
         type: String,
         enum: ['-', 'STRENGTH', 'CONDITIONING', 'SPORT'],
+        required: true,
       },
       rpe: {
         type: Number,
         enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        required: true,
       },
-      duration: { type: Number, min: 0 },
+      duration: {
+        type: Number,
+        min: 0,
+        required: true,
+      },
       comment: { type: String },
     },
   ],

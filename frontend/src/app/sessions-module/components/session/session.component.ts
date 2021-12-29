@@ -10,12 +10,12 @@ import {
   ERpeScore,
   rpeNames,
 } from '../../models/sessions-models';
-import { catchError, Observable, Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 /**
  * @title Training session update form.
  *
- * This component is enabled by the parent component. The parent component passes in a session observable object.
+ * This component is enabled by the parent component. The parent component passes in a session object.
  *
  * This component displays a form allowing detail on a training session be entered.
  *
@@ -37,7 +37,7 @@ import { catchError, Observable, Subject, takeUntil } from 'rxjs';
 export class SessionComponent implements OnInit {
   //
   /* session to be retrieved */
-  @Input() session$!: Observable<ISession>;
+  @Input() session!: ISession;
   @Output() doneSession = new EventEmitter<ISession>();
 
   /* used to unsubscribe */
@@ -151,17 +151,6 @@ export class SessionComponent implements OnInit {
   }
 
   /**
-   * Picks up any upstream errors and throws on the error.
-   * @param err An error object
-   * @throws Throws the received error object
-   */
-  #catchError = (err: any): never => {
-    this.logger.trace(`${SessionComponent.name}: #catchError called`);
-    this.logger.trace(`${SessionComponent.name}: Throwing the error on`);
-    throw err;
-  };
-
-  /**
    * Emits an event to pass an updated session or to indicate no changes were made
    * @param sessionOrUndefined An updated session object or undefined (to indicate no changes made).
    */
@@ -169,14 +158,10 @@ export class SessionComponent implements OnInit {
     this.doneSession.emit(sessionOrUndefined);
   }
 
-  /* subscribes to the session$ observable to create an object linked directly to the form model */
+  /*  links the sessions object linked directly to the form model */
   ngOnInit(): void {
     this.logger.trace(`${SessionComponent.name}: Starting ngOnInit`);
-    this.session$
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((session) => {
-        this.model = session;
-      });
+    this.model = this.session;
   }
 
   /* called when cancel button pressed */
