@@ -53,7 +53,7 @@ export class ActivitiesComponent implements OnInit, AfterViewInit {
   dataSource!: MatTableDataSource<IActivity>;
   /* define the text info card */
   line1 = '- Click the ADD button to enter a new activity';
-  line2 = '- Click on a row or an EDIT button to edit an activity';
+  line2 = '- Click on a ROW to edit an activity';
   line3 = '';
   line4 = '';
   isGoBackVisible = false;

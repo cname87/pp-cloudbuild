@@ -1,5 +1,3 @@
-import { Observable } from 'rxjs';
-
 export enum ESessionType {
   Blank = '-',
   Conditioning = 'CONDITIONING',
@@ -281,7 +279,7 @@ export interface ISessions extends ISessionsStripped {
 
 /* used to pass required data back to sessions parent */
 export interface ISessionsData {
-  sessions$: Observable<ISessions>;
+  sessions: ISessions;
   rowIndex: number;
 }
 

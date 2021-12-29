@@ -8,7 +8,6 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
 import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
-import { Observable } from 'rxjs';
 import { EventEmitter } from 'events';
 
 import { EARLIEST_DATE } from '../../../scores-module/models/scores-models';
@@ -24,7 +23,7 @@ import {
 /**
  * @title Training sessions table.
  *
- * This component is enabled by the parent component. The parent component passes in a sessions observable object.
+ * This component is enabled by the parent component. The parent component passes in a sessions object.
  *
  * Requirements:
  *
@@ -32,7 +31,7 @@ import {
  *
  * 2. The user can select a date from a datepicker. This component then loads the corresponding sessions data from the backend and displays it. The parent component passes in the member id to allow the data be retrieved from the backend.
  *
- * 3. This component registers an event handler so that if the user clicks on a row in the table an event is emitted to the parent component. It passes an updated sessions object observable, (i.e. updated as required so it corresponds to the latest selected date), along with the index of the clicked row, to the parent component.
+ * 3. This component registers an event handler so that if the user clicks on a row in the table an event is emitted to the parent component. It passes an updated sessions object, (i.e. updated as required so it corresponds to the latest selected date), along with the index of the clicked row, to the parent component.
  *
  * Note: This component uses an ngx-datatable component as a custom ngx-formly type to display the data table. This component is part of the formly-base module, contained in the shared module.
  */
@@ -44,7 +43,7 @@ import {
 export class SessionsComponent {
   //
   /* sessions object passed in from parent and passed as the form model to the datatable */
-  @Input() sessions$!: Observable<ISessions>;
+  @Input() sessions!: ISessions;
   /* memberId passed in from parent */
   @Input() memberId!: number;
   /* event to pass data  to parent to allow updating */
@@ -326,10 +325,14 @@ export class SessionsComponent {
   #onDateChange = (date: Date): void => {
     this.logger.trace(`${SessionsComponent.name}: #onDateChange called`);
     if (this.form.valid) {
-      this.sessions$ = this.isLoadingService.add(
-        this.sessionsService.getOrCreateSessions(this.memberId, date),
+      this.isLoadingService.add(
+        this.sessionsService
+          .getOrCreateSessions(this.memberId, date)
+          .subscribe((sessions) => {
+            this.sessions = sessions;
+          }),
       );
-      this.#tableChange.emit('modelChange');
+      // this.#tableChange.emit('modelChange');
     }
   };
 
@@ -338,7 +341,7 @@ export class SessionsComponent {
     /* when the user clicks on the datatable it causes required data to be passed to the parent component */
     this.#tableClick.subscribe((rowIndex: number) => {
       this.editSession.emit({
-        sessions$: this.sessions$,
+        sessions: this.sessions,
         rowIndex: rowIndex,
       });
     });
