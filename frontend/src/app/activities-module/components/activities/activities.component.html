@@ -7,7 +7,6 @@
 >
 </app-text-info>
 
-
 <div
   class="fill-width"
   fxLayout="row"
@@ -94,18 +93,6 @@
       <mat-cell *matCellDef="let row">{{row.comment}}</mat-cell>
     </ng-container>
 
-    <ng-container [matColumnDef]="displayedColumns[4]">
-      <mat-header-cell
-        *matHeaderCellDef
-      ></mat-header-cell>
-      <mat-cell *matCellDef="let row">
-        <app-button
-          (click)="editActivity(row)"
-          [icon]="'edit'"
-          ></app-button>
-      </mat-cell>
-    </ng-container>
-
     <mat-header-row *matHeaderRowDef="displayedColumns sticky: true">
     </mat-header-row>
 
@@ -116,16 +103,6 @@
     >
     </mat-row>
 
-
-    <!-- Row shown when there is no matching data. -->
-    <tr class="mat-row" *matNoDataRow>
-      <td
-        class="mat-cell"
-        colspan="4"
-      >
-          No activity records to display"
-      </td>
-    </tr>
   </mat-table>
 
   <mat-paginator

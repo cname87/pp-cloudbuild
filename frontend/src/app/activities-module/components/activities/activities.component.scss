@@ -14,13 +14,11 @@ mat-label {
 }
 
 div.container {
-  height: calc(65vh);
   overflow: auto;
 }
 
-mat-header-cell div.mat-sort-header-content {
+.mat-header-cell {
   color: var(--primary-color-normal);
-  text-align: center;
 }
 
 .mat-paginator-sticky {
@@ -54,6 +52,5 @@ mat-header-cell div.mat-sort-header-content {
     date: (pc-flex: 15%, align: center, margin-right: 0px),
     type: (pc-flex: 25%, align: center, margin-right: 0px),
     duration: (pc-flex: 15%, align: center, margin-right: 0px),
-    comment: (pc-flex: 35%, align: left, margin-right: calc(var(--default-gap-px) / 2 )),
-    edit: (pc-flex: 10%, align: center, margin-right: 0px),
+    comment: (pc-flex: 45%, align: left, margin-right: var(--default-gap-px )),
 ));
