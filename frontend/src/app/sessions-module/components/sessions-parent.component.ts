@@ -3,6 +3,7 @@ import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import clonedeep from 'lodash.clonedeep';
 
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
 import { SessionsService } from '../services/sessions.service';
@@ -151,11 +152,14 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
    */
   editSession(sessionsData: ISessionsData): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
-    /* store the input sessions data and rowIndex to allow for updating the sessions object with an updated training session object later */
-    this.sessionsTemp = sessionsData.sessions;
+    /* store an independent copy of the input sessions data, and the rowIndex, to allow for updating the sessions object with an updated training session object later */
+    this.sessionsTemp = clonedeep(sessionsData.sessions);
     this.rowIndex = sessionsData.rowIndex;
     /* get the session from the input sessions object to allow it be sent to the session update page for updating */
-    this.session = this.#getSession(this.sessionsTemp, sessionsData.rowIndex);
+    this.session = this.#getSession(
+      sessionsData.sessions,
+      sessionsData.rowIndex,
+    );
     /* change the view to show the session update form */
     this.showSessions = false;
     this.showSession = true;
