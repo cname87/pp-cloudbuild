@@ -1,21 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
-import { catchError, map, takeUntil } from 'rxjs/operators';
+import { catchError, map, switchMap, takeUntil } from 'rxjs/operators';
 import { Observable, of, Subject } from 'rxjs';
 
 import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
-// import { SessionsService } from '../services/sessions.service';
+import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
 
 /**
- * @title This is the parent component of both the sessions table and the specific session editing table.
+ * @title Parent component of the sessions table and the specific session editing form.
  *
- * On startup it receives a sessions object from the route resolver and sets the sessions$ variable which causes the sessions table component to be shown. the session variable is undefined on startup which causes the session edit table not to be shown.
+ * On startup it receives a sessions object from the route resolver and causes the sessions table component to be shown.
  *
- * The sessions object will fire an event when the sessions table is clicked, causing the detail on an individual session to be passed in. This causes the session update form to be displayed, displaying the passed in session detail.
+ * The sessions component will fire an event when a row in the sessions table is clicked, passing in sessions data and row data. The sessions data is saved for later updating, This component then displays the session update form, displaying the passed in session detail.
  *
- * When the session form is submitted the updated detail is passed back to this component via an event.
+ * When the session form is submitted by the user the updated session detail is passed back to this component via an event. This component updates the previously stored sessions object with the updated session, updates the backend with the sessions object, and calls the sessions table component with the updated sessions object.
  */
 @Component({
   selector: 'app-session-parent',
@@ -27,12 +27,15 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   //
   /* member id passed to sessions component */
   memberId!: number;
+  /* show session or sessions components */
+  showSession = false;
+  showSessions = true;
   /* sessions list observable passed to, and enabling, sessions component */
-  sessions$!: Observable<ISessions> | undefined;
+  sessions$!: Observable<ISessions>;
   /* clicked session passed to, and enabling, session component */
-  session: ISession | undefined = undefined;
+  session$!: Observable<ISession>;
   /* used to store sessions data temporarily */
-  sessionsTemp!: ISessions;
+  sessionsTemp$!: Observable<ISessions>;
   /* index row of edited row */
   rowIndex!: number;
   /* used to unsubscribe */
@@ -40,7 +43,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    // private sessionsService: SessionsService,
+    private sessionsService: SessionsService,
     private routeStateService: RouteStateService,
     private logger: NGXLogger,
   ) {
@@ -60,25 +63,81 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     throw err;
   };
 
-  #getSessions(session: ISession): ISessions {
+  /**
+   * Gets a specific training session from an Observable<ISessions> object. The specific training session is given by the input rowIndex.
+   * @param inputSessions$ An observable<ISessions> object - the ISessions object contains a property 'sessions' which is an array of training session data.
+   * @param roIndex The index of the 'sessions' array to return.
+   * @returns An observable of a specific training session object,
+   */
+  #getSession$(
+    inputSessions$: Observable<ISessions>,
+    rowIndex: number,
+  ): Observable<ISession> {
+    this.logger.trace(`${SessionsParentComponent.name}: Starting #getSession$`);
+    return inputSessions$.pipe(
+      switchMap((inputSessions) => {
+        return of(inputSessions.sessions[rowIndex]);
+      }),
+      takeUntil(this.#destroy$),
+      catchError(this.#catchError),
+    );
+  }
+  /**
+   * Gets an updated Observable<ISessions> object from an input Observable<ISessions> object by replacing a specific training session with updated data.
+   * @param inputSessions$ An observable of an ISessions object that is to be updated.
+   * @param inputSession An ISession object, i.e. data on a training session that is to be updated in inputSessions$.
+   * @param rowIndex The index of the training sessions array to be replaced.
+   * @returns An observable of the updated ISessions object,
+   */
+  #getSessions$(
+    inputSessions$: Observable<ISessions>,
+    inputSession: ISession,
+    rowIndex: number,
+  ): Observable<ISessions> {
     this.logger.trace(
       `${SessionsParentComponent.name}: Starting #getSessions$`,
     );
-    this.sessionsTemp.sessions[this.rowIndex].type = session.type;
-    this.sessionsTemp.sessions[this.rowIndex].rpe = session.rpe;
-    this.sessionsTemp.sessions[this.rowIndex].duration = session.duration;
-    this.sessionsTemp.sessions[this.rowIndex].comment = session.comment;
-    return this.sessionsTemp;
+    return inputSessions$.pipe(
+      map((inputSessions) => {
+        inputSessions.sessions[rowIndex].type = inputSession.type;
+        inputSessions.sessions[rowIndex].rpe = inputSession.rpe;
+        inputSessions.sessions[rowIndex].duration = inputSession.duration;
+        inputSessions.sessions[rowIndex].comment = inputSession.comment;
+        return inputSessions;
+      }),
+      takeUntil(this.#destroy$),
+      catchError(this.#catchError),
+    );
+  }
+
+  /**
+   * Updates the backend database with a sessions object.
+   * @param inputSessions Sessions object to be sent to the database.
+   */
+  #updateSessions(inputSessions: ISessions): void {
+    this.logger.trace(
+      `${SessionsParentComponent.name}: #updateSessions called`,
+    );
+    this.sessionsService
+      .updateSessionsTable(inputSessions)
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((returnedSessions: ISessions) => {
+        this.logger.trace(
+          `${
+            SessionsParentComponent.name
+          }: Sessions table updated: ${JSON.stringify(returnedSessions)}`,
+        );
+      });
   }
 
   ngOnInit(): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnInit`);
-    /* get the data as supplied from the route resolver */
+    /* sets the sessions$ object to the data as supplied from the route resolver */
     this.sessions$ = this.route.data.pipe(
-      takeUntil(this.#destroy$),
       map((data: Data) => {
         return data.sessions;
       }),
+      takeUntil(this.#destroy$),
       catchError(this.#catchError),
     );
     /* update route state with member id */
@@ -103,23 +162,44 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
    */
   editSession(sessionsData: ISessionsData): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
-    this.sessionsTemp = sessionsData.sessions;
+    /* store the input sessions data and rowIndex to allow for updating the sessions object with an updated training session object later */
+    this.sessionsTemp$ = sessionsData.sessions$;
     this.rowIndex = sessionsData.rowIndex;
-    this.sessions$ = undefined;
-    this.session = sessionsData.session;
+    /* get the session from the input sessions object to allow it be sent to the session update page for updating */
+    this.session$ = this.#getSession$(
+      sessionsData.sessions$,
+      sessionsData.rowIndex,
+    );
+    /* change the view to show the session update form */
+    this.showSessions = false;
+    this.showSession = true;
   }
 
   /**
-   * Called when an updated session is passed from the session update component. Causes an updated sessions table to be shown.
+   * Called when an updated session, or undefined, is passed from the session update component.
+   * It sets the sessions$ property and causes an updated sessions table to be shown.
    */
-  doneSession(session: ISession | undefined): void {
+  doneSession(inputSessionOrUndefined: ISession | undefined): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting doneSession`);
-    this.session = undefined;
-    if (!!session) {
-      this.sessions$ = of(this.#getSessions(session));
+    if (!!inputSessionOrUndefined) {
+      /* get an updated sessions observable object */
+      this.sessions$ = this.#getSessions$(
+        this.sessionsTemp$,
+        inputSessionOrUndefined,
+        this.rowIndex,
+      );
+      this.sessions$
+        .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+        .subscribe((sessions) => {
+          this.#updateSessions(sessions);
+        });
     } else {
-      this.sessions$ = of(this.sessionsTemp);
+      /* if no session is passed in then return the unchanged sessions object back to the sessions page */
+      this.sessions$ = this.sessionsTemp$;
     }
+    /* change the view */
+    this.showSessions = true;
+    this.showSession = false;
   }
 
   ngOnDestroy(): void {

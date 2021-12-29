@@ -1,13 +1,14 @@
 <app-session
-  *ngIf="session"
-  [session]="session"
-  (doneEvent)="doneSession($event)"
+  *ngIf="showSession"
+  [session$]="session$"
+  (doneSession)="doneSession($event)"
 >
 </app-session>
 
 <app-sessions
-  *ngIf="sessions$ | async"
+  *ngIf="showSessions"
   [sessions$]="sessions$"
+  [memberId]="memberId"
   (editSession)="editSession($event)"
 >
 </app-sessions>

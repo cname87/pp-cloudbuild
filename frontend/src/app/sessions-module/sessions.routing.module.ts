@@ -17,7 +17,7 @@ const routes: Routes = [
     },
     children: [
       {
-        path: 'session/:sid',
+        path: 'session/:id',
         component: SessionsParentComponent,
       },
     ],

@@ -10,15 +10,22 @@ import {
   ERpeScore,
   rpeNames,
 } from '../../models/sessions-models';
+import { catchError, Observable, Subject, takeUntil } from 'rxjs';
 
 /**
- * @title This component shows a form allowing detail on a training session be entered.
+ * @title Training session update form.
  *
- * This component is enabled when detail on a specific training session is input from the parent sessions component. The session detail is displayed in a form.
+ * This component is enabled by the parent component. The parent component passes in a session observable object.
  *
- * The session properties can be edited and submitted.
+ * This component displays a form allowing detail on a training session be entered.
  *
- * An event is emitted when the form is submitted. This is picked up by the sessions-parent component which redisplays an updated activities component.
+ * Requirements:
+ *
+ * 1. This component displays a form corresponding to the passed-in session object, allowing data for a specific training session be updated.
+ *
+ * 2. The user can edit session properties. The user can press a cancel button or a submit button.
+ *
+ * 3. An event is emitted to the parent component when the a button is pressed. This passes no data (undefined) is the cancel button is submitted and the updated form session object if the submit button is pressed
  */
 
 @Component({
@@ -30,8 +37,11 @@ import {
 export class SessionComponent implements OnInit {
   //
   /* session to be retrieved */
-  @Input() session!: ISession;
-  @Output() doneEvent = new EventEmitter<ISession | undefined>();
+  @Input() session$!: Observable<ISession>;
+  @Output() doneSession = new EventEmitter<ISession>();
+
+  /* used to unsubscribe */
+  #destroy$ = new Subject<void>();
 
   /* define the text info card */
   line1 = '- Enter data in each field and click the UPDATE button';
@@ -134,22 +144,50 @@ export class SessionComponent implements OnInit {
     this.logger.trace(`${SessionComponent.name}: Starting SessionComponent`);
   }
 
+  /**
+   * Picks up any upstream errors and throws on the error.
+   * @param err An error object
+   * @throws Throws the received error object
+   */
+  #catchError = (err: any): never => {
+    this.logger.trace(`${SessionComponent.name}: #catchError called`);
+    this.logger.trace(`${SessionComponent.name}: Throwing the error on`);
+    throw err;
+  };
+
+  /**
+   * Emits an event to pass an updated session or to indicate no changes were made
+   * @param sessionOrUndefined An updated session object or undefined (to indicate no changes made).
+   */
+  #emitDone(sessionOrUndefined: ISession | undefined = undefined): void {
+    this.doneSession.emit(sessionOrUndefined);
+  }
+
+  /* subscribes to the session$ observable to create an object linked directly to the form model */
   ngOnInit(): void {
     this.logger.trace(`${SessionComponent.name}: Starting ngOnInit`);
-    this.model = this.session;
+    this.session$
+      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
+      .subscribe((session) => {
+        this.model = session;
+      });
   }
 
-  #emitDone(session: ISession | undefined = undefined): void {
-    this.doneEvent.emit(session);
-  }
-
+  /* called when cancel button pressed */
   cancel(): void {
+    this.form.disable();
     this.#emitDone();
   }
 
+  /* called when update button pressed */
   update(): void {
-    /* disable to avoid multiple submissions */
     this.form.disable();
     this.#emitDone(this.model);
+  }
+
+  ngOnDestroy(): void {
+    this.logger.trace(`${SessionComponent.name}: #ngDestroy called`);
+    this.#destroy$.next();
+    this.#destroy$.complete();
   }
 }
