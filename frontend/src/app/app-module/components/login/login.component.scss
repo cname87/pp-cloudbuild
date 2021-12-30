@@ -6,10 +6,16 @@
 }
 
 .header {
-  color: white;
+  color: var(--primary-color-normal);
   font-size: 1.25rem;
 }
 
 app-button {
   margin-left: var(--default-gap-px);
+}
+
+.fit-picture {
+  display: block;
+  text-align: center;
+  height: calc(16px + var(--default-gap-px) * 3);
 }

@@ -3,7 +3,7 @@
  *
  * The GitHub repo does not store secrets files - these are stored in Cloud Storage.
  *
- * Therefor, when you clone from the Git repo you need to create some directories and download these files.  When GCP triggers a build from Github it copies in the GitHub repo but also needs to copy the secrets files from Cloud Storage.  Therefore the files on the GCP Local Storage environment must be kept up to date.
+ * Therefore, when you clone from the Git repo you need to create some directories and download these files.  When GCP triggers a build from Github it copies in the GitHub repo but also needs to copy the secrets files from Cloud Storage.  Therefore the files on the GCP Local Storage environment must be kept up to date.
  *
  * When the files are downloaded they are saved in a directory matching the Cloud Storage file path.  To make this give the expected result a directory on the Cloud Storage bucket is created that matches the name of the rootpath (i.e. the directory containing package.json) and a deltaPath is configured to each file from the root path and the local and Cloud Storage filepaths are constructed from that delta path.
  *
@@ -46,7 +46,7 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(
 );
 
 /* Name of the bucket on GCP Storage */
-const bucketName = 'project-perform-gcp-environment-files';
+const bucketName = 'project-perform-cb-secrets';
 
 /* Upload a file to GCP Storage*/
 const uploadFile = async (srcFilename: string, destFilename: string) => {

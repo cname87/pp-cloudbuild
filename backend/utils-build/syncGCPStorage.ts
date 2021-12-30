@@ -12,13 +12,6 @@ const envBackend = {
   deltaPath: '',
 };
 
-const databaseCertsPath = 'certs/database/';
-const dbCerts = {
-  filesToLoad: ['mongoKeyAndCert.pem', 'rootCA.crt'],
-  /* Path relative to directory containing package.json */
-  deltaPath: databaseCertsPath,
-};
-
 const gcpKeyPath = '../certs/gcpStorage/';
 const gcpStorageKey = {
   filesToLoad: ['gcpStorageKey.json'],
@@ -26,7 +19,9 @@ const gcpStorageKey = {
   deltaPath: gcpKeyPath,
 };
 
-export const loadJobs = [envBackend, dbCerts, gcpStorageKey];
+export const loadJobs = [envBackend, gcpStorageKey];
+
+/* NOTE: To store a long-lived version so it can be retrieved if cloning the repo in the future then manually append the date, e.g '20211230-' below */
 
 /* The root directory to store the files on the gsutil bucket */
 export const rootDir = 'backend/';

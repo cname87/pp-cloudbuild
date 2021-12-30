@@ -1,5 +1,7 @@
 # Development
 
+Date: 30-Dec-21
+
 ## Development Environment
 
 The development environment used was VSCode IDE running on a laptop on Ubuntu.  All required products such as gcloud, docker, kubectl, etc are installed under Ubuntu.
@@ -11,40 +13,35 @@ It is possible to develop on a laptop running Windows 10.  In this case set up a
 The nvm package allows you load various node versions.
 
 - Use the LTS version during development and test.
-- Reference that version in the launch.json file so that version is used for VSCode debug launches.
+- You can reference that version in launch.json file configurations, using 'runtimeVersion' so that version is used for VSCode debug launches.
 - Reference that version in the backend Dockerfile so the built Docker image uses the same version in production.
-- Reference that version in the nodeWithPuppeteer Dockerfile, which image is used during cloud builds so that the cloud build tests use the same version.  
 
 ## Installing on a local environment from GitHub
 
-- Clone the repo from <https://github.com/cname87/project-perform-k8es.git>.
+- Clone the repo from <https://github.com/cname87/pp-project-perform.git>.
 
-- Download the secrets files that are not stored on Github.  They are stored on GCP Cloud Storage. The secrets files from the last tagged release and last Git commit are stored in 'project-perform-release-xxx' where xxx is the SHA of the Git commit. The buckets are labelled. A bucket called 'project-perform-gcp-environment-files' stores the secrets from the current working VScode project.
+  - Access GCP Cloud Storage from the browser and download the GCP Storage key.  This is stored in GCP Storage, in the 'project-perform-cb-secrets' bucket, in the file backend/../certs/gcpStorage/gcpStorageKey.json. Copy it to /certs/gcpStorage/gcpStoragekey.json' in the local project. This is needed for the application to access the Cloud Storage account:
+    - Note that this file is uploaded by the backend secrets upload script - see below.
+    - Note: If you ever change the service account access key then store the new key in the above locations.
 
-  - Manually download the GCP Storage key, from './certs/gcpStorage/'Copy of gcpStorageKey.json' on GCP Storage to ./certs/gcpStorage/gcpStoragekey.json' in the local project. This is needed for the application to access the Cloud Storage account: Access GCP Cloud Storage from the browser and manually download 'Copy of gcpStorageKey.json' from the certs/gcpStorage directory on GCP Storage to the local 'certs/gcpStorage' directory.
-
-  - Download the secrets files from GCP Cloud Storage. Choose the right bucket from the label and download manually using gsutil.  If you are using the current working versions you can run the loadSecretsFiles scripts from both the frontend and backend package.json files - type 'npm run loadSecretsFiles' in /frontend and /backend.
-
-Note: The backend utility downloads the secrets in the project root and these are stored in the backend directory on GCP Storage in '../'.  The gcpStorageKey.json file is also stored in ./certs/gcpStorage/'Copy of gcpStorageKey.json'. If you ever change the service account access key then you just store the new key in this location as well as in the project ./certs/gcpStorage directory.
-
+- Download the application secrets files that are not stored on Github.  They are stored on GCP Cloud Storage in the'project-perform-cb-secrets' bucket. The secrets files are uploaded to this bucket every time a utility included in package.json is run in a frontend or backend build script. Download manually using gsutil.  You can also run the loadSecretsFiles scripts from both the frontend and backend package.json files - type 'npm run loadSecretsFiles' in /frontend and /backend.
+  - The backend secrets files are .envDevelopment and .envProduction, and .env-staging.
+  - The frontend secrets files are .env-e2e-dev, .env-e2e-production, and .env-e2e-staging.
+  - The gcp key file gcpStorage.json is also uploaded by the backend script - see above.
+  
 Note: A dummy file '.gitkeep' is placed in all directories that contain only secrets as they would not be created in the GitHub repo otherwise.
 
-NOTE: The loadSecretFiles actually uploads secrets if they are in the local repo and only downloads any that are missing from GCP Storage on the GCP project with ID project-perform. The GCP project must have billing enabled for this to run.
+Note: There are separate syncGCPStorageUtils.ts files in both front end and back end even though they are identical.  (TO DO: Merge them). They include the name of the GCP bucket and the path to the GCP Storage key.  The npm loadSecretFiles script calls this and it actually uploads secrets if they are in the local repo and only downloads any that are missing in the local repo.  It downloads from GCP Storage on the GCP project with ID project-perform. The GCP project must have billing enabled for this to run.
 
 ### Install dependencies if necessary
 
 Run 'npm install' in the frontend and backend directories.
 
-You can run 'ncu' (install npm-check-updates globally or use npx) to check if the package.json dependencies are at their latest versions.  Only do this on a stable system, and be careful about updating dependencies with major version changes, i.e. be prepared to test and debug, or rollback.
+You can run 'ncu' (install npm-check-updates globally, or use npx) to check if the package.json dependencies are at their latest versions.  Only do this after you have a stable system, and be careful about updating dependencies with major version changes, i.e. be prepared to test and debug, or rollback.
 
-You can run 'depcheck' (install depcheck globally or use npx) to check for any unused dependencies.  Again only do this on a stable system.
+You can run 'gcloud components update' to update gcloud SDK including kubectl.
 
-You can also:
-
-- Run 'gcloud components update' to update gcloud SDK including kubectl.
-- Upgrade Skaffold and Helm - see their installation instructions.
-
-## Running local build
+## Running local builds
 
 ### Backend build
 
@@ -54,11 +51,12 @@ NOTE: The backend build utility runs the loadSecretsFiles script - see the note 
 ### Frontend build
 
 Run 'npm run build:dev' for development, or 'npm run build:e2e' for e2e test, or 'npm run build:prod' for production, from the frontend directory.
+
 These runs prettier on all files, then eslint, then transpiles, builds and creates a new dist directory containing the built files.
 
 An e2e build includes setting an environment file that allows certain error tests be carried out. A production build employs optimization techniques.
 
-Note: The scripts serve:dev, serve:e2e, and serve:production use the corresponding builds automatically to start a server running on <http://localhost:4200>.
+Note: The scripts serve:dev, serve:e2e, and serve:production, use the corresponding builds automatically to start a server running on <http://localhost:4200>.
 
 ## Running unit tests
 
@@ -94,7 +92,15 @@ The script e2e:production runs e2e tests on a production build, i.e. error testi
 
 Note: A VSCode task 'Taskkill' kills all node processes and can be used to kill all running servers.
 
+## Version control
+
+Maintain local git master and working branches using VSCode. When a branch is complete, then merge the branch to master, test, and push to the remote origin.
+
+## Deploying to production
+
+Refer to the script runbuild.sh in the project root directory.  This builds, pushes docker images to the GCP Registry and deploys to GCP Cloud Run.
+
 ### Storing production files
 
-- The production images are stored in gcr.io/project-perform/pp-backend/production as per the cloudbuild production settings.
-- Manually copy the secrets from the Cloud Storage buckets to another storage bucket named 'project-perform-release-COMMIT-SHA' where COMMIT-SHA is taken from the git commit.
+- The production images are stored in gcr.io/project-perform/pp-backend/production and gcr.io/project-perform/pp-backend/production as per the runbuild.sh script.
+- When releasing a long-lived production version then copy the secrets to the Cloud Storage bucket by manually editing the target directory in the syncGCPStorage.ts scripts, adding 'yyyymmdd-' in front of 'backend' or 'frontend'.  Thus you have a copy of the secrets associated with releases.  If you make an significant change to the secrets files then also do this.

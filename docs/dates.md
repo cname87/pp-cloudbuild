@@ -1,5 +1,7 @@
 # Date Handling
 
+30-Dec-21
+
 This file explains how dates are handled in the frontend and backend.
 
 ## Material Datepicker supplied date
@@ -14,9 +16,9 @@ Note: This means the manipulated date will always be of the format 'yyyy-mm-ddT0
 
 ## A note on OpenApi validation checking
 
-The body of a request sent from the front end is checked when it reaches the backend, i.e. the body is serialized before it is checked against the OpenApi request specification.
+The body of a request sent from the front end is checked when it reaches the backend, i.e. a date in the body is serialized before it is checked against the OpenApi request specification.
 
-The body of a response sent from the backend is checked before it is serialized by the res.json() method. Therefore the OpenAPi specification refers to the pre-serialized body object.
+The body of a response sent from the backend is checked before it is serialized by the res.json() method. Therefore the OpenAPi specification refers to the pre-serialized body object when sending from the backend.
 
 ## Sending a date from the frontend in a Request body
 
@@ -31,6 +33,6 @@ The scores or sessions object is sent with the date field set to a Date object. 
 
 The date field is represented as a Date object in the Scores or Sessions object.  It is checked before serialization in res.json() (and I do not convert it), and therefore it is represented as an 'object' in the OpenApi specification. The date is serialized to a date string by res.json().  It is converted to a Date object on reception in the front end.
 
-## Sending a summary table which is an array of objects with date fields in a Response field
+## Sending a summary table, which is an array of objects with date fields, from the backend, in a Response field
 
 The Summary object consists of an array of objects. The date field in each element in the array is a Date object. This is what gets checked against the OpenApi specification (as the OpenApi validation is done before the body is serialized) and therefore I represent this date field as an 'object' in OpenApi.  It is serialized by res.json() before being sent.

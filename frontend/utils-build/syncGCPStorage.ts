@@ -14,5 +14,7 @@ const envFrontendE2e = {
 
 export const loadJobs = [envFrontendE2e];
 
+/* NOTE: To store a long-lived version so it can be retrieved if cloning the repo in the future then manually append the date, e.g '20211230-' below */
+
 /* The root directory to store the files on the gsutil bucket */
 export const rootDir = 'frontend/';
