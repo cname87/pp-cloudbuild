@@ -84,7 +84,7 @@ export class ActivitiesDataProvider {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
-          return throwError(errReport);
+          return throwError(() => errReport);
         }),
       );
   }
@@ -128,7 +128,7 @@ export class ActivitiesDataProvider {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
-          return throwError(errReport);
+          return throwError(() => errReport);
         }),
       );
   }
@@ -178,7 +178,7 @@ export class ActivitiesDataProvider {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
-          return throwError(errReport);
+          return throwError(() => errReport);
         }),
       );
   }
@@ -229,7 +229,7 @@ export class ActivitiesDataProvider {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
-          return throwError(errReport);
+          return throwError(() => errReport);
         }),
       );
   }
@@ -279,7 +279,7 @@ export class ActivitiesDataProvider {
           this.logger.trace(
             `${ActivitiesDataProvider.name}: Throwing the error on`,
           );
-          return throwError(errReport);
+          return throwError(() => errReport);
         }),
       );
   }

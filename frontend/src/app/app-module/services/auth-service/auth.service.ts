@@ -93,7 +93,7 @@ export class AuthService {
       this.logger.trace(`${AuthService.name}: auth0Client$ catchError called`);
       /* fail with warning */
       err.isHandled = false;
-      return throwError(err);
+      return throwError(() => err);
     }),
   );
 
@@ -110,7 +110,7 @@ export class AuthService {
       );
       /* fail with warning */
       err.isHandled = false;
-      return throwError(err);
+      return throwError(() => err);
     }),
   );
 
@@ -130,7 +130,7 @@ export class AuthService {
       err.isHandled = true;
       /*  error handler will logout (which presents the login page again) */
       err.allocatedType = errorTypes.auth0Redirect;
-      return throwError(err);
+      return throwError(() => err);
     }),
   );
 
@@ -154,7 +154,7 @@ export class AuthService {
       /* replace the namespaced properties with simpler names */
       map((user) => {
         if (!user) {
-          return throwError('No user returned by Auth0');
+          return throwError(() => new Error('No user returned by Auth0'));
         } else {
           user.id = user[userClaims.id];
           user.roles = user[userClaims.roles];
@@ -166,7 +166,7 @@ export class AuthService {
         this.logger.trace(`${AuthService.name}: getUser$ catchError called`);
         /* fail with warning */
         err.isHandled = false;
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
 
@@ -187,7 +187,7 @@ export class AuthService {
         this.logger.trace(`${AuthService.name}: checkAuth$ catchError called`);
         /* fail with warning */
         err.isHandled = false;
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
     checkAuth$.subscribe((response: User | boolean | undefined) => {
@@ -214,7 +214,7 @@ export class AuthService {
         );
         /* fail with warning */
         err.isHandled = false;
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
     authComplete$.subscribe(([_user, _loggedIn]) => {
@@ -285,7 +285,7 @@ export class AuthService {
         );
         /* fail with warning */
         err.isHandled = false;
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
 }

@@ -109,7 +109,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         this.logger.trace(
           `${HttpErrorInterceptor.name}: Throwing error report on`,
         );
-        return throwError(errReport);
+        return throwError(() => errReport);
       }),
     );
   }

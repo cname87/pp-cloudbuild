@@ -50,7 +50,7 @@ export class ActivitiesService {
         err.isHandled = true;
 
         this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
   }
@@ -80,7 +80,7 @@ export class ActivitiesService {
         errReport.isHandled = true;
 
         this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
-        return throwError(errReport);
+        return throwError(() => errReport);
       }),
     );
   }
@@ -103,7 +103,7 @@ export class ActivitiesService {
         err.isHandled = true;
 
         this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
   }
@@ -131,7 +131,7 @@ export class ActivitiesService {
         errReport.isHandled = true;
 
         this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
-        return throwError(errReport);
+        return throwError(() => errReport);
       }),
     );
   }
@@ -159,7 +159,7 @@ export class ActivitiesService {
         errReport.isHandled = true;
 
         this.logger.trace(`${ActivitiesService.name}: Throwing the error on`);
-        return throwError(errReport);
+        return throwError(() => errReport);
       }),
     );
   }

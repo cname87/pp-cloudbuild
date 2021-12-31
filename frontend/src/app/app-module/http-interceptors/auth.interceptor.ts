@@ -40,7 +40,7 @@ export class AuthInterceptor implements HttpInterceptor {
         this.logger.trace(`${AuthService.name}: catchError called`);
         /* fail with warning */
         err.isHandled = false;
-        return throwError(err);
+        return throwError(() => err);
       }),
     );
   }
