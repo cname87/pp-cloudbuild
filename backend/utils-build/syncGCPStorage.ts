@@ -7,7 +7,12 @@
 /* Define a set of upload jobs */
 
 const envBackend = {
-  filesToLoad: ['.envDevelopment', '.envStaging', '.envProduction'],
+  filesToLoad: [
+    '.envAuthorization.json',
+    '.envDevelopment',
+    '.envStaging',
+    '.envProduction',
+  ],
   /* Path relative to directory containing package.json */
   deltaPath: '',
 };

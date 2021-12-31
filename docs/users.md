@@ -14,3 +14,7 @@ When a user is added in the OAuth database you set it's role to either Admin or 
 4. Log in to the 0Auth website and add a user filling in the name, an email and a password.
 5. NB: Add { member id } to the app metadata under the user - look at another user to see exactly what is required.  This is needed so when a user login in they are routed to their data.
 6. Log in with the new user email and password and check operation.
+
+## Permissions
+
+The file, '/backend/.envAuthorization' captures all permissions that are included in the jwt token and need to be checked in the backend on the incoming requests.

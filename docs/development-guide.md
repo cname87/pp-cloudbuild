@@ -25,7 +25,7 @@ The nvm package allows you load various node versions.
     - Note: If you ever change the service account access key then store the new key in the above locations.
 
 - Download the application secrets files that are not stored on Github.  They are stored on GCP Cloud Storage in the'project-perform-cb-secrets' bucket. The secrets files are uploaded to this bucket every time a utility included in package.json is run in a frontend or backend build script. Download manually using gsutil.  You can also run the loadSecretsFiles scripts from both the frontend and backend package.json files - type 'npm run loadSecretsFiles' in /frontend and /backend.
-  - The backend secrets files are .envDevelopment and .envProduction, and .env-staging.
+  - The backend secrets files are .envAuthorization.json, .envDevelopment and .envProduction, and .env-staging.
   - The frontend secrets files are .env-e2e-dev, .env-e2e-production, and .env-e2e-staging.
   - The gcp key file gcpStorage.json is also uploaded by the backend script - see above.
   
