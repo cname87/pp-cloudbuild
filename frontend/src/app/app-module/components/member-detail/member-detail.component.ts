@@ -5,7 +5,7 @@ import { Observable, of, Subject } from 'rxjs';
 
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { RouteStateService } from '../../services/route-state-service/router-state.service';
+import { RouteStateService } from '../../services/route-state-service/route-state.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ScoresService } from '../../../scores-module/services/scores.service';
 import { SessionsService } from '../../../sessions-module/services/sessions.service';
@@ -85,6 +85,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             throw new Error('id path parameter was null');
           }
           this.#id = +id;
+          this.routeStateService.updateIdState(id);
           return id;
         }),
         takeUntil(this.#destroy$),
@@ -126,6 +127,5 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

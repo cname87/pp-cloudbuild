@@ -9,7 +9,7 @@ import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
 import { IScores, EARLIEST_DATE } from '../models/scores-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
 import { ScoresService } from '../services/scores.service';
 
 /**
@@ -371,6 +371,5 @@ export class ScoresComponent implements OnDestroy {
     this.logger.trace(`${ScoresComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

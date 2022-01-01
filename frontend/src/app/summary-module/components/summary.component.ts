@@ -20,7 +20,7 @@ import {
   ERowNumbers,
   TDateData,
 } from '../models/summary-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
 
 /**
  * @title Summary data table and charts
@@ -232,6 +232,5 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.logger.trace(`${SummaryComponent.name}: ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

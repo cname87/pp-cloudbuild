@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { catchError, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
 import { ActivitiesService } from '../services/activities.service';
 import {
   EActivityType,
@@ -149,6 +149,5 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${ActivitiesParentComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

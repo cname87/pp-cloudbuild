@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 
 import { routes, roles } from '../../../configuration/configuration';
 import { combineLatest, of } from 'rxjs';
-import { RouteStateService } from '../../services/route-state-service/router-state.service';
+import { RouteStateService } from '../../services/route-state-service/route-state.service';
 
 interface ILink {
   path: string;
@@ -44,7 +44,8 @@ export class NavComponent implements OnInit {
       this.routeStateService.id$,
       this.auth.userProfile$ || of({ roles: [''] }),
     ]).subscribe(([id, user]) => {
-      const disabled = id === '' ? true : false;
+      /* The routeStateService is used to set the id parameter for the routes(i.e.based on the active user), and also to disable the user routes in routes which have no id parameter, e.g.the member list component. */
+      const disabled = !id ? true : false;
       this.links = [
         {
           path: `/${this.#membersList.path}`,

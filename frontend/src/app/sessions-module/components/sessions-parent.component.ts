@@ -5,7 +5,7 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import clonedeep from 'lodash.clonedeep';
 
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
 
@@ -192,6 +192,5 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${SessionsParentComponent.name}: #ngDestroy called`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }
