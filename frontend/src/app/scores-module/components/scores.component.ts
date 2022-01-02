@@ -9,7 +9,7 @@ import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
 import { IScores, EARLIEST_DATE } from '../models/scores-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { ScoresService } from '../services/scores.service';
 
 /**
@@ -264,7 +264,7 @@ export class ScoresComponent implements OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private scoresService: ScoresService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
@@ -293,7 +293,7 @@ export class ScoresComponent implements OnDestroy {
         catchError(this.#catchError),
       )
       .subscribe((id) => {
-        this.routeStateService.updateIdState(id);
+        this.userIdStateService.updateIdState(id);
       });
   }
 

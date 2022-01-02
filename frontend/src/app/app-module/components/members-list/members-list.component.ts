@@ -11,7 +11,7 @@ import {
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../services/members-service/members.service';
 import { routes } from '../../../configuration/configuration';
-import { RouteStateService } from '../../services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../services/user-id-state-service/user-id-state.service';
 
 /**
  * This component displays a list of members.
@@ -36,7 +36,7 @@ export class MembersListComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private membersService: MembersService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private logger: NGXLogger,
     private isLoadingService: IsLoadingService,
   ) {
@@ -72,7 +72,7 @@ export class MembersListComponent implements OnInit, OnDestroy {
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   /* getMembers called after add() and delete() to reload from server */

@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { catchError, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
-import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { ActivitiesService } from '../services/activities.service';
 import {
   EActivityType,
@@ -37,7 +37,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private activitiesService: ActivitiesService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -112,7 +112,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   /**

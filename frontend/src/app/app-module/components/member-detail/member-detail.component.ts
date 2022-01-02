@@ -5,7 +5,7 @@ import { Observable, of, Subject } from 'rxjs';
 
 import { IMember } from '../../data-providers/members.data-provider';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { RouteStateService } from '../../services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../services/user-id-state-service/user-id-state.service';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { ScoresService } from '../../../scores-module/services/scores.service';
 import { SessionsService } from '../../../sessions-module/services/sessions.service';
@@ -38,7 +38,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     private sessions: SessionsService,
     private activities: ActivitiesService,
     private logger: NGXLogger,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
   ) {
     this.logger.trace(
       `${MemberDetailComponent.name}: Starting MemberDetailComponent`,
@@ -85,13 +85,13 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
             throw new Error('id path parameter was null');
           }
           this.#id = +id;
-          this.routeStateService.updateIdState(id);
+          this.userIdStateService.updateIdState(id);
           return id;
         }),
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   ngAfterViewInit(): void {

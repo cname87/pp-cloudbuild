@@ -20,7 +20,7 @@ import {
   ERowNumbers,
   TDateData,
 } from '../models/summary-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 
 /**
  * @title Summary data table and charts
@@ -161,7 +161,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private cdr: ChangeDetectorRef,
     private logger: NGXLogger,
   ) {
@@ -218,7 +218,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
         catchError(this.#catchError),
       )
       .subscribe((id) => {
-        this.routeStateService.updateIdState(id);
+        this.userIdStateService.updateIdState(id);
       });
   }
 

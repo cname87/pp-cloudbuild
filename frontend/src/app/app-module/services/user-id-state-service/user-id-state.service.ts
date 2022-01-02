@@ -5,13 +5,13 @@ import { NGXLogger } from 'ngx-logger';
 /**
  * @title Maintains the state of the url id parameter.
  *
- * The value of the id parameter in the url is passed in from each component.
+ * The value of the id parameter in the url must be passed in from each component.  The url id parameter represents the user id.
  * If a url id parameter doesn't exist then null is passed in.
  * This service is used by the nav component to set the id parameter for the active routes (i.e. based on the active user), and also to disable the user routes in routes which have no id parameter, e.g. the member list component.
  */
 
 @Injectable({ providedIn: 'root' })
-export class RouteStateService {
+export class UserIdStateService {
   //
   #idState = new BehaviorSubject<string | null>('');
 
@@ -20,12 +20,14 @@ export class RouteStateService {
   }
 
   constructor(private logger: NGXLogger) {
-    this.logger.trace(`${RouteStateService.name}: Starting RouteState service`);
+    this.logger.trace(
+      `${UserIdStateService.name}: Starting UserIdState service`,
+    );
   }
 
   updateIdState(newId: string | null) {
     this.logger.trace(
-      `${RouteStateService.name}: Updating route state with id: ${
+      `${UserIdStateService.name}: Updating route state with id: ${
         newId || 'none'
       }`,
     );

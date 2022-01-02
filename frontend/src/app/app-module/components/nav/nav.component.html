@@ -5,8 +5,8 @@
 >
   <a
     mat-tab-link
-    [ngClass]="{'item-active' : isLoggedIn && rla.isActive, 'hidden' : link.hidden}"
     *ngFor="let link of links trackBy: trackByFn"
+    [ngClass]="{'item-active' : isLoggedIn && rla.isActive, 'hidden' : link.hidden}"
     [routerLink]="link.path"
     routerLinkActive #rla="routerLinkActive"
     [routerLinkActiveOptions]="{exact: true}"

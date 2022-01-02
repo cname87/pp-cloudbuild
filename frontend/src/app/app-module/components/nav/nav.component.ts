@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth-service/auth.service';
 
 import { routes, roles } from '../../../configuration/configuration';
 import { combineLatest, of } from 'rxjs';
-import { RouteStateService } from '../../services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../services/user-id-state-service/user-id-state.service';
 
 interface ILink {
   path: string;
@@ -34,17 +34,17 @@ export class NavComponent implements OnInit {
   constructor(
     private logger: NGXLogger,
     private auth: AuthService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
   ) {
     this.logger.trace(`${NavComponent.name}: Starting ${NavComponent.name}`);
   }
 
   ngOnInit() {
     combineLatest([
-      this.routeStateService.id$,
+      this.userIdStateService.id$,
       this.auth.userProfile$ || of({ roles: [''] }),
     ]).subscribe(([id, user]) => {
-      /* The routeStateService is used to set the id parameter for the routes(i.e.based on the active user), and also to disable the user routes in routes which have no id parameter, e.g.the member list component. */
+      /* The userIdStateService is used to set the id parameter for the routes(i.e.based on the active user), and also to disable the user routes in routes which have no id parameter, e.g.the member list component. */
       const disabled = !id ? true : false;
       this.links = [
         {

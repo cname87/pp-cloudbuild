@@ -5,7 +5,7 @@ import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import clonedeep from 'lodash.clonedeep';
 
-import { RouteStateService } from '../../app-module/services/route-state-service/route-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
 
@@ -45,7 +45,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private sessionsService: SessionsService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -144,7 +144,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   /**
