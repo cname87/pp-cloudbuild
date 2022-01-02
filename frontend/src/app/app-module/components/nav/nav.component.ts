@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { AuthService } from '../../services/auth-service/auth.service';
 
 import { routes, roles } from '../../../configuration/configuration';
-import { combineLatest, of } from 'rxjs';
+import { combineLatest, map, Observable, of } from 'rxjs';
 import { UserIdStateService } from '../../services/user-id-state-service/user-id-state.service';
 
 interface ILink {
@@ -29,7 +29,7 @@ export class NavComponent implements OnInit {
   #scores = routes.scores;
   #sessions = routes.sessions;
   #summary = routes.summary;
-  links!: ILink[];
+  links$!: Observable<ILink[]>;
 
   constructor(
     private logger: NGXLogger,
@@ -40,58 +40,61 @@ export class NavComponent implements OnInit {
   }
 
   ngOnInit() {
-    combineLatest([
+    this.links$ = combineLatest([
       this.userIdStateService.id$,
       this.auth.userProfile$ || of({ roles: [''] }),
-    ]).subscribe(([id, user]) => {
-      /* The userIdStateService is used to set the id parameter for the routes(i.e.based on the active user), and also to disable the user routes in routes which have no id parameter, e.g.the member list component. */
-      const disabled = !id ? true : false;
-      this.links = [
-        {
-          path: `/${this.#membersList.path}`,
-          display: this.#membersList.displayName,
-          disabled: !user?.roles.includes(roles.admin),
-          hidden: !user?.roles.includes(roles.admin),
-        },
-        {
-          path: `/${this.#detail.path}/${id}`,
-          display: this.#detail.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-        {
-          path: `/${this.#scores.path}/${id}`,
-          display: this.#scores.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-        {
-          path: `/${this.#sessions.path}/${id}`,
-          display: this.#sessions.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-        {
-          path: `/${this.#summary.path}/${id}`,
-          display: this.#summary.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-        {
-          path: `/${this.#activities.path}/${id}`,
-          display: this.#activities.displayName,
-          disabled: disabled,
-          hidden: false,
-        },
-      ];
-    });
+    ]).pipe(
+      map(([id, user]) => {
+        /* The userIdStateService is used to set the id parameter for the routes(i.e.based on the active user), and also to disable the user routes in routes which have no id parameter, e.g.the member list component. */
+        const disabled = !id ? true : false;
+        const links = [
+          {
+            path: `/${this.#membersList.path}`,
+            display: this.#membersList.displayName,
+            disabled: !user?.roles.includes(roles.admin),
+            hidden: !user?.roles.includes(roles.admin),
+          },
+          {
+            path: `/${this.#detail.path}/${id}`,
+            display: this.#detail.displayName,
+            disabled: disabled,
+            hidden: false,
+          },
+          {
+            path: `/${this.#scores.path}/${id}`,
+            display: this.#scores.displayName,
+            disabled: disabled,
+            hidden: false,
+          },
+          {
+            path: `/${this.#sessions.path}/${id}`,
+            display: this.#sessions.displayName,
+            disabled: disabled,
+            hidden: false,
+          },
+          {
+            path: `/${this.#summary.path}/${id}`,
+            display: this.#summary.displayName,
+            disabled: disabled,
+            hidden: false,
+          },
+          {
+            path: `/${this.#activities.path}/${id}`,
+            display: this.#activities.displayName,
+            disabled: disabled,
+            hidden: false,
+          },
+        ];
+        return links;
+      }),
+    );
   }
 
   get isLoggedIn() {
     return this.auth.isLoggedIn;
   }
 
-  trackByFn(_index: number, link: ILink): string | null {
-    return link ? link.path : null;
+  trackByFn(_index: number, link: ILink): string {
+    return link.path;
   }
 }
