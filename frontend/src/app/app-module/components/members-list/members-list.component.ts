@@ -136,15 +136,12 @@ export class MembersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${MembersListComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${MembersListComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
   }
 
-  trackByFn(_index: number, member: IMember): number | null {
-    if (!member) {
-      return null;
-    }
+  trackByFn(_index: number, member: IMember): number {
     return member.id;
   }
 }

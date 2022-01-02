@@ -211,12 +211,6 @@ export class MembersDataProvider {
   public deleteMember(id: number): Observable<ICount> {
     this.logger.trace(`${MembersDataProvider.name}: deleteMember called`);
 
-    if (!id) {
-      throw new Error(
-        'Required parameter id was invalid when calling deleteMember.',
-      );
-    }
-
     let headers = this.defaultHeaders;
     headers = headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'application/json');

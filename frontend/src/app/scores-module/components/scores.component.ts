@@ -279,14 +279,11 @@ export class ScoresComponent implements OnDestroy {
         this.model = data.scores;
       });
 
-    /* update route state service with routed member id */
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
           const id = paramMap.get('id');
-          if (!id) {
-            throw new Error('id path parameter was null');
-          }
           return id;
         }),
         takeUntil(this.#destroy$),
@@ -368,7 +365,7 @@ export class ScoresComponent implements OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.logger.trace(`${ScoresComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${ScoresComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
   }

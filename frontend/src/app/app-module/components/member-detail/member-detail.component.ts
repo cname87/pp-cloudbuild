@@ -26,7 +26,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   /* member to display */
   member$!: Observable<IMember>;
   /* member id from url path */
-  #id = 0;
+  #memberId = 0;
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
 
@@ -69,6 +69,8 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.logger.trace(`${MemberDetailComponent.name}: Starting ngOnInit`);
+
     /* get the data as supplied from the route resolver */
     this.route.data
       .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
@@ -76,7 +78,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
         this.member$ = of(data.member);
       });
 
-    /* update route state with member id */
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -84,8 +86,7 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
           if (!id) {
             throw new Error('id path parameter was null');
           }
-          this.#id = +id;
-          this.userIdStateService.updateIdState(id);
+          this.#memberId = +id;
           return id;
         }),
         takeUntil(this.#destroy$),
@@ -101,22 +102,22 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
     import('../../../summary-module/components/summary.component');
     import('../../../activities-module/components/activities-parent.component');
     /* calls to load caches */
-    this.scores.getOrCreateScores(this.#id).subscribe(() => {
+    this.scores.getOrCreateScores(this.#memberId).subscribe(() => {
       this.logger.trace(
         `${MemberDetailComponent.name}: getOrCreateScores called to load cache`,
       );
     });
-    this.sessions.getOrCreateSessions(this.#id).subscribe(() => {
+    this.sessions.getOrCreateSessions(this.#memberId).subscribe(() => {
       this.logger.trace(
         `${MemberDetailComponent.name}: getOrCreateSessions called to load cache`,
       );
     });
-    this.summary.getSummaryData(this.#id).subscribe(() => {
+    this.summary.getSummaryData(this.#memberId).subscribe(() => {
       this.logger.trace(
         `${MemberDetailComponent.name}: getSummaryData called to load cache`,
       );
     });
-    this.activities.getActivities(this.#id).subscribe(() => {
+    this.activities.getActivities(this.#memberId).subscribe(() => {
       this.logger.trace(
         `${MemberDetailComponent.name}: getActivities called to load cache`,
       );
@@ -124,7 +125,9 @@ export class MemberDetailComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${MemberDetailComponent.name}: #ngDestroy called`);
+    this.logger.trace(
+      `${MemberDetailComponent.name}: Starting ngOnDestroy called`,
+    );
     this.#destroy$.next();
     this.#destroy$.complete();
   }

@@ -118,6 +118,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnInit`);
+
     /* sets the sessions$ object to the data as supplied from the route resolver */
     this.route.data
       .pipe(
@@ -130,7 +131,8 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
       .subscribe((sessions) => {
         this.sessions = sessions;
       });
-    /* update route state with member id */
+
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -189,7 +191,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${SessionsParentComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
   }

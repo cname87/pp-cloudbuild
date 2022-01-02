@@ -90,6 +90,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.logger.trace(`${ActivitiesParentComponent.name}: Starting ngOnInit`);
+
     /* get the data as supplied from the route resolver */
     this.activities$ = this.route.data.pipe(
       takeUntil(this.#destroy$),
@@ -98,7 +99,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
       }),
       catchError(this.#catchError),
     );
-    /* update route state with member id */
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -146,7 +147,9 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${ActivitiesParentComponent.name}: #ngDestroy called`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: starting ngOnDestroy`,
+    );
     this.#destroy$.next();
     this.#destroy$.complete();
   }
