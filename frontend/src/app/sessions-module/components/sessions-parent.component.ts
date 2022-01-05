@@ -8,6 +8,7 @@ import clonedeep from 'lodash.clonedeep';
 import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
+import { SessionsStore } from '../store/sessions.store';
 
 /**
  * @title Parent component of the sessions table and the specific session editing form.
@@ -22,7 +23,7 @@ import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
   selector: 'app-session-parent',
   templateUrl: './sessions-parent.component.html',
   styleUrls: ['./sessions-parent.component.scss'],
-  providers: [],
+  providers: [SessionsStore],
 })
 export class SessionsParentComponent implements OnInit, OnDestroy {
   //
@@ -46,6 +47,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private sessionsService: SessionsService,
     private userIdStateService: UserIdStateService,
+    private store: SessionsStore,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -63,38 +65,6 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${SessionsParentComponent.name}: Throwing the error on`);
     throw err;
   };
-
-  /**
-   * Gets a specific training session from an Observable<ISessions> object. The specific training session is given by the input rowIndex.
-   * @param inputSessions An ISessions object - the ISessions object contains a property 'sessions' which is an array of training session data.
-   * @param roIndex The index of the 'sessions' array to return.
-   * @returns A specific training session object,
-   */
-  #getSession(inputSessions: ISessions, rowIndex: number): ISession {
-    this.logger.trace(`${SessionsParentComponent.name}: Starting #getSession`);
-    return inputSessions.sessions[rowIndex];
-  }
-  /**
-   * Gets an updated Observable<ISessions> object from an input Observable<ISessions> object by replacing a specific training session with updated data.
-   * @param inputSessions An ISessions object that is to be updated.
-   * @param inputSession An ISession object, i.e. data on a training session that is to be updated in inputSessions$.
-   * @param rowIndex The index of the training sessions array to be replaced.
-   * @returns An updated ISessions object,
-   */
-  #getSessions(
-    inputSessions: ISessions,
-    inputSession: ISession,
-    rowIndex: number,
-  ): ISessions {
-    this.logger.trace(
-      `${SessionsParentComponent.name}: Starting #getSessions$`,
-    );
-    inputSessions.sessions[rowIndex].type = inputSession.type;
-    inputSessions.sessions[rowIndex].rpe = inputSession.rpe;
-    inputSessions.sessions[rowIndex].duration = inputSession.duration;
-    inputSessions.sessions[rowIndex].comment = inputSession.comment;
-    return inputSessions;
-  }
 
   /**
    * Updates the backend database with a sessions object.
@@ -119,18 +89,18 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnInit`);
 
-    /* sets the sessions$ object to the data as supplied from the route resolver */
-    this.route.data
-      .pipe(
-        map((data: Data) => {
-          return data.sessions;
-        }),
-        takeUntil(this.#destroy$),
-        catchError(this.#catchError),
-      )
-      .subscribe((sessions) => {
-        this.sessions = sessions;
-      });
+    /* loads the sessions object from ten route data to the sessions store */
+    const sessions = this.route.data.pipe(
+      map((data: Data): ISessions => {
+        return data.sessions;
+      }),
+    );
+    this.store.loadSessions(sessions);
+    /* TEMP */
+    this.store.sessions$.subscribe((sessions) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.sessions = sessions!;
+    });
 
     /* get member id from route state */
     this.route.paramMap
@@ -156,12 +126,17 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
     /* store an independent copy of the input sessions data, and the rowIndex, to allow for updating the sessions object with an updated training session object later */
     this.sessionsTemp = clonedeep(sessionsData.sessions);
+
+    /* store the clicked row in the sessions store */
+    this.store.loadRowIndex(sessionsData.rowIndex);
+
     this.rowIndex = sessionsData.rowIndex;
     /* get the session from the input sessions object to allow it be sent to the session update page for updating */
-    this.session = this.#getSession(
-      sessionsData.sessions,
-      sessionsData.rowIndex,
-    );
+    this.store.session$.subscribe((session) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.session = session!;
+    });
+
     /* change the view to show the session update form */
     this.showSessions = false;
     this.showSession = true;
@@ -175,11 +150,15 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${SessionsParentComponent.name}: Starting doneSession`);
     if (!!inputSessionOrUndefined) {
       /* get an updated sessions object */
-      this.sessions = this.#getSessions(
-        this.sessionsTemp,
-        inputSessionOrUndefined,
-        this.rowIndex,
-      );
+      this.store.updateSessions({
+        session: inputSessionOrUndefined,
+        rowIndex: this.rowIndex,
+      });
+      this.store.sessions$.subscribe((sessions) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.sessions = sessions!;
+      });
+
       this.#updateSessions(this.sessions);
     } else {
       /* if no session is passed in then return the unchanged sessions object back to the sessions page */

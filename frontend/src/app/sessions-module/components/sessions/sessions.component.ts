@@ -13,6 +13,7 @@ import { EventEmitter } from 'events';
 import { EARLIEST_DATE } from '../../../scores-module/models/scores-models';
 import { UtilsService } from '../../../app-module/services/utils-service/utils.service';
 import { SessionsService } from '../../services/sessions.service';
+import { SessionsStore } from '../../store/sessions.store';
 import {
   ERpeScore,
   ESessionType,
@@ -39,6 +40,7 @@ import {
   selector: 'app-sessions',
   styleUrls: ['./sessions.component.scss'],
   templateUrl: './sessions.component.html',
+  providers: [SessionsStore],
 })
 export class SessionsComponent {
   //
@@ -48,6 +50,8 @@ export class SessionsComponent {
   @Input() memberId!: number;
   /* event to pass data  to parent to allow updating */
   @Output() editSession = new AngularEventEmitter<ISessionsData>();
+
+  sessions$ = this.store.sessions$;
 
   /* used to report table click from the datatable subcomponent to this component */
   #tableClick = new AngularEventEmitter();
@@ -311,6 +315,7 @@ export class SessionsComponent {
 
   constructor(
     private sessionsService: SessionsService,
+    private store: SessionsStore,
     private utils: UtilsService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
@@ -338,6 +343,12 @@ export class SessionsComponent {
 
   ngOnInit(): void {
     this.logger.trace(`${SessionsComponent.name}: Starting ngOnInit`);
+
+    this.store.sessions$.subscribe((sessions) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.sessions = sessions!;
+    });
+
     /* when the user clicks on the datatable it causes required data to be passed to the parent component */
     this.#tableClick.subscribe((rowIndex: number) => {
       this.editSession.emit({
