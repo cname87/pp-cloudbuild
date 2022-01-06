@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
+import { NGXLogger } from 'ngx-logger';
 import clonedeep from 'lodash.clonedeep';
 
+import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions } from '../models/sessions-models';
+import { catchError, EMPTY, Observable, switchMap, tap } from 'rxjs';
 
 export interface ISessionsState {
   sessions: ISessions | undefined;
@@ -23,14 +26,25 @@ const defaultState: ISessionsState = {
 
 @Injectable()
 export class SessionsStore extends ComponentStore<ISessionsState> {
-  constructor() {
+  //
+  constructor(
+    private sessionsService: SessionsService,
+    private logger: NGXLogger,
+  ) {
     super(defaultState);
+    this.logger.trace(`${SessionsStore.name}: Starting SessionsStore`);
   }
 
-  readonly sessions$ = this.select(({ sessions }) => sessions);
+  /* ******** selectors ******** */
+
+  readonly sessions$ = this.select(({ sessions }) => {
+    if (sessions) {
+      return sessions;
+    } else {
+      throw new Error('Sessions object not found');
+    }
+  });
   readonly session$ = this.select(({ sessions, rowIndex }) => {
-    console.log(sessions);
-    console.log(rowIndex);
     if (sessions && rowIndex !== undefined) {
       return {
         type: sessions.sessions[rowIndex].type,
@@ -44,8 +58,11 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
   });
   readonly rowIndex$ = this.select(({ rowIndex }) => rowIndex);
 
+  /* ******** updaters ******** */
+
   readonly loadSessions = this.updater(
     (state, sessions: ISessions | undefined) => {
+      this.logger.trace(`${SessionsStore.name}: Starting loadSessions`);
       const newState = clonedeep(state);
       newState.sessions = sessions;
       return newState;
@@ -54,6 +71,7 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
 
   readonly loadSession = this.updater(
     (state, session: ISession | undefined) => {
+      this.logger.trace(`${SessionsStore.name}: Starting loadSession`);
       const newState = clonedeep(state);
       newState.session = session;
       return newState;
@@ -62,6 +80,7 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
 
   readonly loadRowIndex = this.updater(
     (state, rowIndex: number | undefined) => {
+      this.logger.trace(`${SessionsStore.name}: Starting loadRowIndex`);
       const newState = clonedeep(state);
       newState.rowIndex = rowIndex;
       return newState;
@@ -77,6 +96,7 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
    */
   readonly updateSessions = this.updater(
     (state, rowAndSession: IRowAndSession) => {
+      this.logger.trace(`${SessionsStore.name}: Starting updateSessions`);
       const newState = clonedeep(state);
       if (newState.sessions) {
         newState.sessions.sessions[rowAndSession.rowIndex].type =
@@ -91,4 +111,24 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
       return newState;
     },
   );
+
+  /* ******** effects ******** */
+
+  readonly getOrCreateSessions = this.effect((date$: Observable<Date>) => {
+    this.logger.trace(`${SessionsStore.name}: Starting getOrCreateSessions`);
+    return date$.pipe(
+      // Handle race condition with the proper choice of the flattening operator.
+      switchMap((date) =>
+        this.sessionsService.getOrCreateSessions(3, date).pipe(
+          //Act on the result within inner pipe.
+          tap({
+            next: (sessions) => this.loadSessions(sessions),
+            error: (e) => console.error(e),
+          }),
+          // Handle potential error within inner pipe.
+          catchError(() => EMPTY),
+        ),
+      ),
+    );
+  });
 }

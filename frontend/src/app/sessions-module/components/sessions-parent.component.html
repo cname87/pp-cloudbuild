@@ -7,8 +7,8 @@
 
 <app-sessions
   *ngIf="showSessions"
-  [sessions]="sessions"
-  [memberId]="memberId"
+  [sessions]="(sessions$! | async)!"
   (editSession)="editSession($event)"
+  (newDate)="newDate($event)"
 >
 </app-sessions>

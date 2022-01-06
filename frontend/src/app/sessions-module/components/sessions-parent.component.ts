@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import clonedeep from 'lodash.clonedeep';
+import { Observable, Subject } from 'rxjs';
+// import clonedeep from 'lodash.clonedeep';
 
 import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { SessionsService } from '../services/sessions.service';
-import { ISession, ISessions, ISessionsData } from '../models/sessions-models';
+import { ISession, ISessions, IRowIndex } from '../models/sessions-models';
 import { SessionsStore } from '../store/sessions.store';
 
 /**
@@ -23,7 +23,6 @@ import { SessionsStore } from '../store/sessions.store';
   selector: 'app-session-parent',
   templateUrl: './sessions-parent.component.html',
   styleUrls: ['./sessions-parent.component.scss'],
-  providers: [SessionsStore],
 })
 export class SessionsParentComponent implements OnInit, OnDestroy {
   //
@@ -31,7 +30,9 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   memberId!: number;
   /* show session or sessions components */
   showSession = false;
-  showSessions = true;
+  showSessions = false;
+  /* sessions list passed to the sessions component */
+  sessions$!: Observable<ISessions>;
   /* sessions list passed to the sessions component */
   sessions!: ISessions;
   /* clicked session passed to the session component */
@@ -89,18 +90,15 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnInit`);
 
-    /* loads the sessions object from ten route data to the sessions store */
-    const sessions = this.route.data.pipe(
+    /* loads the sessions object from the route data to the sessions store and pass to the sessions$ observable */
+    const inputSessions$ = this.route.data.pipe(
       map((data: Data): ISessions => {
         return data.sessions;
       }),
     );
-    this.store.loadSessions(sessions);
-    /* TEMP */
-    this.store.sessions$.subscribe((sessions) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.sessions = sessions!;
-    });
+    this.store.loadSessions(inputSessions$);
+    this.sessions$ = this.store.sessions$;
+    this.showSessions = true;
 
     /* get member id from route state */
     this.route.paramMap
@@ -122,10 +120,10 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   /**
    * Called when a session is passed from the sessions component. Causes the session edit page to be shown.
    */
-  editSession(sessionsData: ISessionsData): void {
+  editSession(sessionsData: IRowIndex): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
     /* store an independent copy of the input sessions data, and the rowIndex, to allow for updating the sessions object with an updated training session object later */
-    this.sessionsTemp = clonedeep(sessionsData.sessions);
+    // this.sessionsTemp = clonedeep(sessionsData.sessions);
 
     /* store the clicked row in the sessions store */
     this.store.loadRowIndex(sessionsData.rowIndex);
@@ -142,6 +140,10 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.showSession = true;
   }
 
+  newDate(date: Date) {
+    // this.store.getOrCreateSessions(date);
+    console.log(date);
+  }
   /**
    * Called when an updated session, or undefined, is passed from the session update component.
    * It sets the sessions$ property and causes an updated sessions table to be shown.

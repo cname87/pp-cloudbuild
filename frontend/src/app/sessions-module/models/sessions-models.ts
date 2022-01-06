@@ -57,13 +57,15 @@ export interface ISession {
   comment: string;
 }
 
-/* an empty session */
-export const blankSession = {
-  type: ESessionType.Blank,
-  rpe: ERpeScore.zero,
-  duration: 0,
-  comment: '',
-};
+// /* an empty session */
+// export const blankSession = {
+//   day: EDays.Monday,
+//   ampm: EAmPm.AM,
+//   type: ESessionType.Blank,
+//   rpe: ERpeScore.zero,
+//   duration: 0,
+//   comment: '',
+// };
 
 /* the mutable data associated with a session */
 export interface ISessionsStripped {
@@ -278,8 +280,7 @@ export interface ISessions extends ISessionsStripped {
 }
 
 /* used to pass required data back to sessions parent */
-export interface ISessionsData {
-  sessions: ISessions;
+export interface IRowIndex {
   rowIndex: number;
 }
 
