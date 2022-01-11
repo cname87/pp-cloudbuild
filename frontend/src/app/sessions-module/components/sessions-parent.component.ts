@@ -3,11 +3,9 @@ import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
-// import clonedeep from 'lodash.clonedeep';
 
 import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
-import { SessionsService } from '../services/sessions.service';
-import { ISession, ISessions, IRowIndex } from '../models/sessions-models';
+import { ISession, ISessions } from '../models/sessions-models';
 import { SessionsStore } from '../store/sessions.store';
 
 /**
@@ -33,20 +31,13 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   showSessions = false;
   /* sessions list passed to the sessions component */
   sessions$!: Observable<ISessions>;
-  /* sessions list passed to the sessions component */
-  sessions!: ISessions;
   /* clicked session passed to the session component */
-  session!: ISession;
-  /* used to store sessions data temporarily */
-  sessionsTemp!: ISessions;
-  /* index row of edited row */
-  rowIndex!: number;
+  session$!: Observable<ISession>;
   /* used to unsubscribe */
   #destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
-    private sessionsService: SessionsService,
     private userIdStateService: UserIdStateService,
     private store: SessionsStore,
     private logger: NGXLogger,
@@ -66,26 +57,6 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
     this.logger.trace(`${SessionsParentComponent.name}: Throwing the error on`);
     throw err;
   };
-
-  /**
-   * Updates the backend database with a sessions object.
-   * @param inputSessions Sessions object to be sent to the database.
-   */
-  #updateSessions(inputSessions: ISessions): void {
-    this.logger.trace(
-      `${SessionsParentComponent.name}: #updateSessions called`,
-    );
-    this.sessionsService
-      .updateSessionsTable(inputSessions)
-      .pipe(takeUntil(this.#destroy$), catchError(this.#catchError))
-      .subscribe((returnedSessions: ISessions) => {
-        this.logger.trace(
-          `${
-            SessionsParentComponent.name
-          }: Sessions table updated: ${JSON.stringify(returnedSessions)}`,
-        );
-      });
-  }
 
   ngOnInit(): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting ngOnInit`);
@@ -118,22 +89,16 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Called when a session is passed from the sessions component. Causes the session edit page to be shown.
+   * Called when a clicked row is passed from the sessions component. Causes the session edit page to be shown.
    */
-  editSession(sessionsData: IRowIndex): void {
+  editSession(rowIndex$: Observable<number>): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
-    /* store an independent copy of the input sessions data, and the rowIndex, to allow for updating the sessions object with an updated training session object later */
-    // this.sessionsTemp = clonedeep(sessionsData.sessions);
 
     /* store the clicked row in the sessions store */
-    this.store.loadRowIndex(sessionsData.rowIndex);
+    this.store.loadRowIndex(rowIndex$);
 
-    this.rowIndex = sessionsData.rowIndex;
     /* get the session from the input sessions object to allow it be sent to the session update page for updating */
-    this.store.session$.subscribe((session) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this.session = session!;
-    });
+    this.session$ = this.store.session$ as Observable<ISession>;
 
     /* change the view to show the session update form */
     this.showSessions = false;
@@ -141,30 +106,21 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   }
 
   newDate(date: Date) {
-    // this.store.getOrCreateSessions(date);
-    console.log(date);
+    this.store.getOrCreateSessions(date);
   }
   /**
    * Called when an updated session, or undefined, is passed from the session update component.
    * It sets the sessions$ property and causes an updated sessions table to be shown.
    */
-  doneSession(inputSessionOrUndefined: ISession | undefined): void {
+  doneSession(newSessionOrUndefined: ISession | undefined): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting doneSession`);
-    if (!!inputSessionOrUndefined) {
+    if (!!newSessionOrUndefined) {
       /* get an updated sessions object */
-      this.store.updateSessions({
-        session: inputSessionOrUndefined,
-        rowIndex: this.rowIndex,
-      });
-      this.store.sessions$.subscribe((sessions) => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.sessions = sessions!;
-      });
-
-      this.#updateSessions(this.sessions);
+      this.store.updateSessionAtRowIndex(newSessionOrUndefined);
+      this.store.updateSessions();
+      this.sessions$ = this.store.sessions$;
     } else {
       /* if no session is passed in then return the unchanged sessions object back to the sessions page */
-      this.sessions = this.sessionsTemp;
     }
     /* change the view */
     this.showSessions = true;

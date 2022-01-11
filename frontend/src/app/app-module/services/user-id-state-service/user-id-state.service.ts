@@ -19,6 +19,15 @@ export class UserIdStateService {
     return this.#idState.asObservable();
   }
 
+  get id(): number {
+    const id = this.#idState.getValue();
+    if (id) {
+      return +id;
+    } else {
+      throw new Error('Invalid member Id');
+    }
+  }
+
   constructor(private logger: NGXLogger) {
     this.logger.trace(
       `${UserIdStateService.name}: Starting UserIdState service`,

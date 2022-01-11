@@ -1,26 +1,23 @@
 import { Injectable } from '@angular/core';
-import { ComponentStore } from '@ngrx/component-store';
+import { ComponentStore, tapResponse } from '@ngrx/component-store';
 import { NGXLogger } from 'ngx-logger';
 import clonedeep from 'lodash.clonedeep';
 
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { SessionsService } from '../services/sessions.service';
 import { ISession, ISessions } from '../models/sessions-models';
-import { catchError, EMPTY, Observable, switchMap, tap } from 'rxjs';
+import { concatMap, Observable, switchMap } from 'rxjs';
+import { blankSessions } from '../models/dist/sessions-models';
 
 export interface ISessionsState {
-  sessions: ISessions | undefined;
-  session: ISession | undefined;
+  /* the training sessions object*/
+  sessions: ISessions;
+  /* the row on the sessions table that was last clicked */
   rowIndex: number | undefined;
 }
 
-export interface IRowAndSession {
-  rowIndex: number;
-  session: ISession;
-}
-
 const defaultState: ISessionsState = {
-  sessions: undefined,
-  session: undefined,
+  sessions: blankSessions as ISessions,
   rowIndex: undefined,
 };
 
@@ -29,6 +26,7 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
   //
   constructor(
     private sessionsService: SessionsService,
+    private userId: UserIdStateService,
     private logger: NGXLogger,
   ) {
     super(defaultState);
@@ -38,14 +36,13 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
   /* ******** selectors ******** */
 
   readonly sessions$ = this.select(({ sessions }) => {
-    if (sessions) {
-      return sessions;
-    } else {
-      throw new Error('Sessions object not found');
-    }
+    this.logger.trace(`${SessionsStore.name}: Starting sessions$`);
+    return sessions;
   });
+
   readonly session$ = this.select(({ sessions, rowIndex }) => {
-    if (sessions && rowIndex !== undefined) {
+    this.logger.trace(`${SessionsStore.name}: Starting session$`);
+    if (rowIndex !== undefined) {
       return {
         type: sessions.sessions[rowIndex].type,
         rpe: sessions.sessions[rowIndex].rpe,
@@ -56,57 +53,53 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
       return undefined;
     }
   });
-  readonly rowIndex$ = this.select(({ rowIndex }) => rowIndex);
+
+  readonly rowIndex$ = this.select(({ rowIndex }) => {
+    this.logger.trace(`${SessionsStore.name}: Starting rowIndex$`);
+    return rowIndex;
+  });
+
+  /* ViewModel for the component */
+  readonly vm$ = this.select(
+    this.sessions$,
+    this.rowIndex$,
+    (sessions, rowIndex) => ({
+      sessions,
+      rowIndex,
+    }),
+  );
 
   /* ******** updaters ******** */
 
-  readonly loadSessions = this.updater(
-    (state, sessions: ISessions | undefined) => {
-      this.logger.trace(`${SessionsStore.name}: Starting loadSessions`);
-      const newState = clonedeep(state);
-      newState.sessions = sessions;
-      return newState;
-    },
-  );
+  readonly loadSessions = this.updater((state, sessions: ISessions) => {
+    this.logger.trace(`${SessionsStore.name}: Starting loadSessions`);
+    const newState = clonedeep(state);
+    newState.sessions = sessions;
+    return newState;
+  });
 
-  readonly loadSession = this.updater(
+  readonly loadRowIndex = this.updater((state, rowIndex: number) => {
+    this.logger.trace(`${SessionsStore.name}: Starting loadRowIndex`);
+    const newState = clonedeep(state);
+    newState.rowIndex = rowIndex;
+    return newState;
+  });
+
+  readonly updateSessionAtRowIndex = this.updater(
     (state, session: ISession | undefined) => {
-      this.logger.trace(`${SessionsStore.name}: Starting loadSession`);
+      this.logger.trace(
+        `${SessionsStore.name}: Starting updateSessionAtRowIndex`,
+      );
+      if (!session) {
+        return state;
+      }
+      const rowIndex = state.rowIndex;
       const newState = clonedeep(state);
-      newState.session = session;
-      return newState;
-    },
-  );
-
-  readonly loadRowIndex = this.updater(
-    (state, rowIndex: number | undefined) => {
-      this.logger.trace(`${SessionsStore.name}: Starting loadRowIndex`);
-      const newState = clonedeep(state);
-      newState.rowIndex = rowIndex;
-      return newState;
-    },
-  );
-
-  /**
-   * Gets an updated Observable<ISessions> object from an input Observable<ISessions> object by replacing a specific training session with updated data.
-   * @param inputSessions An ISessions object that is to be updated.
-   * @param inputSession An ISession object, i.e. data on a training session that is to be updated in inputSessions$.
-   * @param rowIndex The index of the training sessions array to be replaced.
-   * @returns An updated ISessions object,
-   */
-  readonly updateSessions = this.updater(
-    (state, rowAndSession: IRowAndSession) => {
-      this.logger.trace(`${SessionsStore.name}: Starting updateSessions`);
-      const newState = clonedeep(state);
-      if (newState.sessions) {
-        newState.sessions.sessions[rowAndSession.rowIndex].type =
-          rowAndSession.session.type;
-        newState.sessions.sessions[rowAndSession.rowIndex].rpe =
-          rowAndSession.session.rpe;
-        newState.sessions.sessions[rowAndSession.rowIndex].duration =
-          rowAndSession.session.duration;
-        newState.sessions.sessions[rowAndSession.rowIndex].comment =
-          rowAndSession.session.comment;
+      if (rowIndex !== undefined && newState.sessions) {
+        newState.sessions.sessions[rowIndex].type = session.type;
+        newState.sessions.sessions[rowIndex].rpe = session.rpe;
+        newState.sessions.sessions[rowIndex].duration = session.duration;
+        newState.sessions.sessions[rowIndex].comment = session.comment;
       }
       return newState;
     },
@@ -115,20 +108,52 @@ export class SessionsStore extends ComponentStore<ISessionsState> {
   /* ******** effects ******** */
 
   readonly getOrCreateSessions = this.effect((date$: Observable<Date>) => {
-    this.logger.trace(`${SessionsStore.name}: Starting getOrCreateSessions`);
     return date$.pipe(
-      // Handle race condition with the proper choice of the flattening operator.
-      switchMap((date) =>
-        this.sessionsService.getOrCreateSessions(3, date).pipe(
-          //Act on the result within inner pipe.
-          tap({
-            next: (sessions) => this.loadSessions(sessions),
-            error: (e) => console.error(e),
-          }),
-          // Handle potential error within inner pipe.
-          catchError(() => EMPTY),
-        ),
-      ),
+      /* use switchMap so a new call made if date changes and the previous one abandoned */
+      switchMap((date) => {
+        this.logger.trace(
+          `${SessionsStore.name}: Starting getOrCreateSessions`,
+        );
+        return this.sessionsService
+          .getOrCreateSessions(this.userId.id, date)
+          .pipe(
+            /* tapResponse ensures that the effect still runs should an error occur */
+            tapResponse(
+              (sessions) => {
+                this.logger.trace(
+                  `${SessionsStore.name}: Received sessions ${JSON.stringify(
+                    sessions,
+                  )}`,
+                );
+                return this.loadSessions(sessions);
+              },
+              (e) => console.error(e),
+            ),
+          );
+      }),
+    );
+  });
+
+  readonly updateSessions = this.effect((dummy$) => {
+    return dummy$.pipe(
+      /* use concatMap calls will be completed in order */
+      concatMap(() => {
+        this.logger.trace(`${SessionsStore.name}: Starting updateSessions`);
+        const sessions = this.get().sessions;
+        return this.sessionsService.updateSessionsTable(sessions).pipe(
+          /* tapResponse ensures that the effect still runs should an error occur */
+          tapResponse(
+            (sessions) => {
+              this.logger.trace(
+                `${SessionsStore.name}: Updated sessions ${JSON.stringify(
+                  sessions,
+                )}`,
+              );
+            },
+            (e) => console.error(e),
+          ),
+        );
+      }),
     );
   });
 }

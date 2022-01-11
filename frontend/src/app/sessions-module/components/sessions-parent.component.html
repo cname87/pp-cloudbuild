@@ -1,6 +1,6 @@
 <app-session
   *ngIf="showSession"
-  [session]="session"
+  [session]="(session$ | async)!"
   (doneSession)="doneSession($event)"
 >
 </app-session>
@@ -8,7 +8,9 @@
 <app-sessions
   *ngIf="showSessions"
   [sessions]="(sessions$! | async)!"
-  (editSession)="editSession($event)"
+  (tableClick$)="editSession($event)"
   (newDate)="newDate($event)"
 >
 </app-sessions>
+<!--
+  (clickedRow)="editSession($event)" -->

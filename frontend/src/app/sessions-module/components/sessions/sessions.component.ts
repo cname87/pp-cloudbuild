@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core/';
-// import { IsLoadingService } from '@service-work/is-loading';
 import { NGXLogger } from 'ngx-logger';
 import { EventEmitter } from 'events';
 
@@ -16,33 +15,34 @@ import {
   ERpeScore,
   ESessionType,
   ISessions,
-  IRowIndex,
 } from '../../models/sessions-models';
+import { Observable } from 'rxjs';
 
 /**
  * @title Training sessions table.
  *
+ * This component displays a table showing data on all the training sessions for a week.
+ *
  * Inputs:
- * 1. A sessions object observable is passed in from the parent component.
+ * 1. A sessions object is passed in from the parent component.
  *
  * Outputs:
- * 1. An event which registers a click on a row of the displayed table. It passes the zero-based index of the clicked row.
+ * 1. An event which registers a click on a session row of the displayed table. It passes the zero-based index of the clicked row.
+ * 2. An event which registers a new date selection from the datepicker of the displayed table. It passes the new date selected.
  *
  * Methods:
  * There are no exposed methods.
  *
  * Requirements:
  *
- * This component is enabled by a parent sessions parent component.
- *
- * 1. This component displays a table corresponding to a sessions object observable passed in from the parent component.
+ * 1. This component displays a table corresponding to a sessions object passed in from the parent component.
  * Note: The displayed table shows data on all the training sessions for a specific week for a specific member.
  *
- * 2. The user can select a date from a displayed datepicker. This component then passes that date to the sessions store.
- * Note: The sessions store retrieves data from the backend and updates the sessions observable which causes this component to update the displayed table as per requirement #1.
+ * 2. The user can select a date from a displayed datepicker. This component then emits an event with the date.
+ * Note: The parent component registers the event and calls a method in the sessions store which retrieves data from the backend and updates the sessions observable which causes this component to update the displayed table as per requirement #1.
  *
  * 3. This component registers an event handler so that if the user clicks on a row in the table an event is emitted which contains the zero-based index of the clicked row.
- * Note: The parent component registers the event and passes the row index to a session component which displays data on a specific training session, so it can be updated.
+ * Note: The parent component registers the event and passes the session data corresponding to the row index to a session component which displays data on a specific training session, so it can be updated.
  *
  * Note: This component uses an ngx-datatable component as a custom ngx-formly type to display the data table. This component is part of the formly-base module, contained in the shared module.
  */
@@ -56,15 +56,13 @@ export class SessionsComponent {
   /* sessions object passed in from parent and passed as the form model to the datatable */
   @Input() sessions!: ISessions;
 
-  /* event to parent to allow a session be updated */
-  @Output() editSession = new AngularEventEmitter<IRowIndex>();
-
   /* event to parent to allow a new sessions object for a new date be loaded */
   @Output() newDate = new AngularEventEmitter<Date>();
 
-  /* used to report table click from the datatable subcomponent to this component */
-  #tableClick$ = new AngularEventEmitter();
-  /* used to report a table change to the datatable subcomponent, causing it to update */
+  /* used to report a table click from the datatable subcomponent */
+  @Output() tableClick$ = new AngularEventEmitter<Observable<number>>();
+
+  /* used to report a table change to the datatable subcomponent, causing it to update - not currently used */
   #tableChange = new EventEmitter();
   /* min width used in the datatable */
   #minWidth =
@@ -249,7 +247,7 @@ export class SessionsComponent {
         /* passes an event emitter that is used to signal model changes to the datatable (which causes the datatable to be redrawn) */
         tableChange: this.#tableChange,
         /* passes an event emitter that is used to signal when the user clicks on a table row */
-        tableClick: this.#tableClick$,
+        tableClick: this.tableClick$,
       },
       fieldArray: {
         fieldGroup: [
@@ -321,36 +319,23 @@ export class SessionsComponent {
     },
   ];
 
-  constructor(
-    private utils: UtilsService,
-    // private isLoadingService: IsLoadingService,
-    private logger: NGXLogger,
-  ) {
+  constructor(private utils: UtilsService, private logger: NGXLogger) {
     this.logger.trace(`${SessionsComponent.name}: Starting SessionsComponent`);
   }
 
   /**
-   * After every date change a new table is requested from the database, loaded into the datatable model, and an event is emitted to the datatable type, (which redraws the table).
+   * Called by the datepicker in the DataTableComponent when a new date is selected, and it emits an event with the date.
+   * Note: The event is registered by the parent component which calls a method in the sessions store which loads a sessions object according to the date, and causes the sessions$ model to be updated and the table to be redrawn.
    * @param date The date of the required sessions data.
+   */
+
+  /**
+   * * TO DO - add isLoadingService
    */
   #onDateChange = (date: Date): void => {
     this.logger.trace(`${SessionsComponent.name}: #onDateChange called`);
     if (this.form.valid) {
       this.newDate.emit(date);
-      // this.isLoadingService.add(
-
-      // );
-      // this.#tableChange.emit('modelChange');
     }
   };
-
-  ngOnInit(): void {
-    this.logger.trace(`${SessionsComponent.name}: Starting ngOnInit`);
-    /* when the user clicks on the datatable, the event is registered here which causes the clicked row index to be passed to the parent component */
-    this.#tableClick$.subscribe((rowIndex: number) => {
-      this.editSession.emit({
-        rowIndex: rowIndex,
-      });
-    });
-  }
 }
