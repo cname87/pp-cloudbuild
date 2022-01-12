@@ -15,7 +15,6 @@ module.exports = {
     /**
      * TODO enable airbnb
      */
-    // 'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],

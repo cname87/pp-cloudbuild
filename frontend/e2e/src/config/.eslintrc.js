@@ -7,20 +7,13 @@ module.exports = {
     jasmine: true,
     protractor: true,
   },
-  extends: ['airbnb/base', 'eslint:recommended', 'prettier'],
+  extends: ['prettier'],
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  plugins: ['prettier'],
+  plugins: ['import', 'prettier'],
   rules: {
-    /* set personal preferences below */
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: ['**/*.js', '**/*.conf.js'],
-      },
-    ],
     'no-console': [
       'error',
       {

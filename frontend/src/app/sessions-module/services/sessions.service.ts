@@ -49,6 +49,10 @@ export class SessionsService {
   ): Observable<ISessions> {
     this.logger.trace(`${SessionsService.name}: getOrCreateSessions called`);
 
+    /* throw if date is not a Sunday as otherwise the backend will throw and shutdown */
+    if (date.getDay() !== 0) {
+      throw new Error('Date supplied is not a Sunday');
+    }
     return this.sessionsDataProvider.getOrCreateSessions(memberId, date).pipe(
       tap((data: ISessions) => {
         this.logger.trace(

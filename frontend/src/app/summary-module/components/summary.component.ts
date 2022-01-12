@@ -20,7 +20,7 @@ import {
   ERowNumbers,
   TDateData,
 } from '../models/summary-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 
 /**
  * @title Summary data table and charts
@@ -161,7 +161,7 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private cdr: ChangeDetectorRef,
     private logger: NGXLogger,
   ) {
@@ -204,34 +204,33 @@ export class SummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    /* update service with routed member id */
+    this.logger.trace(`${SummaryComponent.name}: Starting ngOnInit`);
+
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
           const id = paramMap.get('id');
-          if (!id) {
-            throw new Error('id path parameter was null');
-          }
           return id;
         }),
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
       .subscribe((id) => {
-        this.routeStateService.updateIdState(id);
+        this.userIdStateService.updateIdState(id);
       });
   }
 
   ngAfterViewInit(): void {
+    this.logger.trace(`${SummaryComponent.name}: Starting ngAfterViewInit`);
     this.dataSource = new MatTableDataSource<any>(this.#data);
     this.#scrollToEnd();
     this.cdr.detectChanges();
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${SummaryComponent.name}: ngDestroy called`);
+    this.logger.trace(`${SummaryComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

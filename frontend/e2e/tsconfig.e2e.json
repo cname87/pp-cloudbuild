@@ -3,7 +3,7 @@
 
   "compilerOptions": {
 
-    "outDir": "../out-tsc/e2e",
+    "outDir": "../dist/e2e",
 
     /* note - common.js for e2e */
     "module": "commonjs",

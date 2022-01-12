@@ -9,7 +9,7 @@ import { takeUntil, map, catchError } from 'rxjs/operators';
 import { EventEmitter } from 'events';
 
 import { IScores, EARLIEST_DATE } from '../models/scores-models';
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { ScoresService } from '../services/scores.service';
 
 /**
@@ -264,7 +264,7 @@ export class ScoresComponent implements OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private scoresService: ScoresService,
     private isLoadingService: IsLoadingService,
     private logger: NGXLogger,
@@ -279,21 +279,18 @@ export class ScoresComponent implements OnDestroy {
         this.model = data.scores;
       });
 
-    /* update route state service with routed member id */
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
           const id = paramMap.get('id');
-          if (!id) {
-            throw new Error('id path parameter was null');
-          }
           return id;
         }),
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
       .subscribe((id) => {
-        this.routeStateService.updateIdState(id);
+        this.userIdStateService.updateIdState(id);
       });
   }
 
@@ -368,9 +365,8 @@ export class ScoresComponent implements OnDestroy {
   };
 
   ngOnDestroy(): void {
-    this.logger.trace(`${ScoresComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${ScoresComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

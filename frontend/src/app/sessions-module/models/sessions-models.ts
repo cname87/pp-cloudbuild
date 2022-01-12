@@ -1,3 +1,16 @@
+const lastSunday = (): Date => {
+  let lastSunday = new Date();
+  /* get last Sunday */
+  lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay());
+  /* remove hours, minutes and seconds */
+  lastSunday = new Date(lastSunday.toDateString());
+  /* move by the local time offset to move the UTC value to 00:00 on the Sunday */
+  lastSunday = new Date(
+    lastSunday.getTime() - lastSunday.getTimezoneOffset() * 60 * 1000,
+  );
+  return lastSunday;
+};
+
 export enum ESessionType {
   Blank = '-',
   Conditioning = 'CONDITIONING',
@@ -56,14 +69,6 @@ export interface ISession {
   duration: number;
   comment: string;
 }
-
-/* an empty session */
-export const blankSession = {
-  type: ESessionType.Blank,
-  rpe: ERpeScore.zero,
-  duration: 0,
-  comment: '',
-};
 
 /* the mutable data associated with a session */
 export interface ISessionsStripped {
@@ -277,11 +282,125 @@ export interface ISessions extends ISessionsStripped {
   ];
 }
 
-/* used to pass required data back to sessions parent */
-export interface ISessionsData {
-  sessions: ISessions;
-  rowIndex: number;
-}
+export const blankSessions: ISessions = {
+  id: 0,
+  memberId: 0,
+  date: lastSunday(),
+  sessions: [
+    {
+      day: EDays.Monday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Monday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Tuesday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Tuesday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Wednesday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Wednesday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Thursday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Thursday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Friday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Friday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Saturday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Saturday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Sunday,
+      ampm: EAmPm.AM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+    {
+      day: EDays.Sunday,
+      ampm: EAmPm.PM,
+      type: ESessionType.Blank,
+      rpe: ERpeScore.zero,
+      duration: 0,
+      comment: '',
+    },
+  ],
+};
 
 /* used in request body */
 export interface IDate {

@@ -4,7 +4,7 @@ import { NGXLogger } from 'ngx-logger';
 import { catchError, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { Observable, Subject } from 'rxjs';
 
-import { RouteStateService } from '../../app-module/services/route-state-service/router-state.service';
+import { UserIdStateService } from '../../app-module/services/user-id-state-service/user-id-state.service';
 import { ActivitiesService } from '../services/activities.service';
 import {
   EActivityType,
@@ -37,7 +37,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private activitiesService: ActivitiesService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private logger: NGXLogger,
   ) {
     this.logger.trace(
@@ -90,6 +90,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.logger.trace(`${ActivitiesParentComponent.name}: Starting ngOnInit`);
+
     /* get the data as supplied from the route resolver */
     this.activities$ = this.route.data.pipe(
       takeUntil(this.#destroy$),
@@ -98,7 +99,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
       }),
       catchError(this.#catchError),
     );
-    /* update route state with member id */
+    /* get member id from route state */
     this.route.paramMap
       .pipe(
         map((paramMap: ParamMap) => {
@@ -112,7 +113,7 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
         takeUntil(this.#destroy$),
         catchError(this.#catchError),
       )
-      .subscribe((id) => this.routeStateService.updateIdState(id));
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   /**
@@ -146,9 +147,10 @@ export class ActivitiesParentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${ActivitiesParentComponent.name}: #ngDestroy called`);
+    this.logger.trace(
+      `${ActivitiesParentComponent.name}: starting ngOnDestroy`,
+    );
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 }

@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
@@ -10,38 +16,48 @@ import {
   ERpeScore,
   rpeNames,
 } from '../../models/sessions-models';
-import { Subject } from 'rxjs';
 
 /**
  * @title Training session update form.
  *
- * This component is enabled by the parent component. The parent component passes in a session object.
- *
  * This component displays a form allowing detail on a training session be entered.
+ *
+ * Inputs:
+ * 1. A session object is passed in from the parent component.
+ *
+ * Outputs:
+ * 1. An event which registers that the session data is submitted.  It passes the updated session data, or undefined.
+ *
+ * Methods:
+ * There are no exposed methods.
  *
  * Requirements:
  *
- * 1. This component displays a form corresponding to the passed-in session object, allowing data for a specific training session be updated.
+ * 1. This component displays a form corresponding to the session object passed in from the parent component.
+ * Note: The displayed form allows data for a specific training session be updated for a specific member.
  *
- * 2. The user can edit session properties. The user can press a cancel button or a submit button.
+ * 2. The user can edit session properties in the form. The updated values are saved for submission.
  *
- * 3. An event is emitted to the parent component when the a button is pressed. This passes no data (undefined) is the cancel button is submitted and the updated form session object if the submit button is pressed
+ * 3. The user can press a cancel button which emits an event with an emitted target of undefined.
+ * Note: The parent component registers the event and will cause the sessions table component to be displayed with the same sessions data as before.
+ *
+ * 4. The user can press a submit button which emits an event with an emitted target of the latest form data.
+ * Note: The parent component registers the event and will cause the sessions table component to be displayed with updated sessions data showing the updated data for the edited session.
+ *
  */
 
 @Component({
   selector: 'app-session',
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
-  providers: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SessionComponent implements OnInit {
+export class SessionComponent {
   //
-  /* session to be retrieved */
+  /* session to be edited - this is set to the form model in the template */
   @Input() session!: ISession;
+  /* event to communicate form submission */
   @Output() doneSession = new EventEmitter<ISession>();
-
-  /* used to unsubscribe */
-  #destroy$ = new Subject<void>();
 
   /* define the text info card */
   line1 = '- Enter data in each field and click the UPDATE button';
@@ -52,7 +68,6 @@ export class SessionComponent implements OnInit {
 
   /* form definition */
   form = new FormGroup({});
-  model!: ISession;
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [
     {
@@ -152,16 +167,11 @@ export class SessionComponent implements OnInit {
 
   /**
    * Emits an event to pass an updated session or to indicate no changes were made
-   * @param sessionOrUndefined An updated session object or undefined (to indicate no changes made).
+   * @param sessionOrUndefined$ An updated session object or undefined (to indicate no changes made).
    */
   #emitDone(sessionOrUndefined: ISession | undefined = undefined): void {
+    this.logger.trace(`${SessionComponent.name}: Starting #emitDone`);
     this.doneSession.emit(sessionOrUndefined);
-  }
-
-  /*  links the sessions object linked directly to the form model */
-  ngOnInit(): void {
-    this.logger.trace(`${SessionComponent.name}: Starting ngOnInit`);
-    this.model = this.session;
   }
 
   /* called when cancel button pressed */
@@ -173,12 +183,6 @@ export class SessionComponent implements OnInit {
   /* called when update button pressed */
   update(): void {
     this.form.disable();
-    this.#emitDone(this.model);
-  }
-
-  ngOnDestroy(): void {
-    this.logger.trace(`${SessionComponent.name}: #ngDestroy called`);
-    this.#destroy$.next();
-    this.#destroy$.complete();
+    this.#emitDone(this.session);
   }
 }

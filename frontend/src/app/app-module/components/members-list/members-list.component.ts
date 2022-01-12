@@ -3,15 +3,15 @@ import { NGXLogger } from 'ngx-logger';
 import { IsLoadingService } from '@service-work/is-loading';
 
 import { Observable, of, Subject } from 'rxjs';
-import { ActivatedRoute, Data } from '@angular/router';
-import { catchError, shareReplay, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Data, ParamMap } from '@angular/router';
+import { catchError, map, shareReplay, takeUntil } from 'rxjs/operators';
 import {
   IMember,
   IMemberWithoutId,
 } from '../../data-providers/members.data-provider';
 import { MembersService } from '../../services/members-service/members.service';
 import { routes } from '../../../configuration/configuration';
-import { RouteStateService } from '../../services/route-state-service/router-state.service';
+import { UserIdStateService } from '../../services/user-id-state-service/user-id-state.service';
 
 /**
  * This component displays a list of members.
@@ -36,7 +36,7 @@ export class MembersListComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private membersService: MembersService,
-    private routeStateService: RouteStateService,
+    private userIdStateService: UserIdStateService,
     private logger: NGXLogger,
     private isLoadingService: IsLoadingService,
   ) {
@@ -63,6 +63,16 @@ export class MembersListComponent implements OnInit, OnDestroy {
       .subscribe((data: Data) => {
         this.members$ = of(data.members);
       });
+    this.route.paramMap
+      .pipe(
+        map((paramMap: ParamMap) => {
+          const id = paramMap.get('id');
+          return id;
+        }),
+        takeUntil(this.#destroy$),
+        catchError(this.#catchError),
+      )
+      .subscribe((id) => this.userIdStateService.updateIdState(id));
   }
 
   /* getMembers called after add() and delete() to reload from server */
@@ -126,16 +136,12 @@ export class MembersListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.logger.trace(`${MembersListComponent.name}: #ngDestroy called`);
+    this.logger.trace(`${MembersListComponent.name}: Starting ngOnDestroy`);
     this.#destroy$.next();
     this.#destroy$.complete();
-    this.routeStateService.updateIdState('');
   }
 
-  trackByFn(_index: number, member: IMember): number | null {
-    if (!member) {
-      return null;
-    }
+  trackByFn(_index: number, member: IMember): number {
     return member.id;
   }
 }

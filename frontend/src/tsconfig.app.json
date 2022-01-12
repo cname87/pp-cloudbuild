@@ -11,6 +11,6 @@
     "**/*.d.ts"
   ],
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
+    "outDir": "../dist/app",
   }
 }
