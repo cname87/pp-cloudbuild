@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { NGXLogger } from 'ngx-logger';
 import { catchError, map, takeUntil } from 'rxjs/operators';
@@ -12,13 +17,12 @@ import { SessionsStore } from '../store/sessions.store';
 /**
  * @title Training sessions parent component.
  *
- * There are two simple presentational components:
- * - sessions table
- * - session update form
- *
- * There is a store which stores and manipulates all state.
- *
- * This component handles all logic.
+ * The sessions module UI consists of:
+ * 1. Two simple presentational components:
+ *    - sessions table
+ *    - session update form
+ * 2. A store which stores and manipulates all state.
+ * 3. This parenet component which handles all logic.
  *
  * Inputs:
  *
@@ -33,6 +37,8 @@ import { SessionsStore } from '../store/sessions.store';
   selector: 'app-session-parent',
   templateUrl: './sessions-parent.component.html',
   styleUrls: ['./sessions-parent.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [SessionsStore],
 })
 export class SessionsParentComponent implements OnInit, OnDestroy {
   //
@@ -78,7 +84,7 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
         return data.sessions;
       }),
     );
-    /* pass to the sessions store */
+    /* load the sessions store */
     this.store.loadSessions(inputSessions$);
     /* pass an observable to the template */
     this.sessions$ = this.store.sessions$;
@@ -108,15 +114,15 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
   editSession(rowIndex$: Observable<number>): void {
     this.logger.trace(`${SessionsParentComponent.name}: Starting editSession`);
 
-    /* exit if the table is loading due get sessions being called following a date change */
+    /* exit if the table is loading as sessions are being loaded from the backend following a date change */
     if (this.isLoadingService.isLoading({ key: `${SessionsStore.name}#1` })) {
       return;
     }
 
-    /* store the clicked row in the sessions store */
+    /* load the clicked row in the sessions store */
     this.store.loadRowIndex(rowIndex$);
 
-    /* get the session corresponding click from the store to be sent to the session update page */
+    /* get the session corresponding to the click, from the store and send to the session update form */
     this.session$ = this.store.session$;
 
     /* change the view to show the session update form */
@@ -128,13 +134,13 @@ export class SessionsParentComponent implements OnInit, OnDestroy {
    * @summary Takes a date from the sessions child component and calls a method to update the displayed sessions table.
    * @param date The date passed in.
    */
-  newDate(date: Date) {
+  newDate(date: Date): void {
     this.store.getOrCreateSessions(date);
   }
 
   /**
    * @summary Called when an updated session, or undefined, is passed from the session update component.
-   * It sets the sessions$ property and causes an updated sessions table to be shown.
+   * If the input is not undefined, it updates the sessions$ property, which causes an updated sessions table to be shown, and updates the backend.
    * @param newSessionOrUndefined The updated session, or undefined if the update was cancelled.
    */
   doneSession(newSessionOrUndefined: ISession | undefined): void {

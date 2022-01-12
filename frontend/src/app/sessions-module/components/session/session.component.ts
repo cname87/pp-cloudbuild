@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NGXLogger } from 'ngx-logger';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
@@ -44,7 +50,7 @@ import {
   selector: 'app-session',
   templateUrl: './session.component.html',
   styleUrls: ['./session.component.scss'],
-  providers: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionComponent {
   //

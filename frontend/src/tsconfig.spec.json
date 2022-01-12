@@ -13,7 +13,7 @@
 
   "compilerOptions": {
 
-    "outDir": "../out-tsc/spec",
+    "outDir": "../dist/spec",
 
     "types": [
       "jasmine",

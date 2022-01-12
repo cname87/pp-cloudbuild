@@ -1,8 +1,9 @@
 {
   "exclude": [
-    "coverage",
-    "dist",
-    "node_modules"
+    ".angular/**/*",
+    "coverage/**/*",
+    "dist/**/*",
+    "node_modules/**/*"
   ],
 
   "ts-node": {
@@ -15,9 +16,10 @@
   "compilerOptions": {
 
     /* list directory options first */
+
+    /* sets a base directory to resolve non-absolute module names */
     "baseUrl": ".",
-    "outDir": "./dist/out-tsc",
-    "rootDir": ".",
+    "outDir": "./dist/",
 
     "target": "es2015",
 
@@ -60,6 +62,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "showConfig": true,
     "sourceMap": true,
     "skipLibCheck": true,

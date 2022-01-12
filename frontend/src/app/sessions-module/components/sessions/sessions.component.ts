@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter as AngularEventEmitter,
   Input,
@@ -50,6 +51,7 @@ import { Observable } from 'rxjs';
   selector: 'app-sessions',
   styleUrls: ['./sessions.component.scss'],
   templateUrl: './sessions.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SessionsComponent {
   //
